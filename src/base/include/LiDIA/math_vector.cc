@@ -98,7 +98,7 @@ add(const math_vector< T > &v, const math_vector< T > &w)
 
 	register lidia_size_t i;
 	if (w.length == v.length) {
-		set_capacity(w.length);
+		this->set_capacity(w.length);
 		this->length = w.length;
 
 		for (i = 0; i < w.length; i++)
@@ -123,7 +123,7 @@ add(const math_vector< T > &v, const T &t)
 
 	register lidia_size_t i;
 
-	set_capacity(v.length);
+	this->set_capacity(v.length);
 	this->length = v.length;
 
 	for (i = 0; i < v.length; i++)
@@ -141,7 +141,7 @@ add(const T &t, const math_vector< T > &v)
 
 	register lidia_size_t i;
 
-	set_capacity(v.length);
+	this->set_capacity(v.length);
 	this->length = v.length;
 
 	for (i = 0; i < v.length; i++)
@@ -163,7 +163,7 @@ subtract(const math_vector< T > &v, const math_vector< T > &w)
 
 	register lidia_size_t i;
 	if (w.length == v.length) {
-		set_capacity(w.length);
+		this->set_capacity(w.length);
 		this->length = w.length;
 
 		for (i = 0; i < w.length; i++)
@@ -189,7 +189,7 @@ subtract(const math_vector< T > &v, const T &t)
 
 	register lidia_size_t i;
 
-	set_capacity(v.length);
+	this->set_capacity(v.length);
 	this->length = v.length;
 
 	for (i = 0; i < v.length; i++)
@@ -207,7 +207,7 @@ subtract(const T &t, const math_vector< T > &v)
 
 	register lidia_size_t i;
 
-	set_capacity(v.length);
+	this->set_capacity(v.length);
 	this->length = v.length;
 
 	for (i = 0; i < v.length; i++)
@@ -229,7 +229,7 @@ compwise_multiply(const math_vector< T > &v, const math_vector< T > &w)
 
 	register lidia_size_t i;
 	if (w.length == v.length) {
-		set_capacity(w.length);
+		this->set_capacity(w.length);
 		this->length = w.length;
 
 		for (i = 0; i < w.length; i++)
@@ -254,7 +254,7 @@ right_multiply(const math_vector< T > &v, const T &t)
 
 	register lidia_size_t i;
 
-	set_capacity(v.length);
+	this->set_capacity(v.length);
 	this->length = v.length;
 
 	for (i = 0; i < v.length; i++)
@@ -272,7 +272,7 @@ left_multiply(const T &t, const math_vector< T > &v)
 
 	register lidia_size_t i;
 
-	set_capacity(v.length);
+	this->set_capacity(v.length);
 	this->length = v.length;
 
 	for (i = 0; i < v.length; i++)
@@ -323,7 +323,7 @@ compwise_divide(const math_vector< T > &v, const math_vector< T > &w)
 
 	register lidia_size_t i;
 	if (w.length == v.length) {
-		set_capacity(w.length);
+		this->set_capacity(w.length);
 		this->length = w.length;
 
 		for (i = 0; i < w.length; i++)
@@ -348,7 +348,7 @@ divide(const math_vector< T > &v, const T &t)
 
 	register lidia_size_t i;
 
-	set_capacity(v.length);
+	this->set_capacity(v.length);
 	this->length = v.length;
 
 	for (i = 0; i < v.length; i++)
@@ -367,7 +367,7 @@ divide(const T &t, const math_vector< T > &v)
 	if (0) std::cerr << PRT;
 	register lidia_size_t i;
 
-	set_capacity(v.length);
+	this->set_capacity(v.length);
 	this->length = v.length;
 
 	for (i = 0; i < v.length; i++)
@@ -388,7 +388,7 @@ negate(const math_vector< T > &v)
 			"negate(const math_vector< T > &)", DV_MV + 4);
 
 	register lidia_size_t i;
-	set_capacity(v.length);
+	this->set_capacity(v.length);
 	this->length = v.length;
 
 	for (i = 0; i < v.length; i++)

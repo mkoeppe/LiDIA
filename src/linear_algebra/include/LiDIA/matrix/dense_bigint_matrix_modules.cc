@@ -951,8 +951,8 @@ row_oriented_dense_matrix_modules< T >::normalize_one_element_of_row (MR< T > &A
 {
 	T q, TMP;
 	for (lidia_size_t i = 0; i <= startc; i++)
-		if ((i != index) && member(A, startr, i) != A.Zero) {
-			pos_div_rem(q, TMP, member(A, startr, i), member(A, startr, index));
+		if ((i != index) && this->member(A, startr, i) != A.Zero) {
+			pos_div_rem(q, TMP, this->member(A, startr, i), this->member(A, startr, index));
 			if (q != 0)
 				subtract_multiple_of_column(A, i, q, index, len);
 			break;
@@ -973,8 +973,8 @@ row_oriented_dense_matrix_modules< T >::normalize_one_element_of_row (MR< T > &A
 {
 	T q, TMP;
 	for (lidia_size_t i = 0; i <= startc; i++)
-		if ((i != index) && member(A, startr, i) != A.Zero) {
-			pos_div_rem(q, TMP, member(A, startr, i), member(A, startr, index));
+		if ((i != index) && this->member(A, startr, i) != A.Zero) {
+			pos_div_rem(q, TMP, this->member(A, startr, i), this->member(A, startr, index));
 			if (q != 0) {
 				subtract_multiple_of_column(A, i, q, index, len);
 				subtract_multiple_of_column(TR, i, q, index, TR.get_no_of_rows() - 1);
@@ -998,8 +998,8 @@ row_oriented_dense_matrix_modules< T >::normalize_one_element_of_row (MR< T > &A
 	T q, TMP;
 	bigfloat rtemp;
 	for (lidia_size_t i = 0; i <= startc; i++)
-		if ((i != index) && member(A, startr, i) != A.Zero) {
-			pos_div_rem(q, TMP, member(A, startr, i), member(A, startr, index));
+		if ((i != index) && this->member(A, startr, i) != A.Zero) {
+			pos_div_rem(q, TMP, this->member(A, startr, i), this->member(A, startr, index));
 			if (q != 0) {
 				subtract_multiple_of_column(A, i, q, index, len);
 				LiDIA::multiply(rtemp, bigfloat(q), vec.member(index));
@@ -1029,7 +1029,7 @@ row_oriented_dense_matrix_modules< T >::mgcd_linear (MR< T > &A,
 	if (index < 0)
 		return false;
 	if (index != startc)
-		swap_columns(A, startc, index);
+		this->swap_columns(A, startc, index);
 
 	for (lidia_size_t i = index - 1; i >= 0; i--)
 		if (tmp[i] != A.Zero) {
@@ -1069,7 +1069,7 @@ row_oriented_dense_matrix_modules< T >::mgcd_linear (MR< T > &A,
 	if (index < 0)
 		return false;
 	if (index != startc) {
-		swap_columns(A, startc, index);
+		this->swap_columns(A, startc, index);
 		TR.swap_columns(startc, index);
 	}
 
@@ -1176,7 +1176,7 @@ row_oriented_dense_matrix_modules< T >::mgcd_bradley (MR< T > &A,
 	for (i = 0; i < A.rows; i++) {
 
 		for (lidia_size_t p = 0; p < A.columns; p++)
-			tmp2[p] = member(A, i, p);
+			tmp2[p] = this->member(A, i, p);
 
 		for (j = 0; j < A.columns; j++) {
 			TMP = A.Zero;
@@ -1184,7 +1184,7 @@ row_oriented_dense_matrix_modules< T >::mgcd_bradley (MR< T > &A,
 				if (tmp2[l] != A.Zero && Tr.member(l, j) != A.Zero)
 					TMP += T(tmp2[l] * Tr.member(l, j));
 
-			sto(A, i, j, TMP);
+			this->sto(A, i, j, TMP);
 		}
 	}
 	delete[] tmp2;
@@ -1271,7 +1271,7 @@ row_oriented_dense_matrix_modules< T >::mgcd_bradley (MR< T > &A,
 	for (i = 0; i < A.rows; i++) {
 
 		for (lidia_size_t p = 0; p < A.columns; p++)
-			tmp2[p] = member(A, i, p);
+			tmp2[p] = this->member(A, i, p);
 
 		for (j = 0; j < A.columns; j++) {
 			TMP = A.Zero;
@@ -1279,7 +1279,7 @@ row_oriented_dense_matrix_modules< T >::mgcd_bradley (MR< T > &A,
 				if (tmp2[l] != A.Zero && Tr.member(l, j) != A.Zero)
 					TMP += T(tmp2[l] * Tr.member(l, j));
 
-			sto(A, i, j, TMP);
+			this->sto(A, i, j, TMP);
 		}
 	}
 	delete[] tmp2;
@@ -1427,7 +1427,7 @@ row_oriented_dense_matrix_modules< T >::mgcd_opt (MR< T > &A,
 	if (index < 0)
 		return false;
 	if (index != startc)
-		swap_columns(A, startc, index);
+		this->swap_columns(A, startc, index);
 
 	// sort
 	if (startc >= 2) {
@@ -1438,7 +1438,7 @@ row_oriented_dense_matrix_modules< T >::mgcd_opt (MR< T > &A,
 			if (gcd_tmp < gcd_min)
 				gcdindex = i;
 		}
-		swap_columns(A, gcdindex, startc - 1);
+		this->swap_columns(A, gcdindex, startc - 1);
 	}
 
 	for (lidia_size_t i = startc - 1; i >= 0; i--)
@@ -1479,7 +1479,7 @@ row_oriented_dense_matrix_modules< T >::mgcd_opt (MR< T > &A,
 	if (index < 0)
 		return false;
 	if (index != startc) {
-		swap_columns(A, startc, index);
+		this->swap_columns(A, startc, index);
 		TR.swap_columns(startc, index);
 	}
 
@@ -1492,7 +1492,7 @@ row_oriented_dense_matrix_modules< T >::mgcd_opt (MR< T > &A,
 			if (gcd_tmp < gcd_min)
 				gcdindex = i;
 		}
-		swap_columns(A, gcdindex, startc - 1);
+		this->swap_columns(A, gcdindex, startc - 1);
 		TR.swap_columns(gcdindex, startc - 1);
 	}
 
@@ -1614,7 +1614,7 @@ row_oriented_dense_matrix_modules< T >::mgcd_storjohann (MR< T > &A,
 			for (i = 0; i <= startr; i++)
 				A.value[i][index].negate();
 		if (index != startc)
-			swap_columns(A, startc, index);
+			this->swap_columns(A, startc, index);
 	}
 	return true;
 }
@@ -1738,7 +1738,7 @@ row_oriented_dense_matrix_modules< T >::mgcd_storjohann (MR< T > &A,
 
 
 		if (index != startc) {
-			swap_columns(A, startc, index);
+			this->swap_columns(A, startc, index);
 			TR.swap_columns(startc, index);
 		}
 	}
@@ -1887,8 +1887,8 @@ row_oriented_dense_matrix_modules< T >::normalize_row (MR< T > &A,
 {
 	T q, TMP;
 	for (lidia_size_t i = 0; i <= startc; i++)
-		if ((i != index) && member(A, startr, i) != A.Zero) {
-			pos_div_rem(q, TMP, member(A, startr, i), member(A, startr, index));
+		if ((i != index) && this->member(A, startr, i) != A.Zero) {
+			pos_div_rem(q, TMP, this->member(A, startr, i), this->member(A, startr, index));
 			if (q != 0)
 				subtract_multiple_of_column(A, i, q, index, len);
 		}
@@ -1908,8 +1908,8 @@ row_oriented_dense_matrix_modules< T >::normalize_row_mod (MR< T > &A,
 {
 	T q, TMP;
 	for (lidia_size_t i = 0; i <= startc; i++)
-		if ((i != index) && member(A, startr, i) != A.Zero) {
-			pos_div_rem(q, TMP, member(A, startr, i), member(A, startr, index));
+		if ((i != index) && this->member(A, startr, i) != A.Zero) {
+			pos_div_rem(q, TMP, this->member(A, startr, i), this->member(A, startr, index));
 			if (q != 0)
 				subtract_multiple_of_column_mod(A, i, q, index, len, DET);
 		}
@@ -1929,8 +1929,8 @@ row_oriented_dense_matrix_modules< T >::normalize_row (MR< T > &A,
 {
 	T q, TMP;
 	for (lidia_size_t i = 0; i <= startc; i++)
-		if ((i != index) && member(A, startr, i) != A.Zero) {
-			pos_div_rem(q, TMP, member(A, startr, i), member(A, startr, index));
+		if ((i != index) && this->member(A, startr, i) != A.Zero) {
+			pos_div_rem(q, TMP, this->member(A, startr, i), this->member(A, startr, index));
 
 			// Check
 			if (q != 0) {
@@ -1957,8 +1957,8 @@ row_oriented_dense_matrix_modules< T >::normalize_row (MR< T > &A,
 {
 	T q, TMP;
 	for (lidia_size_t i = 0; i <= startc; i++)
-		if ((i != index) && member(A, startr, i) != A.Zero) {
-			pos_div_rem(q, TMP, member(A, startr, i), member(A, startr, index));
+		if ((i != index) && this->member(A, startr, i) != A.Zero) {
+			pos_div_rem(q, TMP, this->member(A, startr, i), this->member(A, startr, index));
 
 			// Check
 			if (q != 0) {
@@ -1987,8 +1987,8 @@ row_oriented_dense_matrix_modules< T >::normalize_row (MR< T > &A,
 {
 	T q, TMP;
 	for (lidia_size_t i = 0; i <= startc; i++)
-		if ((i != index) && member(A, startr, i) != A.Zero) {
-			pos_div_rem(q, TMP, member(A, startr, i), member(A, startr, index));
+		if ((i != index) && this->member(A, startr, i) != A.Zero) {
+			pos_div_rem(q, TMP, this->member(A, startr, i), this->member(A, startr, index));
 
 			// Check
 			if (q != 0) {

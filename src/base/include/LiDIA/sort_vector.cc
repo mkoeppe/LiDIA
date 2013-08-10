@@ -476,7 +476,7 @@ insert(const T & x, int (*cmp)(const T & a, const T & b), lidia_size_t l, lidia_
 
 	// examine, where to put element x
 	found = this->bin_search(x, pos, cmp, l, r);
-	set_size(this->length + 1);
+	this->set_size(this->length + 1);
 
 	// if size has been increased, insert at position 'pos'
 	for (i = this->length - 1; i > pos; i--)
@@ -514,7 +514,7 @@ insert(const T & x, unsigned long sort_direction, lidia_size_t l, lidia_size_t r
 
 	// examine, where to put element x
 	found = this->bin_search(x, pos, sort_direction, l, r);
-	set_size(this->length + 1);
+	this->set_size(this->length + 1);
 
 	// if size has been increased, insert at position 'pos'
 	for (i = this->length - 1; i > pos; i--)

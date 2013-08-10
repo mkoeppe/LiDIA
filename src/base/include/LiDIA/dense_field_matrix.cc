@@ -82,9 +82,9 @@ dense_field_matrix< T >::divide (const dense_field_matrix< T > &A, const T &k)
 			DVALUE + 2);
 
 	if (this->rows != A.rows)
-		set_no_of_rows(A.rows);
+		this->set_no_of_rows(A.rows);
 	if (this->columns != A.columns)
-		set_no_of_columns(A.columns);
+		this->set_no_of_columns(A.columns);
 
 	this->dense_modul.divide(*this, A, k);
 }
@@ -121,9 +121,9 @@ dense_field_matrix< T >::compwise_divide (const dense_field_matrix< T > &A,
 				    DMESSAGE, EMESSAGE[4]);
 
 	if (this->rows != A.rows)
-		set_no_of_rows(A.rows);
+		this->set_no_of_rows(A.rows);
 	if (this->columns != A.columns)
-		set_no_of_columns(A.columns);
+		this->set_no_of_columns(A.columns);
 
 	this->dense_modul.compwise_divide(*this, A, B);
 }

@@ -243,7 +243,7 @@ sparse_power_series< T >::power (const sparse_power_series< T > & a,
 		n = -n;
 	}
 
-	set (T(1), a.last - a.first); // res = 1 * X^0
+	this->set (T(1), a.last - a.first); // res = 1 * X^0
 
 	while (n > 1) {
 		if (n & 1) {

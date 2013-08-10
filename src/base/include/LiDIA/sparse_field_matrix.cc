@@ -85,9 +85,9 @@ divide(const sparse_field_matrix< T > &A, const T &k)
 			DVALUE + 2);
 
 	if (this->rows != A.rows)
-		set_no_of_rows(A.rows);
+		this->set_no_of_rows(A.rows);
 	if (this->columns != A.columns)
-		set_no_of_columns(A.columns);
+		this->set_no_of_columns(A.columns);
 
 	this->SSS_field_modul.divide(*this, A, k);
 }

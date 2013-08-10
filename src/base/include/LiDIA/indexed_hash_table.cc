@@ -198,7 +198,7 @@ indexed_hash_table< T >::remove (const T & G)
 	T *target, *tptr;
 
 	// check whether G is in the table
-	target = search(G);
+	target = this->search(G);
 
 	// if so, delete it
 	if (target) {

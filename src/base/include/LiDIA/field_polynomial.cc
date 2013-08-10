@@ -219,7 +219,7 @@ field_polynomial< T >::gcd (const base_polynomial< T > &aa,
 		}
 		else {
 			lc_inv = 1;
-			assign(lc_inv);
+			this->assign(lc_inv);
 		}
 	}
 }
@@ -265,7 +265,7 @@ field_polynomial< T >::xgcd (field_polynomial< T > &x,
 			x.assign(u0);
 			y.assign(v0);
 		} while (b.deg >= 0);
-		assign(a);
+		this->assign(a);
 	}
 
 	if (this->deg < 0)
