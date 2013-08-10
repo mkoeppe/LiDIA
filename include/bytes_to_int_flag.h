@@ -99,42 +99,82 @@ namespace LiDIA {
 
   template<>
   struct bytes_to_int_flag<long, 0> {
-    static long const value = 0x000000ff;
+    static long const value = 0x00000000000000ff;
   };
 
   template<>
   struct bytes_to_int_flag<long, 1> {
-    static long const value = 0x0000ff00;
+    static long const value = 0x000000000000ff00;
   };
 
   template<>
   struct bytes_to_int_flag<long, 2> {
-    static long const value = 0x00ff0000;
+    static long const value = 0x0000000000ff0000;
   };
 
   template<>
   struct bytes_to_int_flag<long, 3> {
-    static long const value = 0xff000000;
+    static long const value = 0x00000000ff000000;
+  };
+
+  template<>
+  struct bytes_to_int_flag<long, 4> {
+    static long const value = 0x000000ff00000000;
+  };
+
+  template<>
+  struct bytes_to_int_flag<long, 5> {
+    static long const value = 0x0000ff0000000000;
+  };
+
+  template<>
+  struct bytes_to_int_flag<long, 6> {
+    static long const value = 0x00ff000000000000;
+  };
+
+  template<>
+  struct bytes_to_int_flag<long, 7> {
+    static long const value = 0xff00000000000000;
   };
 
   template<>
   struct bytes_to_int_flag<unsigned long, 0> {
-    static unsigned long const value = 0x000000ff;
+    static unsigned long const value = 0x00000000000000ff;
   };
 
   template<>
   struct bytes_to_int_flag<unsigned long, 1> {
-    static unsigned long const value = 0x0000ff00;
+    static unsigned long const value = 0x000000000000ff00;
   };
 
   template<>
   struct bytes_to_int_flag<unsigned long, 2> {
-    static unsigned long const value = 0x00ff0000;
+    static unsigned long const value = 0x0000000000ff0000;
   };
 
   template<>
   struct bytes_to_int_flag<unsigned long, 3> {
-    static unsigned long const value = 0xff000000;
+    static unsigned long const value = 0x00000000ff000000;
+  };
+
+  template<>
+  struct bytes_to_int_flag<unsigned long, 4> {
+    static unsigned long const value = 0x000000ff00000000;
+  };
+
+  template<>
+  struct bytes_to_int_flag<unsigned long, 5> {
+    static unsigned long const value = 0x0000ff0000000000;
+  };
+
+  template<>
+  struct bytes_to_int_flag<unsigned long, 6> {
+    static unsigned long const value = 0x00ff000000000000;
+  };
+
+  template<>
+  struct bytes_to_int_flag<unsigned long, 7> {
+    static unsigned long const value = 0xff00000000000000;
   };
 
 
@@ -159,7 +199,42 @@ namespace LiDIA {
   };
 
 
-  // no 64 bit int type found
+  /*********************/
+  /*  int64 constants  */
+  /*********************/
+
+  struct int64_consts {
+    static long const octets_0_1_2_3_0xff = 0x00000000ffffffff;
+    static long const octets_4_5_6_7_0xff = 0xffffffff00000000;
+    static long const octets_0_1_0xff = 0x000000000000ffff;
+    static long const octets_2_3_0xff = 0x00000000ffff0000;
+    static long const octets_4_5_0xff = 0x0000ffff00000000;
+    static long const octets_6_7_0xff = 0xffff000000000000;
+    static long const octet_0_0xff = 0x00000000000000ff;
+    static long const octet_1_0xff = 0x000000000000ff00;
+    static long const octet_2_0xff = 0x0000000000ff0000;
+    static long const octet_3_0xff = 0x00000000ff000000;
+    static long const octet_4_0xff = 0x000000ff00000000;
+    static long const octet_5_0xff = 0x0000ff0000000000;
+    static long const octet_6_0xff = 0x00ff000000000000;
+    static long const octet_7_0xff = 0xff00000000000000;
+
+    static long const octets_0_1_2_3_0x80 = 0x0000000080808080;
+    static long const octets_4_5_6_7_0x80 = 0x8080808000000000;
+    static long const octets_0_1_0x80 = 0x0000000000008080;
+    static long const octets_2_3_0x80 = 0x0000000080800000;
+    static long const octets_4_5_0x80 = 0x0000808000000000;
+    static long const octets_6_7_0x80 = 0x8080000000000000;
+    static long const octet_0_0x80 = 0x0000000000000080;
+    static long const octet_1_0x80 = 0x0000000000008000;
+    static long const octet_2_0x80 = 0x0000000000800000;
+    static long const octet_3_0x80 = 0x0000000080000000;
+    static long const octet_4_0x80 = 0x0000008000000000;
+    static long const octet_5_0x80 = 0x0000800000000000;
+    static long const octet_6_0x80 = 0x0080000000000000;
+    static long const octet_7_0x80 = 0x8000000000000000;
+  };
+
 
 #ifdef LIDIA_NAMESPACE
 } // namespace LiDIA

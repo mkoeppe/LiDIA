@@ -23,7 +23,7 @@ dnl configure script.
 dnl
 
 
-AC_INIT([LiDIA],[2.3.0],[lidia@cdc.informatik.tu-darmstadt.de])
+AC_INIT([LiDIA],[2.3.0+latte-patches-2013-08-09],[lidia@cdc.informatik.tu-darmstadt.de])
 AC_REVISION($Id$)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(.LIDIA_SOURCE_DIR)

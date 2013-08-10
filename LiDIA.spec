@@ -8,7 +8,7 @@
 
 Summary:	C++ library for number theoretical computations
 Name:		lidia
-Version:	2.3.0
+Version:	2.3.0+latte-patches-2013-08-09
 Release:	0
 Vendor:		The LiDIA Group
 Copyright:	noncommercial
