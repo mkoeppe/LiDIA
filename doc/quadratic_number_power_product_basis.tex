@@ -1,0 +1,205 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  quadratic_number_power_product_basis.tex        LiDIA documentation
+%%
+%%  This file contains the documentation of the class
+%%  quadratic_number_power_product_basis.
+%%
+%%  Copyright (c) 1999 by the LiDIA Group
+%%
+%%  Author: Markus Maurer
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{quadratic_number_power_product_basis} \dotfill
+basis for power products of quadratic numbers.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{quadratic_number_power_product_basis} is a class that represents a basis for a power
+product of quadratic numbers.  Its main use is to reduce memory needed by power products by
+providing a basis that can be shared by several power products and to increase efficiency in
+power product computations by speeding up the computation of approximations to the logarithms of
+the elements of the basis.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+A \code{quadratic_number_power_product_basis} is an array $b$ of elements of type
+\SEE{quadratic_number_standard}.  Let $n$ be the number of elements
+in $b$.  Then
+\begin{displaymath}
+  b = (b_{0}, \dots, b_{n-1}) \enspace,
+\end{displaymath}
+where $b_{i}$ ($0\leq i < n$) represents a quadratic number.  In principle, it is possible that
+the numbers in the basis belong to different quadratic number fields.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{quadratic_number_power_product_basis}{}
+  creates a basis with no elements.
+\end{fcode}
+
+\begin{fcode}{dt}{~quadratic_number_power_product_basis}{}
+  deletes the object.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $b$ be of type \code{quadratic_number_power_product_basis}.  The operator \code{=} is
+overloaded.  The following functions are also implemented:
+
+\begin{fcode}{void}{$b$.assign}{const quadratic_number_power_product_basis & $c$}
+  $c$ is copied to $b$.
+\end{fcode}
+
+\begin{fcode}{void}{$b$.set_basis}{const base_vector< quadratic_number_standard > & $c$}
+  $b \assign (c[0], \dots, c[s-1])$, where $s = \code{$c$.get_size()}$.
+\end{fcode}
+
+\begin{fcode}{void}{$b$.set_basis}{const quadratic_number_standard & $c$}
+  $b \assign (c)$.
+\end{fcode}
+
+\begin{fcode}{void}{$b$.concat}{const quadratic_number_power_product_basis & $c$,
+    const quadratic_number_standard & $q$}%
+  $b \assign (c_0, \dots, c_{n-1}, q)$, where $n$ is the number of elements in $c$.
+\end{fcode}
+
+\begin{fcode}{void}{$b$.concat}{const quadratic_number_power_product_basis & $c$,
+    const quadratic_number_power_product_basis & $d$}%
+  $b \assign (c_0, \dots, c_{m-1}, d_0, \dots, d_{n-1})$, where $m$ and $n$ are the number of elements
+  in $c$ and $d$, respectively.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $b$ be of type \code{quadratic_number_power_product_basis}.
+
+\begin{cfcode}{const base_vector< quadratic_number_standard > &}{$b$.get_basis}{}
+  Returns a \code{const} reference to a vector $[b_0, \dots, b_{n-1}]$, where $n$ is the number
+  of elements in $b$.  As usual, the \code{const} reference should only be used to create a copy
+  of the vector or to immediately apply another operation on the vector, because after the next
+  operation applied to $b$ the obtained reference may be invalid.
+\end{cfcode}
+
+\begin{cfcode}{lidia_size_t}{$b$.get_size}{}
+  Returns the number of elements of $b$.
+\end{cfcode}
+
+\begin{cfcode}{const quadratic_number_standard &}{$b$.operator[]}{lidia_size_t $i$}
+  Returns a \code{const} reference to $b_i$, if $0 \leq i < n$, where $n$ is the number of
+  elements in $b$.  If $i$ is outside that range, the \LEH will be called.  As usual, the
+  \code{const} reference should only be used to create a copy or to immediately apply another
+  operation to it, because after the next operation applied to $b$ the obtained reference may be
+  invalid.
+\end{cfcode}
+
+\begin{cfcode}{const quadratic_order &}{$b$.get_order}{}
+  Returns a \code{const} reference to the quadratic order of $b_0$.  If the number of elements
+  of $b$ is zero, the \LEH will be called.  This function is for convenience in the case, where
+  all numbers are defined over the same order.  As usual, the \code{const} reference should only
+  be used to create a copy or to immediately apply another operation to it, because after the
+  next operation applied to $b$ the obtained reference may be invalid.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+\begin{fcode}{bool}{operator==}{const quadratic_number_power_product_basis & $c$,
+    const quadratic_number_power_product_basis & $d$}%
+  Returns \TRUE, if the address of $c$ is equal to the address of $d$.  Otherwise, it returns
+  \FALSE.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+Let $b$ be of type \code{quadratic_number_power_product_basis}.
+
+\begin{cfcode}{const xbigfloat &}{$b$.get_absolute_Ln_approximation}{long $k$, lidia_size_t $i$}
+  Returns a \code{const} reference to an absolute $k$-approximation to $\Ln(b_i)$, where $\Ln$
+  is the Lenstra logarithm (see \SEE{xbigfloat}, \SEE{quadratic_number_standard}).  If $i < 0$
+  or $n \leq i$, where $n$ is the number of elements in $b$, the \LEH will be called.
+  Approximations to the logarithm and their accuracies are internally stored.  Hence, if $k$ is
+  less than or equal to the currently stored accuracy, the previously computed approximation is
+  only truncated to create the absolute $k$ approximation.  Only if $k$ is larger, a new
+  approximation is computed.
+  
+  As usual, the \code{const} reference should only be used to create a copy or to immediately
+  apply another operation to it, because after the next operation applied to $b$ the obtained
+  reference may be invalid.
+\end{cfcode}
+
+\begin{fcode}{void}{$b$.absolute_Ln_approximations}{const matrix< bigint > & $M$, long $k$}
+  This function computes approximations to the logarithms of the base elements, that are
+  internally stored.  More precisely, let $n$ be the number of elements of $b$.  $M$ must be a
+  matrix with $n$ rows; otherwise the \LEH is called.  Let $m$ be the number of columns of $M$.
+  For each $0\leq i < n$ the function computes and internally stores an absolute $k + 2 + b(n) +
+  t$ approximation $l_i$ to $\Ln(b_i)$, where $t = \max_{0\leq j < m} b(M_i,j)$, where $M_i,j$
+  is the element in row $i$ and column $j$ of $M$.  This implies that $\left|\sum_{i=0}^{n-1}
+    e_{i,j} l_i - \Ln(\prod_{i=0}^{n-1} b_i^{M_{i,j}})\right| < 2^{-k-2}$ for each $0\leq j <
+  m$.  Hence, when building power products where the basis is $b$ and the exponents are given by
+  the columns of $M$, no recomputations of logarithms is necessary, when asking for absolute
+  $k$-approximations to the logarithm of the power product.
+\end{fcode}
+
+\begin{cfcode}{bool}{$b$.check_Ln_correctness}{lidia_size_t $\mathit{trials}$ = 5}
+  Uses the function \code{check_Ln_correctness($\mathit{trials}$)} of the class
+  \SEE{quadratic_number_standard} to check the correctness of the
+  logarithm approximation for the base elements.  Returns \TRUE, if all the tests work correct
+  and \FALSE otherwise.
+\end{cfcode}
+
+\begin{fcode}{void}{$b$.conjugate}{}
+  Replaces $b_i$ by its conjugate for each $0 \leq i <n$, where $n$ is the number of elements of
+  $b$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+\code{istream} operator \code{>>} and \code{ostream} operator \code{<<} are overloaded.  Input
+and output of a \code{quadratic_number_power_product_basis} are in the format of a
+\SEE{base_vector} of elements of type
+\SEE{quadratic_number_standard}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{xbigfloat}, \SEE{base_vector},
+\SEE{quadratic_number_standard},
+\SEE{quadratic_number_power_product},
+\SEE{quadratic_order}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Markus Maurer

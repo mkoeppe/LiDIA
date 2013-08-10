@@ -1,0 +1,162 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  sf_gf_polynomial.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the specialisation
+%%  single_factor< gf_polynomial >, factorization< gf_polynomial >.
+%%
+%%  Copyright   (c)   1996   by  LiDIA-Group
+%%
+%%  Authors: Thomas Pfahler
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{single_factor< polynomial< gf_p_element > >}
+\dotfill a single factor of a polynomial over finite fields
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{single_factor< polynomial< gf_p_element> >} is used for storing factorizations of
+polynomials over finite fields (see \code{factorization}).  It is a specialization of
+\code{single_factor< T >} with some additional functionality.  All functions for
+\code{single_factor< T >} can be applied to objects of class \code{single_factor< polynomial<
+  gf_p_element > >}, too.  These basic functions are not described here any further; you will
+find the description of the latter in \code{single_factor< T >}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+%\STITLE{Constructor}
+
+\STITLE{Modifying Operations}
+
+Let $a$ be an instance of type \code{single_factor< polynomial< gf_p_element > >}.
+
+\begin{fcode}{bigint}{$a$.extract_unit}{}
+  returns the leading coefficient of \code{$a$.base()} and converts it to a monic polynomial (by
+  dividing it by its leading coefficient).
+\end{fcode}
+
+
+\STITLE{Factorization Algorithms}
+
+The implementation of the factorization algorithms is described in \cite{Pfahler_Thesis:1998}.
+
+Let $a$ be an instance of type \code{single_factor< polynomial< gf_p_element > >}.
+
+\begin{fcode}{factorization< polynomial< gf_p_element> >}{square_free_decomp}{const polynomial<
+    gf_p_element > & $f$}%
+  returns the factorization of $f$ into square-free factors.  $f$ must be monic, otherwise the
+  \LEH is invoked.
+\end{fcode}
+
+\begin{cfcode}{factorization< polynomial< gf_p_element> >}{$a$.square_free_decomp}{}
+  returns \code{square_free_decomp($a$.base())}.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{fcode}{factorization< polynomial< gf_p_element > >}{berlekamp}{const polynomial<
+    gf_p_element > & $f$}%
+  returns the complete factorization of $f$ using Berlekamp's factoring algorithm.  If $f$ is
+  the zero polynomial, the \LEH is invoked.
+\end{fcode}
+
+\begin{cfcode}{factorization< polynomial< gf_p_element > >}{$a$.berlekamp}{}
+  returns \code{berlekamp($a$.base())}.
+\end{cfcode}
+
+\begin{fcode}{factorization< polynomial< gf_p_element > >}{sf_berlekamp}{const polynomial<
+    gf_p_element > & $f$}%
+  returns the complete factorization of $f$ using Berlekamp's factoring algorithm.  $f$ must be
+  monic and square-free with a non-zero constant term; otherwise the behaviour of this function
+  is undefined.
+\end{fcode}
+
+\begin{cfcode}{factorization< polynomial< gf_p_element > >}{$a$.sf_berlekamp}{}
+  returns \code{sf_berlekamp($a$.base())}.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{fcode}{factorization< polynomial< gf_p_element > >}{can_zass}{const polynomial<
+    gf_p_element > & $f$}%
+  returns the complete factorization of $f$ using \code{sf_can_zass}.  If $f$ is the zero
+  polynomial, the \LEH is invoked.
+\end{fcode}
+
+\begin{cfcode}{factorization< polynomial< gf_p_element > >}{$a$.can_zass}{}
+  returns \code{can_zass($a$.base())}.
+\end{cfcode}
+
+\begin{fcode}{factorization< polynomial< gf_p_element > >}{sf_can_zass}{const polynomial<
+    gf_p_element > & $f$}%
+  returns the complete factorization of $f$ using a DDF according to Cantor/Zassenhaus, and the
+  von zur Gathen/Shoup algorithm for factoring polynomials whose irreducible factors all have
+  the same degree.  $f$ must be monic and square-free, otherwise the behaviour of this function
+  is undefined.
+\end{fcode}
+
+\begin{cfcode}{factorization< polynomial< gf_p_element > >}{$a$.sf_can_zass}{}
+  returns \code{sf_can_zass($a$.base())}.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{fcode}{factorization< polynomial< gf_p_element > >}{factor}{const polynomial<
+    gf_p_element > & $f$}%
+  returns the complete factorization of $f$ using a strategy which tries to apply always the
+  fastest of the above algorithms.  It also includes special variants for factoring binomials.
+  The strategy is explained in detail in \cite{Pfahler_Thesis:1998}.  If $f$ is the zero
+  polynomial, the \LEH is invoked.
+\end{fcode}
+
+\begin{cfcode}{factorization< polynomial< gf_p_element > >}{$a$.factor}{}
+  returns \code{factor($a$.base())}.
+\end{cfcode}
+
+
+\begin{fcode}{bool }{det_irred_test}{const polynomial< gf_p_element > & $f$}
+  performs a deterministic irreducibility test (based on \code{berlekamp}).
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{factorization}, \SEE{polynomial< gf_p_element >}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+For examples please refer to
+\path{LiDIA/src/templates/factorization/gf_polynomial/gf_pol_factor_appl.cc}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+The main ideas for speeding up polynomial computation and factorization
+algorithms are attributed to Victor Shoup \cite{Shoup:1995}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Thomas Pfahler

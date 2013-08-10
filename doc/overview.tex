@@ -1,0 +1,233 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  overview.tex       LiDIA documentation
+%%
+%%  This file contains comments on the design of LiDIA
+%%
+%%  Copyright   (c)   1996   by LiDIA-Group
+%%
+%%  Authors: Johannes Buchmann, Ingrid Biehl, Thomas Papanikolaou
+%%
+
+
+\newcommand{\Pari}{\textbf{Pari}\xspace}
+\newcommand{\Kant}{\textbf{Kant}\xspace}
+\newcommand{\Simath}{\textbf{Simath}\xspace}
+\newcommand{\Maple}{\textbf{Maple}\xspace}
+\newcommand{\Mathematica}{\textbf{Mathematica}\xspace}
+
+
+\chapter{Overview}
+
+This chapter describes the overall organization of the \LiDIA system.
+
+
+\section{Introduction}\label{sect:Pref}
+
+In early 1994 our research group in computational number theory at the Department of Computer
+Science at the Universit\"at des Saarlandes, Germany, was working on implementations of
+algorithms for factoring integers, determining discrete logarithms in finite fields, counting
+points on elliptic curves over finite fields, etc.  In those implementations three different
+multiprecision integer packages were used.  The code written for those implementations was hard
+to read and hardly documented as well.  Therefore, many basic routines were written over and
+over again, often not very efficiently.
+
+Because of this we decided to organize all the software in a library which we called
+\Index{\LiDIA}.  The organization of this task, the development of the general concept of the
+library and the implementation of the basic components like the \emph{kernel}, the
+\emph{interface} and the majority of the components for doing arithmetic were designed and
+implemented by Thomas Papanikolaou.
+
+Since we find that \emph{object oriented programming} is appropriate for implementing
+mathematical algorithms and since C++ belongs to the most accepted programming languages in
+scientific computing, we decided to use C++ as the \emph{implementation language} for \LiDIA.
+To guarantee easy \emph{portability} of \LiDIA we decided to have a very small machine dependent
+kernel in \LiDIA.  That kernel currently contains the multiprecision integer arithmetic and a
+memory manager.  All \LiDIA objects are implemented in C++ and compiled with many different
+compilers on various architectures.
+
+Although not in the public domain, \LiDIA can be used freely for non commercial purposes (see
+copyright notice, page \pageref{chap:copyright}).
+
+
+\section{Design notes}
+
+It is a serious problem to decide which multiprecision integer package and which memory manager
+should be used in \LiDIA.  There are competing multiprecision integer packages, for example
+\begin{itemize}
+\item the Berkeley MP package;
+\item the GNU MP package by Torbj\"orn Granlund (\url{http://www.swox.com/gmp/});
+\item the cln package by Bruno Haible (\url{http://clisp.cons.org/~haible/packages-cln.html});
+\item the piologie package from HiPiLib (\url{http://www.hipilib.de/piologie.htm});
+\item the libI package by Ralf Dentzer (available from
+  \url{http://www.informatik.tu-darmstadt.de/TI/LiDIA/});
+\item the freeLIP package, formerly known as LIP, by Arjen Lenstra, now maintained by Paul
+  Leyland (\url{ftp://ftp.ox.ac.uk/pub/math/freelip/});
+\item the BIGNUM routines of the openssl library (\url{http://www.openssl.org/}).
+\end{itemize}
+Some of those packages are more efficient on one architecture and some on others\footnote{As of
+  March 2001, GNU MP seems to be superior, while libI and freelip seem to be deprecated.}.
+Also, new architectures lead very fast to new multiprecision packages.  We decided to make
+\LiDIA independent of a particular kernel and to make it easy to replace the \LiDIA kernel.  To
+achieve this, we separate the kernel from the application programs by an \emph{interface} in
+which the declarations, operators, functions, and procedures dealing with multiprecision
+integers and the memory management are standardized.  All \LiDIA classes use the kernel through
+that interface.  They never use the kernel functions directly.  Whenever new kernel packages are
+used only the interface has to be changed appropriately but none of the \LiDIA classes has to be
+altered.  In the \LiDIAVersion package we use the libI package and its memory manager as the
+default kernel.
+
+We try to develop extremely efficient code for the algorithms we offer in the \LiDIA system.
+Therefore, \LiDIA is designed in such a way, that a user can decide in which level of
+abstraction one implements the programs.  Moreover we try to keep the dependency of parts of the
+library on each other to a minimum and to define interfaces precisely in order to be able to
+replace modules by more efficient modules in an efficient way.
+
+\section{Structure of \LiDIA}
+
+The \LiDIA library has 5 levels.
+
+The lowest level contains the \Index{kernel}, which contains a \Index{multi-precision} integer
+arithmetic and a \Index{memory manager}.  Both components are currently written in C to attain
+maximum speed\footnote{However, it is possible to use any other implementation language in the
+  kernel, as long as this language can be called from C++.}.
+
+\attentionIII The multi-precision integer arithmetic has been an integral part of \LiDIA, i.e.
+the sources have been part of \LiDIA's source tree and the multi-precision arithmetic library
+has been rolled into the \LiDIA library.  \textbf{Beginning with release version 2.1 the
+  multi-precision arithmetic library is no longer a part of \LiDIA.  In order to use \LiDIA, the
+  multi-precision arithmetic library has to be installed, and the user must explicitely link
+  that library to his applications!}
+
+In \LiDIA's kernel it is possible to use various multiprecision integer packages since the
+functions of the kernel are never called directly by any application program of \LiDIA but only
+through the interface on the second level.  Therefore, any package supporting the whole
+functionality of the interface can be used in the kernel.  Currently, we support the
+multiprecision integer packages libI, freelip, GNU MP, cln and piologie.
+
+The second \LiDIA level is the \emph{interface} through which C++ applications on higher
+levels have access to the kernel.  By that interface declarations, operators, functions and
+procedures dealing with multiprecision integers and memory management are standardized.  \LiDIA
+applications always use those standards.  They never call the underlying kernel directly.  The
+interface for the multiprecision integer arithmetic is realized by the class \code{bigint} and
+the interface for the general memory manager is implemented in the class \emph{gmm}.
+
+The third level of \LiDIA contains all non parameterized \LiDIA applications, the so-called
+\Index{simple classes}.  For example, on the third level there is a class \code{bigrational}
+which implements the arithmetic of rational numbers.
+
+On the fourth \LiDIA level there are the \Index{parameterized classes} (also called
+\Index{container classes}).  These classes are designed to solve computational problems which are
+very similar in many concrete applications.  In the current version this level includes generic
+implementations of hash tables, vectors, matrices, power series, and univariate polynomials.
+
+The highest level of \LiDIA includes the user interface which consists of an online
+documentation tool and the \emph{interpreter} lc \index{\lc} which makes the \LiDIA
+functions available for interactive use.
+
+\label{LidFig}
+\begin{center}
+  \input{lidia_model}
+
+  Fig.~1: The levels of \LiDIA
+\end{center}
+
+
+\section{Packages}
+
+Since 1994, \LiDIA has become quite a big collection of routines and classes, and many people
+have contributed to its functionality.  As the development of LiDIA has shifted towards more and
+more specialized areas, we have decided to slightly reorganise its design in order to
+\begin{itemize}
+\item remain maintainable and to
+\item allow an easy integration of new routines.
+\end{itemize}
+Therefore, we have divided \LiDIA into several packages; the standard packages are the
+following:
+\begin{itemize}
+\item The \LiDIA base package includes all the basic arithmetic and most of the template
+  classes.  This package is always required.
+\item The \LiDIA FF package contains the classes which deal with finite fields.
+\item The \LiDIA LA package contains the classes which deal with linear algebra over the ring of
+  rational integers and over $\ZmZ$.  It requires the \LiDIA FF package.
+\item The \LiDIA LT package contains the classes which deal with lattices over the integers and
+  over the reals.  It requires the \LiDIA FF package, and the \LiDIA LA package.
+\item The \LiDIA NF package contains the classes which deal with quadratic number fields, and
+  number fields of higher degree.  It requires the \LiDIA FF package, the \LiDIA LA package, and
+  the \LiDIA LT package.
+\item The \LiDIA EC package contains the classes which deal with elliptic curves over the
+  integers and over finite fields.  It requires the \LiDIA FF package, and the \LiDIA LA
+  package.
+\item The \LiDIA ECO package contains classes and code to count the rational points of elliptic
+  curves over $\GF(p)$ and $\GF(2^n)$.  It requires the \LiDIA EC package, and
+  accordingly the \LiDIA FF package and the \LiDIA LA package.
+\item The \LiDIA GEC package contains classes and code to generate
+  cryptographically strong elliptic curves and a prime proofer class.
+  It requires the \LiDIA ECO package
+  and the prerequisites thereof, \LiDIA FF, \LiDIA LA, and \LiDIA EC, as well
+  as \LiDIA NF.
+\end{itemize}
+
+
+\section{Future developments}
+
+In the future we will expand the set of classes and algorithms by offering additional packages.
+Methods which are available in \LiDIAVersion will also be available in future releases, so as to
+ensure compatibility of user implemented algorithms with new versions of \LiDIA.  If you develop
+algorithms of general interest using \LiDIA, we would appreciate it if you let us include them
+in the \LiDIA distribution (possibly as a new package) or send information about your
+implementation to other \LiDIA users.
+
+The list of currently available packages can be found at the \LiDIA WWW Home Page of \LiDIA:
+\begin{quote}
+  \url{http://www.informatik.tu-darmstadt.de/TI/LiDIA}
+\end{quote}
+
+
+\section{Addresses of the \LiDIA-group}
+
+After having picked up the source of \LiDIAVersion, for example by anonymous ftp via
+\begin{quote}
+  \url{ftp://ftp.informatik.tu-darmstadt.de/pub/TI/systems/LiDIA},
+\end{quote}
+you should subscribe to the \LiDIA mailing lists \url{LiDIA@cdc.informatik.tu-darmstadt.de} and
+\url{LiDIA-announce@cdc.informatik.tu-darmstadt.de}.  You can do so by sending email to
+\url{LiDIA-request@cdc.informatik.tu-darmstadt.de} and
+\url{LiDIA-announce-request@cdc.informatik.tu-darmstadt.de}, respectivly.  Put the word
+``subscribe'' in the body.
+
+Alternatively, you can use the Web-interface at
+\url{http://www.cdc.informatik.tu-darmstadt.de/mailman/listinfo/} to subscribe to the \LiDIA
+mailing lists.
+
+\attentionI Former \LiDIA manuals requested \LiDIA users to send an email to
+\url{lidia@cdc.informatik.tu-darmstadt.de}.  This is no longer desired.  Instead, subscribe to
+\url{LiDIA} and \url{LiDIA-announce} to get the latest news on \LiDIA.
+
+If you think you have found a bug in \LiDIA (or incomplete/incorrect documentation), please
+report to
+\begin{quote}
+  \url{LiDIA-bugs@cdc.informatik.tu-darmstadt.de}
+\end{quote}
+Note that we will probably not be able to reconstruct a bug without a detailed
+description.  We need to know at least the \LiDIA version, the operating system, and the
+compiler that you were using.
+
+
+\section{Acknowledgements}
+
+The following people have contributed to \LiDIA (in alphabetical order):
+
+Detlef Anton, Werner Backes, Harald Baier, Jutta Bartholomes, Franz-Dieter
+Berger, Ingrid Biehl, Emre Binisik, Oliver Braun, Christian Cornelssen, John
+Cremona, Sascha Demetrio, Thomas F.~Denny, Roland Dreier, Friedrich
+Eisenbrand, Dan Everett, Tobias Hahn, Safuat Hamdy, Jochen Hechler, Birgit
+Henhapl, Michael J.~Jacobson, Jr., Patrick Kirsch, Thorsten Lauer, Frank
+J.~Lehmann, Christoph Ludwig, Markus Maurer, Andreas M\"uller, Volker
+M\"uller, Stefan Neis, Thomas Papanikolaou, Thomas Pfahler, Thorsten
+Rottsch\"afer, Dirk Schramm, Victor Shoup, Nigel Smart, Thomas Sosnowski, Anja
+Steih, Patrick Theobald, Oliver van Sprang, Damian Weber, and
+Susanne Wetzel. 
+
+Special thanks to Thomas Papanikolaou for originating \LiDIA and Prof.~Johannes Buchmann for
+supporting the project.

@@ -1,0 +1,141 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  modular_functions.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of some
+%%  number-theoretical functions 
+%%
+%%  Copyright   (c)   2002   by  LiDIA-Group
+%%
+%%  Author: Harald Baier
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+modular\_functions \dotfill some number-theoretical functions
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+Including \path{LiDIA/modular_functions.h} allows the computation of some
+number-theoretical functions like the modular function $j$ or
+Dedekind's $\eta$-function.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+With this package the user can compute the
+value $g(\tau),$ where $\tau$ is in the upper complex half plane
+$\mathfrak{h}$ and $g$ denotes one of the following functions:
+
+\begin{itemize}
+\item $g=j$ with the modular function $j.$
+\item $g=\eta,$ where $\eta$ denotes Dedekind's $\eta$-function.
+\item $g\in\{\mathfrak{f},\mathfrak{f}_1,\mathfrak{f}_2\}$ with the
+Weber functions $\mathfrak{f}_i.$
+\item $g=\gamma_2$ with the cube root $\gamma_2$ of $j$ which is real
+valued on the imaginary axis.
+\end{itemize}
+
+The values of these functions can be computed very efficiently, if
+$\tau$ is in the domain
+$D:=\{z\in\mathfrak{h}: |\mathrm{Re}(\tau)|\leq 1/2, |\tau|\geq 1\}.$
+It is well known that each $\tau\in\mathfrak{h}$ is equivalent to some
+$\tau'\in D$ under the action of $\mathrm{SL}(2,\bbfZ),$
+and transformation formulae for all functions $g$ are known. If
+the user is sure that $\tau\in D,$ he can set the boolean
+\code{is_fundamental} to \code{true} to avoid the application
+of the transformation.
+
+\begin{fcode}{bigcomplex}{modular_j}{const bigcomplex & $\tau$, bool is_fundamental = false}
+  returns the value $j(\tau)$ within the precision, which is set by
+  \code{bigfloat::set_precision()}. If \code{is_fundamental} is set to
+  \code{true}, then $\tau$ is assumed to be in the fundamental domain $D.$
+  Otherwise, $\tau$ is first shifted to $D.$
+\end{fcode}
+
+\begin{fcode}{bigcomplex}{gamma_2}{const bigcomplex & $\tau$, bool is_fundamental = false}
+  returns the value $\gamma_2(\tau)$ within the precision, which is set by
+  \code{bigfloat::set_precision()}. If \code{is_fundamental} is set to
+  \code{true}, then $\tau$ is assumed to be in the fundamental domain $D.$
+  Otherwise, $\tau$ is first shifted to $D.$
+\end{fcode}
+
+\begin{fcode}{bigcomplex}{dedekind_eta}{const bigcomplex & $\tau$, bool is_fundamental = false}
+  returns the value $\eta(\tau)$ within the precision, which is set by
+  \code{bigfloat::set_precision()}. If \code{is_fundamental} is set to
+  \code{true}, then $\tau$ is assumed to be in the fundamental domain $D.$
+  Otherwise, $\tau$ is first shifted to $D.$
+\end{fcode}
+
+\begin{fcode}{bigcomplex}{weber_f}{const bigcomplex & $\tau$, bool is_fundamental = false}
+  returns the value $\mathfrak{f}(\tau)$ within the precision, which is set by
+  \code{bigfloat::set_precision()}. If \code{is_fundamental} is set to
+  \code{true}, then $\tau$ is assumed to be in the fundamental domain $D.$
+  Otherwise, the relation $\mathfrak{f}(\tau)=\zeta_{48}^{-1}\cdot\frac{\eta((\tau+1)/2)}{\eta(\tau)}$ is used.
+\end{fcode}
+
+\begin{fcode}{bigcomplex}{weber_f1}{const bigcomplex & $\tau$, bool is_fundamental = false}
+  returns the value $\mathfrak{f}_1(\tau)$ within the precision,
+  which is set by \code{bigfloat::set_precision()}. If \code{is_fundamental} is set to
+  \code{true}, then $\tau$ is assumed to be in the fundamental domain $D.$
+  Otherwise, the relation
+  $\mathfrak{f}_1(\tau)=\frac{\eta(\tau/2)}{\eta(\tau)}$ is used.
+\end{fcode}
+
+\begin{fcode}{bigcomplex}{weber_f2}{const bigcomplex & $\tau$, bool is_fundamental = false}
+  returns the value $\mathfrak{f}_2(\tau)$ within the precision,
+  which is set by \code{bigfloat::set_precision()}. If \code{is_fundamental} is set to
+  \code{true}, then $\tau$ is assumed to be in the fundamental domain $D.$
+  Otherwise, the relation
+  $\mathfrak{f}_2(\tau)=\sqrt{2}\cdot\frac{\eta(2\tau)}{\eta(\tau)}$ is used.
+\end{fcode}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{bigcomplex}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/modular_functions.h>
+
+using namespace LiDIA;
+
+int
+main()
+{
+    bigcomplex tau;
+
+    std::cout << "Please enter a bigcomplex tau >> ";
+    std::cin  >> tau;
+
+    bigfloat::set_precision( 1000 );
+
+    std::cout << "j( tau ) = " << modular_j( tau ) << std::endl;
+
+    return( 0 );
+}
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Harald Baier

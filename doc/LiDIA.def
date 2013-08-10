@@ -1,0 +1,489 @@
+%===========================================================================
+%
+%       ${srcdir}/doc/LiDIA.def
+%
+%---------------------------------------------------------------------------
+%
+%       $Id$
+%
+%===========================================================================
+
+\makeatletter
+
+\newcommand{\LiDIA}{\textsf{LiDIA}\xspace}
+\newcommand{\Version}{2.1.1}
+\newcommand{\LiDIAVersion}{\textsf{\LiDIA \Version}\xspace}
+
+\parindent=0pt
+\parskip=1.5ex plus 0.5ex minus 0.5ex
+
+
+%
+%       category definitions
+%
+\chardef\msup=7
+\chardef\msub=8
+\chardef\ignore=9
+\chardef\other=12
+\chardef\active=13
+
+
+%
+%       character definitions
+%
+\chardef\bschar=`\\
+\chardef\ltchar=`\<
+\chardef\gtchar=`\>
+\chardef\sbchar=`\_
+\chardef\spchar=`\^
+
+\def\makeuscoreother{\catcode\sbchar=\other}
+\def\makeuscoremsub{\catcode\sbchar=\msub}
+
+\def\uscore{\raise0.25ex\hbox{\textnormal{\_}}}
+\begingroup
+\catcode\sbchar=\active
+\gdef\makeuscoreactive{%
+  \catcode\sbchar=\active
+  \def_{\ifmmode\sb\else\uscore\fi}}
+\endgroup
+
+\emergencystretch=0.2\hsize
+\renewcommand{\arraystretch}{1.25}
+
+%
+%  math
+%
+\newcommand{\bbfA}{\mathbb{A}}
+\newcommand{\bbfB}{\mathbb{B}}
+\newcommand{\bbfC}{\mathbb{C}}
+\newcommand{\bbfD}{\mathbb{D}}
+\newcommand{\bbfE}{\mathbb{E}}
+\newcommand{\bbfF}{\mathbb{F}}
+\newcommand{\bbfG}{\mathbb{G}}
+\newcommand{\bbfH}{\mathbb{H}}
+\newcommand{\bbfI}{\mathbb{I}}
+\newcommand{\bbfJ}{\mathbb{J}}
+\newcommand{\bbfK}{\mathbb{K}}
+\newcommand{\bbfL}{\mathbb{L}}
+\newcommand{\bbfM}{\mathbb{M}}
+\newcommand{\bbfN}{\mathbb{N}}
+\newcommand{\bbfO}{\mathbb{O}}
+\newcommand{\bbfP}{\mathbb{P}}
+\newcommand{\bbfQ}{\mathbb{Q}}
+\newcommand{\bbfR}{\mathbb{R}}
+\newcommand{\bbfS}{\mathbb{S}}
+\newcommand{\bbfT}{\mathbb{T}}
+\newcommand{\bbfU}{\mathbb{U}}
+\newcommand{\bbfV}{\mathbb{V}}
+\newcommand{\bbfW}{\mathbb{W}}
+\newcommand{\bbfX}{\mathbb{X}}
+\newcommand{\bbfY}{\mathbb{Y}}
+\newcommand{\bbfZ}{\mathbb{Z}}
+\newcommand{\ZmZ}{\bbfZ/m\bbfZ}
+\newcommand{\ZnZ}{\bbfZ/n\bbfZ}
+\newcommand{\ZpZ}{\bbfZ/p\bbfZ}
+\newcommand{\SL}{\mathrm{SL}}
+\newcommand{\GL}{\mathrm{GL}}
+\newcommand{\Cl}{\mathrm{Cl}}
+\newcommand{\GF}{\mathrm{GF}}
+\newcommand{\GFp}{\GF(p)}
+\newcommand{\Gal}{\mathrm{Gal}}
+
+\newcommand{\D}{\varDelta}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\End}{\operatorname{End}}
+\newcommand{\Aut}{\operatorname{Aut}}
+\newcommand{\Iso}{\operatorname{Iso}}
+\newcommand{\Hom}{\operatorname{Hom}}
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\Norm}{\operatorname{N}}
+\newcommand{\legendre}[2]{\genfrac{(}{)}{}{}{#1}{#2}}
+\newcommand{\jacobi}{\legendre}
+\newcommand{\kronecker}{\legendre}
+\newcommand{\charac}{\operatorname{char}}
+\renewcommand{\O}{\mathcal{O}}
+\newcommand{\Or}{\mathcal{O}}
+\newcommand{\OrD}{\O_\D}
+\newcommand{\ClD}{\Cl(\D)}
+\newcommand{\hD}{h(\D)}
+\newcommand{\sqD}{\sqrt{|\D|}}
+\newcommand{\mantissa}{\operatorname{mantissa}}
+\newcommand{\modulus}{\operatorname{modulus}}
+\newcommand{\HNF}{\operatorname{HNF}}
+\newcommand{\SNF}{\operatorname{SNF}}
+
+\newcommand{\sgn}{\operatorname{sgn}}
+\newcommand{\arccot}{\operatorname{arccot}}
+\newcommand{\arsinh}{\operatorname{arsinh}}
+\newcommand{\arcosh}{\operatorname{arcosh}}
+\newcommand{\artanh}{\operatorname{artanh}}
+\newcommand{\arcoth}{\operatorname{arcoth}}
+\newcommand{\Ln}{\operatorname{Ln}}
+\newcommand{\Li}{\operatorname{Li}}
+\newcommand{\Ei}{\operatorname{Ei}}
+
+\newcommand{\Omikron}{\mathrm{O}}
+\newcommand{\omikron}{\mathrm{o}}
+
+\newcommand{\assign}{\leftarrow}
+
+
+% taken from latex.ltx
+\newcommand{\lpmod}{\allowbreak\mkern18mu({\operator@font mod}\,\,}
+\newcommand{\rpmod}{)}
+
+
+\newfont{\manual}{manfnt}
+\newfont{\lmanual}{manfnt scaled 1440}
+\newfont{\Lmanual}{manfnt scaled 1728}
+\newcommand{\rlbend}{{\lmanual\char127}}
+\newcommand{\lrbend}{{\lmanual\char126}}
+
+\newcommand{\COPYRIGHTFOOTNOTE}{Copyright \copyright 2001 by the \LiDIA-Group, TU Darmstadt}
+
+\newcommand{\@CLASS}[1]{%
+  \endgroup\noindent\textcode{#1}\label{class:#1}}
+% note: labels may contain almost everything, even spaces!
+\newcommand{\CLASS}{%
+  \begingroup
+  \catcode\sbchar=\other
+  \@CLASS}
+%\newcommand{\@SEE}[2]{\textcode{\htmlref{\mbox{#1}}{class:#2}}\endgroup}
+\newcommand{\@SEE}[1]{\textcode{#1}\endgroup}
+\newcommand{\SEE}{%
+  \begingroup
+    \catcode\sbchar=\other
+    \@SEE}
+
+%
+%       \path is defined by package url
+%
+\def\file{\path}
+
+\newcommand{\NAME}{\section*{Name}}
+\newcommand{\ABSTRACT}{\section*{Abstract}}
+\newcommand{\DESCRIPTION}{\section*{Description}}
+\newcommand{\SEEALSO}{\section*{See also}}
+\newcommand{\NOTES}{\section*{Notes}}
+\newcommand{\WARNINGS}{\section*{Warnings}}
+\newcommand{\BUGS}{\section*{Bugs}}
+\newcommand{\EXAMPLES}{\section*{Examples}}
+\newcommand{\AUTHOR}{\section*{Author}}
+
+\newcommand{\TYPES}{\subsection*{Typedefs}}
+\newcommand{\CONS}{\subsection*{Constructors/Destructor}}
+\newcommand{\INIT}{\subsection*{Initialization}}
+\newcommand{\ACCS}{\subsection*{Access Methods}}
+\newcommand{\ASGN}{\subsection*{Assignments}}
+\newcommand{\MODF}{\subsection*{Object Modifiers}}
+\newcommand{\TYPE}{\subsection*{Type Checking and Conversion}}
+\newcommand{\ARTH}{\subsection*{Arithmetical Operations}}
+\newcommand{\SHFT}{\subsection*{Shift Operations}}
+\newcommand{\BIT}{\subsection*{Bit Operations}}
+\newcommand{\COMP}{\subsection*{Comparisons}}
+\newcommand{\HIGH}{\subsection*{High-Level Methods and Functions}}
+\newcommand{\BASIC}{\subsection*{Basic Methods and Functions}}
+\newcommand{\IO}{\subsection*{Input/Output}}
+
+\newcommand{\attentionI}{%
+  \setbox\tmpbox=\hbox{\lower 0.6\baselineskip\hbox{\lrbend}}%
+  \wd\tmpbox=0pt
+  \ht\tmpbox=0pt
+  \dp\tmpbox=0pt
+  \noindent\hangafter=-3\hangindent=3\baselineskip
+  \hskip-\hangindent\box\tmpbox\hskip\hangindent}
+\newcommand{\attentionII}{%
+  \setbox\tmpbox=\hbox{\lower 0.6\baselineskip\hbox{\lrbend\,\lrbend}}%
+  \wd\tmpbox=0pt
+  \ht\tmpbox=0pt
+  \dp\tmpbox=0pt
+  \noindent\hangafter=-3\hangindent=4.75\baselineskip
+  \hskip-\hangindent\box\tmpbox\hskip\hangindent}
+\newcommand{\attentionIII}{%
+  \setbox\tmpbox=\hbox{\lower 0.6\baselineskip\hbox{\lrbend\,\lrbend\,\lrbend}}%
+  \wd\tmpbox=0pt
+  \ht\tmpbox=0pt
+  \dp\tmpbox=0pt
+  \noindent\hangafter=-3\hangindent=6.5\baselineskip
+  \hskip-\hangindent\box\tmpbox\hskip\hangindent}
+
+\newcommand{\Index}[1]{\emph{#1}\index{#1}}
+\newcommand{\IndexSUB}[2]{\emph{#2}\index{#1!#2}}
+\newcommand{\IndexTT}[1]{\emph{#1}\index{#1@{\texttt{#1}}}}
+\newcommand{\IndexSUBTT}[2]{\emph{#2}\index{#1!#2@{\texttt{#2}}}}
+\newcommand{\IndexSH}[1]{\emph{\##1}\index{#1@{\texttt{\##1}}}}
+
+%
+%       old fashioned
+%
+\newcommand{\postscript}[2]{
+  \mbox{\psfig{file=#1.ps}}}
+\newcommand{\STITLE}{\subsection*}
+\newcommand{\SSTITLE}{\subsubsection*}
+
+
+%
+%
+
+
+
+\def\codefont{\ttfamily}
+\def\textcode{\texttt}
+
+
+%
+%       set `&', `_', `~', `%', `^', `<', and `>' verbatim in code environments
+%       (but not in math mode)
+%
+%       `<' and `>' must be defined active, because in some encodings `<<' and `>>'
+%       yield the ligatures `«' and `»'
+%
+
+\let\lt=<
+\let\gt=>
+\begingroup
+\catcode\ltchar=\active
+\catcode\gtchar=\active
+\catcode\sbchar=\active
+\catcode\spchar=\active
+\global\def\do@codespecials{%
+  \catcode\ltchar=\active
+  \catcode\gtchar=\active
+  \catcode\sbchar=\active
+  \catcode\spchar=\active
+  \catcode`\&=\other
+  \catcode`\~=\other
+  \catcode`\%=\other
+  \def<{\ifmmode\lt\else{\ltchar}\fi}%
+  \def>{\ifmmode\gt\else{\gtchar}\fi}%
+  \def_{\ifmmode\sb\else{\sbchar}\fi}%
+  \def^{\ifmmode\sp\else{\spchar}\fi}}
+\endgroup
+
+\def\@code#1{\texttt{#1}\egroup}
+\outer\def\code{%
+  \bgroup
+    \do@codespecials\@code
+}
+\def\@codeit#1{\texttt{\itshape #1}\egroup}
+\outer\def\codeit{%
+  \bgroup
+    \do@codespecials\@codeit
+}
+
+
+\newtoks\classname
+\classname={\relax}
+\def\theclassname{\the\classname}
+
+\def\@classname#1{%
+    \global\classname={#1}%
+    \chapter*{\the\classname}\addcontentsline{toc}{section}{\the\classname}%
+    \markright{\the\classname}%
+  \endgroup
+}
+\newenvironment{class}{%
+  \begingroup
+    \makeuscoreother
+    \@classname
+}{\clearpage}
+    
+
+
+\begingroup
+\catcode\sbchar=\other
+\global\def\LEH{\textcode{lidia_error_handler}\xspace}
+\endgroup
+
+\newcommand{\TRUE}{\textcode{true}\xspace}
+\newcommand{\FALSE}{\textcode{false}\xspace}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% Environment for LiDIA code handling
+%%
+
+%
+%       make `,' active in code environment (for line breaking)
+%
+\begingroup
+\catcode`\,=\active
+\gdef\@activecomma{
+  \catcode`\,=\active
+  \def,{\char`\,\penalty-5\space}}
+\endgroup
+
+
+\newdimen\@remain
+\newdimen\@textindent
+\newbox\@function
+
+\@textindent=\leftmargin
+
+\chardef\lpar=`\(
+\chardef\rpar=`\)
+
+% Notes:
+%
+% \@totalleftmargin is an internal LaTeX dimension that is used by the list environments.
+% It controls the indent from the left margin.  We must modify this, for setting \leftskip
+% doesn't help (it reset to zero by the list environments).
+%
+% \linewidth controls the line length in the list environments.  We must modify it, too.
+
+\newcommand{\@typeheader}[1]{%
+      \setbox\@function=\hbox{\@qual\expandafter\ignorespaces#1}%
+      \expandafter\index{\expandafter\the\classname!#1}%
+      \@remain=\linewidth
+%      \advance\@remain by -\@totalleftmargin
+      \advance\@remain by -0.5\leftmargin
+      \advance\@remain by -\wd\@function
+      \noindent\hglue0.5\leftmargin\box\@function
+    \endgroup
+    \setbox\tmpbox=\vtop\bgroup
+      \advance\hsize by -\@textindent
+      \advance\linewidth by -\@textindent
+      \@totalleftmargin=0pt     % local to this vbox
+      \noindent\ignorespaces
+  }
+
+\newcommand{\@fcodeheader}[3]{%
+      \setbox\@function=\hbox{\@qual\expandafter\ignorespaces#1\space\expandafter\ignorespaces#2\space\lpar}%
+      \expandafter\index{\expandafter\the\classname!#2}%
+      \@remain=\linewidth
+%      \advance\@remain by -\@totalleftmargin
+      \advance\@remain by -0.5\leftmargin
+      \advance\@remain by -\wd\@function
+      \noindent\hglue0.5\leftmargin\box\@function
+      \vtop{\noindent\hsize=\@remain\raggedright\ignorespaces#3\rpar\hfill}%
+    \endgroup
+    \setbox\tmpbox=\vtop\bgroup
+      \advance\hsize by -\@textindent
+      \advance\linewidth by -\@textindent
+      \@totalleftmargin=0pt     % local to this vbox
+      \noindent\ignorespaces
+  }
+
+\newcommand{\@cfcodeheader}[3]{%
+      \setbox\@function=\hbox{\@qual\expandafter\ignorespaces#1\space\expandafter\ignorespaces#2\space\lpar}%
+      \expandafter\index{\expandafter\the\classname!#2}%
+      \@remain=\linewidth
+%      \advance\@remain by -\@totalleftmargin
+      \advance\@remain by -0.5\leftmargin
+      \advance\@remain by -\wd\@function
+      \noindent\hglue0.5\leftmargin\box\@function
+      \vtop{\noindent\hsize=\@remain\raggedright\ignorespaces#3\rpar\space\penalty-5 const\hfill}%
+    \endgroup
+    \setbox\tmpbox=\vtop\bgroup
+      \advance\hsize by -\@textindent
+      \advance\linewidth by -\@textindent
+      \@totalleftmargin=0pt     % local to this vbox
+      \noindent\ignorespaces
+}
+
+\newcommand{\@fcodeignore}[3]{\setbox\tmpbox=\vbox\bgroup}
+
+\newcommand{\@fcodebody}{%
+      \ifdim \wd\tmpbox > \z@
+        \parskip=0.5\parskip\par\noindent\hglue\@textindent \box\tmpbox\medskip
+      \else\fi
+}
+
+\newif\iftechdoc
+% Uncomment the following line for additional technical details
+%\techdoctrue
+
+\newbox\tmpbox
+
+\newenvironment{techdoc}{\setbox\tmpbox=\vbox\bgroup}{\egroup\iftechdoc\unvbox\tmpbox\else\fi}
+
+% Documentation of typedefs
+
+\newenvironment{typedef}{%
+  \vskip-\lastskip\par\noindent
+  \vtop\bgroup\hsize=\linewidth
+    \begingroup
+      \let\@qual=\@pubqual
+      \do@codespecials
+      \codefont
+      \@activecomma
+      \@typeheader
+}{%
+      \egroup\@fcodebody\egroup\par
+}
+
+% Documentation of functions
+
+\newenvironment{fcode}{%
+  \vskip-\lastskip\par\noindent
+  \vtop\bgroup\hsize=\linewidth
+    \begingroup
+      \let\@qual=\@pubqual
+      \do@codespecials
+      \codefont
+      \@activecomma
+      \@fcodeheader
+}{%
+      \egroup\@fcodebody\egroup\par
+}
+
+\newenvironment{cfcode}{%
+  \vskip-\lastskip\par\noindent
+  \vtop\bgroup\hsize=\linewidth
+    \begingroup
+      \let\@qual=\@pubqual
+      \do@codespecials
+      \codefont
+      \@activecomma
+      \@cfcodeheader
+}{%
+      \egroup\@fcodebody\egroup\par
+}
+
+\iftechdoc      % techdoctrue
+
+\def\@pubqual{public:\space\ignorespaces}
+\def\@prvqual{private:\space\ignorespaces}
+% \def\@pubqual{\relax}
+% \def\@prvqual{\relax}
+
+\newenvironment{Tfcode}{%
+  \vskip-\lastskip\par\noindent
+  \vtop\bgroup\hsize=\linewidth
+    \begingroup
+      \let\@qual=\@prvqual
+      \do@codespecials
+      \codefont
+      \@activecomma
+      \@fcodeheader
+      }{%
+      \egroup\@fcodebody\egroup\par
+      }
+
+\newenvironment{Tcfcode}{%
+  \vskip-\lastskip\par\noindent
+  \vtop\bgroup\hsize=\linewidth
+    \begingroup
+      \let\@qual=\@prvqual
+      \do@codespecials
+      \codefont
+      \@activecomma
+      \@cfcodeheader
+      }{%
+      \egroup\@fcodebody\egroup\par
+      }
+
+\else           % techdocfalse
+
+\def\@pubqual{\relax}
+\def\@prvqual{\relax}
+
+\newenvironment{Tfcode}{\begingroup\do@codespecials\@fcodeignore}{\egroup\endgroup}
+\newenvironment{Tcfcode}{\begingroup\do@codespecials\@fcodeignore}{\egroup\endgroup}
+
+\fi
+
+
+\makeatother

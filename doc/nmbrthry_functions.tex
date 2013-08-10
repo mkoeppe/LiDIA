@@ -1,0 +1,131 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  nmbrthry_functions.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the elementary
+%%  number-theoretical functions.
+%%
+%%  Copyright   (c)   1996   by  LiDIA-Group
+%%
+%%  Authors: Markus Maurer, Volker Mueller
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+number-theoretic functions \dotfill a collection of basic number-theoretic functions
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+Including \path{LiDIA/nmbrthry_functions.h} allows the use of some basic number-theoretic
+functions, e.g., computing all divisors of an integer number.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+\begin{fcode}{sort_vector < bigint >}{divisors}{rational_factorization & $f$}
+  returns a sorted vector of all positive divisors of the number represented by $f$ (in
+  ascending order).  If $f$ is no prime factorization, the function tries to refine $f$ to a
+  prime factorization.  In this case, the computed prime factorization is assigned to $f$.
+\end{fcode}
+
+\begin{fcode}{sort_vector < bigint >}{divisors}{const bigint & $N$}
+  returns a sorted vector of all positive divisors of $N$ (in ascending order).
+\end{fcode}
+
+\begin{fcode}{sort_vector < bigint >}{all_divisors}{rational_factorization & $f$}
+  returns a sorted vector of all positive and negative divisors of the number represented by $f$
+  (in ascending order).  If $f$ is no prime factorization, the function tries to refine $f$ to a
+  prime factorization.  In this case, the computed prime factorization is assigned to $f$.
+\end{fcode}
+
+\begin{fcode}{sort_vector < bigint >}{all_divisors}{const bigint & $N$}
+  returns a sorted vector of all positive and negative divisors of $N$ (in ascending order).
+\end{fcode}
+
+\begin{fcode}{sort_vector < bigint >}{square_free_divisors}{rational_factorization & $f$}
+  returns a sorted vector of all positive square-free divisors of the number represented by $f$
+  (in ascending order).  If $f$ is no prime factorization, the function tries to refine $f$ to a
+  prime factorization.  In this case, the computed prime factorization is assigned to $f$.
+\end{fcode}
+
+\begin{fcode}{sort_vector < bigint >}{square_free_divisors}{const bigint & $N$}
+  returns a sorted vector of all positive square-free divisors of $N$ (in ascending order).
+\end{fcode}
+
+\begin{fcode}{sort_vector < bigint >}{all_square_free_divisors}{rational_factorization & $f$}
+  returns a sorted vector of all positive and negative square-free divisors of the number
+  represented by $f$ (in ascending order).  If $f$ is no prime factorization, the function tries
+  to refine $f$ to a prime factorization.  In this case, the computed prime factorization is
+  assigned to $f$.
+\end{fcode}
+
+\begin{fcode}{sort_vector < bigint >}{all_square_free_divisors}{const bigint & $N$}
+  returns a sorted vector of all positive and negative square-free divisors of $N$ (in ascending
+  order).
+\end{fcode}
+
+\begin{fcode}{sort_vector < bigint >}{square_divides_n_divisors}{rational_factorization & $f$}
+  returns a sorted vector of all positive square-free divisors of the number represented by $f$
+  (in ascending order).  If $f$ is no prime factorization, the function tries to refine $f$ to a
+  prime factorization.  In this case, the computed prime factorization is assigned to $f$.
+\end{fcode}
+
+\begin{fcode}{sort_vector < bigint >}{square_divides_n_divisors}{const bigint & $N$}
+  returns a sorted vector of all positive square-free divisors of $N$ (in ascending order).
+\end{fcode}
+
+\begin{fcode}{sort_vector < bigint >}{all_square_divides_n_divisors}{rational_factorization & $f$}
+  returns a sorted vector of all positive and negative square-free divisors of the number
+  represented by $f$ (in ascending order).  If $f$ is no prime factorization, the function tries
+  to refine $f$ to a prime factorization.  In this case, the computed prime factorization is
+  assigned to $f$.
+\end{fcode}
+
+\begin{fcode}{sort_vector < bigint >}{all_square_divides_n_divisors}{const bigint & $N$}
+  returns a sorted vector of all positive and negative square-free divisors of $N$ (in ascending
+  order).
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{bigint}, \SEE{rational_factorization}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/nmbrthry_functions.h>
+
+int main()
+{
+    bigint n;
+
+    cout << "Please enter a bigint n = ";
+    cin  >> n;
+
+    cout << "all divisors of " << n << ": " << divisors(n) << endl;
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Markus Maurer, Volker M\"uller

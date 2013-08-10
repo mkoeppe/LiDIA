@@ -1,0 +1,463 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  quadratic_number_standard.tex        LiDIA documentation
+%%
+%%  This file contains the documentation of the class
+%%  quadratic_number_standard.
+%%
+%%  Copyright (c) 1999 by the LiDIA Group
+%%
+%%  Author: Markus Maurer
+%%
+
+\newcommand{\pa}{\mathit{pa}}
+\newcommand{\pb}{\mathit{pb}}
+\newcommand{\pd}{\mathit{pd}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{quadratic_number_standard} \dotfill elements of quadratic
+number fields in standard representation.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{quadratic_number_standard} is a class that represents elements of quadratic number fields
+in standard representation.  It supports the standard operations for quadratic numbers.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+A \code{quadratic_number_standard} is a triple $(a,b,d)$ of integers, $\gcd(a,b,d) = 1$, and $d
+> 0$, together with a \SEE{quadratic_order} $\Or$ of discriminant $\D$.  It
+represents the number
+\begin{displaymath}
+  (a + b \sqrt{\D}) / d \enspace,
+\end{displaymath}
+in the field of fractions of $\Or$.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{quadratic_number_standard}{}
+  creates a quadratic number object with coefficients $(0,0,1)$.  If the order $\Or =
+  \code{quadratic_order::qo_l().last()}$ has been set by the user, i.e., is different from its
+  initialization value, than the object is initialized by the zero element of $\Or$.  Otherwise,
+  the object is uninitialized.  This method of implicitely assigning quadratic orders to
+  quadratic numbers can be used, e.g., when reading a \SEE{base_vector} of numbers, given by
+  their coefficients, from a stream.
+\end{fcode}
+
+\begin{fcode}{ct}{quadratic_number_standard}{const quadratic_number_standard & $q$}
+  initializes with $q$.
+\end{fcode}
+
+\begin{fcode}{dt}{~quadratic_number_standard}{}
+  deletes the quadratic number object.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $q$ be of type \code{quadratic_number_standard}.  The operator \code{=} is overloaded.  The
+following functions are also implemented:
+
+\begin{fcode}{void}{$q$.assign_order}{const quadratic_order & $\Or$}
+  Changes the quadratic order of $q$ to $\Or$.  I.e., $q \assign (a + b \sqrt{\D})/d$, where
+  $a,b,d$ are the coefficients of $q$ and $\D$ is the discriminant of $\Or$.
+\end{fcode}
+
+\begin{fcode}{void}{$q$.set_order}{const quadratic_order & $\Or$}
+  Changes the quadratic order of $q$ to $\Or$.  I.e., $q \assign (a + b \sqrt{\D})/d$, where
+  $a,b,d$ are the coefficients of $q$ and $\D$ is the discriminant of $\Or$.
+\end{fcode}
+
+\begin{fcode}{void}{$q$.set}{const bigint & $\pa$, const bigint & $\pb$, const bigint & $\pd$}
+  Assigns $(\pa,\pb,\pd)$ to the coefficients $(a,b,d)$ of $q$.
+\end{fcode}
+
+\begin{fcode}{void}{$q$.assign}{const bigint & $\pa$, const bigint & $\pb$, const bigint & $\pd$}
+  Assigns $(\pa,\pb,\pd)$ to the coefficients $(a,b,d)$ of $q$.
+\end{fcode}
+
+\begin{fcode}{void}{$q$.assign_one}{}
+  Assigns $(1,0,1)$ to the coefficients $(a,b,d)$ of $q$.
+\end{fcode}
+
+\begin{fcode}{void}{$q$.assign_one}{const quadratic_order & $\Or$}
+  Changes the order of $q$ to $\Or$ and assigns $1$.
+\end{fcode}
+
+\begin{fcode}{void}{$q$.assign_zero}{}
+  Assigns $(0,0,1)$ to the coefficients $(a,b,d)$ of $q$.
+\end{fcode}
+
+\begin{fcode}{void}{$q$.assign_zero}{const quadratic_order & $\Or$}
+  Changes the order of $q$ to $\Or$ and assigns $0$.
+\end{fcode}
+
+\begin{fcode}{void}{$q$.assign}{const quadratic_number_standard & $x$}
+  $q \assign x$.
+\end{fcode}
+
+\begin{fcode}{void}{$q$.randomize}{}
+  Generates coefficients $(a,b,d)$ at random using the \SEE{bigint} \code{randomize}$(\D)$
+  function, where $\D$ is the discriminant of the order of $q$.  If the order of $q$ is not set,
+  the \LEH will be called.
+\end{fcode}
+
+\begin{fcode}{void}{swap}{quadratic_number_standard & $q$, quadratic_number_standard & $r$}
+  Swaps $q$ and $r$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $q$ be of type \code{quadratic_number_standard}.
+
+\begin{cfcode}{bigint}{$q$.get_discriminant}{}
+  Returns the discriminant of the order of $q$.  If the order of $q$ is not set, the error
+  handler will be called.
+\end{cfcode}
+
+\begin{cfcode}{const quadratic_order &}{$q$.which_order}{}
+  Returns a \code{const} reference to the order of $q$.  If the order of $q$ is not set, the
+  error handler will be called.  As usual, the \code{const} reference should only be used to
+  create a copy or to immediately apply another operation to it, because after the next
+  operation applied to $q$ the obtained reference may be invalid.
+\end{cfcode}
+
+\begin{cfcode}{const quadratic_order &}{$q$.get_order}{}
+  Returns a \code{const} reference to the order of $q$.  If the order of $q$ is not set, the
+  error handler will be called.  As usual, the \code{const} reference should only be used to
+  create a copy or to immediately apply another operation to it, because after the next
+  operation applied to $q$ the obtained reference may be invalid.
+\end{cfcode}
+
+\begin{cfcode}{void}{$q$.get}{bigint & $\pa$, bigint & $\pb$, bigint & $\pd$}
+  Assigns the coefficients $(a,b,d)$ to $(\pa,\pb,\pd)$.
+\end{cfcode}
+
+\begin{cfcode}{const bigint &}{$q$.get_a}{}
+  Returns a \code{const} reference to the coefficient $a$ of $q$.  As usual, the \code{const}
+  reference should only be used to create a copy or to immediately apply another operation to
+  it, because after the next operation applied to $q$ the obtained reference may be invalid.
+\end{cfcode}
+
+\begin{cfcode}{const bigint &}{$q$.get_b}{}
+  Returns a \code{const} reference to the coefficient $b$ of $q$.  As usual, the \code{const}
+  reference should only be used to create a copy or to immediately apply another operation to
+  it, because after the next operation applied to $q$ the obtained reference may be invalid.
+\end{cfcode}
+
+\begin{cfcode}{const bigint &}{$q$.get_d}{}
+  Returns a \code{const} reference to the coefficient $d$ of $q$.  As usual, the \code{const}
+  reference should only be used to create a copy or to immediately apply another operation to
+  it, because after the next operation applied to $q$ the obtained reference may be invalid.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+The following operators are overloaded.
+
+\begin{center}
+  \code{(unary) -}\\
+  \code{(binary) +, -, *, /}\\
+  \code{(binary with assignment) +=, -=, *=, /=}
+\end{center}
+
+Furthermore, the following functions are implemented.
+
+\begin{fcode}{void}{add}{quadratic_number_standard & $q$, const quadratic_number_standard & $r$,
+    const quadratic_number_standard & $s$}%
+  $q \assign r + s$.
+\end{fcode}
+
+\begin{fcode}{void}{$q$.negate}{}
+  $q \assign -q$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{quadratic_number_standard & $q$, const quadratic_number_standard & $r$,
+    const quadratic_number_standard & $s$}%
+  $q \assign r - s$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{quadratic_number_standard & $q$, const quadratic_number_standard & $r$,
+    const quadratic_number_standard & $s$}%
+  $q \assign r \cdot s$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{quadratic_number_standard & $q$, const quadratic_number_standard & $r$,
+    const bigint & $n$}%
+  $q \assign r \cdot n$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{quadratic_number_standard & $q$, const bigint & $n$,
+    const quadratic_number_standard & $s$}%
+  $q \assign n \cdot s$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{quadratic_number_standard & $q$, const quadratic_number_standard & $r$,
+    const bigrational & $n$}%
+  $q \assign r \cdot n$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{quadratic_number_standard & $q$, const bigrational & $n$,
+    const quadratic_number_standard & $s$}%
+  $q \assign n \cdot s$.
+\end{fcode}
+
+\begin{fcode}{void}{$q$.multiply_by_denominator}{}
+  $q \assign (a,b,1)$, where $a,b$ are the coefficients of $q$.
+\end{fcode}
+
+\begin{fcode}{void}{$q$.invert}{}
+  $q \assign 1 / q$.
+\end{fcode}
+
+\begin{fcode}{void}{inverse}{quadratic_number_standard & $q$, const quadratic_number_standard & $r$}
+  $q \assign 1 / r$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{quadratic_number_standard & $q$, const quadratic_number_standard & $r$,
+    const quadratic_number_standard & $s$}%
+  $q \assign r / s$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{quadratic_number_standard & $q$, const quadratic_number_standard & $r$,
+    const bigrational & $n$}%
+  $q \assign r / n$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{quadratic_number_standard & $q$, const bigrational & $n$,
+    const quadratic_number_standard & $s$}%
+  $q \assign n / s$.
+\end{fcode}
+
+\begin{fcode}{void}{square}{quadratic_number_standard & $q$, const quadratic_number_standard & $r$}
+  $q \assign r^2$.
+\end{fcode}
+
+\begin{fcode}{void}{power}{quadratic_number_standard & $q$, const quadratic_number_standard & $r$,
+    unsigned long $e$}%
+  $q \assign r^e$.
+\end{fcode}
+
+\begin{fcode}{void}{power}{quadratic_number_standard & $q$, const quadratic_number_standard & $r$,
+    const bigint & $e$}%
+  $q \assign r^e$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+Let $q$ be of type \code{quadratic_number_standard}.  The binary operators \code{==} and
+\code{!=} are overloaded for comparison with \code{quadratic_number_standard},
+\SEE{bigint}, and \SEE{bigrational}.
+
+Furthermore, the follwing functions are implemented.
+
+\begin{cfcode}{bool}{$q$.is_zero}{}
+  returns \TRUE if $q = 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$q$.is_one}{}
+  returns \TRUE if $q = 1$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$q$.is_negative}{}
+  returns \TRUE if $q < 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$q$.is_positive}{}
+  returns \TRUE if $q \geq 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$q$.is_integer}{}
+  returns \TRUE if $q \in \bbfZ$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$q$.is_rational_number}{}
+  returns \TRUE if $q \in \bbfQ$, \FALSE otherwise.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+Let $\Ln$ denote the Lenstra logarithm: $\Ln(x) = 1/2 |x / \sigma(x)|$.  Let $q$ be of type
+\code{quadratic_number_standard}.
+
+\begin{fcode}{void}{$q$.absolute_value}{}
+  $q \assign |q|$.
+\end{fcode}
+
+\begin{fcode}{void}{$q$.conjugate}{}
+  $q \assign \sigma(q)$.
+\end{fcode}
+
+\begin{fcode}{void}{conjugate}{quadratic_number_standard & $q$, const quadratic_number_standard & $r$}
+  $q \assign \sigma(r)$.
+\end{fcode}
+
+\begin{cfcode}{int}{$q$.get_sign}{}
+  Returns $-1$, if $q < 0$, and $1$ otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bigrational}{$q$.norm}{}
+  Returns the norm of $q$.
+\end{cfcode}
+
+\begin{cfcode}{void}{$q$.norm}{bigrational & $n$}
+  Assigns the norm of $q$ to $n$.
+\end{cfcode}
+
+\begin{fcode}{bigrational}{norm}{const quadratic_number_standard & $q$}
+  Returns the norm of $q$.
+\end{fcode}
+
+\begin{cfcode}{bigrational}{$q$.trace}{}
+  Returns the trace of $q$.
+\end{cfcode}
+
+\begin{cfcode}{void}{$q$.trace}{bigrational & $n$}
+  Assigns the trace of $q$ to $n$.
+\end{cfcode}
+
+\begin{fcode}{bigrational}{trace}{const quadratic_number_standard & $q$}
+  Returns the trace of $q$.
+\end{fcode}
+
+\begin{cfcode}{xbigfloat}{$q$.get_absolute_Ln_approximation}{long $k$}
+  Returns an absolute $k$-approximation to $\Ln(q)$.  See \SEE{xbigfloat}.
+\end{cfcode}
+
+\begin{cfcode}{void}{$q$.get_absolute_Ln_approximation}{xbigfloat & $l$, long $k$}
+  Assigns an absolute $k$-approximation to $\Ln(q)$ to $l$.  See \SEE{xbigfloat}.
+\end{cfcode}
+
+\begin{cfcode}{xbigfloat}{$q$.get_relative_approximation}{long $k$}
+  Returns a relative $k$-approximation to $q$.  See \SEE{xbigfloat}.
+\end{cfcode}
+
+\begin{cfcode}{void}{$q$.get_relative_approximation}{xbigfloat & $l$, long $k$}
+  Assigns a relative $k$-approximation to $q$ to $l$.  See \SEE{xbigfloat}.
+\end{cfcode}
+
+%\begin{cfcode}{void}{$q$.get_Ln_estimate}{xbigfloat & $l$, xbigfloat & $u$}%
+%\end{cfcode}
+
+\begin{cfcode}{bool}{$q$.check_Ln_correctness}{lidia_size_t $\mathit{trials}$ = 5}
+  Verifies the function \code{$q$.get_absolute_Ln_approximation} by approximating the $\Ln$ with
+  two accuracies and checking the correctness of the approximations using the function
+  \code{check_absolute_error} of \SEE{xbigfloat}.  This test is repeated
+  $\mathit{trials}$ times.  It returns \TRUE, if all tests succeed and \FALSE otherwise.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+Let $q$ be of type \code{quadratic_number_standard}.
+
+\code{istream} operator \code{>>} and \code{ostream} operator \code{<<} are overloaded.  Input
+and output of a \code{quadratic_number_standard} are in the following format:
+\begin{displaymath}
+  (a,b,d)
+\end{displaymath}
+Note, that in the current implementation, it is not possible to input the quadratic order
+together with the coefficients.  The order must be set before reading the coefficients.  This
+may occur either explicitely by calling, e.g., the \code{assign_order} function, or implicitely
+(see default constructor).
+
+For example, to input the number $(1 + \sqrt{5})/2$, you have to create a quadratic order $\Or$
+with discriminant $5$.  Then you may create the \code{quadratic_number_standard} object $q$,
+call \code{$q$.assign_order($\Or$)}, and read in $(1,1,2)$ from stream.  Alternatively, you may
+set \code{quadratic_order::qo_l().set_last(&$\Or$)}, create the \code{quadratic_number_standard}
+object $q$ using the default constructor, and read in $(1,1,2)$ from stream.
+
+This behaviour is not that satisfactory and may be changed in the future.
+
+\begin{fcode}{int}{string_to_quadratic_number_standard}{const char* s, quadratic_number_standard & $q$}
+  Assumes that \code{s} starts with any number of blanks, followed by $(a,b,d)$.  Reads $a,b,d$
+  and assign them as coefficients to $q$.  Returns the number of characters read from \code{s}.
+  The quadratic order of $q$ must be set, before calling this function.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{xbigfloat},
+\SEE{quadratic_order},
+\SEE{quadratic_number_power_product}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/quadratic_order.h>
+#include <LiDIA/quadratic_number_standard.h>
+
+int main()
+{
+    quadratic_order O;
+    quadratic_number_standard q;
+
+    O.assign(5);
+    q.assign_order(O);
+
+    q.assign(1, 1, 2);
+    square(q,q);
+
+    cout << "((1+sqrt(5)/2)^2 = " << q << endl;
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+The output of the program is
+\begin{quote}
+\begin{verbatim}
+((1+sqrt(5)/2)^2 = (3,1,2)
+\end{verbatim}
+\end{quote}
+
+An extensive example of \code{quadratic_number_standard} can be found in \LiDIA's installation
+directory under \path{LiDIA/src/packages/quadratic_order/quadratic_number_standard_appl.cc}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Markus Maurer
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

@@ -1,0 +1,585 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  fact.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the class
+%%  rational_factorization
+%%
+%%  Copyright   (c)   1997   by  LiDIA-Group
+%%
+%%  Authors: Andreas Mueller, Volker Mueller
+%%
+
+\newcommand{\base}{\mathit{base}}
+\newcommand{\expt}{\mathit{exp}}
+\newcommand{\sign}{\mathit{sign}}
+\newcommand{\step}{\mathit{step}}
+\newcommand{\upperbound}{\mathit{upper\uscore bound}}
+\newcommand{\lowerbound}{\mathit{lower\uscore bound}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{rational_factorization} \dotfill class for factoring rational
+numbers and representing factorizations
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{rational_factorization} is a class for factoring non-zero rational numbers and holding
+factorizations.  At the moment \emph{trial division (TD)}, the \emph{elliptic curve method
+  (ECM)} (see \cite{LenstraHW:1987}) and the \emph{quadratic sieve (QS)} (see
+\cite{Pomerance:1982}) are supported.  Depending on the size of the number to be factored,
+different combinations of \emph{ TD}, \emph{ECM} and \emph{QS} are chosen.  In addition it is
+possible to use own strategies by changing various parameters of \emph{TD} and \emph{ECM}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+The factorization of a rational number is internally represented by an \code{int} variable
+$\sign$ and a vector of pairs $(\base, \expt)$, where $\base$ is of type \code{bigint} and
+$\expt$ of type \code{int}.  Let in the following $(\base_i, \expt_i)$ denote the $i$-th vector
+component and $l$ the length of the vector.  The length of a \code{rational_factorization} is
+defined as length of ``its vector''.  Then this \code{rational_factorization} represents the
+rational number
+\begin{displaymath}
+  f = \sign \cdot \prod_{i = 0}^{l-1} \base_i^{\expt_i} \enspace.
+\end{displaymath}
+
+The value of $\sign$ is either $1$ or $-1$.  The values of the bases $\base_i$ are always
+positive.  The vector is sorted according to the size of the value of the $\base$ component.
+Note that the rational number 0 can not be represented by a \code{rational_factorization}.
+Different bases $\base_i$, $\base_j$ ($i \neq j$) of the vector are not equal, but not
+necessarily coprime.  In particular, a \code{rational_factorization} does in general not
+represent the prime factorization of a rational number.
+
+\begin{techdoc}
+  The implementation of most of the operations and access functions of this class is self
+  explaining and can directly be understood by looking at the code.  On the other hand, the
+  implementation of the factoring algorithms ECM and MPQS is tricky, we will describe several
+  design principles below.
+\end{techdoc}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+All constructors invoke the \LEH if the value of the input variable is 0.
+
+\begin{fcode}{ct}{rational_factorization}{}
+  initializes the variable with 1.
+\end{fcode}
+
+\begin{fcode}{ct}{rational_factorization}{int $x$, int $e$ = 1}
+  initializes the variable with $x^e$.
+\end{fcode}
+
+\begin{fcode}{ct}{rational_factorization}{unsigned int $x$, int $e$ = 1}
+  initializes the variable with $x^e$.
+\end{fcode}
+
+\begin{fcode}{ct}{rational_factorization}{long $x$, int $e$ = 1}
+  initializes the variable with $x^e$.
+\end{fcode}
+
+\begin{fcode}{ct}{rational_factorization}{unsigned long $x$, int $e$ = 1}
+  initializes the variable with $x^e$.
+\end{fcode}
+
+\begin{fcode}{ct}{rational_factorization}{const bigint & $x$, int $e$ = 1}
+  initializes the variable with $x^e$.
+\end{fcode}
+
+\begin{fcode}{ct}{rational_factorization}{const bigrational & $x$, int $e$ = 1}
+  initializes the variable with $x^e$.
+\end{fcode}
+
+\begin{fcode}{ct}{rational_factorization}{const rational_factorization & $x$, int $e$ = 1}
+  initializes the variable with $x^e$.
+\end{fcode}{}
+
+\begin{fcode}{dt}{~rational_factorization}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $a$ be of type \code{rational_factorization}.  The operator \code{=} is overloaded and the
+following assignment functions exist.  If you try to assign $0$ to a variable of type
+\code{rational_factorization}, the \LEH will be invoked.
+
+\begin{fcode}{void}{a.assign}{long $i$, int $e$ = 1}
+  $a \assign i^e$.
+\end{fcode}
+
+\begin{fcode}{void}{a.assign}{const bigint & $I$, int $e$ = 1}
+  $a \assign I^e$.
+\end{fcode}
+
+\begin{fcode}{void}{a.assign}{const bigrational & $J$, int $e$ = 1}
+  $a \assign J^e$.
+\end{fcode}
+
+\begin{fcode}{void}{a.assign}{const rational_factorization & $F$, int $e$ = 1}
+  $a \assign F^e$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+\begin{cfcode}{lidia_size_t}{$a$.no_of_comp}{}
+  returns the number of components of the \code{rational_factorization} $a$, which is the number
+  of different $(\base, \expt)$-pairs.
+\end{cfcode}
+
+\begin{cfcode}{int}{$a$.sign}{}
+  returns the sign of the rational number represented by $a$.
+\end{cfcode}
+
+
+\begin{cfcode}{bigint}{$a$.base}{lidia_size_t $i$}
+  returns $\base_i$.  If $i < 0$ or if $i$ is greater or equal than the number of components of
+  $a$, the \LEH will be invoked.
+\end{cfcode}
+
+
+\begin{cfcode}{int}{$a$.exponent}{lidia_size_t $i$}
+  returns $\expt_i$.  If $i < 0$ or if $i$ is greater or equal than the number of components of
+  $a$, the \LEH will be invoked.
+\end{cfcode}
+
+\begin{fcode}{void}{$a$.set_exponent}{lidia_size_t $i$, int $e$}
+  set $\expt_i \assign e$.  If $i < 0$ or if $i$ is greater or equal than the number of
+  components of $a$, the \LEH will be invoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+The following operators are overloaded and can be used in exactly the same way as for machine
+types in C++ (e.g.~\code{int}) :
+
+\begin{center}
+  \code{(binary) *, /}
+\end{center}
+
+Let $a$ be of type \code{rational_factorization}.  To avoid copying, these operations can also
+be performed by the following functions:
+
+\begin{fcode}{void}{multiply}{rational_factorization & $c$, const rational_factorization & $a$,
+    const rational_factorization & $b$}%
+  $c \assign a \cdot b$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.square}{}
+\end{fcode}
+
+\begin{fcode}{void}{square}{rational_factorization & $c$, const rational_factorization & $a$}
+  $c \assign a^2$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{rational_factorization & $c$, const rational_factorization & $a$,
+    const rational_factorization & $b$}%
+  $c \assign a / b$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.invert}{}
+\end{fcode}
+
+\begin{fcode}{void}{invert}{rational_factorization & $c$, const rational_factorization & $a$}
+  $c \assign a^{-1}$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+The binary operators \code{==} and \code{!=} are overloaded and can be used in exactly the same
+way as for machine types in C++ (e.g.~\code{int}).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+\STITLE{General High-Level Functions}
+
+\begin{fcode}{void}{$a$.verbose}{int $\mathit{state}$}
+  sets the amount of information which is printed during computations.  If $\mathit{state} = 1$
+  then the factorization functions print information about the strategy, for $\mathit{state} =
+  0$ there is no such output.  The predefined value is $\mathit{state} = 0$.  The verbose mode
+  is stored in a static class variable such that the output behavior is the same for all
+  variables of type \code{rational_factorization}.
+\end{fcode}
+
+\begin{fcode}{bool}{$a$.is_prime_factor}{lidia_size_t $i$}
+  returns \TRUE if $\base_i$ is probably a prime number, otherwise \FALSE.  For checking
+  primality the \code{bigint} function \code{is_prime()} is used, which uses a probabilistic
+  primality test.
+\end{fcode}
+
+\begin{fcode}{bool}{$a$.is_prime_factorization}{}
+  returns \TRUE if $a$ is probably a prime factorization of a rational number, \FALSE otherwise.
+  For checking primality the \code{bigint} function \code{is_prime()}, which uses a
+  probabilistic primality test on each base element of $a$, is used.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.refine}{}
+  refines the factorization $a$ such that the bases of $a$ are pairwise coprime.
+\end{fcode}
+
+\begin{fcode}{bool}{$a$.refine}{const bigint & $x$}
+  refines the factorization $a$ by computing greatest common divisors of $x$ with every base
+  occurring in $a$.  If $x$ has a proper common divisor with at least one base, the return-value
+  of this function will be \TRUE; otherwise it will be \FALSE.
+\end{fcode}
+
+\begin{fcode}{bool}{$a$.refine_comp}{lidia_size_t $i$, const bigint & $x$}
+  refines the factorization $a$ by computing the greatest common divisor of $x$ with $\base_i$
+  in $a$.  If $x$ has a proper common divisor with $\base_i$, the return-value of this function
+  will be \TRUE; otherwise it will be \FALSE.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.factor_comp}{lidia_size_t $i$, int $\upperbound$ = 34}
+  tries to find factors of $\base_i$.  A combination of \emph{TD}, \emph{ECM} and \emph{QS} is
+  used.  The $i$-th component of $a$ is erased, found factors (with appropriate exponents) are
+  added to the vector of $a$ and the vector is resorted.  If the default parameter $\upperbound$
+  is set, \emph{ECM} tries to find factors up to $\upperbound$ digits.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.factor}{int $\upperbound$ = 34}
+  tries to factor all base elements of $a$ with a combination of \emph{TD}, \emph{ECM} and
+  \emph{QS} and changes $a$ appropriately.  If you have more information about all bases (for
+  example no prime factors smaller than $10^6$ in any base of $a$) you may get the results more
+  efficiently by using the function \code{$a$.ecm()} or \code{$a$.mpqs_comp()}.  (see below)
+\end{fcode}
+
+\begin{fcode}{rational_factorization}{factor}{const bigint & $N$}
+  tries to factor the number $N$ with a combination of \emph{TD}, \emph{ECM} and \emph{QS} and
+  returns the \code{rational_factorization} representing the number $N$.
+\end{fcode}
+
+\begin{fcode}{sort_vector < bigint >}{divisors}{rational_factorization & $f$}
+  return a sorted vector of all positive divisors of the number represented by $f$ (in ascending
+  order).  If $f$ is no prime factorization, the function tries to refine $f$ to a prime
+  factorization.  In this case, the computed prime factorization is assigned to $f$.
+\end{fcode}
+
+\begin{fcode}{sort_vector < bigint >}{divisors}{const bigint & $N$}
+  return a sorted vector of all positive divisors of $N$ (in ascending order).
+\end{fcode}
+
+\begin{fcode}{bigrational}{evaluate}{const rational_factorization & $f$}
+  return the rational number represented by $f$.
+\end{fcode}
+
+\begin{fcode}{bigint}{evaluate_to_bigint}{const rational_factorization & $f$}
+  return the integer represented by $f$.  If $f$ represents no integer, the \LEH is invoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\STITLE{Special High-Level Functions}
+
+\begin{fcode}{void}{$a$.trialdiv_comp}{lidia_size_t $i$, unsigned int $\upperbound$ = 1000000,
+    unsigned int $\lowerbound$ = 1}%
+  tries to factor the element $\base_i$ of $a$ by using \emph{TD} with all primes $p$ with
+  $\lowerbound < p < \upperbound$.  The $i$-th component of $a$ is erased, found factors (with
+  appropriate exponents) are added to the vector of $a$ and the vector is resorted.  $\base_i$
+  is not tested for primality.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.trialdiv}{unsigned int $\upperbound$ = 1000000, unsigned int $\lowerbound$ = 1}
+  tries to factor all base elements of $a$ with \emph{TD} using all primes $p$ with $\lowerbound
+  < p < \upperbound$.  The vector of $a$ is changed according to the rules used in
+  \code{$a$.trialdiv_comp($i$)}.  The base elements are not tested for primality.
+\end{fcode}
+
+\begin{fcode}{rational_factorization}{trialdiv}{const bigint & $N$,
+    unsigned int $\upperbound$ = 1000000, unsigned int $\lowerbound$ = 1}%
+  tries to factor the number $N$ with \emph{TD} using all primes $p$ with $\lowerbound < p <
+  \upperbound$ and returns the \code{rational_factorization} representing the number $N$.  $N$
+  is not tested for primality.
+\end{fcode}
+
+The following functions require some understanding of the underlying strategy of ECM.  A
+detailed description of the implementation of \emph{TD} and \emph{ECM} can be found in
+\cite{Berger_Thesis:1993} and \cite{Mueller_Thesis:1995}.  \emph{ECM} uses the following
+strategy, which is parameterized by the \code{int} variables $\lowerbound$, $\upperbound$ and
+$\step$.  These variables can be chosen by the user.  It starts to look for factors with
+$\lowerbound$ decimal digits.  After having tried a ``few'' curves and not having found a factor
+the parameters of \emph{ECM} are changed and we try to find $(\lowerbound + \step)$-digit
+factors, $(\lowerbound + 2\,\step)$-digit factors and so on, until the decimal size of the
+factors we are looking for exceeds $\upperbound$.  The number of curves which is used for
+finding a $d$-digit factor is chosen such that we find a $d$-digit factor with probability of at
+least $50 \%$ if it exists.  Note that found factors can be composite.  The built-in default
+values are $\lowerbound = 6, \step = 3$ and $\upperbound$ is set to half the decimal length of
+the number to be factored.  The bounds $\lowerbound \geq 6$ and $\upperbound \leq 34$ are
+limited because we have only precomputed parameters for \emph{ECM} for factors of that size.
+
+\begin{fcode}{void}{$a$.ecm_comp}{lidia_size_t $i$, int $\upperbound$ = 34, int $\lowerbound$ = 6,
+    int $\step$ = 3}%
+  tries to find factors of $\base_i$ with decimal length $k$, $\lowerbound \leq k$ and $k \leq
+  \upperbound$, by means of \emph{ECM} according to the strategy explained above.  Note that
+  found factors of $\base_i$ can be composite.  If the value of $\upperbound$ is $34$, then
+  $\upperbound$ is set to $\min(34, \frac{1}{2} \lfloor \log_10 (\base_i)\rfloor + 1)$.  The
+  vector of $a$ is changed appropriately.  Unreasonable input ($\step \leq 0$, $\lowerbound$ or
+  $\upperbound$ out of range etc.) leads to a call of the \code{lidia_warning_handler}, the
+  parameter is set to a predefined value.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.ecm}{int $\upperbound$ = 34, int $\lowerbound$ = 6, int $\step$ = 3}
+  tries to factor all base elements of $a$ with \emph{ECM} using the strategy described in
+  \code{$a$.ecm_comp($i$)} and changes $a$ appropriately.  Note that the result is not
+  necessarily a prime factorization.
+\end{fcode}
+
+\begin{fcode}{rational_factorization}{ecm}{const bigint & $N$, int $\upperbound$ = 34,
+    int $\lowerbound$ = 6, int $\step$ = 3}%
+  tries to factor the number $N$ with \emph{ECM} using the strategy described in
+  \code{$a$.ecm_comp($i$)} and returns the \code{rational_factorization} representing the number
+  $N$.  Note that the result is not necessarily a prime factorization.
+\end{fcode}
+
+\begin{techdoc}
+  A description of the ECM implementation can be found in the diploma thesis of Andreas
+  M{\"u}ller.  Note however that here we use the improved standard continuation.  Once you are
+  familiar with the theory and idea of ECM the \LiDIA implementation of ECM is pretty self
+  explaining.  One important feature of this implementation is the decision when to switch to
+  the MPQS: this is done by calling the function \code{zeitqs} which returns an expected time of
+  MPQS for factoring a number of given size.  If this expected time is lower than the already
+  used time of ECM on this number, then ECM is stopped and the unfactored number is returned.
+\end{techdoc}
+
+The version of \emph{QS} used in \LiDIA is called self initializing multiple polynomial large
+prime quadratic sieve.  A description of the algorithm can be found in
+\cite{Alford/Pomerance:1993}, \cite{Denny_Thesis:1993} or \cite{Sosnowski_Thesis:1994}.  The
+linear equation step uses an implementation of the Block Lanczos algorithm for $\bbfZ/2\bbfZ$.
+
+Note that the running time of \emph{QS} depends on the size of the number to be factored, not on
+the size of the factors.
+
+\begin{fcode}{void}{$a$.mpqs_comp}{lidia_size_t $i$}
+  tries to factor $\base_i$ using the large prime variation of the quadratic sieve.  For bases
+  with more than 75 digits the \code{lidia_warning_handler} will be invoked, the
+  \code{rational_factorization} $a$ is not changed.  Notice that as \emph{QS} creates temporary
+  files, you need write permission either in the \code{/tmp}-directory or in the directory from
+  which \emph{QS} is called.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.mpqs}{const bigint & $N$}
+  tries to factor $N$ using \code{$a$.mpqs_comp} (see above).
+\end{fcode}
+
+
+\begin{techdoc}
+  The MPQS implementation of \LiDIA is described in detail in the diploma thesis of Thomas
+  Sosnowski.
+  
+  Several temporary files are used during the computation.  We describe the format of these
+  temporary files below.  Note that the brackets [ ] are only used for clarification in these
+  descriptions.
+  
+  \code{NEWR}: relations in a format such that the Lanczos implementation can read it.  Since the
+  Lanczos interface should be the same for $\GF(2)$ and odd characteristic prime fields, we
+  decided to store the indices of non zero coefficients together with the value of the
+  coefficient (which is in our case always one).  Therefore the Lanczos format of a non zero
+  coefficient is given as [1 [index of coefficient]].  A row of NEWR looks then like
+  
+  [index of line] [number of entries per line] 0 [list of entries in Lanczos format, in
+  ascending order, divided by blanks] 0
+  
+  Note that the end of a row is marked with a zero.
+  
+  \code{FAKM, ZUSA}: files which store relations.  The format is as follows: If the factor basis
+  element with index i has non zero exponent, then we store [exp\_i i].  In general the storing
+  format of relations is then
+  
+  [H\_1] [H\_2] : [list of pairs [exp\_i i], in ascending order, divided by blanks] 0
+  
+  where $H_1^2 \equiv H_2^2 \cdot \prod_{i} p_i^{\expt_i}$.  For full relations $H_2$ is set to
+  one.  The combination of partial relations (done in function zusam) does not use inversions
+  such that both $H_1$ and $H_2$ are non trivial in this case.  ZUSA is used for full relations
+  found by the sieving procedure, FAKM stores full relations and combined relations.
+  
+  \code{PART}: file for storing partial relations.  Format is (notation as above)
+  
+  [large prime] @ [H\_1] : [list of pairs [exp\_i i], in ascending order, divided by blanks] 0
+  
+  Several other files are used for sorting and merging files.  The format of these files is one
+  of the formats described above.
+  
+  Now we describe the functionality of the most important functions.  Several other functions
+  are small and can best be understood by looking into the code.
+  
+  The function \code{rational_factorization::mpqs_comp} is the key function which does the
+  complete allocation/deallocation of memory and temporary files, computation of multiplier and
+  factor basis, choice of parameters.  Then an endless loop is started where the different
+  polynomials are determined, sieving/testing is done.  Full relations are written to the
+  temporary file ZUSA, partial relations to PART.  The number of full relations is counted in
+  variable \code{counter_treff}.  From time to time the number of combined relations is
+  determined with the function \code{count_partials}.  If the number of relations is bigger than
+  the size of the factor basis, then the function \code{zusam} is called which combines partials
+  relations.  Then \code{qs_build_factors} starts the Lanczos routine for solving the linear
+  system, uses the solutions for constructing ``pseudo solution'' and test for a factor.  If no
+  factor has been found, then re-sieving is started again.
+  
+  In a lot of functions parameters are given as call by reference objects.  This is for
+  historical reasons and should be changed in a future release.  Important variables are
+  \code{size_FB} (size of the factor basis), \code{M} (size of sieving interval), \code{P_ONCE}
+  (number of primes used in construction of highest polynomial coefficient --- see description
+  of self initializing variant), \code{P_TOTAL} (total number of primes the actually used
+  \code{P_ONCE} primes are chosen from), smallstart (index of factor basis element where sieving
+  starts --- smaller primes are not used in sieving procedure).
+\end{techdoc}
+
+\begin{Tfcode}{int}{transform_relations}{}
+  reads relations in internal format and transforms these relations into Lanczos format.  These
+  relations are written to file \code{NEWR} without changing the order.
+\end{Tfcode}
+
+\begin{Tfcode}{void}{rational_factorization::qs_read_par}{...}
+  reads parameters from precomputed table and initializes global variables.  Note that these
+  variables are given as call by reference objects to the function.
+\end{Tfcode}
+
+\begin{Tfcode}{long}{count_partials}{}
+  return number of combined partial relations which can be combined with actually known partial
+  relations.
+\end{Tfcode}
+
+\begin{Tfcode}{void}{zusam}{}
+  combine partial relations to full relations and write all found relations to file FAKM.
+  Multiple relations are removed.
+\end{Tfcode}
+
+\begin{Tfcode}{void}{compute_coeff}{...}
+  compute the next polynomial.  This function is a direct translation of the formulas in the
+  self initialization variant.  Additional information like sieving starting points are also
+  determined.
+\end{Tfcode}
+
+\begin{Tfcode}{int}{teste}{...}
+  Given a set of candidates, this functions tests with trial division whether a full/partial
+  relation has been found.  Found relations are written to the corresponding temporary files,
+  the number of found full relations is returned.
+\end{Tfcode}
+
+\begin{Tfcode}{bool}{rational_factorization::qs_build_factors}{...}
+  functions calls the Lanczos routine, determines pseudo solutions and checks for a factor.  If
+  a factor is found, then a variable of type \code{rational_factorization} is set to the found
+  factorization and \FALSE is returned; otherwise \TRUE is returned.
+\end{Tfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+The \code{istream} operator \code{>>} and the \code{ostream} operator \code{<<} are overloaded.
+The \code{istream} operator \code{>>} expects the input of a \code{rational_factori-zation} in
+the following format:
+\begin{displaymath}
+  [(\base_0,\expt_0)\,(\base_1,\expt_1)\,\dots \,(\base_{l-1},\expt_{l-1})]
+\end{displaymath}
+
+In the input $\base_i$ is allowed to be an arbitrary non-zero rational integer (i.e., of type
+\code{bigint}).  The input function computes the internal format which was explained in the
+beginning.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{bigint}, \SEE{bigrational}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\WARNINGS
+
+\emph{ECM} fails to factor rational numbers that only consist of prime factors smaller than
+$1000$.  Therefore it is strongly recommended to use the function \code{factor()} or to ensure
+with the function \code{trialdiv()}, that there are no such small prime factors left before
+calling functions which use \emph{ECM}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/rational_factorization.h>
+
+int main()
+{
+    rational_factorization f;
+    bigint n;
+
+    cout << "enter an integer n: ";
+    cin >> n;             //  input n
+    f.assign(n);          //  assign n as trivial factorization to f
+    f.verbose(1);         //  we want a lot of informations
+    f.factor();           //  calculate prime factorization
+                          //  using the factor function
+    cout << f;            //  output f
+
+    cout << "enter an integer n: ";
+    cin >> n;             //  input n
+    f.assign(n);          //  assign n as trivial factorization to f
+    f.verbose(1);         //  we want a lot of informations
+    f.trialdiv();         //  calculate prime factorization using trialdiv
+    cout << f;            //  output f
+
+    cout << "enter an integer n: ";
+    cin >> n;             //  input n
+    f.assign(n);          //  assign n as trivial factorization to f
+    f.verbose(1);         //  we want a lot of informations
+    f.ecm_comp(0);        //  calculate prime factorization using ecm
+    cout << f;            //  output f
+
+    cout << "enter an integer n: ";
+    cin >> n;             //  input n
+    f.assign(n);          //  assign n as trivial factorization to f
+    f.verbose(1);         //  we want a lot of informations
+    f.mpqs_comp(0);       //  calculate prime factorization using
+                          //  quadratic sieve
+    cout << f;            //  output f
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+For further references please refer to
+\path{LiDIA/src/simple_classes/factorization/rational_factorization_appl.cc}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Franz-Dieter Berger, Thomas F.~Denny, Andreas M{\"u}ller, Volker M{\"u}ller, Thomas Sosnowski
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

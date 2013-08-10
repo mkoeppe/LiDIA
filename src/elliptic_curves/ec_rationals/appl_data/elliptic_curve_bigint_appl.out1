@@ -1,0 +1,44 @@
+Enter a curve: Default output:  	[1,-1,0,4,3]
+output_short():  	[1,-1,0,4,3]
+output_long():   	[1,-1,0,4,3]
+b2 = -3; b4 = 8; b6 = 12; b8 = -25
+c4 = -183; c6 = -3429
+disc = -10351; bad primes = [ 11 941 ]; # real components = 1
+Conductor = 10351
+
+Reduction type at bad primes:
+p	ord(d)	ord(N)	ord(denom(j))	Kodaira	c_p
+11	1	1	1		I1	1
+941	1	1	1		I1	1
+Product of c_p = 1
+
+
+output_pretty(): 	Y^2 + X*Y = X^3 - 1 * X^2 + 4 * X + 3
+output_tex():    	$y^2 + xy = x^3 - 1x^2 + 4x + 3$
+Default output after set_output_mode(1): 	[1,-1,0,4,3]
+b2 = -3; b4 = 8; b6 = 12; b8 = -25
+c4 = -183; c6 = -3429
+disc = -10351; bad primes = [ 11 941 ]; # real components = 1
+Conductor = 10351
+
+Reduction type at bad primes:
+p	ord(d)	ord(N)	ord(denom(j))	Kodaira	c_p
+11	1	1	1		I1	1
+941	1	1	1		I1	1
+Product of c_p = 1
+
+
+Default output after set_output_mode(2): 	Y^2 + X*Y = X^3 - 1 * X^2 + 4 * X + 3
+Default output after set_output_mode(3): 	$y^2 + xy = x^3 - 1x^2 + 4x + 3$
+Default output after set_output_mode(0): 	[1,-1,0,4,3]
+
+Torsion order = 1
+Torsion points:
+	0 ) [0 : 1 : 0], 	order 1
+Cyclic: C1
+
+Periods 
+Omega_1 = (1.390370006883364885531598813590679249695,-1.068749776356193066159263547437503878759)
+Omega_2 = (1.390370006883364885531598813590679249695,1.068749776356193066159263547437503878759)
+Height Constant
+6.52226

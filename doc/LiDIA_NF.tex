@@ -1,0 +1,84 @@
+%===========================================================================
+%
+%       ${srcdir}/doc/LiDIA_NF.tex
+%
+%---------------------------------------------------------------------------
+%
+%       $Id: LiDIA_NF.tex,v 1.1.1.1 2001/05/02 16:27:08 lidiaadm Exp $
+%
+%===========================================================================
+
+\part*{The \LiDIA NF package}\label{LiDIA-NF}
+\addcontentsline{toc}{part}{\LiDIA NF package}
+
+% The \LiDIA NF package contains the classes which deal with quadratic number fields, and number
+% fields of higher degree.  It requires the \LiDIA base package, the \LiDIA FF package, the \LiDIA
+% LA package, and the \LiDIA LT package.
+
+
+\chapter{Quadratic Number Fields}
+
+\begin{class}{quadratic_form}
+  \input{quadratic_form}
+\end{class}
+
+\begin{class}{quadratic_order}
+  \input{quadratic_order}
+\end{class}
+
+\begin{class}{qi_class}
+  \input{qi_class}
+\end{class}
+
+\begin{class}{qi_class_real}
+  \input{qi_class_real}
+\end{class}
+
+\begin{class}{quadratic_ideal}
+  \input{quadratic_ideal}
+\end{class}
+
+\begin{class}{quadratic_number_standard}
+  \input{quadratic_number_standard}
+\end{class}
+
+\begin{class}{quadratic_number_power_product_basis}
+  \input{quadratic_number_power_product_basis}
+\end{class}
+
+\begin{class}{quadratic_number_power_product}
+  \input{quadratic_number_power_product}
+\end{class}
+
+
+\chapter{Arbitrary Algebraic Number Fields}
+
+\begin{class}{number_field}
+  \input{field}
+\end{class}
+
+\begin{class}{order}
+  \input{order}
+\end{class}
+
+\begin{class}{alg_number}
+  \input{alg_number}
+\end{class}
+
+\begin{class}{module/alg_ideal}
+  \input{module}
+\end{class}
+
+\begin{class}{prime_ideal}
+  \input{prime_ideal}
+\end{class}
+
+
+\chapter{Factorization}
+
+The description of the general factorization template class can be found in the section ``LiDIA
+base package'' (see page \pageref{LiDIA-base:factorization}).
+
+\begin{class}{single_factor< alg_ideal >}
+  \input{sf_alg_ideal}
+\end{class}

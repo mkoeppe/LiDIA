@@ -1,0 +1,105 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  kodaira_code.tex    Documentation
+%%
+%%  This file contains the documentation of the class kodaira_code
+%%
+%%  Copyright   (c)   1998   by  LiDIA Group
+%%
+%%  Authors: Nigel Smart, John Cremona
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\code{Kodaira_code< T >} \dotfill class for holding a Kodaira symbol.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+The Kodaira symbol of an elliptic curve defined over a number field classifies the reduction
+type of the curve at a prime.  The possible reduction types are: $\mathrm{I}_n$,
+$\mathrm{I}^*_n$, $\mathrm{II}$, $\mathrm{II}^*$, $\mathrm{III}$, $\mathrm{III}^*$,
+$\mathrm{IV}$, $\mathrm{IV}^*$, where $n \geq 0$.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+A Kodaira symbol is stored as an integer $k$ according to the following scheme:
+\begin{displaymath}
+  \begin {array}{cc}
+    \mathrm{Symbol}                         & k \\
+    \mathrm{I}_m                            & 10 m \\
+    \mathrm{I}^*_m                          & 10 m+1 \\
+    \mathrm{I, II, III, IV}                 & 1, 2, 3, 4 \\
+    \mathrm{I}^*, \mathrm{II}^*, \mathrm{III}^*, \mathrm{IV}^* & 5, 6, 7, 8
+  \end{array}
+\end{displaymath}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{Kodaira_code}{int $k$}
+  constructs a symbol with code $k$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+The operator \code{=} is overloaded; a \code{Kodaira_code} may be assigned to an integer or to
+another \code{Kodaira_code}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+This function should not really be needed by users: Let $K$ be of class \code{Kodaira_code}.
+
+\begin{cfcode}{int}{$K$.get_code}{}
+  returns the value of the integer $k$.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+Only the \code{ostream} operator \code{<<} has been overloaded.  It prints a string denoting the
+Kodaira symbol.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEE{elliptic_curve< bigint >}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+This class should not be needed by end-users.  It is used by the class \code{elliptic_curve<
+  bigint >} which contains an array of the \code{Kodaira_code}s for each prime of bad reduction.
+
+The coding scheme was originally due to Richard Pinch.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+John Cremona, Nigel Smart.

@@ -1,0 +1,582 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  crt.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the classes crt_table and crt
+%%
+%%  Copyright   (c)   1995   by  LiDIA-Group
+%%
+%%  Authors: Frank J. Lehmann
+%%
+
+\newcommand{\primebound}{\mathit{prime\uscore bound}}
+\newcommand{\primes}{\mathit{Primes}}
+\newcommand{\smallvec}{\mathit{small\uscore vec}}
+\newcommand{\bigvec}{\mathit{big\uscore vec}}
+\newcommand{\smallmat}{\mathit{small\uscore mat}}
+\newcommand{\bigmat}{\mathit{big\uscore mat}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{crt_table}, \CLASS{crt} \dotfill Chinese Remainder Theorem
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{crt_table} and \code{crt} are classes that allow explicit use of the Chinese Remainder
+Theorem.
+
+A common method in computer algebra is to replace a multiprecision computation by several
+single-precision computations and one application of the Chinese Remainder Theorem.  This is
+applicable for both, rational and modular integers.  Thus classes \code{crt_table} and
+\code{crt} provide interfaces to type \code{bigint} and \code{bigmod} and to different objects
+over these types; i.e. single objects, pointer-arrays, \code{base_vector}s and
+\code{base_matrix}es.
+
+The class \code{crt_table} provides internally stored tables which can be accessed by the class
+\code{crt}.  The class \code{crt} can be seen as a black box that can reduce numbers
+(represented as \code{bigint} or \code{bigmod}) modulo single-precision prime numbers, as well
+as combine the modular results to the final result of type \code{bigint} or \code{bigmod}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+The Chinese Remainder Theorem says, that given $n$ moduli $m_i$ ($1 \leq i \leq n$) of pairwise
+coprime integers and a set of congruential equations $x \equiv c_i \pmod{m_i}$ ($1 \leq i \leq
+n$) for an arbitrary integer $x$, there is a unique solution $c$ for $x$ modulo the product $M =
+\prod_{i=1}^n m_i$; say $x \equiv c \pmod{M}$.
+
+Let us assume in this situation that we know an upper bound for the absolute value of $x$; $|x|
+\leq B$.  Furthermore the number $n$ of moduli shall be chosen in a way that $B < \frac{M}{2}$.
+If we then represent $c$ by its absolutely least residue modulo $M$, we know that $c$ and $x$
+coincide.  Thus $x$ is uniquely determined by the above congruential equations.
+
+If we consider $x$ to be the result of some algorithm, this implies an alternative strategy for
+computations with multiprecision integers.  If we want to compute some results over the integers,
+and if we know an upper bound on their absolute values, we can choose an appropriate number of
+single-precision (pairwise coprime) moduli and perform the algorithm modulo each of them while
+using a suitable single-precision modular arithmetic.  As a result of that we will obtain a set
+of congruential equations that we can use as an input to the Chinese Remainder Theorem.  Its
+application will provide the correct multiprecision result of the computation.
+
+Not only is this method suitable for rational integers, we can also easily extend it
+componentwise to vectors or matrices with integer entries.  We then have to find an upper bound
+on \emph{all} the coefficients of the respective object.
+
+Moreover, this strategy is also applicable for multiprecision modular arithmetic.  Here, we
+consider the residues as integers, compute the result of the problem over $\bbfZ$ and accomplish
+by using some reduction-steps to compute residues again.
+
+The classes \code{crt_table} and \code{crt} allow finding the solution of one application of the
+Chinese Remainder Theorem by successively presenting the residues $c_i$ (in the notation above)
+to an object of type \code{crt}.  The moduli $m_i$ are prime numbers provided by the two
+classes.  They can be generated automatically by initializing a \code{crt_table} object with the
+upper bound $B$ on the absolute values of the results.  The system then chooses primes, until
+the product $M$ of all of them exceeds $2 \cdot B$.  Another possibiltiy is to explicitely store
+a vector of prime numbers into a \code{crt_table} object.  If the product of these primes is
+$M$, this object can be used to compute integers of absolute value $\frac{M}{2}$ at most.
+
+To allow prime numbers of arbitrary shape to be generated, the internal prime number generator
+may be replaced by a corresponding user-defined function.
+
+A standard application for these classes looks as follows:
+
+\begin{enumerate}
+  
+\item Determine an upper bound $B$ for the absolute values of the numbers that result from your
+  algorithm.  For computations of type \code{bigmod} consider the residues as rational integers.
+  
+\item Create an object $T$ of type \code{crt_table} and initialize it with bound $B$ and when
+  computing with \code{bigmod} also with the corresponding modulus (by using a constructor or
+  \code{init()} member function of class \code{crt_table}).  Then $T$ contains a list of prime
+  numbers you have to use for modular computations.
+  
+\item Create an object $C$ of type \code{crt} and initialize it with the previously generated
+  object $T$, thus providing $C$ with all the internal data of $T$ (by using a constructor or
+  \code{init()} member function of class \code{crt}).
+  
+\item Perform the computation modulo any prime contained in the internal list of $T$ (see member
+  function \code{get_prime()}) and store the respective results in $C$ (by using a suitable
+  \code{combine()} member function).
+  
+\item Read the final results out of $C$ (by using a suitable \code{get_result()} member
+  function).
+
+\end{enumerate}
+
+Thus, this method does \emph{not} require to store each residue modulo every prime before an
+application of the Chinese Remainder Theorem.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\STITLE{Class crt\_table}
+
+An instance of type \code{crt_table} can be initialized by either a constructor or by a suitable
+\code{init()} member function.  These functions require an upper bound $B$ for the absolute
+values of the results of your computation.  When computing with type \code{bigmod} the residues
+are considered as rational integers, and the global modulus must then be given to each
+initialization as parameter $P$.  Using a modulus when initializing an instance sets its mode to
+\code{MODULAR}; otherwise, the mode will be set to \code{INTEGER}.  The mode of an instance
+defines whether a \code{crt} object by which it is used, provides interfaces to \code{bigint}
+(\code{INTEGER}) or to \code{bigmod} (\code{MODULAR}) only.
+
+Any object of class \code{crt_table} contains a reference counter to control whether or not it
+is used by a \code{crt} object.  One may initialize (or clear) an instance only if this counter
+is zero.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{crt_table}{}
+  creates an empty instance, no tables are initialized.
+\end{fcode}
+
+\begin{fcode}{ct}{crt_table}{const bigint & $B$}
+  generates primes, beginning with initial seed $2^{31}-1$ to the internal prime number
+  generator.  When using the default prime generator, the prime table will consist of subsequent
+  prime numbers less than $2^{31}-1$ and in descending order.  This function initializes the
+  internal tables for computations where the absolute values of the later results must not
+  exceed $B$.  (\code{INTEGER} mode)
+\end{fcode}
+
+\begin{fcode}{ct}{crt_table}{const bigint & $B$, const sdigit & $\primebound$}
+  generates primes, beginning with initial seed $\primebound$ to the internal prime number
+  generator; $\primebound$ must be positve.  When using the default prime generator, the prime
+  table will consist of subsequent prime numbers less than $\primebound$ and in descending
+  order.  This function initializes the internal tables for computations where the absolute
+  values of the later results must not exceed $B$.  (\code{INTEGER} mode)
+\end{fcode}
+
+\begin{fcode}{ct}{crt_table}{const base_vector< sdigit > & $\primes$}
+  copies all numbers in $\primes$ into the internal prime table and initializes the internal
+  tables.  If any of these numbers is negative, its absolute value will be considered; if
+  $\primes$ contains at least two entries with a non-trivial greatest common divisor, a call to
+  the \LEH will be invoked.  The absolute values of the later results must be bounded by
+  $\frac{M}{2}$, where $M$ is the product of all numbers in vector $\primes$ (\code{INTEGER}
+  mode).  (Actually, those do not have to be primes but only pairwise coprime.)
+\end{fcode}
+
+\begin{fcode}{ct}{crt_table}{const bigint & $B$, const bigint & $P$}
+  generates primes, beginning with initial seed $2^{31}-1$ to the internal prime number
+  generator.  When using the default prime generator, the prime table will consist of subsequent
+  prime numbers less than $2^{31}-1$ and in descending order.  This function initializes the
+  internal tables for computations where the absolute values of the later results must not
+  exceed $B$.  If $P$ is non-zero, precomputations are performed modulo $P$ (\code{MODULAR}
+  mode); otherwise $P$ will be ignored (\code{INTEGER} mode).
+\end{fcode}
+
+\begin{fcode}{ct}{crt_table}{const bigint & $B$, const sdigit & $\primebound$, const bigint & $P$}
+  generates primes, beginning with initial seed $\primebound$ to the internal prime number
+  generator; $\primebound$ must be positve.  When using the default prime generator, the prime
+  table will consist of subsequent prime numbers less than $\primebound$ and in descending
+  order.  This function initializes the internal tables for computations where the absolute
+  values of the later results must not exceed $B$.  If $P$ is non-zero, precomputations are
+  performed modulo $P$ (\code{MODULAR} mode); otherwise $P$ will be ignored (\code{INTEGER}
+  mode).
+\end{fcode}
+
+\begin{fcode}{ct}{crt_table}{const base_vector< sdigit > & $\primes$, const bigint & $P$}
+  copies all numbers in $\primes$ into the internal prime table and initializes the internal
+  tables.  If any of these numbers is negative, its absolute value will be considered; if
+  $\primes$ contains at least two entries with a non-trivial greatest common divisor, a call to
+  the \LEH will be invoked.  The absolute values of the later results must be bounded by
+  $\frac{M}{2}$, where $M$ is the product of all numbers in vector $\primes$ (\code{INTEGER}
+  mode).  (Actually, those do not have to be primes but only pairwise coprime.)  If $P$ is
+  non-zero, precomputations are performed modulo $P$ (\code{MODULAR} mode); otherwise, $P$ will
+  be ignored (\code{INTEGER} mode).
+\end{fcode}
+
+\begin{fcode}{dt}{~crt_table}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\INIT
+
+The initialization functions allow to create the internal data of a \code{crt_table} object
+after its definition or to reset an object for new computations.  Modifying an object for which
+there is still a reference in some instance of class \code{crt}, invokes the \LEH.
+
+Let $a$ be of type \code{crt_table}.
+
+\begin{fcode}{void}{$a$.init}{const bigint & $B$}
+  initializes $a$ like the constructor \code{crt_table($B$)}.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.init}{const bigint & $B$, const sdigit & $\primebound$}
+  initializes $a$ like the constructor \code{crt_table($B$, $\primebound$)}.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.init}{const base_vector< sdigit > & $\primes$}
+  initializes $a$ like the constructor \code{crt_table($\primes$)}.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.init}{const bigint & $B$, const bigint & $P$}
+  initializes $a$ like the constructor \code{crt_table($B$, $P$)}.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.init}{const bigint & $B$, const sdigit & $\primebound$, const bigint & $P$}
+  initializes $a$ like the constructor \code{crt_table($B$, $\primebound$, $P$)}.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.init}{const base_vector< sdigit > & $\primes$, const bigint & $P$}
+  initializes $a$ like the constructor \code{crt_table($\primes$, $P$)}.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.clear}{}
+  deletes all internally stored tables.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $a$ be of type \code{crt_table}.
+
+\begin{cfcode}{lidia_size_t}{$a$.number_of_primes}{}
+  returns number of internally stored primes for which precomputations have been done.
+\end{cfcode}
+
+
+\begin{cfcode}{sdigit}{$a$.get_prime}{lidia_size_t $ix$}
+  returns prime with index $ix$ from the table.  The \LEH will be invoked if index is negative
+  or not less than \code{$a$.number_of_primes()}.
+\end{cfcode}
+
+\begin{cfcode}{lidia_size_t}{$a$.how_much_to_use}{bigint $B$}
+  If each result of the computation has an absolute value of at most $B$ but $a$ has been
+  initialized with some greater bound, it might be sufficient to regard computations only modulo
+  the first $l$ primes from the internal table instead of using all of them.  In that case, the
+  function returns $l$; it returns $-1$ if the table is not large enough.
+  
+  This option is only possible in \code{INTEGER} mode.  When initialized with a modulus, one
+  always has to use every prime that has been generated before.  Thus in \code{MODULAR} mode,
+  always the number of internal primes will be returned.
+\end{cfcode}
+
+\begin{fcode}{void}{$a$.set_prime_generator}{sdigit (*np) (const sdigit & $q$) = nil}
+  changes the internal prime number generator to the function $np$ is pointing to.  This must be
+  a function which has a \code{const} reference to an \code{sdigit} as the only argument and
+  returns an \code{sdigit}.  Internally, only positive prime numbers are used.  Thus, any
+  negative return-value of \code{np} will be multiplied by $-1$.  Furthermore, one has to
+  consider the fact, that $2^{31}-1$ will be given to this function by a constructor or an
+  \code{init()} member function.  Thus $np$ should be able to accept this value as an input.  If
+  no function pointer is given, the prime generator will be reset to the default routine, which
+  returns the next prime less than $q$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\STITLE{Class crt}
+
+Member functions of this class are not applicable to an instance, unless it is assigned a
+reference to an object $T$ of class \code{crt_table}.  (The latter must already be initialized.)
+This can be done by means of either a constructor or an \code{init()} member function.
+
+Depending on the mode (\code{INTEGER} or \code{MODULAR}) of $T$, all input data and final
+results will be assumed to be of type \code{bigint} or \code{bigmod}.  Only the corresponding
+member functions are enabled.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+\begin{fcode}{ct}{crt}{}
+  creates an empty instance of the class crt.
+\end{fcode}
+
+\begin{fcode}{ct}{crt}{crt_table & $M$}
+  creates an instance and stores a reference to $M$.  The reference counter of $M$ will
+  therefore be modified.
+\end{fcode}
+
+\begin{fcode}{dt}{~crt}{}
+  deletes all internal data and decreases the reference counter of the corresponding
+  \code{crt_table} object by one.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\INIT
+
+Let $a$ be of type \code{crt}.
+
+\begin{fcode}{void}{$a$.init}{crt_table & $M$}
+  stores a reference to table $M$, that will then be used during the reduction and combining
+  steps.  If $M$ has not been initialized before, this will invoke the \LEH.
+\end{fcode}
+
+
+\begin{fcode}{void}{$a$.reset}{}
+  deletes any information that is stored in $a$, but leaves the reference to an \code{crt_table}
+  object unchanged.
+\end{fcode}
+
+
+\begin{fcode}{void}{$a$.clear}{}
+  deletes any information that is stored in $a$, including the reference to the \code{crt_table}
+  object.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+\begin{cfcode}{sdigit}{$a$.get_prime}{lidia_size_t $ix$}
+  returns the prime with index $ix$ from underlying \code{crt_table} object.  The \LEH will be
+  invoked if $ix$ is negative or not less than the number of internal primes.
+\end{cfcode}
+
+\begin{cfcode}{lidia_size_t}{$a$.number_of_primes}{}
+  returns number of internally stored primes for which precomputations have been made in the
+  uderlying \code{crt_table} object.
+\end{cfcode}
+
+\begin{cfcode}{lidia_size_t}{$a$.how_much_to_use}{const bigint & $B$}
+  If each result of the computation has an absolute value of at most $B$ but the
+  \code{crt_table} object referred to has been initialized with some greater bound, it might be
+  sufficient to regard computations only modulo the first $l$ primes from the internal table,
+  instead of using all of them.  In that case, the function returns $l$.  It returns $-1$ if the
+  table is not large enough.
+  
+  This option is only possible in \code{INTEGER} mode.  In \code{MODULAR} mode one always has to
+  use every prime that has been generated before.  Thus in the latter case, always the number of
+  internal primes will be returned.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+\SSTITLE{Compute Residues}
+
+Let $a$ be of type \code{crt}.
+
+The \code{reduce()} member functions provide easy reduction modulo the internal primes.  They do
+not modify any information stored in $a$.  To compute the residues, the remainder functions of
+class \code{bigint} are used.
+
+\begin{cfcode}{void}{$a$.reduce}{sdigit & $\mathit{small}$, const bigint & $\mathit{big}$, lidia_size_t $ix$}
+  $\mathit{small} \assign \mathit{big} \bmod p$, for $p = \code{$a$.get_prime($ix$)}$.
+\end{cfcode}
+
+\begin{cfcode}{void}{$a$.reduce}{sdigit* $\smallvec$, const bigint* $\bigvec$,
+    long $\mathit{bsize}$, lidia_size_t $ix$}%
+  $\smallvec[i] \assign \bigvec[i] \bmod p$ for $0 \leq i < \mathit{bsize}$, and $p =
+  \code{$a$.get_prime($ix$)}$.  This function does not allocate any space for $\smallvec$.  Thus
+  it must be a pointer to an array of appropriate size.
+\end{cfcode}
+
+\begin{cfcode}{void}{$a$.reduce}{base_vector< sdigit > & $\smallvec$,
+    const base_vector< bigint > & $\bigvec$, lidia_size_t $ix$}%
+  $\smallvec[i] \assign \bigvec[i] \bmod p$ for $0 \leq i < \code{$\bigvec$.size()}$, and $p =
+  \code{$a$.get_prime($ix$)}$.  The size and capacity of $\smallvec$ are set to the size of
+  $\bigvec$.
+\end{cfcode}
+
+\begin{cfcode}{void}{$a$.reduce}{base_matrix< sdigit > & $\smallmat$,
+    const base_matrix< bigint > & $\bigmat$, lidia_size_t $ix$}%
+  $\smallmat[i][j] \assign \bigmat[i][j] \bmod p$ for $0 \leq i < r, 0 \leq j < c$, and $p =
+  \code{$a$.get_prime($ix$)}$.  Here $r$ and $c$ represent the numbers of rows and columns of
+  matrix $\bigmat$.  The size of $\smallmat$ is adjusted to that of $\bigmat$.
+\end{cfcode}
+
+\begin{cfcode}{void}{$a$.reduce}{sdigit & $small$, const bigmod & $\mathit{big}$, lidia_size_t $ix$}
+  $small \assign \code{$\mathit{big}$.mantissa()} \bmod p$ for $p = \code{$a$.get_prime($ix$)}$.
+\end{cfcode}
+
+\begin{cfcode}{void}{$a$.reduce}{sdigit* $\smallvec$, const bigmod* $\bigvec$,
+    long $\mathit{bsize}$, lidia_size_t $ix$}%
+  $\smallvec[i] \assign \code{$\bigvec[i]$.mantissa()} \bmod p$ for $0 \leq i < \mathit{bsize}$,
+  and $p = \code{$a$.get_prime($ix$)}$.  This function does not allocate any space for
+  $\smallvec$.  Thus it must be a pointer to an array of appropriate size.
+\end{cfcode}
+
+\begin{cfcode}{void}{$a$.reduce}{base_vector< sdigit > & $\smallvec$,
+    const base_vector< bigmod > & $\bigvec$, lidia_size_t $ix$}%
+  $\smallvec[i] \assign \code{$\bigvec[i]$.mantissa()} \bmod p$ for $0 \leq i < \code{$\bigvec$.size()}$,
+  and $p = \code{$a$.get_prime($ix$)}$.  The size and capacity of $\smallvec$ are set to the
+  size of $\bigvec$.
+\end{cfcode}
+
+\begin{cfcode}{void}{$a$.reduce}{base_matrix< sdigit > & $\smallmat$,
+    const base_matrix< bigmod > & $\bigmat$, lidia_size_t $ix$}%
+  $\smallmat[i][j] \assign \code{$\bigmat[i][j]$.mantissa()} \bmod p$ for $0 \leq i < r, 0 \leq
+  j < c$, and $p = \code{$a$.get_prime($ix$)}$.  Here, $r$ and $c$ represent the number of rows
+  and columns of matrix $\bigmat$.  The size of $\smallmat$ is adjusted to that of $\bigmat$.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SSTITLE{Add Congruencial Equations}
+
+The results of computations modulo a particular prime are combined to the final result via the
+\code{combine()} member functions.  You may not combine a result modulo a specific prime twice.
+The first call to any of these functions defines the data structure of the input and final
+result: single, pointer array, \code{base_vector}, or \code{base_matrix}.  If, for example, the
+first function call is \code{$a$.combine($u$, $ix_1$)} with an \code{sdigit} $u$, then every
+attempt to use \code{$a$.combine($\mathit{uvec}$, $ix_2$)} with $\mathit{uvec}$ as a
+\code{base_vector< sdigit >} will invoke the \LEH.  Furthermore, you may not use objects of
+different size in subsequent calls to the function.  This invokes the \LEH.
+
+To prematurely terminate a computation and allow the use of a \code{crt} object
+with some other input, one may use either of the two functions \code{reset()}
+and \code{clear()}.
+
+\begin{fcode}{void}{$a$.combine}{const sdigit & $\mathit{small}$, lidia_size_t $ix$}
+  stores the result modulo \code{$a$.get_prime($ix$)}.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.combine}{const sdigit* $\smallvec$, long $l$, lidia_size_t $ix$}
+  stores the result modulo \code{$a$.get_prime($ix$)}.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.combine}{const base_vector< sdigit > & $\smallvec$, lidia_size_t $ix$}
+  stores the result modulo \code{$a$.get_prime($ix$)}.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.combine}{const base_matrix< sdigit > & $\smallmat$, lidia_size_t $ix$}
+  stores the result modulo \code{$a$.get_prime($ix$)}.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SSTITLE{Reading Results}
+
+Having defined the congruencial equations, one can now compute the result of the Chinese
+Remainder Theorem.  In MODULAR mode, congruences must be defined for each internal prime.  The
+INTEGER mode allows to choose arbitrarily many congruences.  Rational integers (\code{bigint})
+will then be computed as the absolutely least residues modulo the product of all primes, that
+have been used before.
+
+A call of the \code{get_result()} member function is only possible, if its argument corresponds
+to preceeding uses of \code{combine()}.  I.e. if congruences have been defined for matrices, then
+\code{$a$.get_result($\bigmat$)} is the only applicable function to obtain the solution.
+
+After a call to the function \code{get_result()}, the information about the object that was used
+will no longer be stored.  Thus $a$ can later arbitrarily be used again.
+
+\begin{fcode}{void}{$a$.get_result}{bigint & $\mathit{big}$}
+  computes in $\mathit{big}$ the result of the Chinese Remainder Theorem according to the
+  previously combined congruences.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.get_result}{bigint*& $\bigvec$, lidia_size_t & $l$}
+  computes in $\bigvec[i]$ ($0 \leq i < l$) the result of the Chinese Remainder Theorem
+  according to the previously combined congruences.  First, $l$ must be the size of the array
+  $\bigvec$ is pointing to.  If it differs from the size of the internal object, $\bigvec$ will
+  be reallocated appropriately and its new size will be assigned to $l$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.get_result}{base_vector< bigint > & $\bigvec$}
+  computes in $\bigvec[i]$ ($0 \leq i < l$) the result of the Chinese Remainder Theorem
+  according to the previously combined congruences.  The capacity and size of vector $\bigvec$
+  will previously be set to $l$, which is the size of the internal object.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.get_result}{base_matrix< bigint > & $\bigmat$}
+  computes in $\bigmat[i][j]$ ($0 \leq i < r, 0 \leq j < c$) the result of the Chinese Remainder
+  Theorem according to the previously combined congruences.  The number of rows and colums of
+  $\bigmat$ will previously be set to $r$ and $c$, respectively.  Here $r$ and $c$ represent the
+  size of the internal matrix.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.get_result}{bigmod & $\mathit{big}$}
+  computes in $\mathit{big}$ the result of the Chinese Remainder Theorem according to the
+  previously combined congruences.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.get_result}{bigmod*& $\bigvec$, lidia_size_t & $l$}
+  computes in $\bigvec[i]$ ($0 \leq i < l$) the result of the Chinese Remainder Theorem
+  according to the previously combined congruences.  First, $l$ must be the size of the array
+  $\bigvec$ is pointing to.  If it differs from the size of the internal object, $\bigvec$ will
+  be reallocated appropriately and the new size will be assigned to $l$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.get_result}{base_vector< bigmod > & $\bigvec$}
+  computes in $\bigvec[i]$ ($0 \leq i < l$) the result of the Chinese Remainder Theorem
+  according to the previously combined congruences.  The capacity and size of vector $\bigvec$
+  will previously be set to $l$, which is the size of the internal object.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.get_result}{base_matrix< bigmod > & $\bigmat$}
+  computes in $\bigmat[i][j]$ ($0 \leq i < r$, $0 \leq j < c$) the result of the Chinese
+  Remainder Theorem according to the previously combined congruences.  The number of rows and
+  colums of $\bigmat$ will previously be set to $r$ and $c$, respectively.  Here $r$ and $c$
+  represent the size of the internal matrix.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/crt.h>
+
+int main ()
+{
+    int i, n;
+    bigint big, B;
+    sdigit small;
+
+    crt_table T;
+    crt       C;
+
+    cout << " Bound for absolute value : ";
+    cin  >> B;
+
+    T.init ( B );
+    C.init ( T );
+    n = C.number_of_primes();
+
+    cout << " " << n << " congruences needed\n\n";
+
+    for (i = 0; i < n; i++) {
+        cout << " Congruence modulo " ;
+        cout << C.get_prime(i) << " : ";
+        cin >> small;
+        C.combine (small, i);
+    }
+    C.get_result ( big );
+    cout << "\n Solution : " << big << endl;
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+For further reference please refer to \path{LiDIA/src/simple_classes/chinese_rem/crt_appl.cc}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{base_vector}, \SEE{base_matrix},
+\SEE{bigint}, \SEE{bigmod}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Frank J.~Lehmann, Thomas Pfahler

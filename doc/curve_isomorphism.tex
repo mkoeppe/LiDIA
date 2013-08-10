@@ -1,0 +1,216 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  curve_isomorphism.tex       Documentation
+%%
+%%  This file contains the documentation of the class
+%%              curve_isomorphism
+%%
+%%  Copyright   (c)   1998   by  LiDIA group
+%%
+%%  Authors: Nigel Smart, John Cremona
+%%
+
+\newcommand{\iso}{\mathit{iso}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\code{curve_isomorphism< S, T >} \dotfill class for holding isomorphisms between different
+elliptic curves.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+Assume that we have given two elliptic curves \code{elliptic_curve< S > $E_1$} and
+\code{elliptic_curve< T > $E_2$}.  This class constructs, if possible, an explicit isomorphism
+between them.  This allows the user to map points from one curve to the other and back again.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+An isomorphism between two elliptic curves is a transformation of the variables of the form $x =
+u^2 x'+ r$ and $y =u^3 y' + s u^2 x' + t$.  The classes \code{S} and \code{T} require certain
+conditions to be met.  To see what these are consult the file \path{LiDIA/curve_isomorphism.h}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{curve_isomorphism< S, T >}{const elliptic_curve< S > & $E_1$,
+    const elliptic_curve< T > & $E_2$}%
+  constructs an explicit isomorphism between the two elliptic curves $E_1$ and $E_2$.  If the
+  curves are not isomorphic then the \LEH is called.
+\end{fcode}
+
+\begin{fcode}{ct}{curve_isomorphism< S, T >}{const curve_isomorphism< S, T > & $\iso$}
+  copy constructor.
+\end{fcode}
+
+\begin{fcode}{ct}{curve_isomorphism< S, T >}{const elliptic_curve < S > & $E_1$,
+    const elliptic_curve< T > & $E_2$, const S & $u$, const S & $r$, const S & $s$, const S & $t$}%
+  This constructor is used when the isomorphism is already known, however it does not check that
+  it is valid.
+\end{fcode}
+
+\begin{fcode}{dt}{~curve_isomorphism< S, T >}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+The operator \code{=} is overloaded.  For efficiency we also have the function.
+
+\begin{fcode}{void}{init}{const elliptic_curve< S > & $E_1$,
+    const elliptic_curve< T > & $E_2$, const S & $u$, const S & $r$, const S & $s$, const S & $t$}%
+  As the similar constructor above.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+\begin{fcode}{int}{are_isomorphic}{const elliptic_curve < S > & $E_1$, const elliptic_curve < T > & $E_2$}
+  returns 1 if and only if the two curves are isomorphic.
+\end{fcode}
+
+\begin{fcode}{int}{are_isomorphic} {const elliptic_curve< S > & $E_1$,
+    const elliptic_curve< T > & $E_2$, curve_isomorphism< S, T > & $\iso$}%
+  returns 1 if and only if the two curves are isomorphic, the explicit isomorphism is returned
+  in $\iso$.
+\end{fcode}
+
+\begin{fcode}{elliptic_curve< S >}{make_isomorphic_curve} {const elliptic_curve< T > & $E_2$, S & $u$,
+    S & $r$, S & $s$, S & $t$}%
+  constructs the elliptic curve $E_1$ over \code{S}, which is the isomorphic image of $E_2$
+  under the isomorphism $[u,r,s,t]$.
+\end{fcode}
+
+Let $\iso$ denote an object of type \code{curve_isomorphism< S, T >}.
+
+\begin{cfcode}{point< T >}{$\iso$.map}{const point< S > & $P$}
+  find the image of the point $P \in E_1$ on $E_2$.
+\end{cfcode}
+
+\begin{cfcode}{point < S >}{$\iso$.inverse}{const point< T > & $P$}
+  find the image of the point $P \in E_2$ on $E_1$.
+\end{cfcode}
+
+\begin{cfcode}{void}{$\iso$.invert}{S & $u$, S & $r$, S & $s$, S & $t$}
+  $[u,r,s,t]$ become the inverse isomorphism to that represented by $\iso$.
+\end{cfcode}
+
+\begin{cfcode}{S}{$\iso$.get_scale_factor}{}
+  returns $u$.
+\end{cfcode}
+
+\begin{cfcode}{int}{$\iso$.is_unimodular}{}
+  tests whether $u$ is equal to one.
+\end{cfcode}
+
+\begin{cfcode}{int}{$\iso$.is_identity}{}
+  tests whether $\iso$ is the identity isomorphism.
+\end{cfcode}
+
+\begin{fcode}{void}{minimal_model}{elliptic_curve< bigint > & $E_{\textsf{min}}$,
+    elliptic_curve< bigrational > & $E_R$, curve_isomorphism< bigrational, bigint > & $\iso$}%
+  constructs the minimal model of the elliptic curve $E_R$ and assigns it to $E_{\textsf{min}}$.
+  The explicit isomorphism is returned via the variable $\iso$.  Note at present to use this
+  function you need to include the file \path{LiDIA/minimal_model.h}.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+Only the \code{ostream} operator \code{<<} has been overloaded.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/elliptic_curve_bigint.h>
+#include <LiDIA/elliptic_curve.h>
+#include <LiDIA/point_bigint.h>
+#include <LiDIA/curve_isomorphism.h>
+
+int main()
+{
+    elliptic_curve< bigrational > Er1(1,2,3,4,5);
+    elliptic_curve< bigrational > Er2(6,0,24,16,320);
+    elliptic_curve< bigint >      Ei(1,2,3,4,5);
+    cout << Er1 << "  " << Er2 << "  " << Ei << endl;
+
+    curve_isomorphism< bigrational, bigint > iso1(Er1,Ei);
+    curve_isomorphism< bigrational, bigint > iso2(Er2,Ei);
+    curve_isomorphism< bigrational, bigrational > iso3(Er1,Er2);
+
+    cout << iso1 << "\n" << iso2 << "\n" << iso3 << "\n" << endl;
+
+    point< bigint > Pi(2,3,Ei);
+
+    cout << Pi << endl;
+
+    point< bigrational > Pr1=iso1.inverse(Pi);
+    point< bigrational > Pr2=iso2.inverse(Pi);
+
+    cout << Pr1 << "  " << Pr1.on_curve() << endl;
+    cout << Pr2 << "  " << Pr2.on_curve() << endl;
+
+    point< bigint > twoPi=Pi+Pi;
+    point< bigrational > twoPr1=Pr1+Pr1;
+    point< bigrational > twoPr2=Pr2+Pr2;
+
+    cout << "Test One\n";
+    cout << twoPi << endl;
+    cout << iso1.map(twoPr1) << endl;
+    cout << iso2.map(twoPr2) << endl;
+
+    cout << "Test Two\n";
+    cout << twoPr1 << endl;
+    cout << iso1.inverse(twoPi) << endl;
+    cout << iso3.inverse(twoPr2) << endl;
+
+    cout << "Test Three\n";
+    cout << twoPr2 << endl;
+    cout << iso2.inverse(twoPi) << endl;
+    cout << iso3.map(twoPr1) << endl;
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+See also the file
+\path{LiDIA/src/templates/elliptic_curves/ec_rationals/minimal_model_appl.cc}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{elliptic_curve< T >},
+\SEE{point< T >},
+\SEE{elliptic_curve< bigint >},
+\SEE{point< bigint >}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+John Cremona, Nigel Smart.
+

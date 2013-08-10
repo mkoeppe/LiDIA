@@ -1,0 +1,194 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  timer.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the class timer
+%%
+%%  Copyright   (c)   1995   by  LiDIA-Group
+%%
+%%  Authors: Thomas Papanikolaou
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{timer} \dotfill timer class
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{timer} is a class of timer utilities.  It can be used for
+example to calculate the elapsed time while executing a function, the
+time spent in the system and the time spent in the execution of the
+function.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+\code{timer} is a class which simulates the functions of a
+chronometer.  An instance $T$ of the data type \code{timer} is an
+object consisting of the integer variables \code{user_time},
+\code{sys_time} and local variables which are used to store elapsed times.
+
+A possible scenario of the use of \code{timer} is to start it at any
+place $t_1$ of the program then stop it at $t_2$ and print the elapsed
+real, system and user time between $t_2$ and $t_1$.  Continuing the
+timing and stopping the timer once again at $t_3$ stores in \code{T}
+the sum of the elapsed times between $t_1$ and $t_2$ and $t_2$ and
+$t_3$.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{timer}{}
+\end{fcode}
+
+\begin{fcode}{dt}{~timer}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\INIT
+
+\begin{fcode}{int}{T.set_print_mode}{int $m$}
+  this function sets the output mode $m$ of the \code{T.print()}
+function for \code{T} and returns the old print mode.  There are two
+predefined output modes: \code{TIME_MODE} and \code{HMS_MODE}.  The
+output of the \code{T.print()} function when \code{TIME_MODE} is set,
+has the following format: \begin{center} \code{rrr real uuu user sss
+sys}, \end{center} where \code{rrr, uuu, sss} denote the real, user
+and system time respectively (in milliseconds).  In \code{HMS_MODE} the
+\code{T.print()} function outputs the elapsed real time in the format
+\begin{center} \code{hhh hour, mmm min, nnn sec, ttt msec},
+\end{center} where hhh, mmm, nnn and ttt denote the consumed
+hours, minutes, seconds and milliseconds respectively.
+\end{fcode}
+
+\begin{fcode}{void}{T.start_timer}{}
+  this function initializes the timer with the current time and sets
+the elapsed time for this timer to zero.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+\begin{cfcode}{int}{T.get_print_mode}{}
+  returns the output mode of the timer \code{T}.  This mode is used by
+the \code{T.print()} function.
+\end{cfcode}
+
+\begin{cfcode}{long}{T.user_time}{}
+  returns the user time elapsed during the last call of
+  \code{T.start_timer()}.  The time is given in milliseconds.
+\end{cfcode}
+
+\begin{cfcode}{long}{T.sys_time}{}
+  returns the system time elapsed during the last call of
+  \code{T.start_timer()}.  The time is given in milliseconds.
+\end{cfcode}
+
+\begin{cfcode}{long}{T.real_time}{}
+  returns $\code{T.user_time()} + \code{T.sys_time()}$.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+\begin{fcode}{void}{T.stop_timer}{}
+  this function adds in \code{T} the elapsed time (user $+$ system)
+  since the last call of \code{T.start_timer()} or
+  \code{T.cont_timer()}.
+\end{fcode}
+
+\begin{fcode}{void}{T.cont_timer}{}
+  this function sets the starting point for timing to the current time
+  without changing the elapsed time in \code{T}.
+\end{fcode}
+
+For doing statistical computations, the operators \code{+}, \code{-},
+and \code{/} with a variable of type \code{double} are available. Note
+that negative results are set to zero.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+The \code{ostream} operator \code{<<} is overloaded.  Furthermore
+there exists the following member function for the output:
+
+\begin{cfcode}{void}{T.print}{ostream & out = cout}
+  prints the times elapsed between the last subsequent calls of
+  \code{T.start_timer()} and \code{T.stop_timer()} according to the
+  print mode of \code{T}.  The default output stream is the standard
+  output.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+getrusage(2)
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\WARNINGS
+
+Subsequent calls of \code{stop_timer()} produce wrong results.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/timer.h>
+
+int main()
+{
+    long i;
+    timer x;
+
+    x.set_print_mode(HMS_MODE);
+
+    x.start_timer();
+    for (i=0; i < 0x7fffff; i++);
+    x.stop_timer();
+    cout << endl;
+    x.print();
+    cout << endl;
+    x.cont_timer();
+    for (i=0; i < 0x7fffff; i++);
+    x.stop_timer();
+    cout << endl;
+    x.print();
+    cout << endl;
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+For further references please refer to
+\path{LiDIA/src/system/timer_appl.cc}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Thomas Papanikolaou

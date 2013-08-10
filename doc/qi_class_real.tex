@@ -1,0 +1,559 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  qi_class_real.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the class qi_class_real
+%%
+%%  Copyright   (c)   1996   by  LiDIA-Group
+%%
+%%  Author:  Michael J. Jacobson, Jr.
+%%
+
+\newcommand{\dist}{\mathit{dist}}
+\newcommand{\isequiv}{\mathit{is\uscore equiv}}
+\newcommand{\isprin}{\mathit{is\uscore prin}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{qi_class_real} \dotfill ideal equivalence classes of real quadratic orders
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{qi_class_real} is a class for representing and computing with the ideal equivalence
+classes of real quadratic orders, and in particular, for computing in the infrastructure of an
+equivalence class.  It supports basic operations like multiplication as well as more complex
+operations such as equivalence and principality testing.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+A \code{qi_class_real} is represented by a reduced, invertible quadratic ideal given in standard
+representation, i.e., an ordered pair of \code{bigint}s $(a,b)$ representing the $\bbfZ$-module
+$[a\bbfZ + (b + \sqrt{\D}) / 2 \,\bbfZ ]$, where $\D > 0$ is the discriminant of a real
+quadratic order.  This representative of an equivalence class is not unique, but it is one of a
+finite set of representatives.  A distance $\delta$ (logarithm of a minimum) is also stored with
+the ideal, so that computations in the infrastructure of an equivalence class are possible.  It
+is the user's responsibility to keep track of whether a specific distance is taken from the unit
+ideal or some other ideal.
+
+This class is derived from \code{qi_class}, and most of the functions work in exactly the same
+way.  Additional functions as well as the functions that work differently from \code{qi_class}
+are detailed below.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+Constructors have the same syntax as \code{qi_class}.  The distance is always initialized to 0.
+If the current quadratic order is not real, the \code{qi_class_real} will be initialized to
+zero.
+
+\begin{fcode}{ct}{qi_class_real}{}
+\end{fcode}
+
+\begin{fcode}{ct}{qi_class_real}{const bigint & $a_2$, const bigint & $b_2$}
+\end{fcode}
+
+\begin{fcode}{ct}{qi_class_real}{const long $a_2$, const long $b_2$}
+\end{fcode}
+
+\begin{fcode}{ct}{qi_class_real}{const quadratic_form & $f$}
+\end{fcode}
+
+\begin{fcode}{ct}{qi_class_real}{const quadratic_ideal & $A$}
+\end{fcode}
+
+\begin{fcode}{ct}{qi_class_real}{const qi_class & $A$}
+\end{fcode}
+
+\begin{fcode}{ct}{qi_class_real}{const qi_class_real & $A$}
+\end{fcode}
+
+\begin{fcode}{dt}{~qi_class_real}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\INIT
+
+Before any arithmetic is done with a \code{qi_class_real}, the current quadratic order must be
+initialized.  Note that this quadratic order is the same as that used for \code{qi_class}.
+
+\begin{fcode}{static void}{qi_class_real::set_current_order}{quadratic_order & $\Or$}
+\end{fcode}
+
+\begin{fcode}{static void}{qi_class_real::verbose}{int $\mathit{state}$}
+  sets the amount of information which is printed during computations.  If $\mathit{state} = 1$,
+  then the elapsed CPU time of some computations is printed.  If $\mathit{state} = 2$, then
+  extra information is output during verifications.  If $\mathit{state} = 0$, no extra
+  information is printed.  The default is $\mathit{state} = 0$.
+\end{fcode}
+
+\begin{fcode}{static void}{qi_class_real::verification}{int $\mathit{level}$}
+  sets the $\mathit{level}$ of post-computation verification performed.  If $\mathit{level} = 0$
+  no extra verification is performed.  If $\mathit{level} = 1$, then verification of the
+  principality and equivalence tests will be performed.  The success of the verification will be
+  output only if the verbose mode is set to a non-zero value, but any failures are always
+  output.  The default is $\mathit{level} = 0$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $A$ be of type \code{qi_class_real}.  Assignment is the same as in \code{qi_class}, with the
+exception that if the current quadratic order is not real, the \LEH will be evoked.  Also, some
+of the functions admit an optional parameter specifying the distance of $A$.  If this parameter
+is omitted, the distance will be set to $0$.
+
+\begin{fcode}{void}{$A$.assign_zero}{}
+\end{fcode}
+
+\begin{fcode}{void}{$A$.assign_one}{}
+\end{fcode}
+
+\begin{fcode}{void}{$A$.assign_principal}{const bigint & $x$, const bigint & $y$,
+    const bigfloat & $\dist$ = 0.0}%
+\end{fcode}
+
+\begin{fcode}{bool}{$A$.assign}{const bigint & $a_2$, const bigint & $b_2$,
+    const bigfloat & $\dist$ = 0.0}%
+\end{fcode}
+
+\begin{fcode}{bool}{$A$.assign}{const long $a_2$, const long $b_2$,
+    const bigfloat & $\dist$ = 0.0}%
+\end{fcode}
+
+\begin{fcode}{void}{$A$.assign}{const quadratic_form & $f$,
+    const bigfloat & $\dist$ = 0.0}
+\end{fcode}
+
+\begin{fcode}{void}{$A$.assign}{const quadratic_ideal & $B$,
+    const bigfloat & $\dist$ = 0.0}
+\end{fcode}
+
+\begin{fcode}{void}{$A$.assign}{const qi_class & $B$, const bigfloat & $\dist$ = 0.0}
+\end{fcode}
+
+\begin{fcode}{void}{$A$.assign}{const qi_class_real & $B$}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $A$ be of type \code{qi_class_real}.  The access functions are the same as in
+\code{qi_class}, with the addition of the function \code{get_distance}.
+
+\begin{cfcode}{bigint}{$A$.get_a}{}
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$A$.get_b}{}
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$A$.get_c}{}
+\end{cfcode}
+
+\begin{cfcode}{bigfloat}{$A$.get_distance}{}
+  returns the distance of $A$.
+\end{cfcode}
+
+\begin{cfcode}{static bigint}{$A$.discriminant}{}
+\end{cfcode}
+
+\begin{cfcode}{static quadratic_order &}{$A$.get_current_order}{}
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+Let $A$ be of type \code{qi_class_real}.  The arithmetic operations are identical to
+\code{qi_class}, with the exception that the distance of the result is also computed.
+
+\begin{fcode}{void}{multiply}{qi_class_real & $C$, const qi_class_real & $A$,
+    const qi_class_real & $B$}%
+\end{fcode}
+
+\begin{fcode}{void}{multiply_real}{qi_class_real & $C$, const qi_class_real & $A$,
+    const qi_class_real & $B$}%
+\end{fcode}
+
+\begin{fcode}{void}{$A$.invert}{}
+\end{fcode}
+
+\begin{fcode}{void}{inverse}{qi_class_real & $A$, const qi_class_real & $B$}
+\end{fcode}
+
+\begin{fcode}{qi_class_real}{inverse}{qi_class_real & $A$}
+\end{fcode}
+
+\begin{fcode}{void}{divide}{qi_class_real & $C$, const qi_class_real & $A$,
+    const qi_class_real & $B$}%
+\end{fcode}
+
+\begin{fcode}{void}{square}{qi_class_real & $C$, const qi_class_real & $A$}
+\end{fcode}
+
+\begin{fcode}{void}{square_real}{qi_class_real & $C$, const qi_class_real & $A$}
+\end{fcode}
+
+\begin{fcode}{void}{power}{qi_class_real & $C$, const qi_class_real & $A$, const bigint & $i$}
+\end{fcode}
+
+\begin{fcode}{void}{power}{qi_class_real & $C$, const qi_class_real & $A$, const long $i$}
+\end{fcode}
+
+\begin{fcode}{void}{power_real}{qi_class_real & $C$, const qi_class_real & $A$, const bigint & $i$}
+\end{fcode}
+
+\begin{fcode}{void}{power_real}{qi_class_real & $C$, const qi_class_real & $A$, const long $i$}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+Comparisons are identical to \code{qi_class}.  Let $A$ be an instance of type
+\code{qi_class_real}.
+
+\begin{cfcode}{bool}{$A$.is_zero}{}
+\end{cfcode}
+
+\begin{cfcode}{bool}{$A$.is_one}{}
+\end{cfcode}
+
+\begin{cfcode}{bool}{$A$.is_equal}{const qi_class_real & $B$}
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+\begin{cfcode}{operator}{qi_class}{}
+  cast operator which implicitly converts a \code{qi_class_real} to a \code{qi_class}.
+\end{cfcode}
+
+\begin{cfcode}{operator}{quadratic_ideal}{}
+  cast operator which implicitly converts a \code{qi_class_real} to a \code{quadratic_ideal}.
+\end{cfcode}
+
+\begin{cfcode}{operator}{quadratic_form}{}
+  cast operator which implicitly converts a \code{qi_class_real} to a \code{quadratic_form}.
+\end{cfcode}
+
+\begin{fcode}{void}{swap}{qi_class_real & $A$, qi_class_real & $B$}
+  exchanges the values of $A$ and $B$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+Let $A$ be of type \code{qi_class_real}.  The following two functions are the same as the
+corresponding \code{qi_class} functions.
+
+\begin{fcode}{bool}{generate_prime_ideal}{qi_class_real & $A$, const bigint & $p$}
+  the distance of $A$ is set to $0$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SSTITLE{Reduction operator}
+
+\begin{fcode}{void}{$A$.rho}{}
+  applies the reduction operator $\rho$ once to $A$, resulting in another reduced representative
+  of the same equivalence class.  The distance of $A$ is adjusted appropriately.
+\end{fcode}
+
+\begin{fcode}{void}{apply_rho}{qi_class_real & $C$, const qi_class_real & $A$}
+  sets $C$ to the result of the reduction operator $\rho$ being applied once to $A$.  The
+  distance of $C$ is set appropriately.
+\end{fcode}
+
+\begin{fcode}{qi_class_real}{apply_rho}{qi_class_real & $A$}
+  returns a \code{qi_class_real} corresponding to the result of the reduction operator $\rho$
+  being applied once to $A$.  The distance of the return value is set appropriately.
+\end{fcode}
+
+\begin{fcode}{void}{$A$.inverse_rho}{}
+  applies the inverse reduction operator $\rho^{-1}$ once to $A$, resulting in another reduced
+  representative of the same equivalence class.  The distance of $A$ is adjusted appropriately.
+\end{fcode}
+
+\begin{fcode}{void}{apply_inverse_rho}{qi_class_real & $C$, const qi_class_real & $A$}
+  sets $C$ to the result of the inverse reduction operator $\rho^{-1}$ being applied once to $A$.
+  The distance of $C$ is set appropriately.
+\end{fcode}
+
+\begin{fcode}{qi_class_real}{apply_inverse_rho}{qi_class_real & $A$}
+  returns a \code{qi_class_real} corresponding to the result of the inverse reduction operator
+  $\rho^{-1}$ being applied once to $A$.  The distance of the return value is set appropriately.
+\end{fcode}
+
+\begin{fcode}{qi_class_real}{nearest}{qi_class_real & $S$, const bigfloat & $E$}
+  returns the \code{qi_class_real} in the same class as $S$ whose distance from $S$ is as close
+  to $E$ in value as possible.
+\end{fcode}
+
+\begin{cfcode}{bigfloat}{$A$.convert_distance}{const qi_class_real & $B$,
+    const bigfloat & $\dist$}%
+  given that the distance from $B$ to $A$ is close to $\dist$, returns a more precise
+  approximation of the distance from $B$ to $A$.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SSTITLE{Equivalence and principality testing}
+
+In the following functions, if no current order has been defined, the \LEH will be evoked.  The
+parameter $dist$ is optional in all the equivalence and principality testing functions.
+
+\begin{cfcode}{bool}{$A$.is_equivalent}{const qi_class_real & $B$, bigfloat & $\dist$}
+  returns \TRUE if $A$ and $B$ are in the same ideal equivalence class, \FALSE otherwise.  If
+  $A$ and $B$ are equivalent, $\dist$ is set to the distance from $B$ to $A$, otherwise it is set
+  to the regulator of the current quadratic order.  Either \code{is_equivalent_buch} or
+  \code{is_equivalent_subexp} is used, depending on the size of the discriminant.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$A$.is_equivalent_buch}{const qi_class_real & $B$, bigfloat & $\dist$}
+  tests whether $A$ and $B$ are equivalent using the unconditional method of
+  \cite{Biehl/Buchmann:1995} assuming that the regulator is not known.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$A$.is_equivalent_subexp}{const qi_class_real & $B$, bigfloat & $\dist$}
+  tests whether $A$ and $B$ are equivalent using a variation of the sub-exponential method of
+  \cite{Jacobson_Thesis:1999} whose complexity is conditional on the ERH.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$A$.verify_equivalent}{const qi_class_real & $B$, const bigfloat & $x$,
+    const bool $\isequiv$}%
+  verifies whether $x$ is the distance from $B$ to $A$ if $\isequiv$ is \TRUE, otherwise it
+  verifies that $X$ is the regulator.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$A$.is_principal}{bigfloat & $\dist$}
+  returns \TRUE if $A$ is principal, \FALSE otherwise.  If $A$ is principal, $\dist$ is set to
+  the distance from $(1)$, otherwise it is set to the regulator of the current quadratic order.
+  Either \code{is_principal_buch} or \code{is_principal_subexp} is used, depending on the size
+  of the discriminant.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$A$.is_principal_buch}{bigfloat & $\dist$}
+  tests whether $A$ is principal using the unconditional method of \cite{Biehl/Buchmann:1995}
+  assuming that the regulator is not known.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$A$.is_principal_subexp}{bigfloat & $\dist$}
+  tests whether $A$ is principal using a variation of the sub-exponential method of
+  \cite{Jacobson_Thesis:1999} whose complexity is conditional on the ERH.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$A$.verify_principal}{const bigfloat & $x$, const bool $\isprin$}
+  verifies whether $x$ is the distance from $(1)$ to $A$ if $\isprin$ is \TRUE, otherwise it
+  verifies that $X$ is the regulator.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SSTITLE{Orders of elements in the class group}
+
+These functions work in exactly the same way as \code{qi_class}.
+
+\begin{cfcode}{bigint}{$A$.order_in_CL}{}
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$A$.order_BJT}{long $v$}
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$A$.order_h}{}
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$A$.order_mult}{bigint & $h$, rational_factorization & $hfact$}
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$A$.order_Shanks/Wrench:1962}{}
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$A$.order_subexp}{}
+\end{cfcode}
+
+\begin{cfcode}{bool}{$A$.verify_order}{const bigint & $x$}
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SSTITLE{Discrete logarithms in the class group}
+
+These functions work in exactly the same way as \code{qi_class}.
+
+\begin{cfcode}{bool}{$A$.DL}{const qi_class_real & $G$, bigint & $x$}
+\end{cfcode}
+
+\begin{cfcode}{bool}{$A$.DL_BJT}{const qi_class_real & $G$, bigint & $x$, long $v$}
+\end{cfcode}
+
+%\begin{cfcode}{bool}{$A$.DL_h}{const qi_class_real & $G$, bigint & $x$}
+%\end{cfcode}
+
+\begin{cfcode}{bool}{$A$.DL_subexp}{const qi_class_real & $G$, bigint & $x$}
+\end{cfcode}
+
+\begin{cfcode}{bool}{$A$.verify_DL}{const qi_class_real & $G$, const bigint & $x$,
+    const bool $\mathit{is\uscore DL}$}
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SSTITLE{Structure of a subgroup of the class group}
+
+These functions work in exactly the same way as \code{qi_class}.
+
+\begin{fcode}{base_vector< bigint >}{subgroup}{base_vector< qi_class_real > & $G$}
+\end{fcode}
+
+\begin{fcode}{base_vector< bigint >}{subgroup_BJT}{base_vector< qi_class_real > & $G$, base_vector< long > & $v$}
+\end{fcode}
+
+%\begin{fcode}{base_vector< bigint >}{subgroup_h}{base_vector< qi_class_real > & $G$}
+%\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+Let $A$ be of type \code{qi_class_real}.  The \code{istream} operator \code{>>} and the
+\code{ostream} operator \code{<<} are overloaded.  The input of a \code{qi_class_real} consists
+of \code{(a b dist)}, where $a$ and $b$ are integers corresponding to the representation $A =
+[a \bbfZ + (b + \sqrt{\D})/2 \, \bbfZ ]$, and $\dist$ is the distance corresponding to $A$.  The
+output has the format $(a,b,\dist)$.  For input, the current quadratic order must be set first,
+otherwise the \LEH will be evoked.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{qi_class},
+\SEE{quadratic_order},
+\SEE{quadratic_ideal},
+\SEE{quadratic_form}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\BUGS
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\NOTES
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/quadratic_order.h>
+
+int main()
+{
+    quadratic_order QO;
+    qi_class_real A, B, C, U;
+    bigint D, p, x;
+    bigfloat dist;
+
+    do {
+        cout << "Please enter a quadratic discriminant: ";
+        cin >> D;
+    } while (!QO.assign(D));
+    cout << endl;
+
+    qi_class_real::set_current_order(QO);
+
+    /* compute 2 prime ideals */
+    p = 3;
+    while (!generate_prime_ideal(A, p))
+        p = next_prime(p);
+    p = next_prime(p);
+    while (!generate_prime_ideal(B, p))
+        p = next_prime(p);
+
+    cout << "A = " << A << endl;
+    cout << "B = " << B << endl;
+
+    power(C, B, 3);
+    C *= -A;
+    square(C, C);
+    cout << "C = (A^-1*B^3)^2 = " << C << endl;
+
+    cout << "|<C>| = " << C.order_in_CL() << endl;
+
+    cout << "A principal? - " << A.is_principal(dist) << endl;
+    cout << "distance = " << dist << endl;
+    U.assign_one();
+    C = nearest(U, dist);
+    cout << C << "\n\n";
+
+    cout << "A equivalent to B? - " << A.is_equivalent(B, dist) << endl;
+    cout << "distance = " << dist << endl;
+    C = nearest(B, dist);
+    cout << C << endl;
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+Example:
+\begin{quote}
+\begin{verbatim}
+Please enter a quadratic discriminant: 178936222537081
+
+A = (3, 13376701, 0)
+B = (5, 13376701, 0)
+C = (A^-1*B^3)^2 = (140625, 13334741, 2.1972245773362194)
+|<C>| = 65
+A principal? - 0
+distance = 905318.66551222335
+(1, 13376703, 905318.66551222335)
+
+A equivalent to B? - 0
+distance = 905318.66551222335
+(5, 13376701, 905318.66551222335)
+\end{verbatim}
+\end{quote}
+
+For further examples please refer to
+\path{LiDIA/src/packages/quadratic_order/qi_class_real_appl.cc}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Michael J.~Jacobson, Jr.

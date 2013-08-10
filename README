@@ -1,0 +1,313 @@
+
+             LiDIA --- A library for computational number theory
+
+
+This is release 2.3.0 of the LiDIA library. The authoritative repository
+for LiDIA is
+
+	http://www.informatik.tu-darmstadt.de/TI/LiDIA/ftp/LiDIA/
+
+but note that other sites may mirror this site.  You can get the whole
+archive (LiDIA-2.3.0) or just packages (LiDIA-base-2.3.0,
+LiDIA-FF-2.3.0, LiDIA-LA-2.3.0, LiDIA-LT-2.3.0, LiDIA-NF-2.3.0,
+LiDIA-EC-2.3.0, LiDIA-ECO-2.3.0, and LiDIA-GEC-2.3.0).  All packages
+are provided in tar.gz format.  Everything unpacks into the directory
+./LiDIA-2.3.0. 
+
+Package dependencies:                                                   base
+ * The FF (Finite Fields) package depends only on the base package.      |
+ * The LA (Linear Algebra) package depends on the FF package.	         FF
+ * The LT (Lattice) package depends on the LA package.		         |
+ * The NF (Number Field) package depends on the LT package.	         LA
+ * The EC (Elliptic Curve) package depends on the LA package.	        / \
+ * The ECO (Elliptic Curve Order) package depends on the EC package.   LT  EC
+ * The GEC (Generate Elliptic Curves) package depends on both the NF   |   |
+   and the ECO package.						       NF  ECO
+     								        \ /
+     								         GEC
+     
+CHANGES
+
+See the file NEWS for a list of major changes in the current release.
+
+
+
+
+C++ COMPILER REQUIREMENTS
+
+In order to compile LiDIA, your C++ compiler MUST support some ISO C++
+features.  These are:
+
+    - type bool
+    - inlining
+    - mutable class members
+    - explicit constructors
+    - C++ style casts (i.e. static_cast<...> and const_cast<...>)
+    - explicit template instantiation by ISO C++
+    - template specialization by ISO C++ (template <>)
+    - ISO C++ headers, such as <iostream>, <fstream>, <string>, but also
+      <cstdlib>, <cstdio>, etc. 
+
+Moreover, LiDIA makes use of some basic classes from the C++ standard
+library, such as fstream, string.
+
+If your compiler fails to support one of the above items, you should
+upgrade.  Sorry for the inconvenience, but that's what a standard is for.
+
+However, LiDIA still doesn't make use of exceptions and run-time type
+information if you don't want it to.
+
+As of release 2.1pre6, only g++ has been tested.  The g++ versions 3.x and 4.x
+compile LiDIA successfully, whereas g++ 2.95.3 and 2.96 are
+known to fail when compiling LiDIA.  Note that this is not LiDIA's fault...
+
+
+
+
+DISK SPACE AND MAIN MEMORY REQUIREMENTS
+
+LiDIA is a quite large system which requires a remarkable amount of
+resources.  The full LiDIA distribution occupies about 70MByte when
+unpacked. Configuring and building all packages typically takes about 135MByte
+disk space on an i386-linux-gnu platform with ELF object file format, plus
+about 25MByte for temporaries.  Installing all packages can take additional
+90MByte. These amounts depend very much on the platform and on the configuration
+options. You can easily consume more than 1.8GByte if you configure LiDIA with
+  configure --disable-shared CXXFLAGS='-O0 -g2'
+and run
+  make check
+On the other hand, you can reduce the disk space requirements significantly by
+using appropriate configuration options if you do not need all the features
+of the full LiDIA distribution and if you build only those test programs you
+are interested in.
+
+With older versions of g++, 64MByte of RAM used to be sufficient for building
+LiDIA. Since recent g++ version have a much more heavy memory footprint, we
+recommend you have at least 512MByte free RAM. This recommendation also
+applies to building LiDIA applications, particularly when
+instantiating some of LiDIA's template classes.
+
+
+
+INSTALLATION (Unix-like systems, using configure)
+
+If you use `configure' to configure LiDIA, see the file INSTALL for
+compilation and generic installation instructions.
+
+LiDIA-specific configure options:
+
+    --enable-inline
+	If set to `yes', the multi-precision arithmetic routines from the
+	underlying kernel are inlined, otherwise separate function calls are
+	generated.  The default is `yes'.
+
+    --enable-exceptions
+        If set to `yes', then LiDIA is built with support for
+        exceptions and errors are reported by exceptions. 
+        If set to `no', then LiDIA is built without support for
+        exceptions. (g++ compiler switch `-fno-exceptions'.) 
+        Consult the description of class LiDIA::BasicError in the
+        LiDIA manual for details.
+        The default is `yes'.
+
+    --enable-namespaces
+	If set to `yes', then all of LiDIA's symbols will be defined in the
+	name space LiDIA (your C++ compiler must support name spaces).  The
+	default is `yes'.
+
+    --enable-assert
+	If set to `yes', the assert macros will be activated by not defining
+	`NDEBUG'.  The default is `no'.
+
+    --enable-ff
+	If set to `yes', the finite-fields package will be built.  The
+	default is `yes'.
+
+    --enable-la
+	If set to `yes', the linear-algebra package will be built.  Since
+	this package depends on the finite-fields package, the
+	linear-algebra package will be built only if the finite-fields
+	package is built.  The default is `yes'.
+
+    --enable-lt
+	If set to `yes', the lattice package will be built.  Since this
+	package depends on the linear-algebra package, the lattice package
+	will be built only if the linear-algebra package is built.  The
+	default is `yes'.
+
+    --enable-nf
+	If set to `yes', the number-fields package will be built.  Since
+	this package depends on the lattice package, the number-fields
+	package will be built only if the lattice package is built.  The
+	default is `yes'.
+
+    --enable-ec
+	If set to `yes', the elliptic-curves package will be built.  Since
+	this package depends on the lattice package, the elliptic-curves
+	package will be built only if the lattice package is built.  The
+	default is `yes'.
+
+    --enable-eco
+	If set to `yes', the elliptic-curve-order package will be built.
+	Since this package depends on the elliptic-curves package, the
+	elliptic-curve-order package will be built only if the
+	elliptic-curves package is built.  The default is `yes'.
+
+    --enable-gec
+	If set to `yes', the elliptic curve generation package will be
+	built.  Since this package depends on the elliptic curve order
+	package, the elliptic curve generation package will be built only
+	if the elliptic curve order package is built.  The default is
+	`yes'.
+
+    --with-arithmetic
+	Determines the multi-precision kernel for LiDIA.  Valid values are
+	`gmp', `cln', `piologie', and `libI'.
+
+	YOUR SYSTEM MUST PROVIDE THE LIBRARY OF YOUR CHOICE BEFORE
+	CONFIGURING LiDIA!
+
+	Note for Piologie users on Unix-like systems: For some reason the
+	Piologie library is created as `piologie.a' instead of
+	`libpiologie.a'.  Rename `piologie.a' to `libpiologie.a', or create
+	a link, otherwise the configure script will not find the Piologie
+	library.
+
+    --with-extra-includes
+	If the headers of the multi-precision library reside in a directory
+	that is not searched by your C++ compiler, then add the path with
+	this option.
+
+    --with-extra-libs
+	If the multi-precision library resides in a directory that is not
+	searched by your linker, then add the path with this option.
+
+LiDIA's build procedure uses GNU Libtool, which adds the following 
+options to "configure":
+
+    --enable-shared
+    --enable-static
+	These options determine whether shared and/or static library
+	versions will be built.  Only the latter option defaults to `yes'.
+
+    --with-pic
+    --without-pic
+	Normally, shared libraries use position-independent code, and
+	static libraries use direct jump instructions which need to be
+	edited by the linker.  The --with-pic option enforces
+	position-independent code even for static libraries, whereas
+	--without-pic does not demand position-independent code even when
+	building shared libraries.  Using one of these options can halven
+	compilation time and reduce disk space usage because they save
+	the source files from being compiled twice.  Note that only
+	position-independent code can be shared in main memory among
+	applications; using position-dependent code for dynamically linked
+	libraries just defers the linking step to program load time and
+	then requires private memory for the relocated library code.
+
+    --enable-fast-install
+	LiDIA comes with some example applications, which you may want to
+	run in the build tree without having installed the shared library.
+	To make this work, Libtool creates wrapper scripts for the actual
+	binaries.  With --enable-fast-install=yes, the (hidden) binaries
+	are prepared for installation and must be run from the (visible)
+	wrapper scripts until the shared library is installed.  With
+	--enable-fast-install=no, the binaries are linked with the
+	uninstalled library, thus necessitating a relinking step when
+	installing them.  As long as you do not run the hidden binaries
+	directly and use the provided make targets for installing, you need
+	not care about these details.  However, note that installing the
+	example applications without having installed the shared library in
+	the configured libdir will work only with the setting
+	--enable-fast-install=yes, which is the default.  This can be
+	important when preparing binary installation images.
+
+
+COMPILER FLAGS
+
+You can provide any desired compiler flag by setting the variable CXXFLAGS
+in the environment or in the command line passed to `configure'.  For
+example, type
+
+	./configure CXXFLAGS="<your desired flags>"
+
+The configure script presets CFLAGS and CXXFLAGS with -O2, if these are
+empty or unset. 
+
+If you have problems to build LiDIA due to memory exhaustion, it will
+probably help to limit inlining (some packages contain quite large inlined
+functions).  If you are using GCC, the appropriate option to limit inlining
+is -finline-limit-N (GCC-2.x) resp. -finline-limit=N (GCC-3.x), where N
+should be chosen to be between 300 and 1000 (GCC's default is 10000).  This
+will also result in faster compilation times and smaller object files for
+some source files.
+
+Likewise, the GNU g++ compiler flags -Wreturn-type might drastically
+increase memory consumption (see the GCC FAQ, e.g. http://gcc.gnu.org/faq/).
+Note that -Wall implies -Wreturn-type.
+
+
+EXTENDED FEATURES
+
+LiDIA's Makefile suite provides all targets proposed in the GNU Makefile
+standards, including `install-exec', `install-data', and `uninstall'.
+Furthermore, VPATH builds and staged installs (using DESTDIR) are supported.
+
+
+BUILDING AND INSTALLING THE EXAMPLES
+
+To build the examples, type
+
+	make examples
+
+and to install the examples type
+
+	make install-examples
+
+
+BUILDING THE DOCUMENTATION
+
+To run the documentation through LaTeX2e and produce the DVI file
+doc/LiDIA.dvi, type
+
+	make dvi
+
+Note: As of release 2.1pre6, this also requires the "texi2dvi" script,
+which comes with the GNU texinfo tools, to be available on your system.
+
+You can additionally convert the DVI file into Postscript, yielding
+doc/LiDIA.ps, by running
+
+	make ps
+
+and generate compressed versions doc/LiDIA.ps.{gz,bz2} using
+
+	make psgz
+	make psbz2
+
+If you have pdflatex, you can as well build doc/LiDIA.pdf.  Just type
+
+	make pdf
+or
+	make dsc
+
+The latter produces doc/LiDIA.dsc in addition to doc/LiDIA.pdf.  The dsc
+file is a Postscript wrapper providing access to LiDIA.pdf for PS tools
+like psselect, Ghostview, and others.  Making the dsc file requires the
+"pdf2dsc" utility which comes with Ghostscript 6.x.  Note that the
+combination of pdf+dsc is as compact as a compressed PS file.  However, you
+will probably not be able to print doc/LiDIA.dsc because that file uses
+pointers into LiDIA.pdf which will be dangling when copied into a spool
+directory.  For printing, better make doc/LiDIA.ps.
+
+
+BUILDING THE MANUAL
+
+You can build the manual with "make doc" once the package is configured. Note
+that you need a (PDF-)LaTeX installation for this to work.
+
+If you do not have the EC and EM Type 1 fonts installed, then edit
+doc/LiDIA.tex and uncomment the line that instructs LaTeX to use the package
+ae.  Using package "ae" will produce better-looking postscript output for
+on-screen viewing.
+

@@ -1,0 +1,283 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  udigit_mod.tex   LiDIA documentation
+%%
+%%  This file contains the documentation of the class udigit_mod
+%%
+%%  Copyright (c) 1997 by the LiDIA Group
+%%
+%%  Authors: Thorsten Rottschaefer
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{udigit_mod} \dotfill single precision modular integer arithmetic
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{udigit_mod} is a class that represents elements of the ring $\ZmZ$ by their smallest
+non-negative residue modulo $m$.  Both, the residue and the modulus are of type \code{udigit}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+A \code{udigit_mod} is a pair of two \code{udigit}s $(\mathit{man}, m)$, where $\mathit{man}$ is
+called the \emph{mantissa} and $m$ the \emph{modulus}.  The modulus is global to all
+\code{udigit_mod}s and must be set before a variable of type \code{udigit_mod} can be declared.
+This is done by the following statement:
+
+\begin{quote}
+  \code{udigit_mod::set_modulus(udigit $m$)}
+\end{quote}
+
+By default the modulus of the class is set to $0$.  Each equivalence class modulo $m$ is
+represented by its least non-negative representative, i.e. the mantissa of a
+\code{udigit_mod} is chosen in the interval $[ 0, \dots, |m| - 1 ]$.
+
+If you have forgotten to set the modulus appropriately when assigning an \code{udigit} $r$ to an
+object of type \code{udigit_mod}, e.g., using the operator \code{=}, you probably get an
+error message like ``division by zero'', because $r$ will be reduced without checking whether
+the modulus is zero.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\INIT
+
+\begin{fcode}{void}{udigit_mod::set_modulus}{udigit $m$}
+  sets the global modulus to $|m|$; if $m = 0$, the \LEH will be invoked.  If you call the
+  function \code{set_modulus($m$)} after declaration of variables of type \code{udigit_mod}, all
+  these variables might be incorrect, i.e.  they might have mantissas which are not in the
+  proper range.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{udigit_mod}{}
+  Initializes with $0$.
+\end{fcode}
+
+\begin{fcode}{ct}{udigit_mod}{const udigit_mod & $n$}
+  Initializes with $n$.
+\end{fcode}
+
+\begin{fcode}{ct}{udigit_mod}{udigit $n$}
+  Initializes the mantissa with $n$ mod $m$, where $m$ is the global modulus.
+\end{fcode}
+
+\begin{fcode}{dt}{~udigit_mod}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $a$ be of type \code{udigit_mod}.
+
+\begin{fcode}{udigit}{udigit_mod::get_modulus}{}
+  Returns the global modulus of the class \code{udigit_mod}.
+\end{fcode}
+
+\begin{fcode}{udigit}{$a$.get_mantissa}{}
+  returns the mantissa of the \code{udigit_mod} $a$.  The mantissa is chosen in the interval
+  $[0, \dots, m-1]$, where $m$ is the global modulus.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\MODF
+
+\begin{fcode}{void}{$a$.inc}{}
+  $a \assign a + 1$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.dec}{}
+  $a \assign a - 1$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.swap}{udigit_mod & $b$}\end{fcode}
+\begin{fcode}{void}{swap}{udigit_mod & $a$, udigit_mod & $b$}
+  exchanges the mantissa of $a$ and $b$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $a$ be of type \code{bigint}.  The operator \code{=} is overloaded.  The user may also use
+the following object methods for assignment:
+
+\begin{fcode}{void}{$a$.assign_zero}{}
+  $\mantissa(a) \assign 0$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign_one}{}
+  $\mantissa(a) \assign 1$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign}{const udigit_mod & $n$}
+  $a \assign b$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign}{udigit $n$}
+  $a \assign n \bmod m$ where $m$ is the global modulus.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+The binary operators \code{==}, \code{!=}, and the unary operator \code{!} (comparison with
+zero) are overloaded and can be used in exactly the same way as for machine types in C++
+(e.g.~\code{int}).  Let $a$ be of type \code{udigit_mod}.
+
+\begin{cfcode}{bool}{$a$.is_zero}{}
+  Returns \TRUE if the mantissa of $a$ is $0$ and \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_one}{}
+  Returns \TRUE if the mantissa of $a$ is $1$ and \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_equal}{const udigit_mod & $b$}
+  Returns \TRUE if $a = b$ and \FALSE otherwise.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+The following operators are overloaded and can be used in exactly the same way as for machine
+types in C++ (e.g.~\code{int}):
+
+\begin{center}
+\code{(unary) -, ++, -{}-}\\
+\code{(binary) +, -, *, /}\\
+\code{(binary with assignment) +=,  -=,  *=,  /=}\\
+\end{center}
+
+To avoid copying, these operations can also be performed by the following functions:
+
+\begin{fcode}{void}{negate}{udigit_mod & $a$, const udigit_mod & $b$}
+  $a \assign - b$.
+\end{fcode}
+
+\begin{fcode}{void}{add}{udigit_mod & $c$, const udigit_mod $a$, const udigit_mod $b$}\end{fcode}
+\begin{fcode}{void}{add}{udigit_mod & $c$, const udigit_mod $a$, udigit $b$}
+  $c \assign a + b$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{udigit_mod & $c$, const udigit_mod $a$, const udigit_mod $b$}\end{fcode}
+\begin{fcode}{void}{subtract}{udigit_mod & $c$, const udigit_mod $a$, udigit $b$}\end{fcode}
+\begin{fcode}{void}{subtract}{udigit_mod & $c$, udigit $a$, const udigit_mod $b$}
+  $c \assign a - b$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{udigit_mod & $c$, const udigit_mod $a$, const udigit_mod $b$}\end{fcode}
+\begin{fcode}{void}{multiply}{udigit_mod & $c$, const udigit_mod $a$, udigit $b$}
+  $c \assign a \cdot b$.
+\end{fcode}
+
+\begin{fcode}{void}{square}{udigit_mod & $c$, const udigit_mod $a$}
+  $c \assign a^2$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{udigit_mod & $c$, const udigit_mod $a$, const udigit_mod $b$}\end{fcode}
+\begin{fcode}{void}{divide}{udigit_mod & $c$, const udigit_mod $a$, udigit $b$}\end{fcode}
+\begin{fcode}{void}{divide}{udigit_mod & $c$, udigit $a$, const udigit_mod $b$}
+  $c \assign a / b$.
+\end{fcode}
+
+\begin{fcode}{void}{invert}{udigit_mod & $a$, const udigit_mod & $b$}
+  $a \assign b^{-1}$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+The input and output format of a \code{udigit_mod} consists only of its mantissa, since the
+modulus is global.  The \code{istream} operator \code{>>} and the \code{ostream} operator
+\code{<<} are overloaded.  Furthermore, you can use the following member functions below for
+writing to and reading from a file.
+
+\begin{fcode}{void}{$a$.read}{istream & in}
+  Reads a mantissa from \code{in} and stores it into $a$.  The mantissa is reduced modulo $m$,
+  where $m$ is the global modulus.
+\end{fcode}
+
+\begin{cfcode}{void}{$a$.write}{ostream & out}
+  Writes the mantissa of $a$ to \code{out}.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{udigit}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+The example code can be found in \path{LiDIA/src/simple_classes/udigit_mod/udigit_mod_appl.cc}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/udigit_mod.h>
+
+int main()
+{
+    udigit_mod::set_modulus(17);
+
+    udigit_mod c, d, e;
+
+    c = 10;
+    d = 9;              //or udigit_mod c(10), d(9), e;
+
+    add(e, d, c);
+    cout << e <<''\n''; // output should be 2 ((10+9)%17=2)
+
+    divide(e, c, d);
+    cout << e <<''\n''; // output should be 3 (inverse of 9 is 2 and (2*10)%17=3)
+
+    subtract(e, c, d);
+    cout << e <<''\n''; // output should be 1 ((10-9)%17=1)
+
+    multiply(e, c, d);
+    cout << e <<''\n''; // output should be 5 ((10*9)%17=5)
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Thorsten Rottschaefer

@@ -1,0 +1,93 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  exceptions.tex        LiDIA documentation
+%%
+%%  This file contains the documentation of the exceptions
+%%  thrown by LiDIA.
+%%
+%%  Copyright (c) 2002 by the LiDIA Group
+%%
+%%  Authors: Christoph Ludwig
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{generic_error} \dotfill concrete exception class for general errors
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\LiDIA throws a \code{generic_error} if, for some particular error situation,
+no specialized exception class is provided.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+Class \code{generic_error} is publicly derived from \code{basic_error}. Its
+interface gives access to two strings that correspond to to the arguments of
+\code{lidia_error_handler}. 
+\code{traditional_error_handler} yields the same behaviour as a call to
+\code{lidia_error_handler} in \LiDIA 2.0 and earlier.
+
+Let \code{e} be an object of type \code{generic_error}.
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{explicit ct}{generic_error}{const std::string& what_msg}
+  This constructor is equivalent to
+  \code{generic_error("<generic_error>", what_msg)}.
+\end{fcode}
+
+\begin{fcode}{ct}{generic_error}{const std::string& classname, 
+                                 const std::string& what_msg}
+  Constructs a new generic error object. The semantic of \code{classname} and
+  \code{what_msg} is the same as in \code{lidia_error_handler()}. When the
+  constructor returns the invariants \code{classname ==
+  this->offendingClass()} and \code{what_msg == this->what} will hold.
+\end{fcode}
+
+\begin{fcode}{dt}{virtual ~generic_error}{}
+  Frees all resources hold by this object.
+\end{fcode}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+\begin{cfcode}{virtual const std::string&}{e.offendingClass}{}
+  Returns a textual description where the error occured. Corresponds to the
+  first parameter of \code{lidia_error_handler}.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+\code{lidia_error_handler, basic_error}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\WARNINGS
+
+\LiDIA's exception hierarchy is still experimental. We may change it without
+prior notice.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Christoph Ludwig
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

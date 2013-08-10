@@ -1,0 +1,193 @@
+#buckets = 23
+current size = 0
+
+
+current size = 40
+last entry = -59
+search succeeded!  Last entry is in the table.
+
+sequential access:
+element 0 = 0
+element 5 = 5
+element 10 = 10
+element 15 = 15
+element 20 = 20
+element 25 = 25
+element 30 = -50
+element 35 = -55
+Contents of IHT:
+0: 0
+1: 1
+2: 2
+3: 3
+4: 4
+5: 5
+6: 6
+7: 7
+8: 8
+9: 9
+10: 10
+11: 11
+12: 12
+13: 13
+14: 14
+15: 15
+16: 16
+17: 17
+18: 18
+19: 19
+20: 20
+21: 21
+22: 22
+23: 23
+24: 24
+25: 25
+26: 26
+27: 27
+28: 28
+29: 29
+30: -50
+31: -51
+32: -52
+33: -53
+34: -54
+35: -55
+36: -56
+37: -57
+38: -58
+39: -59
+
+
+copying...
+
+contents of new table:
+0: 0
+1: 1
+2: 2
+3: 3
+4: 4
+5: 5
+6: 6
+7: 7
+8: 8
+9: 9
+10: 10
+11: 11
+12: 12
+13: 13
+14: 14
+15: 15
+16: 16
+17: 17
+18: 18
+19: 19
+20: 20
+21: 21
+22: 22
+23: 23
+24: 24
+25: 25
+26: 26
+27: 27
+28: 28
+29: 29
+30: -50
+31: -51
+32: -52
+33: -53
+34: -54
+35: -55
+36: -56
+37: -57
+38: -58
+39: -59
+
+#buckets = 23
+current size = 40
+
+remove_from function...
+remove element 35 = -55
+remove element 30 = -50
+remove element 25 = 25
+remove element 20 = 20
+remove element 15 = 15
+remove element 10 = 10
+remove element 5 = 5
+remove element 0 = 0
+remove function...
+remove 7
+remove 14
+remove 21
+remove 28
+remove 35
+remove 42
+remove 49
+contents of new table:
+0: 1
+1: 2
+2: 3
+3: 4
+4: 6
+5: 8
+6: 9
+7: 11
+8: 12
+9: 13
+10: 16
+11: 17
+12: 18
+13: 19
+14: 22
+15: 23
+16: 24
+17: 26
+18: 27
+19: 29
+20: -51
+21: -52
+22: -53
+23: -54
+24: -56
+25: -57
+26: -58
+27: -59
+
+#buckets = 23
+current size = 28
+
+contents of new table (sequentially):
+0: 1
+1: 2
+2: 3
+3: 4
+4: 6
+5: 8
+6: 9
+7: 11
+8: 12
+9: 13
+10: 16
+11: 17
+12: 18
+13: 19
+14: 22
+15: 23
+16: 24
+17: 26
+18: 27
+19: 29
+20: -51
+21: -52
+22: -53
+23: -54
+24: -56
+25: -57
+26: -58
+27: -59
+
+emptying it...
+contents of new table:
+
+#buckets = 23
+current size = 0
+

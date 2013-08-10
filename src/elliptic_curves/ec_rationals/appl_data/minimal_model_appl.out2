@@ -1,0 +1,32 @@
+Enter a curve: Input curve E0 = [0,-6,0,11,-6]
+Minimal model E1 = [0,0,0,-1,0]
+Isomorphism E0->E1: [u,r,s,t] = [1,2,0,0]
+Unimodular?...yes
+Identity?...no
+Long output:
+[0,0,0,-1,0]
+b2 = 0; b4 = -2; b6 = 0; b8 = -1
+c4 = 48; c6 = 0
+disc = 64; bad primes = [ 2 ]; # real components = 2
+Conductor = 32
+
+Reduction type at bad primes:
+p	ord(d)	ord(N)	ord(denom(j))	Kodaira	c_p
+2	6	5	0		III  	2
+Product of c_p = 2
+
+
+Torsion points on the minimal model: 
+Torsion order = 4
+Torsion points:
+	0 ) [0 : 1 : 0], 	order 1
+	1 ) [1 : 0 : 1], 	order 2
+	2 ) [-1 : 0 : 1], 	order 2
+	3 ) [0 : 0 : 1], 	order 2
+Non-cyclic: C2 x C2, generators [-1 : 0 : 1], [1 : 0 : 1]
+
+Torsion points on the input model: 
+O
+(3 , 0)
+(1 , 0)
+(2 , 0)

@@ -1,0 +1,231 @@
+%===========================================================================
+%
+%       ${srcdir}/doc/LiDIA_base.tex
+%
+%---------------------------------------------------------------------------
+%
+%       $Id$
+%
+%===========================================================================
+
+\part*{The \LiDIA base package}
+\addcontentsline{toc}{part}{\LiDIA base package}
+
+%The \LiDIA base package contains all the basic arithmetic and almost all of the template
+%classes.
+
+
+\chapter{Arithmetics over $\bbfZ$, $\bbfQ$, $\bbfR$, $\bbfC$}
+%\addcontentsline{toc}{chapter}{Arithmetics over $\bbfZ$, $\bbfQ$, $\bbfR$, $\bbfC$}
+
+
+\begin{class}{bigint}
+  \input{bigint}
+\end{class}
+
+\begin{class}{udigit_mod}
+  \input{udigit_mod}
+\end{class}
+
+\begin{class}{bigmod}
+  \input{bigmod}
+\end{class}
+
+\begin{class}{multi_bigmod}
+  \input{multi_bigmod}
+\end{class}
+
+\begin{class}{bigrational}
+  \input{bigrational}
+\end{class}
+
+\begin{class}{xdouble}
+  \input{xdouble}
+\end{class}
+
+\begin{class}{bigfloat}
+  \input{bigfloat}
+\end{class}
+
+\begin{class}{xbigfloat}
+  \input{xbigfloat}
+\end{class}
+
+%\begin{class}{double_int}
+%  \input{double_int}
+%\end{class}
+
+%\begin{class}{bigfloat_int}
+%  \input{bigfloat_int}
+%\end{class}
+
+\begin{class}{bigcomplex}
+  \input{bigcomplex}
+\end{class}
+
+
+\chapter{Vectors and Hash Tables}
+%\addcontentsline{toc}{chapter}{Vectors and Hash Tables}
+
+\begin{class}{base_vector}
+  \input{base_vector}
+\end{class}
+
+\begin{class}{math_vector}
+  \input{math_vector}
+\end{class}
+
+\begin{class}{sort_vector}
+  \input{sort_vector}
+\end{class}
+
+\begin{class}{file_vector}
+  \input{file_vector}
+\end{class}
+
+\begin{class}{lidia_vector}
+  \input{lidia_vector}
+\end{class}
+
+\begin{class}{hash_table}
+  \input{hash_table}
+\end{class}
+
+\begin{class}{indexed_hash_table}
+  \input{indexed_hash_table}
+\end{class}
+
+
+\chapter{Matrices} \label{LiDIA-base:matrices}
+%\addcontentsline{toc}{chapter}{Matrices}
+
+Please note that the \LiDIA base package only contains the general template matrix classes.
+Classes which deal with the more specialized linear algebra over the ring of rational integers
+and over $\ZmZ$ can be found in the \LiDIA LA package (see page \pageref{LiDIA-LA}).
+
+\begin{class}{base_matrix}
+  \input{base_matrix}
+\end{class}
+
+\begin{class}{math_matrix}
+  \input{math_matrix}
+\end{class}
+
+\begin{class}{matrix_GL2Z}
+  \input{matrix_GL2Z}
+\end{class}
+
+
+\chapter{Polynomials}
+%\addcontentsline{toc}{chapter}{Polynomials}
+
+\begin{class}{polynomial}
+  \input{polynomial}
+\end{class}
+
+\begin{class}{polynomial over bigint, bigrational, bigfloat, bigcomplex}
+  \input{big_polynomial}
+\end{class}
+
+
+\chapter{Factorization}
+%\addcontentsline{toc}{chapter}{Factorization}
+
+Please not that the description of the classes which deal with the factorization of polynomials
+over finite fields can be found in the section ``\LiDIA FF package'' (see page
+\pageref{LiDIA-FF}); factorization routines for algebraic ideals are part of the \LiDIA NF
+package (see page \pageref{LiDIA-NF}).
+
+\begin{class}{rational_factorization}
+  \input{fact}
+\end{class}
+
+%\begin{class}{lanczos_algorithm}
+%  \input{lanczos_algorithm}
+%\end{class}
+
+\begin{class}{single_factor}
+  \input{single_factor}
+\end{class}
+
+\begin{class}{factorization} \label{LiDIA-base:factorization}
+  \input{factorization}
+\end{class}
+
+\begin{class}{single_factor< bigint >}
+  \input{sf_bigint}
+\end{class}
+
+
+
+\chapter{Miscellaneous}
+%\addcontentsline{toc}{chapter}{Miscellaneous}
+
+\begin{class}{modular_functions}
+  \input{modular_functions}
+\end{class}
+
+\begin{class}{number-theoretic functions}
+  \input{nmbrthry_functions}
+\end{class}
+
+\begin{class}{crt_table/crt}
+  \input{crt}
+\end{class}
+
+\begin{class}{prime_list}
+  \input{prime_list}
+\end{class}
+
+\begin{class}{power_functions}
+  \input{power_functions}
+\end{class}
+
+
+\chapter{System and Portability}
+%\addcontentsline{toc}{chapter}{System and Portability}
+
+\begin{class}{timer}
+  \input{timer}
+\end{class}
+
+\begin{class}{system_handlers}
+  \input{handlers}
+\end{class}
+
+\begin{class}{basic_error}
+  \input{basic_error}
+\end{class}
+
+\begin{class}{generic_error}
+  \input{generic_error}
+\end{class}
+
+\begin{class}{cast_error}
+  \input{cast_error}
+\end{class}
+
+\begin{class}{precondition_error}
+  \input{precondition_error}
+\end{class}
+
+\begin{class}{index_out_of_bounds_error}
+  \input{index_out_of_bounds_error}
+\end{class}
+
+\begin{class}{gmm}
+  \input{gmm}
+\end{class}
+
+\begin{class}{random_generator}
+  \input{random_generator}
+\end{class}
+
+\begin{class}{lidia_signal}
+  \input{lidia_signal}
+\end{class}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

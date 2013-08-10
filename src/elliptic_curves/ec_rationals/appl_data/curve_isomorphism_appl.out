@@ -1,0 +1,24 @@
+E1: [1,2,3,4,5]
+E2: [6,0,24,16,320]
+E3: [1,-1,0,4,3]
+
+isomorphism E1->E3: [1,-1,0,-1]
+isomorphism E2->E3: [2,-4,-2,0]
+isomorphism E1->E2: [1/2,0,1,0]
+
+[2 : 3 : 1] is a point on E3
+(1 , 2) is its preimage on E1: 1
+(4 , 8) is its preimage on E2: 1
+
+Test One (the following should be the same point on E3):
+[-312 : 279 : 512]
+[-312 : 279 : 512]
+[-312 : 279 : 512]
+Test Two (the following should be the same point on E1):
+(-103/64 , -233/512)
+(-103/64 , -233/512)
+(-103/64 , -233/512)
+Test Three (the following should be the same point on E2):
+(-103/16 , 591/64)
+(-103/16 , 591/64)
+(-103/16 , 591/64)

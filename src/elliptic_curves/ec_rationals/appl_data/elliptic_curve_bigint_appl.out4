@@ -1,0 +1,54 @@
+Enter a curve: Default output:  	[0,0,0,-587044371375,173122882731933750]
+output_short():  	[0,0,0,-587044371375,173122882731933750]
+output_long():   	[0,0,0,-587044371375,173122882731933750]
+b2 = 0; b4 = -1174088742750; b6 = 692491530927735000; b8 = -344621093963068919390625
+c4 = 28178129826000; c6 = -149578170680390760000
+disc = 1850980104159161689860300000000; bad primes = [ 2 3 5 7 11 761 ]; # real components = 2
+Conductor = 12182316300
+
+Reduction type at bad primes:
+p	ord(d)	ord(N)	ord(denom(j))	Kodaira	c_p
+2	8	2	0		IV*  	3
+3	9	3	0		IV*  	3
+5	8	2	0		IV*  	3
+7	8	2	0		IV*  	3
+11	8	2	0		IV*  	3
+761	1	1	1		I1	1
+Product of c_p = 243
+
+
+output_pretty(): 	Y^2 = X^3 - 587044371375 * X + 173122882731933750
+output_tex():    	$y^2 = x^3 - 587044371375x + 173122882731933750$
+Default output after set_output_mode(1): 	[0,0,0,-587044371375,173122882731933750]
+b2 = 0; b4 = -1174088742750; b6 = 692491530927735000; b8 = -344621093963068919390625
+c4 = 28178129826000; c6 = -149578170680390760000
+disc = 1850980104159161689860300000000; bad primes = [ 2 3 5 7 11 761 ]; # real components = 2
+Conductor = 12182316300
+
+Reduction type at bad primes:
+p	ord(d)	ord(N)	ord(denom(j))	Kodaira	c_p
+2	8	2	0		IV*  	3
+3	9	3	0		IV*  	3
+5	8	2	0		IV*  	3
+7	8	2	0		IV*  	3
+11	8	2	0		IV*  	3
+761	1	1	1		I1	1
+Product of c_p = 243
+
+
+Default output after set_output_mode(2): 	Y^2 = X^3 - 587044371375 * X + 173122882731933750
+Default output after set_output_mode(3): 	$y^2 = x^3 - 587044371375x + 173122882731933750$
+Default output after set_output_mode(0): 	[0,0,0,-587044371375,173122882731933750]
+
+Torsion order = 3
+Torsion points:
+	0 ) [0 : 1 : 0], 	order 1
+	1 ) [444675 : -2668050 : 1], 	order 3
+	2 ) [444675 : 2668050 : 1], 	order 3
+Cyclic: C3, generator  [444675 : -2668050 : 1]
+
+Periods 
+Omega_1 = (-0.7253115046959766083048581214339284995648e-120,-0.2727104808167689446875969635447014423078e-2)
+Omega_2 = (0.1007624597664402237078974972391154069435e-1,0)
+Height Constant
+19.8943

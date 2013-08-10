@@ -1,0 +1,918 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  bigint_lattice.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the lattice classes
+%%
+%%  Copyright   (c)   1995   by  LiDIA-Group
+%%
+%%  Authors: Thorsten Lauer, Susanne Wetzel
+%%
+
+\newcommand{\factor}{\mathit{factor}}
+\newcommand{\li}{\mathit{li}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{bigint_lattice} \dotfill lattice algorithms
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+The class \code{bigint_lattice} is derived from the class \code{bigint_matrix} and therefore
+inherits all their functions.  In addition the class \code{bigint_lattice} provides algorithms
+for shortest vector computations, lattice reduction of lattice bases or linearly independent
+Gram matrices as well as computations of lattice bases and relations from generating systems or
+linearly dependent Gram matrices.  A lattice $L$ is given by $A = (a_0, \dots, a_{k-1}) \in M^{n
+  \times k}$ ($n,k \in \bbfN$) where $M$ consists of elements of type \code{bigint} and $A$ is a
+linearly (in)dependent Gram matrix, a generating system or a lattice basis of $L$.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+A variable of type \code{bigint_lattice} cosists of the same components as \code{bigint_matrix}.
+
+Let $A$ be of class \code{bigint_lattice}.  In the present version of \LiDIA the following
+algorithms are implemented:
+\begin{enumerate}
+\item Generating systems:
+  \begin{itemize}
+  \item The MLLL algorithm \cite{Pohst/Zassenhaus:1989} which computes for a $k-1$-dimensional
+    lattice $L$ represented by a generating system $A = (a_0, \dots, a_{k-1}) \in M^{k-1 \times
+      k}$ a reduced basis $B = (b_0, \dots, b_{k-2})$ as well as a relation i.e., integers $x_0,
+    \dots , x_{k-1} \in \bbfZ$ satisfying $\sum_{i=0}^{k-1} x_i a_i =0$.
+  \item The Buchmann-Kessler algorithm \cite{Buchmann/Kessler:1992} which computes a reduced
+    basis for a lattice represented by a generating system $A$.
+  \item The Schnorr-Euchner algorithm \cite{Schnorr/Euchner:1994} (modified for generating
+    systems) as well as variations \cite{Wetzel/Backes:2000} which compute an LLL reduced basis
+    of the lattice $L$ represented by the generating system $A$.
+  \end{itemize}
+\item Lattice bases:
+  \begin{itemize}
+  \item The original Schnorr-Euchner lattice reduction algorithm \cite{Schnorr/Euchner:1994} as
+    well as variations \cite{Wetzel/Backes:2000}.
+  \item The Benne de Weger variation \cite{dWeger:1989} of the original LLL algorithm
+    \cite{LenstraAK/LenstraHW/Lovasz:1982} which avoids rational arithmetic.
+  \item The Fincke-Pohst algorithm for computing shortest vectors of a lattice $L = \bbfZ a_0
+    \oplus \dots \oplus \bbfZ a_{k-1}$ \cite{Fincke/Pohst:1985}.
+  \item The algorithm of Babai \cite{Babai:1986} for computing a close lattice vector to a given
+    vector.
+  \end{itemize}
+\item Gram matrices:
+  \begin{itemize}
+  \item The original Schnorr-Euchner lattice reduction algorithm \cite{Schnorr/Euchner:1994} as
+    well as variations \cite{Wetzel/Backes:2000}.
+  \end{itemize}
+\end{enumerate}
+In the following we will explain the constructors, destructors and basic functions of the
+classes \code{bigint_lattice}.  Lattices can be stored column by column or row by row.
+Independent of the the storage mode either the columns or the rows of the lattice can be
+reduced.  The following description is done with respect to column-oriented lattices i.e the
+reduction is done columnwise.  For row-oriented lattices one has to change the representation.
+The corresponding computations will then be adjusted automatically.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+For the following constructors the variable $A$ is assumed to represent a lattice.  If in the
+following constructors $n\leq 1$, $k\leq 1$, $n < k$, $A = \code{NULL}$ or the dimension of $A$
+does not correspond to the input parameters which declare the dimension, the \LEH will be
+invoked.
+
+\begin{fcode}{ct}{bigint_lattice}{}
+  constructs a $1 \times 1$ \code{bigint_lattice}.
+\end{fcode}
+
+\begin{fcode}{ct}{bigint_lattice}{lidia_size_t $n$, lidia_size_t $k$}
+  constructs a \code{bigint_lattice} of $k$ vectors embedded in an $n$-dimensional vector space
+  initialized with zero.
+\end{fcode}
+
+\begin{fcode}{ct}{bigint_lattice}{const bigint_matrix & $A$}
+  constructs a copy of $A$.
+\end{fcode}
+
+\begin{fcode}{ct}{bigint_lattice}{lidia_size_t $n$, lidia_size_t $k$, bigint** & $A$}
+  constructs an $n \times k$-\code{bigint_lattice} initialized with the values of the
+  2-dimensional array $A$ where \code{*$A$} is a row vector.
+\end{fcode}
+
+\begin{fcode}{dt}{~bigint_lattice}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\INIT
+
+Let $A$ be of type \code{bigint_lattice}.  If none of the following functions is called
+explicitly by the user, $A$ will be considered as column-oriented generating system representing
+the lattice $L$.  Changes of the lattice by the user will automatically result in the deletion
+of the basis and Gram flag.
+
+\begin{fcode}{void}{$A$.set_basis_flag}{}
+  sets the basis flag without checking whether $A$ satisfies the basis property or not.  For
+  future computations $A$ is now considered as basis representing the lattice $L$.  Setting the
+  flag without knowing whether $A$ is a basis or not may result in abortions of further
+  computations or wrong results.  By default the representation is set as generating system.
+\end{fcode}
+
+\begin{fcode}{void}{$A$.delete_basis_flag}{}
+  sets the basis flag to \FALSE.  For future computations $A$ is now considered as generating
+  system representing the lattice $L$.
+\end{fcode}
+
+\begin{fcode}{void}{$A$.set_gram_flag}{}
+  sets the Gram flag without checking whether $A$ satisfies the properties of a Gram matrix or
+  not.  For future computations $A$ is now considered as Gram matrix representing the lattice
+  $L$.  Setting the flag without knowing whether $A$ is a Gram matrix or not may result in
+  abortions of further computations or wrong results.  By default the Gram flag is not set.
+\end{fcode}
+
+\begin{fcode}{void}{$A$.delete_gram_flag}{}
+  sets the Gram flag to \FALSE.
+\end{fcode}
+
+\begin{fcode}{void}{$A$.set_red_orientation_columns}{}
+  sets the orientation such that the reduction will be done column-oriented.  By default the
+  orientation is taken as column-oriented.
+\end{fcode}
+
+\begin{fcode}{void}{$A$.set_red_orientation_rows}{}
+  sets the orientation such that the reduction will be done row-oriented.  By default the
+  orientation is taken as column-oriented.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+Let $A$ be of type \code{bigint_lattice}.
+
+\begin{fcode}{bool}{$A$.check_basis}{}
+  returns \TRUE and sets the basis flag if the columns or rows of $A$ are linearly independent
+  according to the orientation of $A$, \FALSE otherwise.
+\end{fcode}
+
+\begin{fcode}{bool}{$A$.check_gram}{}
+  returns \TRUE and sets the Gram flag if $A$ is symmetric and positive semi-definete and
+  therefore satisfies the properties of a Gram matrix, \FALSE otherwise.
+\end{fcode}
+
+\begin{fcode}{bool}{$A$.get_basis_flag}{}
+  returns \TRUE if the basis flag is set, \FALSE otherwise.
+\end{fcode}
+
+\begin{fcode}{bool}{$A$.get_gram_flag}{}
+  returns \TRUE if the Gram flag is set, \FALSE otherwise.
+\end{fcode}
+
+\begin{fcode}{bool}{$A$.get_red_orientation}{}
+  returns \TRUE for column-oriented lattices, \FALSE otherwise.
+\end{fcode}
+
+\begin{fcode}{bool}{$A$.lll_check}{double $y$}
+  returns \TRUE if the basis is reduced for the reduction parameter $y$, \FALSE otherwise.  The
+  \LEH will be invoked if the function is applied to generating systems or the Gram flag is set.
+\end{fcode}
+
+\begin{fcode}{bool}{$A$.lll_check}{sdigit $p$, sdigit $q$}
+  returns \TRUE if the basis is reduced for the reduction parameter $\frac{p}{q}$, \FALSE
+  otherwise.  The \LEH will be invoked if the function is applied to generating systems or the
+  Gram flag is set.
+\end{fcode}
+
+\begin{fcode}{double}{$A$.lll_check_search}{}
+  if $A$ is LLL reduced, this function will return the largest $y\in ]\frac{1}{2},1]$ for which
+  the basis $A$ is still LLL reduced, see
+  \cite{LenstraAK/LenstraHW/Lovasz:1982,Schnorr/Euchner:1994}.  If the basis $A$ is not LLL
+  reduced, $0.0$ will be returned.  The \LEH will be invoked if the function is applied to
+  generating systems or the Gram flag is set.
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll_check_search}{sdigit & $p$, sdigit & $q$}
+  if $A$ is LLL reduced, this function will return the largest $\frac{p}{q}\in ]\frac{1}{2},1]$
+  for which the basis $A$ is still LLL reduced, see \cite{LenstraAK/LenstraHW/Lovasz:1982,
+    Schnorr/Euchner:1994}.  If the basis $A$ is not LLL reduced, 0 will be returned.  The \LEH
+  will be invoked if the function is applied to generating systems or the Gram flag is set.
+\end{fcode}
+
+\begin{fcode}{void}{$A$.randomize_vectors}{}
+  permutes the vectors of the given lattice randomly.
+\end{fcode}
+
+\begin{fcode}{void}{$A$.sort_vectors}{bin_cmp_func}
+  sorts the vectors of the given lattice such that their lengths (length in the meaning of the
+  \code{bin_cmp_func}, which is defined as \code{int (*bin_cmp_func)(const bigint*, const
+    bigint*, long))} are in descending order.  The function \code{bin_cmp_func} has to return
+  $-1$ ($1$) if the first vector is shorter (longer) as the second one and $0$ if they have the
+  same length.
+\end{fcode}
+
+\begin{fcode}{void}{$A$.sort_big_vectors}{}
+  sorts the vectors of the given lattice such that their lengths (by means of the Euclidian
+  norm) are in descending order.
+\end{fcode}
+
+\begin{fcode}{void}{$A$.sort_small_vectors}{}
+  sorts the vectors of the given lattice such that their lengths (by means of the Euclidian
+  norm) are in ascending order.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\STITLE{Lattice Reduction}
+
+The following functions can be used for performing LLL reductions.  These functions are
+interface functions and point to the fastest algorithms described in the section 'Special
+Functions' for solving arbitrarily chosen lattice instances.  Depending on the application of
+the lattice problem you might want to use a different algorithm mentioned in that section
+though.  Please note that those algorithms might change in the future and we therefore suggest
+to use the interface functions.  At the moment the interface functions point to the
+\code{lll_schnorr_euchner_orig} implementation.
+
+The union \code{lattice_info} is defined as:
+\begin{verbatim}
+ typedef union {
+           struct {
+             lidia_size_t rank;
+             double y;
+             sdigit y_nom;
+             sdigit y_denom;
+             sdigit reduction_steps;
+             sdigit correction_steps;
+             sdigit swaps;
+           } lll;
+         } lattice_info;
+\end{verbatim}
+So far \code{lattice_info} provides only information about the performed LLL reduction (e.g.
+number of swaps, reduction or correction steps) but in the future the union will be extended for
+providing information about the performance of other lattice algorithms.
+
+In order to use a self-defined scalar product one has to define four functions corresponding to
+the following typedefs:
+
+\begin{verbatim}
+ typedef void (*scal_dbl)(double&, double*, double*, lidia_size_t);
+ typedef void (*scal_xdbl)(xdouble&, xdouble*, xdouble*, lidia_size_t);
+ typedef void (*scal_bin)(bigint&, bigint*, bigint*, lidia_size_t);
+ typedef void (*scal_bfl)(bigfloat&, bigfloat*, bigfloat*, lidia_size_t);
+\end{verbatim}
+
+The first parameter is the return value, the second and third parameter stand for the input
+vectors and the last parameter indicates the length of the vectors.  With the addresses of the
+functions one defines the actual scalar product as:
+\begin{verbatim}
+ typedef struct {
+           scal_dbl dbl;
+           scal_xdbl xdbl;
+           scal_bin bin;
+           scal_bfl bfl;
+         } user_SP;
+\end{verbatim}
+Please note that it is allowed to change the precision for \code{bigfloat}s within \code{void
+  (*scal_bfl)(bigfloat&, bigfloat*, bigfloat*, lidia_size_t);} but one has to guarantee that
+after the computation of the scalar product the precision is set back to its original value
+(before entering the function).
+
+Let $A$ be of type \code{bigint_lattice}.
+
+\begin{fcode}{void}{$A$.lll}{double $y$, sdigit $\factor$ = 1}
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll}{const bigint_lattice & $A$, double $y$, sdigit $\factor$ = 1}
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll}{double $y$, lattice_info & $\li$, user_SP, sdigit $\factor$ = 1}
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll}{const bigint_lattice & $A$, double $y$, lattice_info & $\li$,
+    user_SP, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll}{double $y$, lattice_info & $\li$, sdigit $\factor$ = 1}
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll}{const bigint_lattice & $A$, double $y$, lattice_info & $\li$,
+    sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll}{double $y$, user_SP, sdigit $\factor$ = 1}
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll}{const bigint_lattice & $A$, double $y$, user_SP, sdigit $\factor$ = 1}
+  if $A$ is not a Gram matrix, these functions compute $A = (\underbrace{a_0, \dots,
+    a_r-1}_{=B}, \underbrace{0, \dots, 0}_{k-r})$, where $B$ is an LLL reduced basis of $L$ with
+  rank $r$.  For linearly (in)dependent Gram matrices the computations are done according to
+  \cite{Cohen:1995}.  $y\in ]\frac{1}{2},1]$ is the reduction parameter.  With $\factor$ the
+  precision for the approximations of computations (depending on the algorithm) will be
+  determined as ($\factor \cdot$ \code{double} precision).  For $\factor = 1$ ($\factor = 2$)
+  the approximations are done by using \code{double}s (\code{xdouble}s), otherwise
+  \code{bigfloat}s with appropriate precision will be used.
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll}{math_matrix< bigint > & $T$, double $y$, sdigit $\factor$ = 1}
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll}{const bigint_lattice & $A$, math_matrix< bigint > & $T$,
+    double $y$, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll}{math_matrix< bigint > & $T$, double $y$, lattice_info & $\li$,
+    user_SP, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll}{const bigint_lattice & $A$, math_matrix< bigint > & $T$,
+    double $y$, lattice_info & $\li$, user_SP, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll}{math_matrix< bigint > & $T$, double $y$, lattice_info & $\li$,
+    sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll}{const bigint_lattice & $A$, math_matrix< bigint > & $T$,
+    double $y$, lattice_info & $\li$, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll}{math_matrix< bigint > & $T$, double $y$, user_SP,
+    sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll}{const bigint_lattice & $A$, math_matrix< bigint > & $T$,
+    double $y$, user_SP, sdigit $\factor$ = 1}%
+  if $A$ is not a Gram matrix, these functions compute the transformation matrix $T$ and $A =
+  (\underbrace{b_0, \dots, b_{r-1}}_{=B}, \underbrace{0, \dots , 0}_{k-r})$ where $B$ is an LLL
+  reduced basis of $L$ with rank $r$.  The last $k-r$ columns of $T$ are relations for the
+  original generating system.  For linearly (in)dependent Gram matrices the computations are
+  done according to \cite{Cohen:1995}.  $y\in ]\frac{1}{2},1]$ is the reduction parameter.  With
+  $\factor$ the precision for the approximations of computations (depending on the algorithm)
+  will be determined as ($\factor \cdot$ \code{double} precision).  For $\factor = 1$ ($\factor
+  = 2$) the approximations are done by using \code{double}s (\code{xdouble}s), otherwise
+  \code{bigfloat}s with appropriate precision will be used.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\STITLE{Shortest Vector Computation}
+
+Let $A$ be of type \code{bigint_lattice}.
+
+\begin{fcode}{lidia_size_t}{$A$.shortest_vector}{math_matrix< bigint > & $V$, lidia_size_t $p$ = 20}
+\end{fcode}
+
+\begin{fcode}{lidia_size_t}{shortest_vector}{const bigint_lattice & $A$,
+    math_matrix< bigint > & $V$, lidia_size_t $p$ = 20}%
+  returns the squared length of the shortest vector(s) of $A$ and computes the shortest vectors
+  $V$ of $A$ using the Fincke-Pohst algorithm \cite{Fincke/Pohst:1985}.  For Gram matrices the
+  shortest vector(s) can not be computed explicitly and therefore $V$ is a $1 \times 1$ matrix
+  with entry zero.  By default $p$ is set to the standard \code{bigfloat} precision.  Depending
+  on the application it might be necessary to use a higher precision in order to achieve a
+  speed-up of the computation.  The \LEH will be invoked if the basis flag is not set.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\STITLE{Close Vector Computation}
+
+Let $A$ be of type \code{bigint_lattice}.
+
+\begin{fcode}{void}{$A$.close_vector}{const base_vector< bigint > & $v$,
+    base_vector< bigint >& $w$, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{base_vector< bigint >}{close_vector}{const bigint_lattice & $A$,
+    const base_vector< bigint > & $v$, sdigit $\factor$ = 1}%
+  computes a close lattice vector to a given vector $v$ by using the algorithm of Babai
+  \cite{Babai:1986}.  With $\factor$ the precision for the approximations of computations of the
+  LLL reduction which is part of the algorithm of Babai, will be determined as ($\factor \cdot$
+  \code{double} precision).  For $\factor = 1$ ($\factor = 2$) the approximations are done by using
+  \code{double}s (\code{xdouble}s), otherwise \code{bigfloat}s with appropriate precision will
+  be used.  The \LEH will be invoked if the Gram flag is set or the basis flag is not set.
+
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\STITLE{Special Functions}
+
+The union \code{lattice_info} is defined as:
+\begin{verbatim}
+ typedef union {
+           struct {
+             lidia_size_t rank;
+             double y;
+             sdigit y_nom;
+             sdigit y_denom;
+             sdigit reduction_steps;
+             sdigit correction_steps;
+             sdigit swaps;
+           } lll;
+         } lattice_info;
+\end{verbatim}
+So far \code{lattice_info} provides only information about the performed LLL reduction (e.g.
+number of swaps, reduction or correction steps) but in the future the union will be extended for
+providing information about the performance of other lattice algorithms.
+
+In order to use a self-defined scalar product one has to define four functions corresponding to
+the following typedefs:
+
+\begin{verbatim}
+ typedef void (*scal_dbl)(double&, double*, double*, lidia_size_t);
+ typedef void (*scal_xdbl)(xdouble&, xdouble*, xdouble*, lidia_size_t);
+ typedef void (*scal_bin)(bigint&, bigint*, bigint*, lidia_size_t);
+ typedef void (*scal_bfl)(bigfloat&, bigfloat*, bigfloat*, lidia_size_t);
+\end{verbatim}
+
+The first parameter is the return value, the second and third parameter stand for the input
+vectors and the last parameter indicates the length of the vectors.  With the addresses of the
+functions one defines the actual scalar product as:
+\begin{verbatim}
+ typedef struct {
+           scal_dbl dbl;
+           scal_xdbl xdbl;
+           scal_bin bin;
+           scal_bfl bfl;
+         } user_SP;
+\end{verbatim}
+Please note that it is allowed to change the precision for \code{bigfloat}s within \code{void
+  (*scal_bfl)(bigfloat&, bigfloat*, bigfloat*, lidia_size_t);} but one has to guarantee that
+after the computation of the scalar product the precision is set back to its original value
+(before entering the function).
+
+Let $A$ be of type \code{bigint_lattice}.
+
+\begin{fcode}{void}{$A$.buchmann_kessler}{math_matrix< bigint > & $T$, double $y$}
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{buchmann_kessler}{const bigint_lattice & $A$,
+    math_matrix< bigint > & $T$, double $y$}%
+\end{fcode}
+
+\begin{fcode}{void}{$A$.buchmann_kessler}{math_matrix< bigint > & $T$, double $y$,
+    lattice_info & $\li$}%
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{buchmann_kessler}{const bigint_lattice & $A$,
+    math_matrix< bigint > & $T$, double $y$, lattice_info & $\li$}%
+  these functions compute the transformation matrix $T$ as well as $A = (\underbrace{b_0, \dots,
+    b_{r-1}}_{=B}, \underbrace{0, \dots, 0}_{k-r})$ where $B$ is an LLL reduced basis of $L$
+  with rank $r$ by using the Buchmann-Kessler algorithm \cite{Buchmann/Kessler:1992}.  The
+  algorithm is optimized for computing $\bbfZ$-Bases of orders and might not work properly for
+  arbitrarily chosen lattices.  The last $k-r$ columns of $T$ are relations for the original
+  generating system.  The \LEH will be invoked if the basis or Gram flag is set.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{fcode}{void}{$A$.lll_schnorr_euchner_orig}{double $y$, sdigit $\factor$ = 1}
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll_schnorr_euchner_orig}{const bigint_lattice & $A$,
+    double $y$, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll_schnorr_euchner_orig}{double $y$, lattice_info & $\li$,
+    user_SP, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll_schnorr_euchner_orig}{const bigint_lattice & $A$,
+    double $y$, lattice_info & $\li$, user_SP, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll_schnorr_euchner_orig}{double $y$, lattice_info & $\li$,
+    sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll_schnorr_euchner_orig}{const bigint_lattice & $A$,
+    double $y$, lattice_info & $\li$, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll_schnorr_euchner_orig}{double $y$, user_SP, sdigit $\factor$ = 1}
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll_schnorr_euchner_orig}{const bigint_lattice & $A$,
+    double $y$, user_SP, sdigit $\factor$ = 1}%
+  if $A$ is not a Gram matrix, these functions compute $A = (\underbrace{b_0, \dots,
+    b_{r-1}}_{=B},\underbrace{0, \dots, 0}_{k-r})$ where $B$ is an LLL reduced basis of $L$ with
+  rank $r$ by using the original Schnorr-Euchner algorithm \cite{Schnorr/Euchner:1994}.  For
+  linearly (in)dependent Gram matrices the computations are done according to \cite{Cohen:1995}.
+  $y\in ]\frac{1}{2},1]$ is the reduction parameter.  With $\factor$ the precision for the
+  approximations of computations (depending on the algorithm) will be determined as ($\factor
+  \cdot$ \code{double} precision).  For $\factor = 1$ ($\factor = 2$) the approximations are
+  done by using \code{double}s (\code{xdouble}s), otherwise \code{bigfloat}s with appropriate
+  precision will be used.
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll_schnorr_euchner_orig}{math_matrix< bigint > & $T$, double $y$,
+    sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll_schnorr_euchner_orig}{const bigint_lattice & $A$,
+    math_matrix< bigint > & $T$, double $y$, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll_schnorr_euchner_orig}{math_matrix< bigint > & $T$, double $y$,
+    lattice_info & $\li$, user_SP, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll_schnorr_euchner_orig}{const bigint_lattice & $A$,
+    math_matrix< bigint > & $T$, double $y$, lattice_info & $\li$, user_SP, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll_schnorr_euchner_orig}{math_matrix< bigint > & $T$, double $y$,
+    lattice_info & $\li$, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll_schnorr_euchner_orig}{const bigint_lattice & $A$,
+    math_matrix< bigint > & $T$, double $y$, lattice_info & $\li$, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll_schnorr_euchner_orig}{math_matrix< bigint > & $T$, double $y$,
+    user_SP, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll_schnorr_euchner_orig}{const bigint_lattice & $A$,
+    math_matrix< bigint > & $T$, double $y$, user_SP, sdigit $\factor$ = 1}%
+  if $A$ is not a Gram matrix, these functions computes the transformation matrix $T$ and $A =
+  (\underbrace{b_0, \dots, b_r-1}_{=B}, \underbrace{0, \dots, 0}_{k-r})$ where $B$ is an LLL
+  reduced basis of $L$ with rank $r$ by using the orignal Schnorr-Euchner algorithm
+  \cite{Schnorr/Euchner:1994}.  The last $k-r$ columns of $T$ are relations for the original
+  generating system.  For linearly (in)dependent Gram matrices the computations are done
+  according to \cite{Cohen:1995}.  $y\in ]\frac{1}{2},1]$ is the reduction parameter.  With
+  $\factor$ the precision for the approximations of computations (depending on the algorithm)
+  will be determined as ($\factor \cdot$ \code{double} precision).  For $\factor = 1$ ($\factor
+  = 2$) the approximations are done by using \code{double}s (\code{xdouble}s), otherwise
+  \code{bigfloat}s with appropriate precision will be used.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{fcode}{void}{$A$.lll_schnorr_euchner_fact}{double $y$, sdigit $\factor$ = 1}
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll_schnorr_euchner_fact}{const bigint_lattice & $A$,
+    double $y$, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll_schnorr_euchner_fact}{double $y$, lattice_info & $\li$,
+    user_SP, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll_schnorr_euchner_fact}{const bigint_lattice & $A$,
+    double $y$, lattice_info & $\li$, user_SP, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll_schnorr_euchner_fact}{double $y$, lattice_info & $\li$,
+    sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll_schnorr_euchner_fact}{const bigint_lattice & $A$,
+    double $y$, lattice_info & $\li$, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll_schnorr_euchner_fact}{double $y$, user_SP, sdigit $\factor$ = 1}
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll_schnorr_euchner_fact}{const bigint_lattice & $A$, double $y$,
+    user_SP, sdigit $\factor$ = 1}%
+  if $A$ is not a Gram matrix, these functions compute $A = (\underbrace{b_0, \dots,
+    b_{r-1}}_{=B}, \underbrace{0, \dots, 0}_{k-r})$ where $B$ is an LLL reduced basis of $L$
+  with rank $r$ by using a variation of the Schnorr-Euchner algorithm \cite{Wetzel/Backes:2000}.
+  For linearly (in)dependent Gram matrices the computations are done according to
+  \cite{Cohen:1995}.  $y\in ]\frac{1}{2},1]$ is the reduction parameter.  With $\factor$ the
+  precision for the approximations of computations (depending on the algorithm) will be
+  determined as ($\factor \cdot$ double precision).  For $\factor = 1$ ($\factor = 2$) the
+  approximations are done by using \code{double}s (\code{xdouble}s), otherwise \code{bigfloat}s
+  with appropriate precision will be used.  This function is not completely tested yet but
+  should be faster since one can use \code{double}s and \code{xdouble}s for doing the
+  approximations even for higher dimensions and larger lattice entries.
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll_schnorr_euchner_fact}{math_matrix< bigint > & $T$, double $y$,
+    sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll_schnorr_euchner_fact}{const bigint_lattice & $A$,
+    math_matrix< bigint > & $T$, double $y$, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll_schnorr_euchner_fact}{math_matrix< bigint > & $T$, double $y$,
+    lattice_info & $\li$, user_SP, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll_schnorr_euchner_fact}{const bigint_lattice & $A$,
+    math_matrix< bigint > & $T$, double $y$, lattice_info & $\li$, user_SP, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll_schnorr_euchner_fact}{math_matrix< bigint > & $T$, double $y$,
+    lattice_info & $\li$, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll_schnorr_euchner_fact}{const bigint_lattice & $A$,
+    math_matrix< bigint > & $T$, double $y$, lattice_info & $\li$, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll_schnorr_euchner_fact}{math_matrix< bigint > & $T$, double $y$,
+    user_SP, sdigit $\factor$ = 1}%
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll_schnorr_euchner_fact}{const bigint_lattice & $A$,
+    math_matrix< bigint > & $T$, double $y$, user_SP, sdigit $\factor$ = 1}%
+  if $A$ is not a Gram matrix, these functions compute the transformation matrix $T$ and $A =
+  (\underbrace{b_0, \dots, b_{r-1}}_{=B}, \underbrace{0, \dots, 0}_{k-r})$ where $B$ is an LLL
+  reduced basis of $L$ with rank $r$ by using a variation of the Schnorr-Euchner algorithm
+  \cite{Wetzel/Backes:2000}.  The last $k-r$ columns of $T$ are relations for the original
+  generating system.  For linearly (in)dependent Gram matrices the computations are done
+  according to \cite{Cohen:1995}.  $y\in ]\frac{1}{2},1]$ is the reduction parameter.  With
+  $\factor$ the precision for the approximations of computations (depending on the algorithm)
+  will be determined as ($\factor \cdot$ \code{double} precision).  For $\factor = 1$ ($\factor
+  = 2$) the approximations are done by using \code{double}s (\code{xdouble}s), otherwise
+  \code{bigfloat}s with appropriate precision will be used.  This function is not completely
+  tested yet but should be faster since one can use \code{double}s and \code{xdouble}s for doing
+  the approximations even for higher dimensions and larger lattice entries.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{fcode}{void}{$A$.lll_benne_de_weger}{sdigit $p$, sdigit $q$}
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll_benne_de_weger}{const bigint_lattice & $A$, sdigit $p$, sdigit $q$}
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll_benne_de_weger}{sdigit $p$, sdigit $q$, lattice_info & $\li$}
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll_benne_de_weger}{const bigint_lattice & $A$, sdigit $p$,
+    sdigit $q$, lattice_info & $\li$}%
+  reduces the lattice $A$ by using the algorithm of Benne de Weger \cite{dWeger:1989}.  The \LEH
+  will be invoked if the generating system or Gram flag is set.
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll_benne_de_weger}{math_matrix< bigint > & $T$, sdigit $p$, sdigit $q$}
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll_benne_de_weger}{const bigint_lattice & $A$,
+    math_matrix< bigint > & $T$, sdigit $p$, sdigit $q$}%
+\end{fcode}
+
+\begin{fcode}{void}{$A$.lll_benne_de_weger}{math_matrix< bigint > & $T$, sdigit $p$,
+    sdigit $q$, lattice_info & $\li$}%
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{lll_benne_de_weger}{const bigint_lattice & $A$,
+    math_matrix< bigint > & $T$, sdigit $p$, sdigit $q$, lattice_info & $\li$}%
+  reduces the lattice $A$ and computes the transformation matrix $T$ by using the algorithm of
+  Benne de Weger \cite{dWeger:1989}.  The \LEH will be invoked if the generating system or Gram
+  flag is set.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{fcode}{void}{$A$.mlll}{double $y$, bigint *& $v$}
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{mlll}{const bigint_lattice & $A$, double $y$, bigint *& $v$}
+\end{fcode}
+
+\begin{fcode}{void}{$A$.mlll}{double $y$, base_vector< bigint > & $v$}
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{mlll}{const bigint_lattice & $A$, double $y$, base_vector< bigint > & $v$}
+\end{fcode}
+
+\begin{fcode}{void}{$A$.mlll}{double $y$, bigint *& $v$, lattice_info & $\li$}
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{mlll}{const bigint_lattice & $A$, double $y$, bigint *& $v$,
+    lattice_info & $\li$}%
+\end{fcode}
+
+\begin{fcode}{void}{$A$.mlll}{double $y$, base_vector< bigint > & $v$, lattice_info & $\li$}
+\end{fcode}
+
+\begin{fcode}{bigint_lattice}{mlll}{const bigint_lattice & $A$, double $y$,
+    base_vector< bigint > & $v$, lattice_info & $\li$}%
+  these functions compute a $k-2$-dimensional reduced basis of $A = (a_0, \dots, a_{k-1}) \in
+  M^{k-1} \times k$ as well as a vector $v$ satisfying $\sum_{i=0}^{k-1} v_i a_i = 0$ by using
+  the modified LLL-algorithm \cite{Pohst/Zassenhaus:1989}.  $y\in ]\frac{1}{2},1]$ is the
+  reduction parameter.  The \LEH will be invoked if the basis or Gram flag is set.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{base_matrix}, \SEE{math_matrix},
+\SEE{bigint_matrix}, \SEE{bigfloat_lattice}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/bigint_lattice.h>
+
+void double_scalar(double &x, double *a, double *b,
+                   lidia_size_t len)
+{
+    lidia_size_t i;
+
+    x = 0;
+    for(i = 0; i < len; i++)
+        x += a[i] * b[i];
+}
+
+
+void xdouble_scalar(xdouble &x, xdouble *a, xdouble *b,
+                    lidia_size_t len)
+{
+    lidia_size_t i;
+
+    x = 0;
+    for(i = 0; i < len; i++)
+        x += a[i] * b[i];
+}
+
+
+void bigfloat_scalar(bigfloat &x, bigfloat *a, bigfloat *b,
+                     lidia_size_t len)
+{
+    lidia_size_t i;
+
+    x = 0;
+    for(i = 0; i < len; i++)
+        x += a[i] * b[i];
+}
+
+
+void bigint_scalar(bigint &x, bigint *a, bigint *b,
+                   lidia_size_t len)
+{
+    lidia_size_t i;
+
+    x = 0;
+    for(i = 0; i < len; i++)
+        x += a[i] * b[i];
+}
+
+
+int main()
+{
+    bigint_lattice L,B;
+    math_matrix < bigint > SV;
+    lattice_info li;
+    bool gram, basis;
+    lidia_size_t sv_len;
+    user_SP usp = { double_scalar, xdouble_scalar,
+                    bigint_scalar, bigfloat_scalar};
+
+    cin >> L;
+
+    cout << "Lattice:" << endl;
+    cout << L << endl;
+
+    gram = L.check_gram();
+    basis = L.check_basis();
+
+    B.assign(L);
+
+    L.lll(0.99, li, usp);
+
+    cout << "The reduced lattice is:" << endl;
+    cout << L << endl;
+
+    if(basis)
+        cout << "The lattice was represented by a basis." << endl;
+    else
+        cout << "The lattice was represented by a generating system.\n" << endl;
+
+    if(gram)
+        cout << "The lattice was represented by a gram matrix." << endl;
+    if(basis) {
+        sv_len = B.shortest_vector(SV,50);
+        cout << "\n The squared length of the shortest vector is: ";
+        cout << sv_len << endl;
+        if(!gram) {
+            cout << "The shortest vector(s) is(are):" << endl;
+            cout << SV;
+        }
+        cout << endl;
+    }
+
+    cout << "Some statistics:" << endl;
+    cout << "Number of reduction steps:\t" << li.lll.reduction_steps << endl;
+    cout << "Number of correction steps:\t" << li.lll.correction_steps << endl;
+    cout << "Number of swaps:\t\t" << li.lll.swaps << endl;
+    cout << "Reduction parameter was:\t" << li.lll.y << endl;
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+Example:
+\begin{quote}
+\begin{verbatim}
+**************************************************
+
+Lattice:
+
+( 1212  911   450  288  116 )
+( 938   709   278  254  108 )
+( 1154  915   281  308  137 )
+( 456   376   119  105  47  )
+( 1529  1207  432  382  166 )
+
+The reduced lattice is:            Some statistics:
+
+( -6  -4   4  5   6  )             Number of reduction steps:      56
+( -2   4  -6  5  -2  )             Number of correction steps:     34
+(  1  -3  -2  7  -2  )             Number of swaps:                42
+(  3   2  -1  5   10 )             Reduction parameter was:        0.99
+(  2   3   6  1  -4  )
+
+The lattice was represented by a basis.
+
+The squared length of the shortest vector is: 54
+The shortest vector(s) is(are):
+
+(  4   6 )
+( -4   2 )
+(  3  -1 )
+( -2  -3 )
+( -3  -2 )
+
+**************************************************
+
+Lattice:
+
+( 13029  10136  5458  3711  3358 )
+( 10136  7894   4254  2882  2616 )
+( 5458   4254   2300  1543  1418 )
+( 3711   2882   1543  1068  945  )
+( 3358   2616   1418  945   878  )
+
+The reduced lattice is:            Some statistics:
+
+( 8  2   2   3    0  )             Number of reduction steps:      33
+( 2  9   3   3    0  )             Number of correction steps:     20
+( 2  3   11  5   -4  )             Number of swaps:                20
+( 3  3   5   12   1  )             Reduction parameter was:        0.99
+( 0  0  -4   1    12 )
+
+The lattice was represented by a basis.
+The lattice was represented by a gram matrix.
+
+The squared length of the shortest vector is: 18
+
+**************************************************
+
+Lattice:
+
+( 1196  2316  661   929   882   117 )
+( 1208  2460  810   1294  1187  154 )
+( 1771  2398  741   1369  1075  126 )
+( 1353  2373  845   1441  1389  184 )
+( 2122  3507  1124  1937  1637  202 )
+
+The reduced lattice is:            Some statistics:
+
+( 0  0  0  -1   2  0 )             Number of reduction steps:      158
+( 1  0  0   0   0  0 )             Number of correction steps:     90
+( 0  1  0   0   0  0 )             Number of swaps:                140
+( 0  0  1  -1  -1  0 )             Reduction parameter was:        0.99
+( 0  0  1   0   2  0 )
+
+The lattice was represented by a generating system.
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Werner Backes, Thorsten Lauer, Oliver van Sprang, Susanne Wetzel\\
+(code fragments written by Jutta Bartholomes)

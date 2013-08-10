@@ -1,0 +1,32 @@
+preamble
+"\\begin{theindex}
+\\small 
+\n"
+postamble
+"\n\n\\end{theindex}\n"
+item_0
+"\n  \\item "
+item_1
+"\n    \\subitem "
+item_2
+"\n    \\subitem "
+item_01
+"\n    \\subitem "
+item_x1
+"\n    \\subitem "
+item_12
+"\n      \\subsubitem "
+item_x2
+"\n      \\subsubitem "
+delim_0
+" \\dotfill "
+delim_1
+" \\dotfill "
+delim_2
+" \\dotfill "
+delim_n
+", "
+delim_t
+""
+headings_flag 
+1

@@ -1,0 +1,447 @@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  gec.tex       Documentation
+%%
+%%  This file contains the documentation of the classes of the gec-package
+%%
+%%  Copyright   (c)   2002   by  LiDIA Group
+%%
+%%  Author: Harald Baier
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\code{gec}\dotfill 
+virtual base class for generating elliptic curves for use in cryptography
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+The class \code{gec} is a virtual base class
+for the generation of elliptic curves over finite fields suitable for use
+in cryptography.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+The class \code{gec} is a virtual base class
+for the generation of elliptic curves over finite fields suitable for use
+in cryptography. It holds the attributes which are common
+to all inheriting classes. In addition, it provides
+the corresponding accessors and mutators. Currently,
+\code{gec} serves as a virtual base class for the
+classes \code{gec_complex_multiplication},
+\code{gec_point_counting_mod_p}, and
+\code{gec_point_counting_mod_2n}.
+
+Let $p$ be a prime and $q=p^m$ be a prime power. An
+elliptic curve over $\bbfF_q$ is a tuple of the form
+$(a_1,a_2,a_3,a_4,a_6)\in\bbfF_q^5.$ We denote
+an elliptic curve by $E.$ Associated
+to each tuple is an equation of the form
+\begin{eqnarray}\label{eq_long_weierstrass}
+y^2+a_1xy+a_3y & = & x^3 + a_2x^2 + a_4x+a_6\; .
+\end{eqnarray}
+Equation \eqref{eq_long_weierstrass} is called
+a \emph{long Weierstrass equation}. The group of rational
+points of $E$ over $\bbfF_q$ is the set of solutions $(u,v)\in\bbfF^2$
+together with the point at infinity. We write
+$E(\bbfF_q)$ for the group of rational points of $E$ over
+$\bbfF_q.$ It is well known that $E(\bbfF_q)$ carries a group
+structure with the point at infinity acting as the zero element.
+
+Now let $p\geq 5.$ It is easy to see that using affine linear maps
+the long Weierstrass
+equation \eqref{eq_long_weierstrass} may be transformed
+to an equation of the form
+\begin{eqnarray}\label{eq_short_weierstrass_5}
+y^2 & = & x^3 + a_4'x+a_6'\; .
+\end{eqnarray}
+Hence if $p\geq 5$ we simply write $(a_4,a_6)$ for an
+elliptic curve over $\bbfF_q.$
+
+Next, let $p = 2.$ It is a basic fact that any elliptic
+curve whose group of rational points is suitable for use
+in cryptography may be written as a Weierstrass
+equation of the form
+\begin{eqnarray}\label{eq_short_weierstrass_2}
+y^2 +xy& = & x^3 + a_2'x^2+a_6'\; .
+\end{eqnarray}
+Hence if $p = 2$ we simply write $(a_2,a_6)$ for an
+elliptic curve over $\bbfF_q.$
+
+In order to be suitable for use in cryptography,
+an elliptic curve has to respect some requirements. For instance,
+if $E(\bbfF_q)$ should be in conformance with
+the German Digital Signature Act we have to consider
+requirements published by the German Information
+Security Agency (GISA/BSI, see \cite{BSI01}). In case of $q=p$
+\cite{BSI01} requires:
+\begin{enumerate} 
+\item\label{cond_sq_gec_p} $|E(\bbfF_p)| =r\cdot k$ with a prime 
+$r> 2^{159}$ and a small positive integer $k$ (e.g.~$k\leq 4$).
+\item\label{cond_smart_gec_p} The primes $r$ and $p$ are different.
+\item\label{cond_mov_gec_p} The order of $p$ in $\bbfF_r^\times$
+is at least $B:=10^4.$
+\item\label{cond_bsi_gec_p} The class number of the maximal order which
+contains $\End(E)$ is at least $h_0:=200.$
+\end{enumerate}
+
+In addition, in case of $q=2^m$ \cite{BSI01} lists:
+\begin{enumerate} 
+\item\label{cond_sq_gec_2} $|E(\bbfF_{2^m})| =r\cdot k$ with a prime 
+$r> 2^{159}$ and a small positive integer $k$ (e.g.~$k\leq 4$).
+\item\label{cond_m_gec_2} $m$ is prime.
+\item\label{cond_def_gec_2} The $j$-invariant of $E$ is not in $\bbfF_2.$
+\item\label{cond_mov_gec_2} The order of $2^m$ in $\bbfF_r^\times$
+is at least $B:=10^4.$
+\item\label{cond_bsi_gec_2} The class number of the maximal order which
+contains $\End(E)$ is at least $h_0:=200.$
+\end{enumerate}
+
+However, the choices $B$ and $h_0$ may be set
+differently by using the mutator of the
+the boolean \code{according_to_bsi}. If it is set to \code{false}
+the last requirement is not taken into account in both cases. In addition,
+$B$ has to be at least $B_0$ in this case, where $B_0$ is minimal with
+$r^{B_0}>2^{1999}.$
+
+A lower bound of the bitlength of $r$ and
+an upper bound of $k$ are stored in the
+attributes \code{lower_bound_bitlength_r} and
+\code{set_upper_bound_k}, respectively. Per default,
+we set their values to the requirements cited above. The default
+values are set in the file gec.cc in the source-directory. They
+may be changed using the corresponding mutators as explained below. If
+another security level is required, the user
+may invoke \code{set_lower_bound_bitlength_r}
+or \code{set_upper_bound_k} to set different bounds
+for $r$ and $k,$ respectively.
+
+The private boolean VERBOSE may be used
+to get a lot of information during the computation. It may
+be accessed and changed using the corresponding accessor and
+mutator, respectively.
+
+In addition, the private boolean \code{efficient_curve_parameters}
+may be used to generate curves with $a_4=-3,$ if a curve
+over $\bbfF_p$ is searched. More precisely,
+if \code{efficient_curve_parameters} is set to true, a curve
+with $a_4=-3$ will be output. Otherwise, $a_4$ is some element
+of $\bbfF_p.$ In case of the CM-method, the default value is
+\code{false}. In case of the point counting method, its default
+value is \code{true}.
+It may be accessed and changed using the corresponding accessor and
+mutator, respectively.  
+
+As \code{gec} is a virtual basic class the public available constructor and
+destructor are redundant.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{gec}{}
+  initializes an empty instance.
+\end{fcode}
+
+\begin{fcode}{ct}{gec}{ostream & out}
+  initializes an empty instance to write data to files.
+\end{fcode}
+
+\begin{fcode}{dt}{~gec}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $I$ be an instance of \code{gec}.
+
+\begin{fcode}{void}{$I$.set_field}{const bigint & $l$} 
+  sets $p=l.$ If $l$ is not a prime $\geq 5,$ the
+  \code{lidia_error_handler} is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$I$.set_degree}{lidia_size_t $d$}
+  sets degree of finite field $\bbfF_q$ over its prime field to $d.$
+  If $d$ is not positive, the
+  \code{lidia_error_handler} is invoked.
+\end{fcode}
+
+Mutators of security level.
+
+\begin{fcode}{void}{$I$.set_lower_bound_bitlength_r}{lidia_size_t $b_0$}
+  sets lower bound of bitlength of $r$ to $b_0.$ The
+  prime $r$ will satisfy $r>2^{b_0-1}.$ If $b_0$ is not positive, the
+  \code{lidia_error_handler} is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$I$.set_upper_bound_k}{const bigint & $k_0$}
+  sets upper bound of $k$ to $k_0.$ The
+  cofactor $k$ will respect $k\leq k_0.$ If $k_0$ is not positive, the
+  \code{lidia_error_handler} is invoked.
+\end{fcode}
+
+Mutators of default variables to set security level.
+
+\begin{fcode}{void}{$I$.set_default_lower_bound_bitlength_r}{lidia_size_t $b_0$}
+  sets default lower bound of bitlength of $r$ to $b_0.$ The default
+  value is $160.$ If $b_0$ is not positive, the
+  \code{lidia_error_handler} is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$I$.set_default_upper_bound_k}{const bigint & $k_0$}
+  sets default upper bound of $k$ to $k_0.$ The default
+  value is $4.$ If $k_0$ is not positive, the
+  \code{lidia_error_handler} is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$I$.set_default_lower_bound_extension_bitlength}
+{lidia_size_t $l$}
+  sets default lower bound of the bitlength of finite fields
+  in which the discrete logarithm problem is considered to be
+  intractable, to $l.$ The default value is $2000.$ If $l$
+  is not positive, the
+  \code{lidia_error_handler} is invoked.
+\end{fcode}
+
+Mutators to set variables in the context of
+the requirements of the German Information Security
+Agency (GISA, BSI).
+
+\begin{fcode}{void}{$I$.set_according_to_BSI}{bool $b$}
+  if $b$ is equal to \code{true}, the requirements
+  \ref{cond_sq_gec_p} - \ref{cond_bsi_gec_p} or
+  \ref{cond_sq_gec_2} - \ref{cond_bsi_gec_2} cited above are respected,
+  respectively.
+  If $b$ is equal to \code{false}, requirement \ref{cond_bsi_gec_p} or
+  \ref{cond_bsi_gec_2} is ignored, respectively.
+  In addition, in requirement \ref{cond_mov_gec_p} or \ref{cond_mov_gec_2}
+  we only ensure that the order
+  of $q$ in $\bbfF_r^\times$ is at least $B_0,$ where
+  $B_0$ is minimal with $r^{B_0}>2^{b_0-1}.$
+  $b_0$ is equal to \code{default_lower_bound_extension_bitlength}.
+\end{fcode}
+
+\begin{fcode}{void}{$I$.set_BSI_lower_bound_h_field}{lidia_size_t $h_0$}
+  ensures that the maximal imaginary quadratic order corresponding to $\Delta$
+  has a class number at least $h_0.$ The default value
+  is 200 (see requirement \ref{cond_bsi_gec_p}). This function is only relevant
+  if \code{according_to_BSI} is equal to \code{true}. If $h_0$
+  is not positive, the
+  \code{lidia_error_handler} is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$I$.set_BSI_lower_bound_extension_degree}{lidia_size_t $d_0$}
+  ensures that the order of $q$ in $\bbfF_r^\times$ is at least $d_0.$
+  The default value is 10000 (see requirement \ref{cond_mov_gec_p}).
+  This function is only relevant if
+  \code{according_to_BSI}$=$\code{true}. If $d_0$
+  is not positive, the
+  \code{lidia_error_handler} is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$I$.set_verbose_level}{bool $v$}
+  sets VERBOSE to $v.$
+\end{fcode}
+
+\begin{fcode}{void}{$I$.set_efficient_curve_parameters}{bool $e$}
+  sets \code{efficient_curve_parameters} to $e.$
+\end{fcode}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $I$ be an instance of \code{gec}.
+Most of the accessors are only meaningful if the
+method \code{generate} has been invoked before. Otherwise,
+the accessor returns 0.
+
+Accessors for finite field, elliptic curve and its order.
+
+\begin{cfcode}{const bigint & }{$I$.get_p}{} 
+  returns $p.$ Either $p$ has been set using \code{set_field}
+  or the method \code{generate} has been invoked before. Otherwise,
+  0 is returned.
+\end{cfcode}
+
+\begin{cfcode}{const bigint & }{$I$.get_q}{} 
+  returns the prime power $q=p^m.$ 
+  The method \code{generate} has to be invoked before. Otherwise,
+  0 is returned.
+\end{cfcode}
+
+\begin{cfcode}{const lidia_size_t }{$I$.get_degree}{} 
+  returns the degree $m.$ Either $m$ has been set using \code{set_degree} or
+  the method \code{generate} has to be invoked before. Otherwise,
+  0 is returned.
+\end{cfcode}
+
+\begin{cfcode}{const bigint & }{$I$.get_r}{} 
+  returns the prime $r.$
+  The method \code{generate} has to be invoked before. Otherwise,
+  0 is returned.
+\end{cfcode}
+
+\begin{cfcode}{const bigint & }{$I$.get_k}{} 
+  returns the cofactor $k.$
+  The method \code{generate} has to be invoked before. Otherwise,
+  0 is returned.
+\end{cfcode}
+
+\begin{cfcode}{const gf_element & }{$I$.get_a2}{} 
+  returns the parameter $a_2$ of the curve $E.$ The result is only meaningful
+  if $p=2.$ The method \code{generate} has to be invoked before. Otherwise,
+  0 is returned.
+\end{cfcode}
+
+\begin{cfcode}{const gf_element & }{$I$.get_a4}{} 
+  returns the parameter $a_4$ of the curve $E.$ The result is only meaningful
+  if $p\geq 5.$
+  The method \code{generate} has to be invoked before. Otherwise,
+  0 is returned.
+\end{cfcode}
+
+\begin{cfcode}{const gf_element & }{$I$.get_a6}{} 
+  returns the parameter $a_6$ of the curve $E.$
+  The method \code{generate} has to be invoked before. Otherwise,
+  0 is returned.
+\end{cfcode}
+
+\begin{cfcode}{const point<gf_element> & }{$I$.get_G}{} 
+  returns a point $G\in E(\bbfF_q)$ of order $r.$
+  The method \code{generate} has to be invoked before. Otherwise,
+  0 is returned.
+\end{cfcode}
+
+Accessors for static variables.
+
+\begin{cfcode}{lidia_size_t}{$I$.get_default_lower_bound_bitlength_r}{}
+  returns the default lower bound of bitlength of $r.$
+\end{cfcode}
+
+\begin{cfcode}{lidia_size_t}{$I$.get_default_upper_bound_k}{}
+  returns the default upper bound of $k.$
+\end{cfcode}
+
+\begin{cfcode}{const bigint &}{$I$.get_default_lower_bound_extension_bitlength}
+{}
+  returns the default lower bound of the bitlength of finite fields
+  in which the discrete logarithm problem is considered
+  intractable. Only meaningful, if \code{according_to_BSI} is equal to
+  \code{false}.
+\end{cfcode}
+
+Accessors for non-static variables to set security level.
+
+\begin{cfcode}{lidia_size_t}{$I$.get_lower_bound_bitlength_r}{}
+  returns the lower bound of bitlength of $r.$ If it is not set before,
+  0 is returned.
+\end{cfcode}
+
+\begin{cfcode}{const bigint &}{$I$.get_upper_bound_k}{}
+  returns the upper bound of $k.$ If it is not set before,
+  0 is returned.
+\end{cfcode}
+
+\begin{cfcode}{const bigint &}{$I$.get_delta_field}{}
+  returns $\Delta_K.$ Only meaningful, if \code{according_to_BSI}
+  is equal to \code{true}.
+  If this is not the case or if the generate() is not
+  invoked before, 0 is returned.
+\end{cfcode}
+
+\begin{cfcode}{lidia_size_t}{$I$.get_h_field}{}
+  returns $h(\Delta_K).$ Only meaningful in case
+  of the complex multiplication approach and if \code{according_to_BSI}
+  is equal to \code{true}.
+  If this is not the case or if the generate() is not
+  invoked before, 0 is returned.
+\end{cfcode}
+
+\begin{cfcode}{lidia_size_t}{$I$.get_lower_bound_h_field}{}
+  returns lower bound of $h(\Delta_K).$ Only meaningful 
+  if \code{according_to_BSI} is equal to \code{true}.
+  If this is not the case or if the generate() is not
+  invoked before, 0 is returned.
+\end{cfcode}
+
+Accessors to get variables in the context of
+the requirements of the German Information Security
+Agency (GISA, BSI).
+
+\begin{cfcode}{bool}{$I$.get_according_to_BSI}{}
+  returns \code{true} if and only if the generated
+  curve respects the requirements of GISA.
+\end{cfcode}
+
+\begin{cfcode}{lidia_size_t}{$I$.get_BSI_lower_bound_h_field}{}
+  returns the lower bound of the class number of the
+  maximal order containing the endomorphism ring of the curve.
+\end{cfcode}
+
+\begin{cfcode}{lidia_size_t}{$I$.get_BSI_lower_bound_extension_degree}{}
+  returns the lower bound of the order of $q$ in $\bbfF_r^\times.$
+\end{cfcode}
+
+\begin{cfcode}{bool}{$I$.get_verbose_level}{}
+  returns the value of VERBOSE.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$I$.get_efficient_curve_parameters}{}
+  returns the value of the attribute
+  \code{efficient_curve_parameters}, that is if a curve with $a_4=-3$
+  is searched or not.
+\end{cfcode}
+
+
+Accessors which are specific to \code{gec_complex_multiplication}. 
+
+\begin{cfcode}{const bigint &}{$I$.get_delta}{}
+  returns $\Delta.$ If it is not set or computed before,
+  0 is returned.
+\end{cfcode}
+
+\begin{cfcode}{lidia_size_t}{$I$.get_h}{}
+  returns $h(\Delta).$ If it is not set or computed before,
+  0 is returned.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+Input/Output of instances of \code{gec} is currently not possible.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{gec_complex_multiplication}, \SEE{gec_point_counting_mod_p},
+\SEE{gec_point_counting_mod_2n}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Harald Baier

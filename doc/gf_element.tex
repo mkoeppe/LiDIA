@@ -1,0 +1,448 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  gf_element       LiDIA documentation
+%%
+%%  This file contains the documentation of the class gf_element
+%%
+%%  Copyright   (c)   1995-1999   by  LiDIA-Group
+%%
+%%  Author:  Detlef Anton, Thomas Pfahler
+%%
+
+\newcommand{\ff}{\mathit{ff}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{gf_element} \dotfill an element over a finite field
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{gf_element} is a class that provides arithmetics over a finite field.  If the finite field
+is defined by a polynomial $f(X) \bmod p$, then a variable of type \code{gf_element} holds a
+representation of a field element by its polynomial representation.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+A variable of type \code{gf_element} consists of an instance of type \code{galois_field}
+(indicating the field over which the element is defined) and the representation of the element.
+The internal representation varies for different classes of finite fields.  Currently, we
+distinguish finite prime fields, extension fields of odd characteristic, and extension fields of
+characteristic 2.  However, the interface of the class \code{gf_element} is completely
+independent of the internal representation.
+
+Let $e$ be an instance of type \code{gf_element}.  If $\ff = \code{$e$.get_field()}$ and $g$
+denotes the polynomial \code{$\ff$.irred_polynomial()}, then $e$ represents the element
+($\code{$e$.polynomial_rep()} \bmod g(X)) \in \bbfF_p[X]/(g(X)\bbfF_p[X])$, where $p =
+\code{$\ff$.characteristic()}$.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{gf_element}{}
+  initializes the \code{gf_element} over a mainly useless dummy field.
+\end{fcode}
+
+\begin{fcode}{ct}{gf_element}{const galois_field & $K$}
+  constructs an element over the finite field $K$.  The element is initialized with zero.
+\end{fcode}
+
+\begin{fcode}{ct}{gf_element}{const gf_element & $e$}
+  constructs a copy of $e$.
+\end{fcode}
+
+\begin{fcode}{dt}{~gf_element}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let \code{e} be an instance of type \code{gf_element}.
+
+\begin{cfcode}{galois_field}{$e$.get_field}{}
+  returns the field over which the element \code{e} is defined.
+\end{cfcode}
+
+\begin{cfcode}{const Fp_polynomial &}{$e$.polynomial_rep}{}
+  returns the polynomial representation of the element \code{e}.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let \code{e} be an instance of type \code{gf_element}.
+
+\begin{fcode}{void}{$e$.set_polynomial_rep}{const Fp_polynomial & $g$}
+  sets $e$ to the element $g \bmod \code{$e$.get_field().irred_polynomial()}$.
+\end{fcode}
+
+\begin{fcode}{void}{$e$.assign_zero}{}
+  $e \assign 0$.
+\end{fcode}
+
+\begin{fcode}{void}{$e$.assign_one}{}
+  $e \assign 1$.
+\end{fcode}
+
+\begin{fcode}{void}{$e$.assign_zero}{const galois_field & $f$}
+  $e$ is assigned the zero element of the field $\ff$.
+\end{fcode}
+
+\begin{fcode}{void}{$e$.assign_one}{const galois_field & $f$}
+  $e$ is assigned the element 1 of the field $\ff$.
+\end{fcode}
+
+\begin{fcode}{void}{$e$.assign}{const bigint & $a$}
+  $e$ is assigned the element $a \cdot 1$ of the field $\ff$.
+\end{fcode}
+
+The operator \code{=} is overloaded.  For efficiency reasons, the following function is also
+implemented:
+
+\begin{fcode}{void}{$e$.assign}{const gf_element & $a$}
+  $e \assign a$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+Let \code{e} be an instance of type \code{gf_element}.
+
+The following operators are overloaded and can be used in exactly the same way as for machine
+types in C++ (e.g.~\code{int}) :
+
+\begin{center}
+  \code{(binary) +, -, *, /, +=, -=, *=, /=}\\
+\end{center}
+
+To avoid copying, these operations can also be performed by the following functions:
+
+\begin{fcode}{void}{add}{gf_element & $c$, const gf_element & $a$, const gf_element & $b$}
+  $c \assign a + b$.
+\end{fcode}
+
+\begin{fcode}{void}{add}{gf_element & $c$, const bigint & $a$, const gf_element & $b$}
+  $c \assign a \cdot 1 + b$ over the field \code{$b$.get_field()}.
+\end{fcode}
+
+\begin{fcode}{void}{add}{gf_element & $c$, const gf_element & $a$, const bigint & $b$}
+  $c \assign a + b \cdot 1$ over the field \code{$a$.get_field()}.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{gf_element & $c$, const gf_element & $a$, const gf_element & $b$}
+  $c \assign a - b$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{gf_element & $c$, const bigint & $a$, const gf_element & $b$}
+  $c \assign a \cdot 1 - b$ over the field \code{$b$.get_field()}.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{gf_element & $c$, const gf_element & $a$, const bigint & $b$}
+  $c \assign a - b \cdot 1$ over the field \code{$a$.get_field()}.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{gf_element & $c$, const gf_element & $a$, const gf_element & $b$}
+  $c \assign a \cdot b$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{gf_element & $c$, const bigint & $a$, const gf_element & $b$}
+  $c \assign a \cdot 1 \cdot b$ over the field \code{$b$.get_field()}.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{gf_element & $c$, const gf_element & $a$, const bigint & $b$}
+  $c \assign a \cdot b \cdot 1$ over the field \code{$a$.get_field()}.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{gf_element & $c$, const gf_element & $a$, const gf_element & $b$}
+  $c \assign a / b$, if $b \neq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{gf_element & $c$, const bigint & $a$, const gf_element & $b$}
+  $c \assign (a \cdot 1) / b$ over the field \code{$b$.get_field()}, if $b \neq 0$.  Otherwise the \LEH
+  will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{gf_element & $c$, const gf_element & $a$, const bigint & $b$}
+  $c \assign a / (b \cdot 1)$ over the field \code{$a$.get_field()}, if $b \neq 0$.  Otherwise the \LEH
+  will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$e$.negate}{}
+  $e \assign -e$.
+\end{fcode}
+
+\begin{fcode}{void}{negate}{gf_element & $a$, const gf_element & $b$}
+  $a \assign -b$.
+\end{fcode}
+
+\begin{fcode}{void}{$e$.multiply_by_2}{}
+  $e \assign 2 \cdot e$.
+\end{fcode}
+
+\begin{fcode}{void}{$e$.invert}{}
+  $e \assign e^{-1}$, if $e \neq 0$.
+Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{invert}{gf_element & $a$, const gf_element & $b$}
+  $a \assign b^{-1}$, if $b \neq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{gf_element}{inverse}{const gf_element & $a$}
+  returns $a^{-1}$, if $a \neq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{gf_element}{sqrt}{const gf_element & $a$}
+  returns $x$ with $x^2 = a$.
+\end{fcode}
+
+\begin{fcode}{void}{square}{gf_element & $a$, const gf_element & $b$}
+  $a \assign b^2$.
+\end{fcode}
+
+\begin{fcode}{void}{power}{gf_element & $c$, const gf_element & $a$, const bigint & $e$}
+  $c \assign a^e$.
+\end{fcode}
+
+\begin{fcode}{void}{pth_power}{gf_element & $c$, const gf_element & $a$, lidia_size_t $e$}
+  $c \assign a^{p^e}$, where $p$ is the characteristic of the corresponding field.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+Let \code{e} be an instance of type \code{gf_element}.
+
+The  binary operators \code{==},  \code{!=} are overloaded.
+
+\begin{cfcode}{bool}{$e$.is_zero}{}
+  returns \TRUE if $e = 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$e$.is_one}{}
+  returns \TRUE if $e = 1$, \FALSE otherwise.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+Let \code{e} be an instance of type \code{gf_element}.
+
+\begin{fcode}{void}{$e$.randomize}{}
+  sets $e$ to a random element of the field \code{$e$.get_field()}.
+\end{fcode}
+
+\begin{fcode}{void}{$e$.randomize}{lidia_size_t $d$}
+  sets $e$ to a random element of the subfield $K$ of \code{$e$.get_field()}, where $K$ has
+  (absolute) degree $d$.  If $d$ is not a divisor of \code{$e$.get_field().degree()},
+  then the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{swap}{gf_element & $a$, gf_element & $b$}
+  swaps the values of $a$ and $b$.
+\end{fcode}
+
+\begin{fcode}{udigit}{hash}{const gf_element & $a$}
+  returns a hash value for $a$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+Let $e$ be an instance of type \code{gf_element}.
+
+\begin{cfcode}{bigint}{$e$.order}{}
+  returns the order of $e$ in the multiplicative group of \code{$e$.get_field()}.
+\end{cfcode}
+% this might take some time because we might need to compute a factorization
+% of the order of the multiplicative group...
+
+\begin{cfcode}{multi_bigmod}{$e$.trace}{}
+  returns the trace of $e$.
+\end{cfcode}
+
+\begin{cfcode}{multi_bigmod}{$e$.norm}{}
+  returns the norm of $e$.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$e$.is_square}{}
+  returns \TRUE if $e$ is a square, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$e$.is_primitive_element}{}
+  checks whether the order of $e$ in the multiplicative group is $p^n-1$, where $p$ is the
+  characteristic and $n$ is the degree of the corresponding field.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$e$.is_free_element}{}
+  checks whether $e$ is a free element, i.e. the generator of a normal base.
+\end{cfcode}
+
+\begin{fcode}{gf_element}{$e$.assign_primitive_element}{const galois_field & $\ff$}
+  sets $e$ to a generator of the multiplicative group of the field $\ff$.
+
+  \code{$e$.assign_primitive_element($ff$)} recomputes a generator on each
+  call and therefore is likely to return different values on subsequent
+  calls. If you don't need different values on each call, then
+  \code{galois_field::generator()} is more efficient.
+\end{fcode}
+
+\begin{cfcode}{unsigned int}{$e$.get_absolute_degree}{}
+  returns the extension degree $n$ of the current field over which $e$ is defined.
+\end{cfcode}
+
+\begin{cfcode}{unsigned int}{$e$.get_relative_degree}{}
+  returns the minimal extension degree $k$ of the field $\GF(p^k)$ over the prime field $\GF(p)$
+  such that $e$ is an element of $\GF(p^k)$ ($p$ denotes the characteristic of the corresponding
+  field).
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$e$.lift_to_Z}{}
+  If $e$ is an element of a prime field $\GF(p)$ of characteristic $p$, then return the
+  least non negative residue of the residue class of the class $e \bmod p$.  Otherwise the \LEH is
+  invoked.
+\end{cfcode}
+
+\begin{fcode}{bool}{$e$.solve_quadratic}{const gf_element& $a_1$, const gf_element& $a_0$}
+  If the polynomial $X^2 + a_1 X + a_0$ has a root over the field over which $a_1$ and $a_0$ are
+  defined, then $e$ is set to a root and \TRUE is returned.  If the polynomial does not have a
+  root, \FALSE is returned.  If $a_1$ and $a_0$ are defined over different fields, the \LEH is
+  invoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+We distinguish between \emph{verbose} and \emph{short} I/O format.
+Let $e$ be an instance of type \code{gf_element}.  The verbose format
+is ``(g(X), f(X))'' where $g(X) = \code{$e$.polynomial_rep()}$ and
+$f(X) = \code{get_field().irred_polynomial()}$.  In case of a prime
+field $\GF(p)\cong\bbfZ/p\bbfZ$, the element $m \bmod p$ can also be
+written as \code{(m, p)}.
+
+For the short format, we assume that the finite field over which the
+element is defined is already known, i.e. if \code{$e$.get_field()}
+does not return the dummy field.  We distinguish the following cases,
+depending on the finite field, which we will denote by $K$:
+\begin{itemize}
+\item $K = \GF(p)$ is a prime field: ``\code{(m)}'' means the element 
+$m\bmod p\in K$;
+\item $K = \GF(p^n), p \neq 2, n>1$: ``\code{(g(X))}'' means the 
+element $g(X) \bmod \code{$K$.irred_polynomial()}$;
+\item $K = \GF(2^n)$, $n > 1$: ``\code{(Dec:$d$)}'', and 
+``\code{(Hex:$d$)}'' mean the element $\sum_{i} a_i X^i \bmod 2$ for
+  $d = \sum_{i} a_i2^i$, where $d$ is an integer in decimal, or
+  hexadecimal representation, respectively.
+\item $K=GF(p^n)$: ``\code{$d$}'' means the  
+element $(\sum_{i} a_i X^i) \bmod \code{$K$.irred_polynomial()}$ for
+  $d = \sum_{i} a_ip^i$, where $d$ is an integer in decimal.
+\end{itemize}
+
+%\begin{center}
+%\begin{tabular}{lll}
+%\code{(m)}    &$m\bmod p\in K$ &if $K=\GF(p)$ is a prime field\\
+%\code{(g(X))} &$g(X)\bmod {}$\code{K.irred_polynomial()}
+%                                       &if $K=\GF(p^n), p\neq2, n>1$\\
+%\code{(Dec:d)}        &$\sum\limits_{i} a_iX^i\bmod 2$ for
+%                                       $d=\sum\limits_{i}a_i2^i$
+%                                       &if $K=\GF(2^n), n>1$\\
+%\code{(Hex:d)}        &\multicolumn{2}{l}{analogously, only that \code{d} is expected in hexadecimal representation}
+%\end{tabular}
+%\end{center}
+
+The \code{istream} operator \code{>>} and the \code{ostream} operator \code{<<} are overloaded.
+
+\begin{fcode}{static void}{set_output_format}{unsigned int $m$}
+  sets the output format for all elements of the class \code{gf_element} to \emph{verbose} if
+  $m \neq 0$.  Otherwise the output format will be \emph{short}.
+\end{fcode}
+
+\begin{fcode}{unsigned int}{get_output_format}{}
+  returns 0, if the output format is set to ``short'', and 1 otherwise.
+\end{fcode}
+
+\begin{fcode}{istream &}{operator >>}{istream & in, gf_element & $e$}
+  reads an element of a finite field from \code{istream} \code{in}.  The input must be of the
+  format described above.  If the input is in the short format, the field over which the element
+  is defined must already be set beforehand, otherwise the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{ostream &}{operator <<}{ostream & out, const gf_element & $e$}
+  writes the element $e$ to \code{ostream} \code{out} in verbose or short format, according
+  to \linebreak\code{gf_element::get_output_format()}.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{galois_field}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/gf_element.h>
+
+int main()
+{
+    bigint p;
+    lidia_size_t d;
+
+    cout << "Please enter the characteristic ";
+    cout << "of the finite field : "; cin >> p;
+    cout << "Please enter the degree of the ";
+    cout << "finite field : "; cin >> d;
+
+    galois_field field(p, d);
+    cout << "This field has ";
+    cout << field.number_of_elements();
+    cout <<" elements.\n";
+
+    cout << "The defining polynomial of the field is\n";
+    field.irred_polynomial().pretty_print();
+    cout << endl;
+
+    gf_element elem;
+    elem.assign_primitive_element(field);
+    cout << elem << " is a primitive element in this field.\n";
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Detlef Anton, Franz-Dieter Berger, Stefan Neis, Thomas Pfahler

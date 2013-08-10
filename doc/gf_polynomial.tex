@@ -1,0 +1,263 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  gf_polynomial.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the template class polynomial
+%%
+%%  Copyright   (c)   1996   by  LiDIA-Group
+%%
+%%  Authors: Stefan Neis, adding some own code to rewritten code of
+%%  Victor Shoup, Thomas Papanikolaou, Nigel Smart, Damian Weber who each
+%%  contributed some part of the original code.
+%%  Thomas Pfahler.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{polynomial< gf_element >} \dotfill specialization of the polynomials
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{polynomial< gf_element >} is a class for computations with polynomials over finite fields.
+This class is a specialization of the general \code{polynomial< T >}, and you can apply all the
+functions and operators of the general class \code{polynomial< T >}.  Moreover these classes
+support some additional functionality.
+
+In the following we will describe the additional functions of the class \code{polynomial<
+  gf_element >}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+The specializations use the representation of the general class \code{polynomial< T >} in
+addition with a reference to an element of the class \code{galois_field} characterizing the
+field over which the polynomial is defined.  So, every element of the class \code{polynomial<
+  gf_element >} has ``its own field'', allowing to use polynomials over different finite fields
+at the same time.  This field must be set explicitely if the polynomial is not the result of an
+arithmetical operation.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+The specialization supports the same constructors as the general type, and the following one:
+
+\begin{fcode}{ct}{polynomial< gf_element >}{const galois_field & $K$}
+  initializes a zero polynomial over the field which is defined by $K$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+All arithmetical operations are done in the field over which the polynomials are defined.  In
+principal, the \LEH is invoked if the \code{const} arguments are not defined over the same finite
+fields.  The ``resulting'' polynomial receives the field of the ``input'' polynomials.
+
+Let $f$ be of type \code{polynomial< gf_element >}:
+
+\begin{cfcode}{const galois_field &}{$f$.get_field}{}
+  returns the finite field over which $f$ is defined.
+\end{cfcode}
+
+\begin{fcode}{void}{$f$.set_field}{const galois_field & $K$}
+  sets the field over which $f$ is defined.  $f$ is set to zero.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign_zero}{const galois_field & $K$}
+  sets the field over which $f$ is defined.  $f$ is set to zero.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign_one}{const galois_field & $K$}
+  sets the field over which $f$ is defined.  $f$ is set to the polynomial $1 \cdot x^0$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign_x}{const galois_field & $K$}
+  sets the field over which $f$ is defined.  $f$ is set to the polynomial $1 \cdot x^1$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+In addition to the operators of \code{polynomial< T >} the following operators are overloaded:
+\begin{center}
+  \begin{tabular}{|c|rcl|l|}\hline
+    binary & \code{polynomial< gf_element >} & $op$ & \code{polynomial< gf_element >} & $op\in\{\code{/},\code{\%}\}$\\\hline
+    binary with & \code{polynomial< gf_element >} & $op$ & \code{polynomial< gf_element >} & $op\in\{\code{/=},\code{\%=}\}$\\
+    assignment & & & &\\\hline
+    binary & \code{polynomial< gf_element >} & $op$ & \code{gf_element} & $op \in\{\code{/}\}$\\\hline
+    binary with & \code{polynomial< gf_element >} & $op$ & \code{gf_element} & $op \in\{\code{/=}\}$\\
+    assignment & & & &\\\hline
+  \end{tabular}
+\end{center}
+
+To avoid copying, these operations can also be performed by the following functions.  Let $f$ be
+of type \code{polynomial< gf_element >}.
+
+\begin{fcode}{void}{div_rem}{polynomial< gf_element > & $q$,const polynomial< gf_element > & $r$,
+    const polynomial< gf_element > & $f$, const polynomial< gf_element > & $g$}%
+  $f \assign q \cdot g + r$, where $\deg(r) < \deg(g)$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{polynomial< gf_element > & $q$,
+    const polynomial< gf_element > & $f$, const polynomial< gf_element > & $g$}%
+  Computes a polynomial $q$, such that $\deg(f - q \cdot g) < \deg(g)$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{polynomial< gf_element > & $q$, const polynomial< gf_element > & $f$,
+    const gf_element & $a$}%
+  $q \assign f / a$.
+\end{fcode}
+
+\begin{fcode}{void}{remainder}{polynomial< gf_element > & $r$,
+    const polynomial< gf_element > & $f$, const polynomial< gf_element > & $g$}%
+  Computes $r$ with $r \equiv f \pmod{g}$ and $\deg(r) < \deg(g)$.
+\end{fcode}
+
+\begin{fcode}{void}{invert}{polynomial< gf_element > & $f$, const polynomial< gf_element > & $g$,
+    lidia_size_t $m$}%
+  $f \equiv g^{-1} \pmod{x^m}$.  The constant term of $g$ must be non-zero, otherwise the \LEH
+  is invoked.
+\end{fcode}
+
+
+\STITLE{Greatest Common Divisor}
+
+\begin{fcode}{polynomial< gf_element >}{gcd}{const polynomial< gf_element > & $f$,
+    const polynomial< gf_element > & $g$}%
+  returns $\gcd(f, g)$.
+\end{fcode}
+
+\begin{fcode}{polynomial< gf_element >}{xgcd}{polynomial< gf_element > & $s$,
+    polynomial< gf_element > & $t$, const polynomial< gf_element > & $f$, const polynomial< gf_element > & $g$}%
+  computes $s$ and $t$ such that $\gcd(f, g) = s \cdot f + t \cdot g$ and returns $\gcd(s, t)$
+\end{fcode}
+
+
+\STITLE{Modular Arithmetic without pre-conditioning}
+
+\begin{fcode}{void}{multiply_mod}{polynomial< gf_element > & $g$,
+    const polynomial< gf_element > & $a$, const polynomial< gf_element > & $b$,
+    const polynomial< gf_element > & $f$}%
+  $g \assign a \cdot b \bmod f$.
+\end{fcode}
+
+\begin{fcode}{void}{square_mod}{polynomial< gf_element > & $g$,
+    const polynomial< gf_element > & $a$, const polynomial< gf_element > & $f$}%
+  $g \assign a^2 \bmod f$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply_by_x_mod}{polynomial< gf_element > & $g$,
+    const polynomial< gf_element > & $a$, const polynomial< gf_element > & $f$}%
+  $g \assign a \cdot x \bmod f$.
+\end{fcode}
+
+\begin{fcode}{void}{invert_mod}{polynomial< gf_element > & $g$,
+    const polynomial< gf_element > & $a$, const polynomial< gf_element > & $f$}%
+  $g \assign a^{-1} \bmod f$.  The \LEH is invoked if $a$ is not invertible.
+\end{fcode}
+
+\begin{fcode}{bool}{invert_mod_status}{polynomial< gf_element > & $g$,
+    const polynomial< gf_element > & $a$, const polynomial< gf_element > & $f$}%
+  returns \TRUE and sets $g \assign a^{-1} \bmod f$, if $\gcd(a, f) = 1$; otherwise returns
+  \FALSE and sets $g \assign \gcd(a, f)$.
+\end{fcode}
+
+\begin{fcode}{void}{power_mod}{polynomial< gf_element > & $g$,
+    const polynomial< gf_element > & $a$, const bigint & $e$,
+    const polynomial< gf_element > & $f$}%
+  $g \assign a^e \bmod f$.  The polynomial $f$ and the exponent $e$ may not alias an output.
+\end{fcode}
+
+\begin{fcode}{void}{power_x_mod}{polynomial< gf_element > & $g$, const bigint & $e$,
+    const polynomial< gf_element > & $f$}%
+  $g \assign x^e \bmod f$.  The polynomial $f$ and the exponent $e$ may not alias an output.
+\end{fcode}
+
+\begin{fcode}{void}{power_x_plus_a_mod}{polynomial< gf_element > & $g$, const bigint & $a$,
+    const bigint & $e$, const polynomial< gf_element > & $f$}%
+  $g \assign (x + a)^e \bmod f$.  The polynomial $f$ and the exponent $e$ may not alias an
+  output.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+Let $f$ be an instance of type \code{polynomial< gf_element >}.
+
+\begin{fcode}{void}{cyclic_reduce}{polynomial< gf_element > & $f$,
+    const polynomial< gf_element > & $g$, lidia_size_t m}%
+  $f \assign g \bmod x^m-1$.
+\end{fcode}
+
+\begin{fcode}{base_vector< gf_element >}{find_roots}{const polynomial< gf_element > & $f$}
+  returns the list of roots of $f$.  Assumes that $f$ is monic and has $\deg(f)$ distinct roots;
+  otherwise the behaviour of this function is undefined.
+\end{fcode}
+
+%\begin{fcode}{void}{$f$.randomize}{const gf_p_base & $PB$, lidia_size_t n}
+%\end{fcode}
+
+\begin{fcode}{polynomial< gf_element >}{randomize}{const galois_field & $K$, lidia_size_t $n$}
+  returns a random polynomial of degree $n$ over the field defined by $K$.
+\end{fcode}
+
+
+\STITLE{Integration}
+
+\begin{fcode}{void}{integral}{polynomial< gf_element > & $f$, const polynomial< gf_element > & $g$}
+  computes $f$, such that $f' = g$.
+\end{fcode}
+
+\begin{fcode}{polynomial< gf_element >}{integral}{const polynomial< gf_element > & $g$}
+  returns a polynomial $f$, such that $f' = g$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+The \code{istream} operator \code{>>} and the \code{ostream} operator \code{<<} are overloaded.
+The input formats and the output format are the same as for the general class.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{galois_field},
+\SEE{gf_element},
+\SEE{polynomial}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\EXAMPLES
+%\begin{verbatim}
+%      #include <LiDIA/polynomial.h>
+%
+%      main()
+%      {
+%      }
+%\end{verbatim}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Thomas Pfahler, Stefan Neis

@@ -1,0 +1,26 @@
+// -*- C++ -*-
+//==============================================================================================
+//
+//	This file is part of LiDIA --- a library for computational number theory
+//
+//	Copyright (c) 1994--2001 the LiDIA Group.  All rights reserved.
+//
+//	See http://www.informatik.tu-darmstadt.de/TI/LiDIA/
+//
+//----------------------------------------------------------------------------------------------
+//
+//	$Id: udigit_mod.special,v 2.0 2001/05/02 16:39:26 lidiaadm Exp $
+//
+//	Author	:
+//	Changes	: See CVS log
+//
+//==============================================================================================
+
+
+#ifdef LIDIA_CLASS_DENSE_POWER_SERIES
+
+# ifndef __LIDIA_DENSE_POWER_SERIES_UDIGIT_MOD_H
+#  include	<LiDIA/finite_fields/dense_power_series_udigit_mod.h>
+# endif
+
+#endif

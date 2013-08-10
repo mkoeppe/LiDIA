@@ -1,0 +1,208 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  nmbrthry_functions.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the elementary
+%%  number-theoretical functions.
+%%
+%%  Copyright   (c)   1996   by  LiDIA-Group
+%%
+%%  Authors: Markus Maurer, Stefan Neis
+%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{power functions} \dotfill a collection of template functions for exponentiation
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+Including \path{LiDIA/power_functions.h} allows the use of some power functions, e.g.,
+left-to-right and right-to-left exponentiation.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+Exponentiation is a very basic routine that is used for a variety of mathematical objects.
+Therefore, we have written template versions of some powering methods to compute $a^b$, where
+$b$ can be of type \code{unsigned long} or \code{bigint} and the element $a$ must be of type
+\code{T} that provides the functions
+\begin{enumerate}
+\item \code{$a$.is_one()}
+\item \code{$a$.assign_one()}
+\item \code{operator = (const T &)}
+\item \code{multiply (T &, const T &, const T &)}
+\item \code{square (T &, const T &, const T &)}.
+\end{enumerate}
+More precisely, these methods can be applied to elements of a monoid, where the term
+$\mathit{one}$ stands for the neutral element of the monoid.
+
+We assume, that every class, which uses these routines, implements their own power function,
+that handles the case of negative exponents appropriately and then calls the template function.
+To avoid name conflicts, all functions have a prefix \code{lidia_}.
+
+In general, you should use the functions \code{lidia_power(...)}, because they are interface
+functions, that call the fastest method.  If a new, faster routine is implemented, the interface
+function will be changed appropriately and you don't have to change your own code.
+
+\path{LiDIA/include/LiDIA/power_functions.cc} contains the implementation of the functions.
+
+\begin{fcode}{void}{lidia_power}{T & $c$, const T & $a$, const E & $b$}
+  interface function that computes $c \assign a^b$ by calling \code{lidia_power_left_to_right}.
+  $E$ can be either of type \code{bigint} or \code{unsigned long}.
+\end{fcode}
+
+\begin{fcode}{void}{lidia_power}{T & $c$, const T & $a$, const E & $b$,
+    void (*fast_mul) (T &, const T &, const T &)}%
+  interface function that computes $c \assign a^b$ by calling \code{lidia_power_left_to_right}.
+  $E$ can be either of type \code{bigint} or \code{unsigned long}.
+\end{fcode}
+
+\begin{fcode}{void}{lidia_power_left_to_right}{T & $c$, const T & $a$, bigint $b$}
+  uses repeated squaring, reading the bits from the highest to the lowest bit, to compute $c
+  \assign a^b$.  If the exponent $b$ is negative, the \LEH is called.
+\end{fcode}
+
+\begin{fcode}{void}{lidia_power_left_to_right}{T & $c$, const T & $a$, unsigned long $b$}
+  uses repeated squaring, reading the bits from the highest to lowest bit, to compute $c \assign
+  a^b$.
+\end{fcode}
+
+\begin{fcode}{void}{lidia_power_left_to_right}{T & $c$, const T & $a$, bigint $b$,
+    void (*fast_mul) (T &, const T &, const T &)}%
+  uses repeated squaring, reading the bits from the highest to the lowest bit, to compute $c
+  \assign a^b$.  It uses the function \code{fast_mul} to multiply the numbers, if the current
+  examined bit is one.  If the exponent $b$ is negative, the \LEH is called.
+\end{fcode}
+
+\begin{fcode}{void}{lidia_power_left_to_right}{T & $c$, const T & $a$, unsigned long $b$,
+    void (*fast_mul) (T &, const T &, const T &)}%
+  uses repeated squaring, reading the bits from the highest to lowest bit, to compute $c \assign
+  a^b$.  It uses the function \code{fast_mul} to multiply the numbers, if the current examined bit is
+  one.
+\end{fcode}
+
+\begin{fcode}{void}{lidia_power_right_to_left}{T & $c$, const T & $a$, bigint $b$}
+  uses repeated squaring, reading the bits from the lowest to highest bit, to compute $c \assign
+  a^b$.  If the exponent $b$ is negative, the \LEH is called.
+\end{fcode}
+
+\begin{fcode}{void}{lidia_power_right_to_left}{T & $c$, const T & $a$, unsigned long $b$}
+  uses repeated squaring, reading the bits from the lowest to highest bit, to compute $c \assign
+  a^b$.
+\end{fcode}
+
+\begin{fcode}{void}{lidia_power_sliding_window}{T & $c$, const T & $a$, const bigint & $b$, unsigned long $k$}
+  compute $c \assign a^b$ by repeated squaring and multipliciation with precomputed powers of
+  $a$, using a window of size $k$.  Note that this algorithm precomputes $2^k-1$ powers of $a$.
+  If the exponent $b$ is negative, the \LEH is called.  If the window size $k$ is one, this
+  algorithm is equivalent to \code{lidia_power_left_to_right}.
+
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{bigint}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+
+#include <LiDIA/bigint.h>
+#include <LiDIA/random_generator.h>
+#include <LiDIA/power_functions.h>
+#include <LiDIA/timer.h>
+#include <assert.h>
+
+int main()
+{
+    bigint powl, powr;
+    bigint a;
+    long exp;
+    bigint bigint_exp;
+
+    random_generator rg;
+
+    cout << "Testing repeated squaring left_to_right ";
+    cout << "and right_to_left using bigints.\n";
+    cout << "Base:     10 decimal digits.\n";
+    cout << "Exponent: less than 100000.\n";
+    cout << endl;
+    cout << "This may take a while ...\n";
+    cout << endl;
+    cout.flush();
+
+    // num, den randomly chosen, less than 10^10;
+    bigint tmp = 10;
+    lidia_power(tmp,tmp,tmp);
+
+    a = randomize(tmp);
+
+    // exp randomly chosen
+    rg >> exp;
+
+    exp %= 100000;
+
+    bigint_exp = exp;
+
+
+    timer T1, T2;
+
+    T1.start_timer();
+    lidia_power_right_to_left(powr, a, bigint_exp);
+    T1.stop_timer();
+
+    T2.start_timer();
+    lidia_power_left_to_right(powl, a, bigint_exp);
+    T2.stop_timer();
+
+    cout << "power_right_to_left(bigint): " << T1 << endl;
+    cout << "power_left_to_right(bigint): " << T2 << endl;
+
+    // verify result
+    assert(powl == powr);
+
+    T1.start_timer();
+    lidia_power_right_to_left(powr, a, exp);
+    T1.stop_timer();
+
+    // verify result
+    assert(powl == powr);
+
+    T2.start_timer();
+    lidia_power_left_to_right(powl, a, exp);
+    T2.stop_timer();
+
+    cout << "power_right_to_left(long): " << T1 << endl;
+    cout << "power_left_to_right(long): " << T2 << endl;
+
+    // verify result
+    assert(powl == powr);
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+See \path{LiDIA/src/templates/template_lib/power_functions_appl.cc}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Markus Maurer, Stefan Neis

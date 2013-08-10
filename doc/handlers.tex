@@ -1,0 +1,157 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  handlers.tex        LiDIA documentation
+%%
+%%  This file contains the documentation of LiDIA's handlers
+%%
+%%  Copyright (c) 1995 by the LiDIA Group
+%%
+%%  Authors: Thomas Papanikolaou
+%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{system handlers} \dotfill warning, memory and debug handlers as well as
+legacy error handlers
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\LiDIA's system handlers are functions which allow easy warning, memory and debug
+handling in \LiDIA programs. \LiDIA's error handling routines used to follow
+the same pattern. If you configured \LiDIA with
+\code{-{}-enable-exceptions=no}, then they still do. Otherwise, \LiDIA's
+subroutines will throw exceptions derived from \code{LiDIA::BasicError}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+In the following let \code{xxx} stand for \code{lidia_warning, lidia_error, lidia_memory} or
+\code{lidia_debug}.  A \code{xxx_handler} in \LiDIA consists of three parts:
+
+\begin{fcode}{void}{default_xxx_handler}{}
+  this is the function which realizes the handling proposed by the \LiDIA system.  For example,
+  the \code{default_error_handler} prints an error message and then exits the program.
+\end{fcode}
+
+\begin{fcode}{{xxx_handler_ptr}}{xxx_handler}{}
+  this is a pointer which by default points to the \code{default_xxx_handler}.
+\end{fcode}
+
+\begin{fcode}{{xxx_handler_ptr}}{set_xxx_handler}{xxx_handler_ptr}
+  this is a function which allows to replace the default handler by a user-defined handler.  The
+  new handler must have the type \code{xxx_handler_ptr}.
+\end{fcode}
+
+According to the description above, the following handlers are available:
+
+\begin{verbatim}
+typedef void (*error_handler_ptr)(char *, char *);
+error_handler_ptr lidia_error_handler;
+
+\end{verbatim}
+
+The \IndexSUBTT{system_handlers}{lidia\_error\_handler} must be called with two character pointers
+(strings).  The first string should include the name of the class in which the error occured and
+the second the exact position and the description of the error.  The \code{lidia_error_handler}
+produces an error message of the format
+\begin{quote}
+\code{lidia_error_handler::classname::exact position and description}
+\end{quote}
+
+and exits using \code{abort()}.
+
+An extended version of \code{lidia_error_handler} is \code{lidia_error_handler_c}.  This function
+must be called with two character pointers and a non-empty, valid piece of C++ code (commas are
+not allowed in this code).  On call, it executes the code and the \code{lidia_error_handler}.
+\code{lidia_error_handler_c} is implemented by the macro
+
+\begin{verbatim}
+ #define lidia_error_handler_c(f, m, code)\
+ { code; lidia_error_handler(f, m); }
+
+\end{verbatim}
+
+The \code{lidia_warning_handler} and the \code{lidia_debug_handler} work in the same way but in
+contrast to the \code{error_handler} they do not abort execution.  To include warning and debug
+handling in \LiDIA, the following compilation flags have to be defined before building the
+library: \code{-DLIDIA_WARNINGS -DLIDIA_DEBUG=level}
+
+\code{level} can be any integer greater than zero.  The greater the \code{level} the less debug
+information will be produced on execution.  The default value of \code{LIDIA_DEBUG} is 1 (print
+all debug information).
+
+\begin{verbatim}
+ #define debug_handler(file, msg)\
+ lidia_debug_handler(file, msg)
+
+ #define debug_handler_l(file, msg, level)\
+ if (LIDIA_DEBUG <= level)\
+ lidia_debug_handler(file, msg)
+
+ #define debug_handler_c(name, msg, level, code)\
+ { if (LIDIA_DEBUG <= level)\
+ lidia_debug_handler(name, msg);\
+ code; }
+
+\end{verbatim}
+
+Finally, the \code{memory_handler} is intented to be used as a check after allocating vectors
+of objects.  Therefore, it has an additional pointer argument (the vector the user tried to
+allocate).  If the allocation was not successful (memory exhausted), a message is printed and the
+program aborts execution.  Otherwise no message is printed.  Again, to allow memory handling in
+\LiDIA, it is necessary to define the compilation flag \code{-DLIDIA_MEMORY}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+UNIX manual page abort(3)
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\WARNINGS
+
+The compilation flags \code{LIDIA_WARNINGS}, \code{LIDIA_DEBUG} and \code{LIDIA_MEMORY} must be
+defined before compiling \LiDIA.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/error.h>
+#include <LiDIA/memory.h>
+
+int main()
+{
+    char *s;
+
+    if (1 != (2 - 1))
+        lidia_error_handler("main()", "if::math. error");
+
+    s = new char[100000];
+
+    memory_handler(s, "main()", "allocating 100000 chars");
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Thomas Papanikolaou

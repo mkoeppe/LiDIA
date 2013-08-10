@@ -1,0 +1,225 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  sf_Fp_polynomial.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the specialisation
+%%  single_factor< Fp_polynomial >, factorization< Fp_polynomial >.
+%%
+%%  Copyright   (c)   1996   by  LiDIA-Group
+%%
+%%  Authors: Thomas Pfahler
+%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{single_factor< Fp_polynomial >} \dotfill a single factor of
+a polynomial over finite prime fields
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{single_factor< Fp_polynomial >} is used for storing factorizations of polynomials over
+finite prime fields (see \code{factorization}).  It is a specialization of \code{single_factor<
+  T >} with some additional functionality.  All functions for \code{single_factor< T >} can be
+applied to objects of class \code{single_factor< Fp_polynomial >}, too.  These basic functions
+are not described here any further; you will find the description of the latter in
+\code{single_factor< T >}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+%\section{single_factor< Fp_polynomial >}
+
+%\STITLE{Constructor}
+
+
+\STITLE{Modifying Operations}
+
+Let $a$ be an instance of type \code{single_factor< Fp_polynomial >}.
+
+\begin{fcode}{bigint}{$a$.extract_unit}{}
+  returns the leading coefficient of \code{$a$.base()} and converts it to a monic polynomial (by
+  dividing it by its leading coefficient).
+\end{fcode}
+
+
+\STITLE{Factorization Algorithms}
+
+The implementation of the factorization algorithms is described in \cite{Pfahler_Thesis:1998}.
+
+Let $a$ be an instance of type \code{single_factor< Fp_polynomial >}.
+
+\begin{fcode}{factorization< Fp_polynomial >}{square_free_decomp}{const Fp_polynomial & $f$}
+  returns the factorization of $f$ into square-free factors.  $f$ must be monic, otherwise the
+  \LEH is invoked.
+\end{fcode}
+
+\begin{cfcode}{factorization< Fp_polynomial >}{$a$.square_free_decomp}{}
+  returns \code{square_free_decomp($a$.base())}.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{fcode}{factorization< Fp_polynomial >}{berlekamp}{const Fp_polynomial & $f$}
+  returns the complete factorization of $f$ using Berlekamp's factoring algorithm.  If $f$ is
+  the zero polynomial, the \LEH is invoked.
+\end{fcode}
+
+\begin{cfcode}{factorization< Fp_polynomial >}{$a$.berlekamp}{}
+  returns \code{berlekamp($a$.base())}.
+\end{cfcode}
+
+\begin{fcode}{factorization< Fp_polynomial >}{sf_berlekamp}{const Fp_polynomial & $f$}
+  returns the complete factorization of $f$ using Berlekamp's factoring algorithm.  $f$ must be
+  monic and square-free with a non-zero constant term; otherwise the behaviour of this function
+  is undefined.
+\end{fcode}
+
+\begin{cfcode}{factorization< Fp_polynomial >}{$a$.sf_berlekamp}{}
+  returns \code{sf_berlekamp($a$.base())}.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{fcode}{factorization< Fp_polynomial >}{can_zass}{const Fp_polynomial & $f$}
+  returns the complete factorization of $f$ using \code{sf_can_zass}.  If $f$ is the zero
+  polynomial, the \LEH is invoked.  Note that as \code{ddf} creates temporary files, you need
+  write permission either in the \path{/tmp}-directory or in the directory from which it is
+  called.
+  
+  This function uses less memory than \code{berlekamp} when factoring polynomials of large
+  degrees.
+\end{fcode}
+
+\begin{cfcode}{factorization< Fp_polynomial >}{$a$.can_zass}{}
+  returns \code{can_zass($a$.base())}.
+\end{cfcode}
+
+\begin{fcode}{factorization< Fp_polynomial >}{sf_can_zass}{const Fp_polynomial & $f$}
+  returns the complete factorization of $f$ using \code{ddf} and the von zur Gathen/Shoup
+  algorithm for factoring polynomials whose irreducible factors all have the same degree.
+  
+  $f$ must be monic and square-free, otherwise the behaviour of this function is undefined.
+  Note that as \code{ddf} creates temporary files, you need write permission either in the
+  \path{/tmp} directory or in the directory from which it is called.
+
+  This function uses less memory than \code{sf_berlekamp} when factoring polynomials of large
+  degrees.
+\end{fcode}
+
+\begin{cfcode}{factorization< Fp_polynomial >}{$a$.sf_can_zass}{}
+returns \code{sf_can_zass($a$.base())}.
+\end{cfcode}
+
+\begin{fcode}{factorization< Fp_polynomial >}{ddf}{const Fp_polynomial & $f$}
+  performs a ``distinct degree factorization''.
+
+  Returns the factorization of $f$ into a product of factors, where each factor is the product
+  of distinct irreducibles all of the same degree, using Shoup's algorithm \cite{Shoup:1995}.
+  \emph{The exponents} of this factorization do not give the multipicities of these factors
+  (which would be 1) \emph{but the degrees} of the
+  irreducibles.
+
+  $f$ must be monic and square-free, otherwise the behaviour of this function is undefined.
+  Note that as \code{ddf} creates temporary files, you need write permission either in the
+  \path{/tmp} directory or in the directory from which it is called.
+\end{fcode}
+
+\begin{cfcode}{factorization< Fp_polynomial >}{$a$.ddf}{}
+  returns \code{ddf($a$.base())}.
+\end{cfcode}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{fcode}{factorization< Fp_polynomial >}{edf}{const Fp_polynomial & $f$, lidia_size_t $d$}
+  performs an ``equal degree factorization''.  Assumes that $f$ is a monic polynomial whose
+  irreducible factors all have degree $d$ (otherwise, the behaviour of this function is
+  undefined); returns the complete factorization of $f$ using an algorithm of von zur
+  Gathen/Shoup \cite{vzGathen/Shoup:1992}.
+\end{fcode}
+
+\begin{cfcode}{factorization< Fp_polynomial >}{$a$.edf}{lidia_size_t $d$}
+  returns \code{edf($a$.base(), $d$)}.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{fcode}{factorization< Fp_polynomial >}{factor}{const Fp_polynomial & $f$}
+  returns the complete factorization of $f$ using a strategy which tries to apply always the
+  fastest of the above algorithms.  It also includes special variants for factoring binomials.
+  The strategy is explained in detail in \cite{Pfahler_Thesis:1998}.  If $f$ is the zero
+  polynomial, the \LEH is invoked.
+\end{fcode}
+
+\begin{cfcode}{factorization< Fp_polynomial >}{$a$.factor}{}
+  returns \code{factor($a$.base())}.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{factorization< T >}, \SEE{Fp_polynomial}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\WARNINGS
+
+Using \code{can_zass}, \code{sf_can_zass} or \code{ddf} requires write permission in the
+\path{/tmp} directory or in the directory from which they are called.  This is necessary because
+\code{ddf} creates temporary files.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/Fp_polynomial.h>
+#include <LiDIA/factorization.h>
+
+int main()
+{
+    Fp_polynomial f;
+    factorization< Fp_polynomial > u;
+
+    cout << "Please enter f : "; cin >> f ;
+    u = factor(f);
+    cout << "\nFactorization of f :\n" << u << endl;
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+%example:
+%
+%\code{Please enter f : X^3 - 2*X - 1 mod 5}
+%
+%\code{Factorization of f :}
+%\code{[ [[1 1] mod 5,1], [[2 1] mod 5,2] ]}
+%
+
+For further examples please refer to
+\path{LiDIA/src/templates/factorization/Fp_polynomial/Fp_pol_factor_appl.cc}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Victor Shoup, Thomas Pfahler

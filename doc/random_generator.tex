@@ -1,0 +1,108 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  random_generator.tex        LiDIA documentation
+%%
+%%  This file contains the documentation of the class
+%%  random_generator.
+%%
+%%  Copyright (c) 1997 by the LiDIA Group
+%%
+%%  Authors: Markus Maurer
+%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{random_generator} \dotfill a class for producing random numbers
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{random_generator} is a class that can be used to create random numbers for built-in types
+\code{int} and \code{long}.  Using this class exclusively and no operating system functions like
+\code{random()}, \code{srandom()} etc.~allows to collect the operating system dependend parts of
+the process of generating random numbers for built-in types in the implementation of this class.
+Especially, the initialization of the random number generator is done by the class
+\code{random_generator}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+\code{random_generator} is an interface that calls functions provided by the operating system.
+The implementation of the internal functions depends on the platform, \LiDIA is running on.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{random_generator}{}
+  Initializes the random number generator.
+\end{fcode}
+
+\begin{fcode}{dt}{~random_generator}{}
+  Deletes the random generator object.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+The operator \code{>>} is overloaded and is used to produce random numbers.
+
+\begin{fcode}{random_generator &}{operator>>}{random_generator & rg, int & $i$}
+  produces a randomly chosen number and assigns it to $i$.
+\end{fcode}
+
+\begin{fcode}{random_generator &}{operator>>}{random_generator & rg, long & $l$}
+  produces a randomly chosen number and assigns it to $l$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\SEEALSO
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\NOTES
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/random_generator.h>
+
+int main()
+{
+    random_generator rg;
+    int i, j;
+
+    rg >> i >> j;
+
+    cout << "i == " << i << ", j == " << j << endl;
+    cout.flush();
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+For further examples please refer to \path{LiDIA/src/portabiliy/random_generator_appl.cc}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+Markus Maurer

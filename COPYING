@@ -1,0 +1,48 @@
+The copyright for LiDIA is owned by the LiDIA-Group.  LiDIA is not in the
+public domain but it can be copied and distributed freely for any
+non-commercial purpose.  Commercial licenses are available from the
+LiDIA-Group.
+
+If you copy LiDIA for somebody else, you may ask this person for refund of
+your expenses.  This should cover cost of media, copying and shipping.  You
+are not allowed to ask for more than this.  In any case you must give a copy
+of this copyright notice along with the program.
+
+If you use LiDIA it is quite a good idea to subscribe to the mailing lists
+LiDIA-announce@cdc.informatik.tu-darmstadt.de to get any LiDIA-related news,
+and to LiDIA@cdc.informatik.tu-darmstadt.de for discussions on LiDIA-related
+topics (see http://www.cdc.informatik.tu-darmstadt.de/mailman/listinfo/ on
+how to subscribe).
+
+If you publish a mathematical result that was partly obtained using LiDIA
+please cite LiDIA (LiDIA-Group, LiDIA --- A library for computational number
+theory, TU Darmstadt, 2001.), just as you would cite another paper that you
+used.  Also we would appreciate it if you could inform us about such a paper
+(send e-mail to lidiaadm@cdc.informatik.tu-darmstadt.de).
+
+You are permitted to modify and redistribute LiDIA, but you are not allowed
+to restrict further redistribution.  That is to say proprietary
+modifications will not be allowed.  We want all versions of LiDIA to remain
+free.
+
+If you modify any part of LiDIA and redistribute it, you must supply a
+README file containing information about the changes you made.  We do not
+want to take credit or be blamed for your modifications.
+
+Of course we are interested in all of your modifications.  In particular we
+would like to see bug-fixes, improvements and new functions.  So again we
+would appreciate it if you informed us about all modifications you make.
+
+LiDIA is distributed by us without any warranty, to the extent permitted by
+applicable state law.  We distribute LiDIA AS IS without warranty of any
+kind, either expressed or implied, including, but not limited to, the
+implied warranties of merchantability and fitness for a particular purpose.
+
+The entire risk as to the quality and performance of the program is with
+you.  Should LiDIA prove defective, you have to take over the cost of all
+necessary servicing, repair or correction.
+
+In no case unless required by applicable law will we, and/or any other party
+who may modify and redistribute LiDIA as permitted above, be liable to you
+for damages, including lost profits, lost money or other special, incidental
+or consequential damages arising out of the use or inability to use LiDIA.

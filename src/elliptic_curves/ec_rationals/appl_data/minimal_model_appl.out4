@@ -1,0 +1,35 @@
+Enter a curve: Input curve E0 = [0,0,0,-587044371375,173122882731933750]
+Minimal model E1 = [0,0,0,-587044371375,173122882731933750]
+Isomorphism E0->E1: [u,r,s,t] = [1,0,0,0]
+Unimodular?...yes
+Identity?...yes
+Long output:
+[0,0,0,-587044371375,173122882731933750]
+b2 = 0; b4 = -1174088742750; b6 = 692491530927735000; b8 = -344621093963068919390625
+c4 = 28178129826000; c6 = -149578170680390760000
+disc = 1850980104159161689860300000000; bad primes = [ 2 3 5 7 11 761 ]; # real components = 2
+Conductor = 12182316300
+
+Reduction type at bad primes:
+p	ord(d)	ord(N)	ord(denom(j))	Kodaira	c_p
+2	8	2	0		IV*  	3
+3	9	3	0		IV*  	3
+5	8	2	0		IV*  	3
+7	8	2	0		IV*  	3
+11	8	2	0		IV*  	3
+761	1	1	1		I1	1
+Product of c_p = 243
+
+
+Torsion points on the minimal model: 
+Torsion order = 3
+Torsion points:
+	0 ) [0 : 1 : 0], 	order 1
+	1 ) [444675 : -2668050 : 1], 	order 3
+	2 ) [444675 : 2668050 : 1], 	order 3
+Cyclic: C3, generator  [444675 : -2668050 : 1]
+
+Torsion points on the input model: 
+O
+(444675 , -2668050)
+(444675 , 2668050)

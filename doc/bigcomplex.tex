@@ -1,0 +1,464 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  bigcomplex.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the class bigcomplex
+%%
+%%  Copyright   (c)   1995   by  LiDIA-Group
+%%
+%%  Authors: Thomas Papanikolaou
+%%
+
+\newcommand{\real}{\mathit{re}}
+\newcommand{\imag}{\mathit{im}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{bigcomplex} \dotfill multiprecision complex floating-point arithmetic
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{bigcomplex} is a class for doing multiprecision complex floating point arithmetic.  It
+supports for example arithmetic operations, comparisons and basic triginometric functions.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+A \code{bigcomplex} is a pair of two \code{bigfloat}s $(\real, \imag)$, where $\real$ is called
+the \emph{real part} and $\imag$ the \emph{imaginary part}.  This pair represents the complex
+number $\real + \imag \cdot i$, where $i$ is the imaginary unit.  Before declaring a
+\code{bigcomplex} it is possible to set the decimal precision of the \code{bigfloat}s $(\real,
+\imag)$ to $p$ by \code{bigcomplex::precision($p$)} or by \code{bigfloat::precision($p$)}.  Both
+calls have the same effect and set the \code{bigfloat} precision to $p$ (compare class
+\code{bigfloat}, page \pageref{class:bigfloat}).
+
+If the precision has not been set, a default precision of $t = 5$ \code{bigint} base digits is
+used.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{bigcomplex}{}
+  Initializes with $0$.
+\end{fcode}
+
+\begin{fcode}{ct}{bigcomplex}{const bigfloat & $x$}
+  initializes the real part with $x$, the imaginary part with $0$.
+\end{fcode}
+
+\begin{fcode}{ct}{bigcomplex}{const bigcomplex & $z$}
+  initializes with $z$.
+\end{fcode}
+
+\begin{fcode}{ct}{bigcomplex}{const bigfloat & $\real$, const bigfloat & $\imag$}
+  initializes the real with $\real$ and the imaginary part with $\imag$.
+\end{fcode}
+
+\begin{fcode}{dt}{~bigcomplex}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\INIT
+
+\begin{fcode}{static void}{precision}{long $p$}
+  sets the global decimal precision of the \code{bigfloat}s $\real, \imag$ to $p$
+  decimal places (compare \code{bigfloat}).  Note that the \code{bigfloat} precision is set
+  globally to $p$ by this call.  Whenever necessary internal computations are done with a higher
+  precision.
+\end{fcode}
+
+\begin{fcode}{static void}{mode}{int $m$}
+  sets the rounding mode for the normalization routine according to the IEEE standard (see
+  \cite{IEEE:754}).  The following modes are available:
+  \begin{itemize}
+  \item \code{MP_TRUNC}: round to zero.
+  \item \code{MP_RND}: round to nearest.  If there are two possibilities to do this, round to even.
+  \item \code{MP_RND_UP} round to $+\infty$.
+  \item \code{MP_RND_DOWN} round to $-\infty$.
+  \end{itemize}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\TYPE
+
+Before assigning a \code{bigcomplex} to a \code{bigfloat} it is often useful to check whether
+the assignment can be done without error, i.e. whether the imaginary part $\imag$ is zero.
+
+
+\begin{fcode}{bool}{is_bigfloat}{const bigcomplex &}
+  returns \TRUE if the imaginary part is zero, \FALSE otherwise.
+\end{fcode}
+
+% \begin{fcode}{bool}{is_double}{const bigcomplex &}%
+%   returns \TRUE, if the imaginary part is zero and the real part is not to
+%   large to be stored in a double variable, \FALSE otherwise.
+% \end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $x$ be of type \code{bigcomplex}.  The operator \code{=} is overloaded.  The user may also
+use the following object methods for assignment:
+
+\begin{fcode}{void}{$x$.assign_zero}{}
+  $x \assign 0$.
+\end{fcode}
+
+\begin{fcode}{void}{$x$.assign_one}{}
+  $x \assign 1$.
+\end{fcode}
+
+\begin{fcode}{void}{$x$.assign}{const bigfloat & $y$}
+  $x \assign y$.
+\end{fcode}
+
+\begin{fcode}{void}{$x$.assign}{const bigfloat & $y$, const bigfloat & $z$}
+  $x \assign y + z \cdot i$.
+\end{fcode}
+
+\begin{fcode}{void}{$x$.assign}{const bigcomplex & $y$}
+  $x \assign y$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $x$ be of type \code{bigcomplex}.
+
+\begin{cfcode}{const bigfloat &}{$x$.real}{}\end{cfcode}
+\begin{fcode}{const bigfloat &}{real}{const bigcomplex & $x$}
+  returns the real part of $x$.
+\end{fcode}
+
+\begin{cfcode}{const bigfloat &}{$x$.imag}{}\end{cfcode}
+\begin{fcode}{const bigfloat &}{imag}{const bigcomplex & $x$}
+  returns the imaginary part of $x$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\MODF
+
+\begin{fcode}{void}{$x$.negate}{}
+  $x \assign -x$.
+\end{fcode}
+
+\begin{fcode}{void}{$x$.invert}{}
+  $x \assign 1 / x$ if $x \neq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+The following operators are overloaded and can be used in exactly the same way as in C++:
+
+\begin{center}
+  \code{(unary) -}\\
+  \code{(binary) +, -, *, /}\\
+  \code{(binary with assignment) +=, -=, *=, /=}
+\end{center}
+
+\begin{fcode}{void}{negate}{bigcomplex & $x$, const bigcomplex & $y$}
+  $x \assign -y$.
+\end{fcode}
+
+\begin{fcode}{void}{add}{bigcomplex & $x$, const bigcomplex & $y$, const bigcomplex & $z$}\end{fcode}
+\begin{fcode}{void}{add}{bigcomplex & $x$, const bigcomplex & $y$, const bigfloat & $z$}\end{fcode}
+\begin{fcode}{void}{add}{bigcomplex & $x$, const bigfloat & $y$, const bigcomplex & $z$}
+  $x \assign y + z$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{bigcomplex & $x$, const bigcomplex & $y$, const bigcomplex & $z$}\end{fcode}
+\begin{fcode}{void}{subtract}{bigcomplex & $x$, const bigcomplex & $y$, const bigfloat & $z$}\end{fcode}
+\begin{fcode}{void}{subtract}{bigcomplex & $x$, const bigfloat & $y$, const bigcomplex & $z$}
+  $x \assign y - z$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{bigcomplex & $x$, const bigcomplex & $y$, const bigcomplex & $z$}\end{fcode}
+\begin{fcode}{void}{multiply}{bigcomplex & $x$, const bigcomplex & $y$, const bigfloat & $z$}\end{fcode}
+\begin{fcode}{void}{multiply}{bigcomplex & $x$, const bigfloat & $y$, const bigcomplex & $z$}
+  $x \assign y \cdot z$.
+\end{fcode}
+
+\begin{fcode}{void}{square}{bigcomplex & $x$, const bigcomplex & $y$}
+  $x \assign y^2$.
+\end{fcode}
+
+\begin{fcode}{bigcomplex}{square}{const bigcomplex & $x$}
+  returns $x^2$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{bigcomplex & $x$, const bigcomplex & $y$, const bigcomplex & $z$}\end{fcode}
+\begin{fcode}{void}{divide}{bigcomplex & $x$, const bigcomplex & $y$, const bigfloat & $z$}\end{fcode}
+\begin{fcode}{void}{divide}{bigcomplex & $x$, const bigfloat & $y$, const bigcomplex & $z$}
+  $x \assign y / z$ if $z \neq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{invert}{bigcomplex & $x$, const bigcomplex & $y$}
+  $x \assign 1 / y$ if $y \neq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{bigcomplex}{inverse}{const bigcomplex & $x$}
+  returns $1 / x$ if $x \neq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{sqrt}{bigcomplex & $x$, const bigcomplex & $y$}
+  $x \assign \sqrt{y}$.
+\end{fcode}
+
+\begin{fcode}{bigcomplex}{sqrt}{const bigcomplex & $x$}
+  returns $\sqrt{x}$.
+\end{fcode}
+
+\begin{fcode}{void}{power}{bigcomplex & $x$, const bigcomplex & $y$, const bigcomplex & $z$}\end{fcode}
+\begin{fcode}{void}{power}{bigcomplex & $x$, const bigcomplex & $y$, const bigfloat & $z$}
+  sets $x \assign y^z$.
+\end{fcode}
+
+\begin{fcode}{void}{power}{bigcomplex & $x$, const bigcomplex & $y$, long $i$}
+  sets $x \assign y^i$.
+\end{fcode}
+
+\begin{fcode}{bigcomplex}{power}{const bigcomplex & $y$, const bigcomplex & $z$}\end{fcode}
+\begin{fcode}{bigcomplex}{power}{const bigcomplex & $y$, const bigfloat & $z$}
+  returns $y^z$.
+\end{fcode}
+
+\begin{fcode}{bigcomplex}{power}{const bigcomplex & $y$, long $i$}
+  returns $y^i$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+\code{bigcomplex} supports the binary operators \code{==} and \code{!=}.  Furthermore there
+exists the following function:
+
+\begin{cfcode}{bool}{$x$.is_zero}{}
+  returns \TRUE if $x$ is zero, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$x$.is_one}{}
+  returns \TRUE if $x$ is $1$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$x$.is_approx_zero}{}
+  returns \TRUE if the real and the imaginary part of $x$ are approximately zero (compare class
+  \code{bigfloat}, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$x$.is_real}{}
+  returns \TRUE if the imaginary part of $x$ is zero, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$x$.is_approx_real}{}
+  returns \TRUE if the imaginary part of $x$ is approximately zero (compare class
+  \code{bigfloat}, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$x$.is_imaginary}{}
+  returns \TRUE if the real part of $x$ is zero, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$x$.is_approx_imaginary}{}
+  returns \TRUE if the real part of $x$ is approximately zero (compare class \code{bigfloat},
+  \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$x$.is_equal}{const bigcomplex & $y$}
+  returns \TRUE if $x = y$, \FALSE otherwise.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+\begin{fcode}{void}{conj}{bigcomplex & $x$, const bigcomplex & $y$}
+  returns $x$ as the complex conjugate of $y$.
+\end{fcode}
+
+\begin{fcode}{bigcomplex}{conj}{const bigcomplex & $x$}
+  returns the complex conjugate of $x$.
+\end{fcode}
+
+\begin{fcode}{void}{exp}{bigcomplex & $x$, const bigcomplex & $y$}
+  $x \assign \exp(x) = e^y$ ($e \approx 2.71828\dots$).
+\end{fcode}
+
+\begin{fcode}{bigcomplex}{exp}{const bigcomplex & $x$}
+  returns $e^x$.
+\end{fcode}
+
+\begin{fcode}{void}{log}{bigcomplex & $x$, const bigcomplex & $y$}
+  $x \assign \log(y)$ (natural logarithm to base $e \approx 2.71828\dots$).
+\end{fcode}
+
+\begin{fcode}{bigcomplex}{log}{const bigcomplex & $x$}
+  returns $ \log(x)$.
+\end{fcode}
+
+\begin{fcode}{void}{polar}{bigcomplex & $x$, const bigfloat & $r$, const bigfloat & $t$}
+  $x \assign r \cdot \cos(t) + r \cdot \sin(t) \cdot i$.
+\end{fcode}
+
+\begin{fcode}{bigcomplex}{polar}{const bigfloat & $r$, const bigfloat & $t$}
+  returns the complex number $r \cdot \cos(t) + r \cdot \sin(t) \cdot i$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{abs}{const bigcomplex & $x$}
+  returns $\sqrt{\Re^2 x + \Im^2 x}$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{hypot}{const bigcomplex & $x$}
+  returns $|x|$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{arg}{const bigcomplex & $x$}
+  returns $\arctan(\Im x / \Re x)$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{norm}{const bigcomplex & $x$}
+  returns the norm of $x$.
+\end{fcode}
+
+\begin{fcode}{void}{swap}{bigcomplex & $x$, bigcomplex & $y$}
+  exchanges the values of $x$ and $y$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\STITLE{(Inverse) Trigonometric Functions}
+
+\begin{fcode}{void}{sin}{bigcomplex & $x$, const bigcomplex & $y$}
+  $x \assign \sin(y)$.
+\end{fcode}
+
+\begin{fcode}{bigcomplex}{sin}{const bigcomplex & $x$}
+  returns $\sin(x)$.
+\end{fcode}
+
+\begin{fcode}{void}{cos}{bigcomplex & $x$, const bigcomplex & $y$}
+  $x \assign \cos(y)$.
+\end{fcode}
+
+\begin{fcode}{bigcomplex}{cos}{const bigcomplex & $x$}
+  returns $\cos(x)$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\STITLE{(Inverse) Hyperbolic Trigonometric Functions}
+
+\begin{fcode}{void}{sinh}{bigcomplex & $x$, const bigcomplex & $y$}
+  $x \assign \sinh(y)$.
+\end{fcode}
+
+\begin{fcode}{bigcomplex}{sinh}{const bigcomplex & $x$}
+  returns $\sinh(x)$.
+\end{fcode}
+
+\begin{fcode}{void}{cosh}{bigcomplex & $x$, const bigcomplex & $x$}
+  $x \assign \cosh(y)$.
+\end{fcode}
+
+\begin{fcode}{bigcomplex}{cosh}{const bigcomplex & $x$}
+  returns $\cosh(x)$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+\code{istream} operator \code{>>} and \code{ostream} operator \code{<<} are overloaded and can
+be used in the same way as in C++.  If the imaginary part of the \code{bigcomplex} is zero, then
+input and output of a \code{bigcomplex} may be in one of the following formats:
+\begin{displaymath}
+  \real \text{ or } (\real,0) \enspace,
+\end{displaymath}
+where $\real$ is a \code{bigfloat} in the appropriate format described in the \code{bigfloat}
+class description.  If the imaginary part of the \code{bigfloat} is not zero, then input and
+output have the format
+\begin{displaymath}
+  (\real, \imag)
+\end{displaymath}
+where $\real$ and $\imag$ are \code{bigfloat}s in the appropriate format described in the
+\code{bigfloat} class description.
+
+Note that you have to manage by yourself that successive \code{bigcomplex} numbers have to be
+separated by blanks.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{bigfloat}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+The structure of \code{bigcomplex} is strongly based on AT\&T's and GNU's complex class.
+\code{bigcomplex} is not yet complete.  Further methods will be incorporated in the next
+release.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/bigcomplex.h>
+
+int main()
+{
+    bigcomplex::precision(100);
+
+    bigcomplex a, b, c;
+
+    cout << "Please enter a : "; cin >> a ;
+    cout << "Please enter b : "; cin >> b ;
+    cout << endl;
+    c = a + b;
+    cout << "a + b = " << c << endl;
+}
+\end{verbatim}
+\end{quote}
+
+For further reference please refer to \path{LiDIA/src/simple_classes/bigcomplex_appl.cc}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Ingrid Biehl, Thomas Papanikolaou

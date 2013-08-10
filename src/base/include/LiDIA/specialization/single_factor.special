@@ -1,0 +1,37 @@
+// -*- C++ -*-
+//==============================================================================================
+//
+//	This file is part of LiDIA --- a library for computational number theory
+//
+//	Copyright (c) 1994--2001 the LiDIA Group.  All rights reserved.
+//
+//	See http://www.informatik.tu-darmstadt.de/TI/LiDIA/
+//
+//----------------------------------------------------------------------------------------------
+//
+//	$Id$
+//
+//	Author	:
+//	Changes	: See CVS log
+//
+//==============================================================================================
+
+
+#ifdef LIDIA_CLASS_ALG_IDEAL
+#  include	<LiDIA/number_fields/sf_alg_ideal.h>
+#endif
+
+
+#ifdef LIDIA_CLASS_FP_POLYNOMIAL
+#  include	<LiDIA/finite_fields/sf_Fp_polynomial.h>
+#endif
+
+
+#ifdef LIDIA_CLASS_GF_POLYNOMIAL
+#  include	<LiDIA/finite_fields/sf_gf_polynomial.h>
+#endif
+
+
+#ifdef LIDIA_CLASS_BIGINT
+#  include	<LiDIA/base/sf_bigint.h>
+#endif

@@ -1,0 +1,213 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  gf_poly_modulus.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the class poly_modulus
+%%
+%%  Copyright   (c)   1996   by  LiDIA-Group
+%%
+%%  Authors: Thomas Pfahler
+%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{gf_poly_modulus} \dotfill class for efficient computations modulo
+polynomials over finite fields
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+If you need to do a lot of arithmetic modulo a fixed \code{polynomial< gf_element >} $f$, build
+a \code{gf_poly_modulus} $F$ for $f$.  This pre-computes information about $f$ that speeds up
+the computation a great deal, especially for large polynomials.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+The pre-computations for variables of type \code{gf_poly_modulus} as well consist of evaluating
+special representations.  For further description, see \cite{Pfahler_Thesis:1998}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{gf_poly_modulus}{}
+  no initialization is done; you must call the member-function \code{build()} (see below) before
+  using this \code{gf_poly_modulus} in one of the arithmetical functions.
+\end{fcode}
+
+\begin{fcode}{ct}{gf_poly_modulus}{const polynomial< gf_element > & $f$}
+  initializes for computations modulo $f$.
+\end{fcode}
+
+\begin{fcode}{dt}{~gf_poly_modulus}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+Let $F$ be of type \code{gf_poly_modulus}.
+
+\begin{fcode}{void}{$F$.build}{const polynomial< gf_element > & $f$}
+  initializes for computations modulo $f$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $F$ be of type \code{gf_poly_modulus}.
+
+\begin{cfcode}{const polynomial< gf_element > &}{$F$.modulus}{}
+  returns a constant reference to the polynomial for which $F$ was build.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+As described in the section \code{polynomial< gf_element >}, each polynomial carries a reference
+to an element of type \code{galois_field} representing the finite field over which the
+polynomial is defined.  Therefore, if the finite fields of the \code{const} arguments are not
+the same, the \LEH is invoked.  The ``resulting'' polynomial receives the finite field of the
+``input'' polynomials.
+
+\begin{fcode}{void}{remainder}{polynomial< gf_element > & $g$,
+    const polynomial< gf_element > & $a$, const gf_poly_modulus & $F$}%
+  $g \assign a \bmod \code{$F$.modulus()}$.  No restrictions on $\deg(a)$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{polynomial< gf_element > & $g$,
+    const polynomial< gf_element > & $a$, const polynomial< gf_element > & $b$,
+    const gf_poly_modulus & $F$}%
+  $g \assign a \cdot b \bmod\code{$F$.modulus()}$.  If $\deg(a)$ or $\deg(b) \geq
+  \deg(\code{$F$.modulus()})$, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{square}{polynomial< gf_element > & $g$,
+    const polynomial< gf_element > & $a$, const gf_poly_modulus & $F$}%
+  $g \assign a^2 \bmod\code{$F$.modulus()}$.  If $\deg(a) \geq \deg(\code{$F$.modulus()})$, the
+  \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{power}{polynomial< gf_element > & $g$,
+    const polynomial< gf_element > & $a$, const bigint & $e$, const gf_poly_modulus & $F$}%
+  $g \assign a^e \bmod \code{$F$.modulus()}$.  If $e < 0$, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{power_x}{polynomial< gf_element > & $g$, const bigint & $e$,
+    const gf_poly_modulus & $F$}%
+  $g \assign x^e \bmod \code{$F$.modulus()}$.  If $e < 0$, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{power_x_plus_a}{polynomial< gf_element > & $g$, const bigint & $a$,
+    const bigint & $e$, const gf_poly_modulus & $F$}%
+  $g \assign (x + a)^e \bmod \code{$F$.modulus()}$.  If $e < 0$, the \LEH is invoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+%\begin{fcode}{void}{min_poly}{polynomial< gf_element > & $h$,
+%    const polynomial< gf_element > & $g$, lidia_size_t $m$, const gf_poly_modulus & $F$}%
+%        computes the monic minimal polynomial $h$ of
+%        ($g$ mod $F.modulus()$).
+%        $m$ is an upper bound on the degree of the minimal polynomial.
+%        The algorithm is probabilistic, always returns a divisor of
+%        the minimal polynomial, and returns a proper divisor with
+%        probability at most $m / \code{$g$.modulus()}$.
+%\end{fcode}
+%
+%\begin{fcode}{void}{checked_min_poly}{polynomial< gf_element > & $h$,
+%    const polynomial< gf_element > & $g$, lidia_size_t $m$, const gf_poly_modulus & $F$}%
+%        same as $min_poly$, but guarantees that result is correct.
+%\end{fcode}
+%
+%\begin{fcode}{void}{irred_poly}{polynomial< gf_element > & $h$,
+%    const polynomial< gf_element > & $g$, lidia_size_t $m$, const gf_poly_modulus & $F$}%
+%        same as $min_poly$, but assumes that $F.modulus()$
+%        is irreducible (or at least that the minimal polynomial of $g$ is
+%        itself irreducible).\\
+%        The algorithm is deterministic (and hence is always correct).
+%\end{fcode}
+%
+%\begin{fcode}{void}{compose}{polynomial< gf_element > & $c$,
+%    const polynomial< gf_element > & $g$, const polynomial< gf_element > & $h$,
+%    const gf_poly_modulus & $F$}%
+%       $c \assign g(h) \bmod \code{$F$.modulus()}$.
+%\end{fcode}
+
+\begin{fcode}{void}{trace_map}{polynomial< gf_element > & $w$, const polynomial< gf_element > & $a$,
+    lidia_size_t $d$, const gf_poly_modulus & $F$, const polynomial< gf_element > & $b$}%
+  $w \assign \sum_{i=0}^{d-1} a^{q^i} \bmod \code{$F$.modulus()}$.  It is assumed that $d \geq
+  0$, $q$ is a power of the number of elements over which these polynomials are defined, and $b
+  \equiv x^q \lpmod\code{$F$.modulus()}\rpmod$, otherwise the behaviour of this function is
+  undefined.
+\end{fcode}
+
+
+%\begin{fcode}{void}{power_compose}{polynomial< gf_element > & $w$, const polynomial< gf_element > & $b$, lidia_size_t d, const gf_poly_modulus & $F$}
+%       $w \assign x^{q^d} \bmod \code{$F$.modulus()}$.\\
+%       It is assumed that $d \geq 0$, $q$ is a power of
+%       \code{$F$.modulus().modulus()}, and $b \equiv x^q \lpmod
+%       \code{$F$.modulus()}\rpmod$, otherwise the behaviour of this function is
+%       undefined.
+%\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{polynomial< gf_element >},
+\SEE{poly_modulus}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/polynomial.h>
+#include <LiDIA/gf_element.h>
+
+...
+
+    polynomial< gf_element >  a, b, f, x, y;
+    gf_poly_modulus F;
+
+...
+
+    multiply_mod(x, a, b, f);
+
+    F.build(f);
+    multiply(y, a, b, F);
+
+    //now, x == y
+
+...
+
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Victor Shoup (ideas), Thomas Pfahler

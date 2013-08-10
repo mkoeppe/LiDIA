@@ -1,0 +1,148 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  meq_prime.tex       Documentation
+%%
+%%  This file contains the documentation of the class meq_prime.
+%%
+%%  Copyright   (c)   1998   by  LiDIA Group
+%%
+%%  Authors: Volker Mueller
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\code{meq_prime} \dotfill class for input information from the precomputed database of modular
+polynomials.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+The class \code{meq_prime} is used for input of modular polynomials.  These equations are
+currently stored in a database.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+\code{meq_prime} is a class the input of so called modular polynomials.  This class is used from
+the functions of the class \code{eco_prime} to construct suitable polynomials for the elliptic
+curve counting algorithm of Atkin/Elkies.
+
+For a non expert user it should not be necessary to use the class \code{meq_prime}, since all
+necessary computations are done automatically.
+
+In the current version the class \code{meq_prime} invokes the \LEH if a modular polynomial can
+not be found in the precomputed database.  This database is expected to be stored in the
+directory \path{$LIDIA_HOME/lib/LiDIA/MOD_EQ}.  The modular equation corresponding to the
+prime $l$ is stored in the file \code{meq\textit{l}}.  In future releases of \code{meq_prime} it
+will be possible to recompute a missing modular polynomial and add it to the currently used
+database.
+
+At the moment the input routine supports input files in \emph{ascii} format, in \emph{binary}
+format, in \emph{gzipped ascii} format, and \emph{gzipped binary} format.  Note that of course
+the \texttt{gzip} program must be installed on your machine if you want to use the gzipped input
+versions.  Furthermore it is important to note that binary formats differ on different
+architectures, such that we suggest to use either \emph{ascii} or \emph{gzipped ascii} format.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{meq_prime}{}
+  constructs an uninitialized instance.
+\end{fcode}
+
+\begin{fcode}{ct}{meq_prime}{const meq_prime & $m$}
+  copy constructor.
+\end{fcode}
+
+\begin{fcode}{ct}{meq_prime}{udigit $l$}
+  initializes index of modular polynomial with $l$, i.e. in a subsequent call to one of the
+  polynomial building functions the $l$-th modular polynomial will be used.  $l$ is assumed to be
+  an odd prime number.  If this condition is not satisfied, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{dt}{~meq_prime}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+The operator \code{=} is overloaded.  Moreover there exists the following assignment function.
+Let $m$ be an instance of \code{meq_prime}.
+
+\begin{fcode}{void}{$m$.set_prime}{udigit $l$}
+  sets the index of the modular polynomial to be read in to $l$.  $l$ is assumed to be an odd
+  prime number.  If this condition is not satisfied, the \LEH is invoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $m$ be an instance of \code{meq_prime}.
+
+\begin{cfcode}{udigit}{$m$.get_prime}{}
+  returns the prime index $l$ of the currently used modular polynomial.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+Let $m$ be an instance of \code{meq_prime}.  The following evaluation functions for the currently
+active modular polynomial can be used.
+
+\begin{fcode}{void}{$m$.build_poly_in_X}{Fp_polynomial & $f$, const bigmod & $y$}
+  evaluate the modular polynomial of current index $l$ at $Y$ coordinate $y$.  Set $f$ to the
+  result of this evaluation.  If the $l$-th modular polynomial can't be found in the current
+  database, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$m$.build_poly_in_Y}{Fp_polynomial & $f$, const bigmod & $x$}
+  evaluate the modular polynomial of current index $l$ at $X$ coordinate $x$.  Set $f$ to the
+  result of this evaluation.  If the $l$-th modular polynomial can't be found in the current
+  database, the \LEH is invoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+Input/Output of an instance of \code{meq_prime} is currently not possible.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{eco_prime}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+At the moment it should not be necessary for a user to use this class.  When the Elliptic Curve
+Counting Package will however be increased in future, this will probably also cause changes in
+the class \code{meq_prime}.  Then we will offer a more comfortable usage of this class,
+especially for non experts.  Moreover re-computation of missing information will be possible in
+future versions.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Frank Lehmann, Markus Maurer, Volker M{\"u}ller.

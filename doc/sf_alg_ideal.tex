@@ -1,0 +1,296 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  sf_alg_ideal.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the specialisation
+%%  single_factor< alg_ideal >.
+%%
+%%  Copyright   (c)   1997   by  LiDIA-Group
+%%
+%%  Author: Stefan Neis
+%%
+
+\newcommand{\upperbound}{\mathit{upper\uscore bound}}
+\newcommand{\lowerbound}{\mathit{lower\uscore bound}}
+\newcommand{\fact}{\mathit{fact}}
+\newcommand{\step}{\mathit{step}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{single_factor< alg_ideal >} \dotfill a factor of an ideal in an
+algebraic number field
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{single_factor< alg_ideal >} is used for storing factorizations of ideals of algebraic
+number fields (see \code{factorization}).  It is a specialization of \code{single_factor< T >}
+with some additional functionality.  All functions for \code{single_factor< T >} can be applied
+to objects of class \code{single_factor< alg_ideal >}, too.  These basic functions are not
+described here any further; you will find the description of the latter in \code{single_factor<
+  T >}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+%\section{single_factor< alg_ideal >}
+
+%\STITLE{Constructor}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $a$ be an instance of type \code{single_factor< alg_ideal >}.
+
+\begin{cfcode}{prime_ideal}{$a$.prime_base}{}
+  If \code{$a$.is_prime_factor()} returns \TRUE, then $a$ represents a \code{prime_ideal} which
+  is returned by this function.  If \code{$a$.is_prime_factor()} returns \FALSE, calling this
+  function will result in unpredictable behaviour.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+Let $a$ be an instance of type \code{single_factor< alg_ideal >}.
+
+\STITLE{Queries}
+
+\begin{fcode}{bool}{$a$.is_prime_factor}{int $\mathit{test}$ = 0}
+  Note that contrary to the general description, calling this routine with $\mathit{test} \neq
+  0$ will not perform an explicit test if we do not yet know, whether or not $a$ is prime, since
+  no efficient test is implemented.  Instead, this will result in an error message.  If you need
+  to know, whether or not a \code{single_factor< alg_ideal >} is prime, call this function
+  without parameter and if the result is not ``prime'', call the function \code{factor} and
+  check the factorization.
+\end{fcode}
+
+\STITLE{Factorization Algorithms}
+
+If one tries to factor an integral ideal of an algebraic number field, the hard part is to find
+a factorization of the smallest strictly positive integer in this ideal.  If this factorization
+has been succesfully computed, the remaining computations can be done in (probabilistic)
+polynomial time as described e.g.~in \cite{Cohen:1995}, chapter 4.8.2 (for numbers not dividing
+the index) and \cite{Buchmann/LenstraHW} or \cite{Weber_Thesis:1993} (for index divisors).
+
+For fractional ideals, one needs to factor the denominator in addition, however, this can be
+handled separately.
+
+Therefore the generic factorization functions are
+
+\begin{fcode}{factorization< alg_ideal >}{finish}{const alg_ideal & $a$,
+    rational_factorization & $f$}%
+  returns the factorization of the numerator of $a$.  $f$ must contain a factorization of the
+  smallest strictly positive integer in this ideal.
+\end{fcode}
+
+\begin{cfcode}{factorization< alg_ideal >}{$a$.finish}{rational_factorization & $f$}
+  returns \code{finish($a$.base(), $f$)}.
+\end{cfcode}
+
+To avoid copying objects, there are also the following variations of these calls:
+
+\begin{fcode}{void}{finish}{factorization< alg_ideal > & $\fact$,
+    const alg_ideal & $a$, rational_factorization & $f$}%
+  stores the factorization of the numerator of $a$ to $\fact$.  $f$ must contain a factorization
+  of the smallest strictly positive integer in this ideal.
+\end{fcode}
+
+\begin{cfcode}{void}{$a$.finish}{factorization< alg_ideal > & $\fact$,
+    rational_factorization & $f$}%
+  stores the factorization of the numerator of \code{$a$.base()} to $\fact$.  $f$ must contain a
+  factorization of the smallest strictly positive integer in this ideal.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In general, our factorization routines use the following strategy: First, we compute the
+smallest strictly positive integer in an ideal.  Then some function of the class
+\code{rational_factorization} is called to factor this integer.  Finally, we call \code{finish}
+to obtain the factorization of the ideal.
+
+To enable the user to use the full power of the factorization routines of class
+\code{rational_factorization}, we reuse the interface of this class.  Thus we obtain the
+following functions:
+
+\begin{cfcode}{factorization< alg_ideal >}{$a$.factor}{int $\upperbound$ = 34}
+  returns the factorization of \code{$a$.base()} using the function \code{factor} of class
+  \code{rational_factorization} with the given parameter to compute the factorization of the
+  smallest strictly positive integer in the ideal.
+\end{cfcode}
+
+\begin{fcode}{factorization< alg_ideal >}{factor}{const alg_ideal & $a$,
+    int $\upperbound$ = 34}%
+  returns the factorization of $a$ using the function \code{factor} of class
+  \code{rational_factorization} with the given parameter to compute the factorization of the
+  smallest strictly positive integer in the ideal.
+\end{fcode}
+
+\begin{cfcode}{void}{$a$.factor}{factorization< alg_ideal > & $\fact$,
+    int $\upperbound$ = 34}%
+  stores the factorization of \code{$a$.base()} to $\fact$ using the function \code{factor} of
+  class \code{rational_factorization} with the given parameter to compute the factorization of
+  the smallest strictly positive integer in the ideal.
+\end{cfcode}
+
+\begin{fcode}{void}{factor}{factorization< alg_ideal > & $\fact$,
+    const alg_ideal & $a$, int $\upperbound$ = 34}%
+  stores the factorization of $a$ to $\fact$ using the function \code{factor} of class
+  \code{rational_factorization} with the given parameter to compute the factorization of the
+  smallest strictly positive integer in the ideal.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{cfcode}{factorization< alg_ideal >}{$a$.trialdiv}{unsigned int $\upperbound$ = 1000000,
+    unsigned int $\lowerbound$ = 1}%
+  returns the factorization of \code{$a$.base()} using the function \code{trialdiv} of class
+  \code{rational_factorization} with the given parameters to compute the factorization of the
+  smallest strictly positive integer in the ideal.
+\end{cfcode}
+
+\begin{fcode}{factorization< alg_ideal >}{trialdiv}{const alg_ideal & $a$,
+    unsigned int $\upperbound$ = 1000000, unsigned int $\lowerbound$ = 1}%
+  returns the factorization of $a$ using the function \code{trialdiv} of class
+  \code{rational_factorization} with the given parameters to compute the factorization of the
+  smallest strictly positive integer in the ideal.
+\end{fcode}
+
+\begin{cfcode}{void}{$a$.trialdiv}{factorization< alg_ideal > & $\fact$,
+    unsigned int $\upperbound$ = 1000000, unsigned int $\lowerbound$ = 1}%
+  stores the factorization of \code{$a$.base()} to $\fact$ using the function \code{trialdiv} of
+  class \code{rational_factorization} with the given parameters to compute the factorization of
+  the smallest strictly positive integer in the ideal.
+\end{cfcode}
+
+\begin{fcode}{void}{trialdiv}{factorization< alg_ideal > & $\fact$, const alg_ideal & $a$,
+    unsigned int $\upperbound$ = 1000000, unsigned int $\lowerbound$ = 1}%
+  stores the factorization of $a$ to $\fact$ using the function \code{trialdiv} of class
+  \code{rational_factorization} with the given parameters to compute the factorization of the
+  smallest strictly positive integer in the ideal.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{cfcode}{factorization< alg_ideal >}{$a$.ecm}{int $\upperbound$ = 34,
+    int $\lowerbound$ = 6, int $\step$ = 3}%
+  returns the factorization of \code{$a$.base()} using the function \code{ecm} of class
+  \code{rational_factorization} with the given parameters to compute the factorization of the
+  smallest strictly positive integer in the ideal.
+\end{cfcode}
+
+\begin{fcode}{factorization< alg_ideal >}{ecm}{const alg_ideal & $a$,
+    int $\upperbound$ = 34, int $\lowerbound$ = 6, int $\step$ = 3}%
+  returns the factorization of $a$ using the function \code{ecm} of class
+  \code{rational_factorization} with the given parameters to compute the factorization of the
+  smallest strictly positive integer in the ideal.
+\end{fcode}
+
+\begin{cfcode}{void}{$a$.ecm}{factorization< alg_ideal > & $\fact$,
+    int $\upperbound$ = 34, int $\lowerbound$ = 6, int $\step$ = 3}%
+  stores the factorization of \code{$a$.base()} to $\fact$ using the function \code{ecm} of
+  class \code{rational_factorization} with the given parameters to compute the factorization of
+  the smallest strictly positive integer in the ideal.
+\end{cfcode}
+
+\begin{fcode}{void}{ecm}{factorization< alg_ideal > & $\fact$,
+    const alg_ideal & $a$, int $\upperbound$ = 34, int $\lowerbound$ = 6, int $\step$ = 3}%
+  stores the factorization of $a$ to $\fact$ using the function \code{ecm} of class
+  \code{rational_factorization} with the given parameters to compute the factorization of the
+  smallest strictly positive integer in the ideal.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{cfcode}{factorization< alg_ideal >}{$a$.mpqs}{}
+  returns the factorization of \code{$a$.base()} using the function \code{mpqs} of class
+  \code{rational_factorization} to compute the factorization of the smallest strictly positive
+  integer in the ideal.
+\end{cfcode}
+
+\begin{fcode}{factorization< alg_ideal >}{mpqs}{const alg_ideal & $a$}
+  returns the factorization of $a$ using the function \code{mpqs} of class
+  \code{rational_factorization} to compute the factorization of the smallest strictly positive
+  integer in the ideal.
+\end{fcode}
+
+\begin{cfcode}{void}{$a$.mpqs}{factorization< alg_ideal > & $\fact$}
+  stores the factorization of \code{$a$.base()} to $\fact$ using the function \code{mpqs} of
+  class \code{rational_factorization} to compute the factorization of the smallest strictly
+  positive integer in the ideal.
+\end{cfcode}
+
+\begin{fcode}{void}{mpqs}{factorization< alg_ideal > & $\fact$,
+    const alg_ideal & $a$} stores the factorization of $a$ to $\fact$ using the function
+  \code{mpqs} of class \code{rational_factorization} to compute the factorization of the
+  smallest strictly positive integer in the ideal.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{factorization< T >}, \SEE{alg_ideal},
+\SEE{prime_ideal},
+\SEE{rational_factorization}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  WARNINGS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\WARNINGS
+
+Using \code{factor} or \code{mpqs} requires write permission in the \path{/tmp} directory or in
+the directory from which they are called.  This is necessary because \code{mpqs} creates
+temporary files.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/alg_ideal.h>
+#include <LiDIA/prime_ideal.h>
+#include <LiDIA/factorization.h>
+
+int main()
+{
+
+    alg_ideal f;
+
+    factorization< alg_ideal > u;
+
+    cout << "Please enter f : "; cin >> f ;
+
+    u = factor(f);
+
+    cout << "\nFactorization of f :\n" << u << endl;
+
+}
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Stefan Neis, Anja Steih, Damian Weber

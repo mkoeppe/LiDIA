@@ -1,0 +1,568 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  power_series.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the classes
+%%  sparse_power_series<T> and dense_power_series<T>
+%%
+%%  Copyright   (c)   1995   by  LiDIA-Group
+%%
+%%  Authors: Frank Lehmann, Markus Maurer
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{dense_power_series< T >}, \CLASS{sparse_power_series< T >} \dotfill an arithmetic for
+approximations of power series
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{dense_power_series< T >} and \code{sparse_power_series< T >} are C++ template classes
+which represent series of the form
+\begin{displaymath}
+  \sum_{i=n}^{\infty} a_{i} \cdot X^{i} \enspace,\quad a_{n} \neq 0,\, a_{i} = 0,\, i < n,\, n \in \bbfZ
+\end{displaymath}
+by approximations
+\begin{displaymath}
+  \sum_{i=n}^{M} a_{i} \cdot X^{i} \enspace,\quad a_{n}\neq 0,\, M \in \bbfZ_{\geq n}
+\end{displaymath}
+where the coefficients $a_{i}$ are elements of type \code{T} and the indices $i$ of type
+\code{lidia_size_t}.  The difference between \code{dense_power_series< T >} and
+\code{sparse_power_series< T >} is that in the dense representation all coefficients $a_{i}$, $n
+\leq i \leq M$, are stored, whereas in the sparse representation only the non-zero ones together
+with their corresponding exponents are kept.  The two classes provide basic operations on power
+series like comparisons, addition, multiplication etc.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+An approximation of a power series
+\begin{displaymath}
+  \sum_{i=n}^{M} a_{i} \cdot X^{i} \enspace,\quad a_{n} \neq 0,\, M \in \bbfZ_{\geq n}
+\end{displaymath}
+can be represented in two different ways.  A \code{dense_power_series< T >} stores the exponent n
+and the vector of the coefficients, e.g.
+\begin{displaymath}
+  (n, a_{n}, \dots, a_{M}) \enspace.
+\end{displaymath}
+A \code{sparse_power_series< T >} only holds the non-zero coefficients together with their
+corresponding exponents, e.g.
+\begin{displaymath}
+  \biggl( (a_{i_{1}},i_{1}), \dots, (a_{i_{k}},i_{k}) \biggr)\enspace, \quad a_{i_{j}} \neq 0,\,
+  n \leq i_{j} \leq M.
+\end{displaymath}
+The exponent $n$ is called the first exponent of the approximation, because it is the smallest
+exponent which belongs to a non-zero coefficient.  Similarly, we call $M$ the last exponent of
+the approximation, because it is the largest exponent of the series which the corresponding
+coefficient is known of.  If all coefficients of an approximation are zero, so that there is no
+element $a_{n} \neq 0$, we can imagine this zero-approximation to be represented as
+\begin{displaymath}
+  a_{M} \cdot X^{M}\enspace, \quad a_{M} = 0
+\end{displaymath}
+and we set the first and last exponent to $M$.
+
+The coefficients $a_{i}$ are type \code{T} elements, where \code{T} must be a C++ class which
+provides the following operators, member and friend functions
+
+
+\begin{fcode}{istream}{operator>>}{istream, T}
+\end{fcode}
+\begin{fcode}{ostream}{operator<<}{ostream, T}
+\end{fcode}
+\begin{fcode}{bool}{operator==}{T, T}
+\end{fcode}
+\begin{fcode}{bool}{operator!=}{T, T}
+\end{fcode}
+
+\begin{cfcode}{bool}{$a$.is_zero}{}
+  returns \TRUE if $a = 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_one}{}
+  returns \TRUE if $a = 1$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{fcode}{void}{$a$.assign_zero}{}
+  $a \assign 0$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign_one}{}
+  $a \assign 1$.
+\end{fcode}
+
+\begin{fcode}{void}{add}{T & $c$, T & $a$, T & $b$}
+  $c \assign a + b$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{T & $c$, T & $a$, T & $b$}
+  $c \assign a - b$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{T & $c$, T & $a$, T & $b$}
+  $c \assign a \cdot b$.
+\end{fcode}
+
+\begin{fcode}{void}{invert}{T & $c$, T & $a$}
+  $c \assign 1 / a$.
+\end{fcode}
+
+In the following description of operators, member and friend functions we will use the type psr
+as an abbreviation which can be substituted by \code{sparse_power_series< T >} or
+\code{dense_power_series< T >}, respectively, because nearly all functions are defined for both,
+sparse and dense representation.
+
+Furthermore, for an approximation $a$ of a series, we denote the first and last exponent of $a$
+(as defined above) by $f(a)$ and $l(a)$, respectively.  By $a_{i}$ we denote that coefficient of
+$a$ which belongs to the exponent $i \in \bbfZ$.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{psr}{}
+  sets the series to an uninitialized state; the first and last exponent are undefined.  Any
+  function call, beside setting coefficients, the series is involved in causes a call of the
+  \LEH.
+\end{fcode}
+
+\begin{fcode}{ct}{psr}{const T & $z$, lidia_size_t $l$}
+  initializes the series with $z \cdot X^0 + \sum_{i=1}^l 0 \cdot X^i$\\
+  $f(this) = 0$, if $z \neq 0$, $l$ otherwise $l(this) = l$.
+\end{fcode}
+
+\begin{fcode}{ct}{psr}{const base_vector< T > & $v$, lidia_size_t $f$}
+  initializes the series with $\sum_{i=f}^{f+\code{$v$.size()}-1} v[i-f] \cdot X^i$\\
+  $f \leq f(this) \leq l(this)$ \\
+  $l(this) = f + \code{$v$.size()} - 1$.
+\end{fcode}
+
+\begin{fcode}{ct}{psr}{const psr< T > & $c$}
+  initializes the series with $c$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+The operator\code{=} is overloaded.  More precisely, the following assignments are possible:
+
+
+\begin{fcode}{const dense_power_series  &}{operator=}{const dense_power_series< T >  &}
+\end{fcode}
+\begin{fcode}{const dense_power_series  &}{operator=}{const sparse_power_series< T > &}
+\end{fcode}
+\begin{fcode}{const sparse_power_series &}{operator=}{const sparse_power_series< T > &}
+\end{fcode}
+\begin{fcode}{const sparse_power_series &}{operator=}{const dense_power_series< T >  &}
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign_zero}{lidia_size_t $l$}
+  $a \assign 0 \cdot X^l$ \\
+  $f(c) \assign l$ \\
+  $l(c) \assign l$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign_one}{lidia_size_t $l$}
+  $a \assign 1 \cdot X^0 + \sum_{i=1}^l 0 \cdot X^i$ \\
+  $f(a) \assign 0$ \\
+  $l(a) \assign l$ \\
+  If $l$ is less than zero the \LEH will be invoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+The operators \code{+}, \code{+=}, \code{-}, \code{-=}, \code{*}, \code{*=}, \code{/}, and
+\code{/=} are overloaded.
+
+To avoid copying, these operations can also be performed by the following functions, where the
+output may always alias the input:
+
+\begin{fcode}{void}{add}{psr & $c$, const psr & $a$, const psr & $b$}
+  $c \assign a + b$ \\
+  $l(c) \assign \min(l(a),l(b))$ \\
+  $\min(f(a),f(b)) \leq f(c) \leq l(c)$
+\end{fcode}
+
+\begin{fcode}{void}{add}{psr & $c$, const psr & $a$, const T & $b$}
+  $c \assign a + \left( b \cdot X^0 + \sum_{i=1}^{l(a)} 0 \cdot X^i \right)$ \\
+  $l(c) \assign l(a)$ \\
+  $f(a) \leq f(c) \leq l(c)$
+\end{fcode}
+
+\begin{fcode}{void}{add}{psr & $c$, const T & $a$, const psr & $b$}
+  $c \assign \left( a \cdot X^0 + \sum_{i=1}^{l(b)} 0 \cdot X^i \right) + b$ \\
+  $l(c) \assign l(b)$ \\
+  $f(b) \leq f(c) \leq l(c)$
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{psr & $c$, const psr & $a$, const psr & $b$}
+  $c \assign a - b$ \\
+  $l(c) \assign \min(l(a),l(b))$ \\
+  $\min(f(a),f(b)) \leq f(c) \leq l(c)$
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{psr & $c$, const psr & $a$, const T & $b$}
+  $c \assign a - \left( b \cdot X^0 + \sum_{i=1}^{l(a)} 0 \cdot X^i \right)$ \\
+  $l(c) \assign l(a)$ \\
+  $f(a) \leq f(c) \leq l(c)$
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{psr & $c$, const T & $a$, const psr & $b$}
+  $c \assign \left( a \cdot X^0 + \sum_{i=1}^{l(b)} 0 \cdot X^i \right) - b$ \\
+  $l(c) \assign l(b)$ \\
+  $f(b) \leq f(c) \leq l(c)$
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{psr & $c$, const psr & $a$, const psr & $b$}
+  $c \assign a \cdot b$ \\
+  $f(c) \assign f(a) + f(b)$ \\
+  $l(c) \assign f(c) + \min(l(a)-f(a),l(b)-f(b))$ \\
+  If $a$ and $b$ refer to the same object the \code{square($c$, $a$)}-function is called in the
+  case of \code{dense_power_series< T >}.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{psr & $c$, const psr & $a$, const T & $b$}
+  $c \assign \sum_{i=f(a)}^{l(a)} \left( a_i \cdot b \right) \cdot X^i$ \\
+  $f(c) \assign f(a)$ if $b \neq 0$, otherwise $f(c) \assign l(c)$ \\
+  $l(c) \assign l(a)$
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{psr & $c$, const T & $a$, const psr & $b$}
+  $c \assign \sum_{i=f(b)}^{l(b)} \left( a \cdot b_i \right) \cdot X^i$ \\
+  $f(c) \assign f(b)$ if $a \neq 0$, otherwise $f(c) \assign l(c)$ \\
+  $l(c) \assign l(b)$
+\end{fcode}
+
+\begin{fcode}{void}{invert}{psr & $c$, const psr & $a$}
+  $c \assign 1/a$ \\
+  $f(c) \assign - f(a)$ \\
+  $l(c) \assign - 2 \cdot f(a) + l(a)$ \\
+  If $a$ is not invertible, the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{psr & $c$, const psr & $a$, const psr & $b$}
+  $c \assign a / b$ \\
+  $f(c) \assign f(a) - f(b)$ \\
+  $l(c) \assign f(c) + \min(l(a)-f(a),l(b)-f(b))$ \\
+  If $b$ is not invertible, the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{psr & $c$, const psr & $a$, const T & $b$}
+  $c \assign \sum_{i=f(a)}^{l(a)} \left( a_i \cdot (1/b) \right) \cdot X^i$ \\
+  $f(c) \assign f(a)$ \\
+  $l(c) \assign l(a)$
+\end{fcode}
+
+\begin{fcode}{void}{divide}{psr & $c$, const T & $a$, const psr & $b$}
+  $c \assign \sum_{i=f(d)}^{l(d)} \left( a \cdot d_i \right) \cdot X^i$ where $d = 1/b $\\
+  $f(c) \assign - f(b)$ if $a \neq 0$, otherwise $f(c) \assign l(c)$ \\
+  $l(c) \assign - 2 \cdot f(b) + l(b)$ \\
+  If $b$ is not invertible, the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{square}{psr & $c$, const psr & $a$}
+  $c \assign a^2$ \\
+  $f(c) \assign 2 \cdot f(a)$ \\
+  $l(c) \assign f(a) + l(a)$ \\
+  At the moment, we use algorithms with quadratic running time to compute the product of two
+  series.  Therefore squaring is twice as fast as multiplying in the case of
+  \code{dense_power_series< T >}.
+\end{fcode}
+
+\begin{fcode}{void}{power}{psr & $c$, const psr & $a$, long n}
+  $c \assign a^n$ \\
+  If $n = 0$ and $a$ is a zero-approximation then
+  $c \assign 1 \cdot X^0$, $l(c) \assign 0$; \\
+  if $n = 0$ and $a$ is not a zero-approximation then
+  $c \assign 1 + \sum_{i=1}^{l(a)-f(a)} 0 \cdot X^i$; \\
+  if $n \neq 0$ and $a$ is a zero-approximation then
+  $c \assign 0 \cdot X^n \cdot l(a)$, $f(c) \assign l(c) \assign n \cdot l(a)$; \\
+  otherwise $f(c) \assign n \cdot f(a)$ and $l(c) \assign (n-1) \cdot f(a) + l(a)$.
+\end{fcode}
+
+Let $a$ be of type \code{psr}.
+
+\begin{fcode}{void}{$a$.multiply_by_xn}{lidia_size_t $n$}
+  $a \assign \sum_{i=f(a)}^{l(a)} a_i \cdot X^i+n$ \\
+  $f(a) \assign f(a) + n$ \\
+  $l(a) \assign l(a) + n$
+\end{fcode}
+
+\begin{fcode}{void}{$a$.compose}{lidia_size_t $n$}
+  $a \assign \sum_{i=f(a)}^{l(a)} a_i \cdot \left(X^n\right)^i$ \\
+  $f(a) \assign f(a) \cdot n$ \\
+  $l(a) \assign l(a) \cdot n$
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+The binary operators \code{==} and \code{!=} are overloaded.  Let $a$ be of type \code{psr}.
+
+\begin{cfcode}{bool}{$a$.is_zero}{}
+  returns \TRUE if $a = 0 \cdot X^l, l \in \bbfZ$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_one}{}
+  returns \TRUE if $a = 1 + \sum_{i=1}^l 0 \cdot X^i, l \in \bbfZ_{>0}$, \FALSE otherwise.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+Let $a$ be of type \code{psr}.
+
+\begin{cfcode}{lidia_size_t}{$a$.get_first}{}
+  returns the first exponent of $a$.
+\end{cfcode}
+
+\begin{cfcode}{lidia_size_t}{$a$.get_last}{}
+  returns the last exponent of $a$.
+\end{cfcode}
+
+\begin{fcode}{void}{$a$.set_coeff}{const T & $z$, lidia_size_t $e$}
+  sets the coefficient with exponent $e$ to $z$.  If $e$ is less than $f(a)$ all coefficients
+  with exponent $i$, $e < i < f(a)$, are set to zero just as all coeffients with exponent $i$,
+  $l(a) < i < e$, in the case that $e$ is greater than $l(a)$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.set}{const psr & $b$}
+  $a \assign b$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.set}{const T & $z$, lidia_size_t $l$}
+  $a \assign z \cdot X^0 + \sum_{i=1}^l 0 \cdot X^i$.  If $l$ is less than zero, $a$ is set to
+  $0 \cdot X^l$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.get_coeff}{T & $z$, lidia_size_t $e$}
+  assigns $a_e$ to $z$.  If $e$ is greater than $l(a)$ the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{T}{$a$.operator[]}{lidia_size_t $e$}
+  returns a copy of $a_e$.  If $e$ is greater than $l(a)$ the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.clear}{}
+  deletes all coefficients in $a$ and resets $a$ to an uninitialized state in the same way the
+  default constructor does.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.reduce_last}{lidia_size_t $l$}
+  If $a$ is of the form $a = \sum_{i=f(a)}^{l(a)} a_i \cdot X^i$ before the call of this
+  function, it will be set to $a \assign \sum_{i=f(a)}^l a_i \cdot X^i$, where the coefficients
+  with exponents between $l+1$ and $l(a)$ are cut off and $l(a)$ will be decreased to $l$.  If
+  $l$ is greater than $l(a)$ the \LEH will be invoked.  The memory reserved for the invalid
+  coefficients, i.e.  those coefficients that have been cut off before, is not deallocated, but
+  these coefficients are not accessible anymore.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.normalize}{}
+  deallocates memory which is occupied by invalid coefficients.  This function is useful after
+  several calls of \code{$a$.reduce_last()}
+\end{fcode}
+
+\begin{fcode}{void}{swap}{psr & $a$, psr & $b$}
+  exchanges the approximations of $a$ and $b$.
+\end{fcode}
+
+Let $a$ be of type \code{sparse_power_series< T >}.
+
+\begin{fcode}{void}{$a$.set}{const base_vector< T > & $v$,
+    const base_vector< lidia_size_t > & $e$, lidia_size_t $l$}%
+  builds the \code{power_series} $a$ using the coefficient vector $v$ and the exponent vector
+  $e$.  The coefficient $v[i]$ obtains the exponent $e[i]$ for $0 \leq i < \code{$v$.size()}$.
+  Furthermore, the last exponent of $a$ is set to $l$ and $l$ must be greater than or equal to
+  the maximum of the exponents $e[i]$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.set}{const T* $v$, const lidia_size_t* $e$, lidia_size_t $sz$, lidia_size_t $l$}
+  builds the \code{power_series} $a$ using the coefficient vector $v$ and the exponent vector
+  $e$.  The coefficient $v[i]$ obtains the exponent $e[i]$ for $ 0 \leq i < sz$.  Furthermore, the
+  last exponent of $a$ is set to $l$ and $l$ must be greater than or equal to the maximum of the
+  exponents $e[i]$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.get}{base_vector< T > & $v$, base_vector< lidia_size_t > & $e$}
+  assigns the non-zero coefficients of $a$ to $v$ and stores the corresponding exponents in $e$,
+  i.e. $e[i]$ holds the exponent of $v[i]$ and the exponents are in increasing order.  The
+  capacity and the sizes of $v$ and $e$ are set to the number of non-zero elements of $a$.  In
+  the special case that $a$ is a zero-approximation, the sizes and capacities of $v$ and $e$ are
+  set to one, $v[0]$ is set to zero and $e[0]$ to $l(a)$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.get}{T* & $v$, lidia_size_t* & $e$, lidia_size_t & $sz$}
+  assigns the non-zero coefficients of $a$ to $v$ and stores the corresponding exponents in $e$,
+  i.e. $e[i]$ holds the exponent of $v[i]$ and the exponents are in increasing order.  The
+  variable $sz$ holds the size of $v$ and $e$ which is the number of elements of $v$.
+  Especially, if $a$ is a zero-approximation, the sizes of $v$ and $e$ are set to one, $v[0]$ is
+  set to zero and $e[0]$ to $l(a)$.
+\end{fcode}
+
+Let $a$ be of type \code{dense_power_series< T >}.
+
+\begin{fcode}{void}{$a$.set}{const base_vector< T > & $v$, lidia_size_t $f$}
+  $a \assign \sum_{i=f}^{f+\code{v.size()}-1} v[i-f] \cdot X^i$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.set}{const T* $v$, lidia_size_t $sz$, lidia_size_t $f$}
+  $a \assign \sum_{i=f}^{f+sz-1} v[i-f] \cdot X^i$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.get}{base_vector< T > & $v$}
+  $v[i-f(a)] \assign a_i$, $f(a) \leq i \leq l(a)$ \\
+  $\code{$v$.capacity()} \assign \code{$v$.size()} = l(a)-f(a)+1$ \\
+  Especially, if $a$ is a zero-approximation, the size and capacity of $v$ are set to one and
+  $v[0]$ is set to zero.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.get}{T* & $v$, lidia_size_t & $sz$}
+  sets $sz \assign l(a) - f(a) + 1$, allocates $sz$
+  coefficients for $v$, and sets \\
+  $v[i-f(a)] \assign a_i$, $f(a) \leq i \leq l(a)$.  Especially, if $a$ are a
+  zero-approximation, $v$ only holds one zero-element.
+\end{fcode}
+
+For efficiency reasons, the class \code{dense_power_series< T >} puts at disposal the following
+operator :
+
+\begin{fcode}{T &}{$a$.operator()}{lidia_size_t $e$}
+  returns a reference to the coefficient with exponent $e$.
+  
+  This operator allows the setting of coefficients without initializing a temporary variable,
+  $x$, as it is necessary if the member function \code{$a$.set_coeff(T & $x$ ,lidia_size_t)} is
+  used.  Furthermore, it is possible to read coefficients without copying, as it is necessary
+  when using the operator \code{T $a$.operator[](lidia_size_t)}.
+  
+  But the \code{operator()} always assumes that the user intends to set the returned
+  coefficient.  Therefore, whenever $e$ is less than $f(a)$, memory for the coefficients with
+  exponent $i$, $e \leq i < f(a)$, is allocated just as for the coefficients with exponent $i$,
+  $l(a) < i \leq e$, in the case that $e$ is greater than $l(a)$.  These coefficients are
+  initialized with zero.
+
+  \attentionI
+  If the operator is used for reading cofficients and, by mistake, the exponent $e$ is greater
+  than $l(a)$, this operation may cause an incorrect approximation, because it sets the last
+  exponent to $e$ and the coefficients in between to zero.
+  
+  Furthermore, zero coefficients whose exponents are less than the first exponent of an
+  approximation should not be set using this operator, because then these coefficients are
+  explicitly stored.  The class \code{dense_power_series< T >} is able to handle leading zeros,
+  but the running time of arithmetical operations increases.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+The \code{istream} operator \code{>>} and the \code{ostream} operator \code{<<} are overloaded.
+
+The input and output format of type \code{dense_power_series< T >} is of the form
+\begin{displaymath}
+  [ f \; [ a_{f} \dots a_{l}] ]
+\end{displaymath}
+and symbolizes the approximation
+\begin{displaymath}
+  \sum_{i=f}^{l} a_{i} \cdot X^{i} \enspace.
+\end{displaymath}
+The operator\code{>>} can handle leading zeros, i.e. $a_{f} = 0$.
+
+The input and output format of type \code{sparse_power_series< T >} is of the form
+\begin{displaymath}
+  [ [ (b_{i_{1}},i_{1}), \dots, (b_{i_{k}},i_{k}) ] \; l ]
+\end{displaymath}
+and symbolizes the approximation
+\begin{displaymath}
+  \sum_{i=\min(i_{1},\dots,i_{k}) }^{l} a_{i} \cdot X^{i}\enspace,
+\end{displaymath}
+with $a_{i} = b_{i}$, if $i \in \{i_{1}, \dots, i_{k}\}$, $0$ otherwise.  The operator\code{>>}
+can handle zero coefficients, i.e. $b_{i} = 0$.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+The two data structures \code{dense_power_series< T >} and \code{sparse_power_series< T >} use
+the LiDIA class \code{base_vector< T >} to store the coefficients of a series.  Therefore, the
+number of necessary memory allocations when initializing a series by setting coefficients, i.e.
+using the member function \code{set_coeff()} or the \code{operator()}, depends on the order in
+which the coefficients are set.  To minimize the running time of this process, setting of
+coefficients should be done in the following way :
+
+\code{dense_power_series< T >}
+\begin{enumerate}
+\item Set the coefficient that belongs to the first exponent.
+\item Set the coefficient that belongs to the last exponent.
+\item Set the remaining non-zero coefficients.
+\end{enumerate}
+
+\code{sparse_power_series< T >}
+\begin{enumerate}
+\item Set the coefficient that belongs to the first exponent.
+\item Set the non-zero coefficient with the largest exponent.
+\item Set the remaining non-zero coefficients and if the coefficient which corresponds to the
+  last exponent is zero, set this coefficient too.
+\end{enumerate}
+
+\emph{If you must instantiate the power series classes with one of your own types}, you have to
+change two instantiation files:
+\begin{enumerate}
+\item Add an entry for your type in \path{src/templates/powser/makefile.inst} (s.
+  \path{Lp_bigint.o}).
+\item Add an entry for \code{spc< your type >} in
+  \path{src/templates/vector/makefile.inst} (s. \path{Lv_spc_bigint.o}).
+\end{enumerate}
+For the general concept of template instantiation in \LiDIA we refer to section
+\ref{template_introduction} of the manual.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/dense_power_series.h>
+
+main()
+{
+    dense_power_series< bigint > a, b, c;
+
+    cout << "Please enter a : "; cin >> a ;
+    cout << "Please enter b : "; cin >> b ;
+    cout << endl;
+
+    c = a + b;
+
+    cout << "a + b = " << c << endl;
+}
+\end{verbatim}
+\end{quote}
+
+For further examples please refer to \path{LiDIA/src/templates/dense_power_series_appl.cc} and
+\path{LiDIA/src/templates/sparse_power_series_appl.cc}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Frank Lehmann, Markus Maurer

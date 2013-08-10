@@ -1,0 +1,45 @@
+Enter a curve: Default output:  	[0,0,0,-1,0]
+output_short():  	[0,0,0,-1,0]
+output_long():   	[0,0,0,-1,0]
+b2 = 0; b4 = -2; b6 = 0; b8 = -1
+c4 = 48; c6 = 0
+disc = 64; bad primes = [ 2 ]; # real components = 2
+Conductor = 32
+
+Reduction type at bad primes:
+p	ord(d)	ord(N)	ord(denom(j))	Kodaira	c_p
+2	6	5	0		III  	2
+Product of c_p = 2
+
+
+output_pretty(): 	Y^2 = X^3 - 1 * X
+output_tex():    	$y^2 = x^3 - 1x$
+Default output after set_output_mode(1): 	[0,0,0,-1,0]
+b2 = 0; b4 = -2; b6 = 0; b8 = -1
+c4 = 48; c6 = 0
+disc = 64; bad primes = [ 2 ]; # real components = 2
+Conductor = 32
+
+Reduction type at bad primes:
+p	ord(d)	ord(N)	ord(denom(j))	Kodaira	c_p
+2	6	5	0		III  	2
+Product of c_p = 2
+
+
+Default output after set_output_mode(2): 	Y^2 = X^3 - 1 * X
+Default output after set_output_mode(3): 	$y^2 = x^3 - 1x$
+Default output after set_output_mode(0): 	[0,0,0,-1,0]
+
+Torsion order = 4
+Torsion points:
+	0 ) [0 : 1 : 0], 	order 1
+	1 ) [1 : 0 : 1], 	order 2
+	2 ) [-1 : 0 : 1], 	order 2
+	3 ) [0 : 0 : 1], 	order 2
+Non-cyclic: C2 x C2, generators [-1 : 0 : 1], [1 : 0 : 1]
+
+Periods 
+Omega_1 = (2.622057554292119810464839589891119413683,0)
+Omega_2 = (0.672699863527915672914462144137020257961e-111,2.622057554292119810464839589891119413683)
+Height Constant
+4.47883

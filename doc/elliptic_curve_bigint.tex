@@ -1,0 +1,226 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  elliptic_curve_bigint.tex   Documentation
+%%
+%%  This file contains the documentation of the class
+%%              elliptic_curve< bigint >
+%%
+%%  Copyright   (c)   1998   by  LiDIA Group
+%%
+%%  Authors: Nigel Smart, John Cremona
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\code{elliptic_curve< bigint >} \dotfill class for holding the minimal model of a rational
+elliptic curve.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+An elliptic curve is a curve of the form
+\begin{displaymath}
+  Y^2 + a_1 Y + a_3 X Y = X^3 + a_2 X^2 + a_4 X + a_6
+\end{displaymath}
+which is non-singular.  The minimal model is an equation with integral coefficients and
+``minimal'' discriminant.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+This class is a specialization of the template class \code{elliptic_curve< T >} and is for
+working with a minimal model of an elliptic curve defined over the rationales.  This curve
+provides access to the reduction type at all primes, the conductor etc.  This is extracted using
+Tate's algorithm after the curve has been reduced to a minimal model using Laska-Kraus-Connell
+reduction.  The class also supports the computation of the torsion group and calculations using
+the complex lattice.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+The constructors are the same as in the general template class \code{elliptic_curve< T >},
+except the following difference:
+
+\begin{fcode}{ct}{elliptic_curve}{const bigint & $c_4$, const bigint & $c_6$}
+  constructs the elliptic curve with parameters $c_4$ and $c_6$.  Note this is \emph{not} the
+  same as $[0,0,0,c_4,c_6]$ in PARI format.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+The operator \code{=} is overloaded.  For efficiency we also have
+
+\begin{fcode}{void}{init}{const bigint & $a_1$, const bigint & $a_2$,
+    const bigint & $a_3$, const bigint & $a_4$, const bigint & $a_6$}%
+\end{fcode}
+
+\begin{fcode}{void}{init}{const bigint & $c_4$, const bigint & $c_6$}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+These are the same as for the general template class \code{elliptic_curve< T >}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+These are almost the same as for the general template class \code{elliptic_curve< T >}, but
+exchanging the function for computation of the $j$-invariant and adding the following new
+functionalities.
+
+\begin{cfcode}{bigrational}{$C$.j_invariant}{}
+  returns the $j$-invariant of $C$. 
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$C$.get_conductor}{}
+  returns the conductor of the curve $C$.
+\end{cfcode}
+
+\begin{cfcode}{int}{$C$.get_ord_p_discriminant}{const bigint & $p$}
+  returns the valuation at $p$ of the discriminant.
+\end{cfcode}
+
+\begin{cfcode}{int}{$C$.get_ord_p_N}{const bigint & $p$}
+  returns the valuation at $p$ of the conductor.
+\end{cfcode}
+
+\begin{cfcode}{int}{$C$.get_ord_p_j_denom}{const bigint & $p$}
+  returns the valuation at $p$ of the denominator of the $j$-invariant.
+\end{cfcode}
+
+\begin{cfcode}{int}{$C$.get_c_p}{const bigint & $p$}
+  returns the value of the Tamagawa number at $p$.
+\end{cfcode}
+
+\begin{cfcode}{int}{$C$.get_product_cp}{}
+  returns the product of the Tamagawa numbers over all primes $p$.
+\end{cfcode}
+
+\begin{cfcode}{Kodaira_code}{$C$.get_Kodaira_code}{const bigint & $p$}
+  returns the Kodaira code of the curve at the prime $p$.
+\end{cfcode}
+
+\begin{fcode}{int}{$C$.get_no_tors}{}
+  computes the number of torsion elements in the Mordell-Weil group of $C$.
+\end{fcode}
+
+\begin{fcode}{base_vector< point< bigint > >}{$C$.get_torsion}{}
+  returns the complete set of torsion points of $C$.
+\end{fcode}
+
+\begin{fcode}{bigcomplex}{$C$.get_omega_1}{}
+  returns the first period of the complex lattice associated to $C$.
+\end{fcode}
+
+\begin{fcode}{bigcomplex}{$C$.get_omega_2}{}
+  returns the second period of the complex lattice associated to $C$.
+\end{fcode}
+
+\begin{fcode}{complex_periods}{$C$.get_periods}{}
+  returns the full data for the periods.  Only really for expert use, if you want to know more
+  see the file \path{LiDIA/complex_periods.h}.
+\end{fcode}
+
+\begin{fcode}{void}{$C$.get_xy_coords}{bigcomplex & $x$, bigcomplex & $y$, const bigcomplex & $z$}
+  given the point $z$ in the complex plain, this function returns the corresponding $x$ and $y$
+  coordinates on the elliptic curve.
+\end{fcode}
+
+\begin{fcode}{double}{$C$.get_height_constant}{}
+  returns the constant $c$ such that $h(P) \leq \hat{h}(P) + c$ for all points $P$.  The value
+  computed is the best one returned by the formulae of Silverman or the algorithm of Siksek.
+\end{fcode}
+
+\begin{cfcode}{sort_vector< bigint >}{$C$.get_bad_primes}{}
+  returns a sorted vector of the factors of the discriminant of $C$.
+\end{cfcode}
+
+Note for efficiency many of the above functions only compute the results once and then store
+them in the internal data for the curve.  This is why many of the higher functions are not
+declared ``\code{const}''.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+As for \code{elliptic_curve< T >}, except that ``long'' format now produces even more data.  In
+addition we have
+
+\begin{fcode}{void}{$C$.output_torsion}{ostream & out}
+  output the torsion subgroup on the ostream \code{out}.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/elliptic_curve_bigint.h>
+#include <LiDIA/point_bigint.h>
+
+int main()
+{
+    cout << "Enter a_1,..,a_6 \n" << flush;
+    bigint a1, a2, a3, a4, a6;
+    cin >> a1 >> a2 >> a3 >> a4 >> a6;
+
+    elliptic_curve< bigint > ER(a1, a2, a3, a4, a6);
+
+    cout << ER << endl;
+    cout << "Conductor = " << ER.conductor() << endl;
+
+    long i;
+
+    cout << "Torsion Group is given by \n";
+    for (i = 0; i < ER.get_no_tors(); i++) { 
+        cout << i << " ) " << ER.get_torsion()[i] << endl;
+    }
+
+    cout << "Periods \n";
+    cout << "Omega_1 = " << ER.get_omega_1() << endl;
+    cout << "Omega_2 = " << ER.get_omega_2() << endl;
+
+    cout << "Height Constant\n";
+    cout << ER.get_height_constant() << endl;
+
+    return 0;
+}
+
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{elliptic_curve< T >},
+\SEE{point< T >},
+\SEE{point< bigint >},
+\SEE{Kodaira_code}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+John Cremona, Nigel Smart.

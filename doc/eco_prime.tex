@@ -1,0 +1,268 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  eco_prime.tex       Documentation
+%%
+%%  This file contains the documentation of the class eco_prime
+%%
+%%  Copyright   (c)   1998   by  LiDIA Group
+%%
+%%  Authors: Volker Mueller
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\code{eco_prime} \dotfill class for holding information during point counting.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+The class \code{eco_prime} holds information needed in the point counting algorithm
+due to Atkin/Elkies.  These information are for example the coefficients of
+the used elliptic curve, and the size and characteristic of the underlying
+field.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+\code{eco_prime} is a class for holding information during the point counting algorithm of Atkin
+and Elkies.  The class uses a type \code{ff_element} which determines the type of the finite
+field used in the computation.  At the moment the type \code{ff_element} is aliased to
+\code{bigmod}, so \code{eco_prime} can only be used for counting the number of points on
+elliptic curves defined over large prime fields, but this will change in future releases, where
+also arbitrary finite fields will be allowed to use.  Note that the primality of the modulus of
+\code{bigmod} is not checked by the point counting code.
+
+At the moment usage of the class \code{eco_prime} is considered only for a user who is familiar
+with details of the algorithm of Atkin/Elkies.  A user not familiar with the subject should only
+use the following global function, defined in \path{LiDIA/eco_prime.h}, which solves the given
+problem:
+
+\begin{fcode}{bigint}{compute_group_order}{const gf_element & $a$, const gf_element & $b$}
+  return the (probable) group order of the elliptic curve in short Weierstrass form $Y^2 = X^3 +
+  a X +b$.
+\end{fcode}
+
+``Probable'' group order denotes the fact that only a probabilistic correctness test of the
+computed result is done, no deterministic proof of correctness is performed.
+
+From now on we assume that the reader is familiar with details of the algorithm of Atkin/Elkies.
+This is necessary since all the other functions of \code{eco_prime} do \emph{not} test whether
+using the function makes sense at that specific moment, e.g. some access functions should only
+be used after the corresponding information has been determined.  Details of the Atkin/Elkies
+algorithm can be found in \cite{MuellerV_Thesis:1995}.
+
+The class \code{eco_prime} is directly linked to the two other classes used in this point
+counting implementation, the class \code{meq_prime} for managing equivalent polynomials, and the
+class \code{trace_list} for storing lists of possible values for the trace of the so called
+Frobenius endomorphism modulo different primes.
+
+The class \code{eco_prime} stores several values of the used field (e.g., the size and the
+characteristic of the field) and used elliptic curve (e.g., the coefficients of the elliptic
+curve which is assumed to be in short Weierstrass form).  These information are stored as static
+variables.  Moreover there exist internal variables which store information about the group
+order of the elliptic curve modulo some prime $l$ which can be set by the user.  These values
+consist of a sorted vector for values of the trace of the Frobenius endomorphism modulo $l$, the
+number $l$ itself and several values connected to the $l$th equivalent polynomial.  Note that
+the size of $l$ is restricted since only a finite number of equivalent polynomials is
+precomputed and stored in a database (remember the general description of the point counting
+package).  For a complete description of all private variables and the corresponding meaning,
+see the include file \path{LiDIA/eco_prime.h} and \cite{MuellerV_Thesis:1995}.
+
+There exists the possibility to choose several strategies during computation.  The default
+strategy is to determine for any prime $l$ the complete splitting type of the $l$th modular
+polynomial.  There is however also the opportunity to use different other strategies.  These
+strategies are defined by the following constants:
+\begin{itemize}
+\item \code{COMPUTE_SP_DEGREE_AND_ROOTS}: compute the splitting degree of the modular polynomial
+  and determine always a root in the base field of this modular polynomial, if such a root
+  exists (the default value),
+\item \code{COMPUTE_SP_DEGREE}: compute the splitting degree of the modular polynomial in any
+  case, but do not compute a root for polynomials of splitting type $(1\ldots 1)$,
+\item \code{DONT_COMPUTE_SP_DEGREE}: determine whether a prime is an Atkin or Elkies prime, but
+  do not compute the splitting degree of the modular polynomial,
+\item \code{COMPUTE_SP_DEGREE_IF_ATKIN}: determine whether a prime is an Atkin or Elkies prime,
+  but do not compute the splitting degree of the modular polynomial in case it is an Elkies
+  prime,
+\item \code{COMPUTE_SP_DEGREE_IF_ELKIES}: determine whether a prime is an Atkin or Elkies prime,
+  but compute the splitting degree of the modular polynomial only in case it is an Elkies prime.
+\end{itemize}
+Another default strategy is, that once the Elkies polynomial is known, the eigenvalue of the
+Frobenius endomorphism is determined using division polynomials.  This method is faster than
+using rational functions, but needs more storage (see \cite{Maurer_Thesis:1994}).  These
+strategies are defined by the following constants:
+\begin{itemize}
+\item \code{EV_DIVISION_POLYNOMIAL} division polynomials are used to compute multiples of points
+  (the default value),
+\item \code{EV_RATIONAL_FUNCTION} rational functions are used to compute multiple of points.
+\end{itemize}
+As said before, these values should only be changed by a user who is familiar with the details
+of the algorithm.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{eco_prime}{}
+  initializes an empty instance.
+\end{fcode}
+
+\begin{fcode}{dt}{~eco_prime}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+The operator \code{=} is overloaded.  Moreover there exists the following functions to set
+either static or non-static variables.  Let $e$ be an instance of \code{eco_prime}.
+
+\begin{fcode}{void}{$e$.set_prime}{udigit $l$}
+  set the internal prime variable to $l$.  $l$ is assumed to be a prime, but this is not checked
+  at the moment.
+\end{fcode}
+
+\begin{fcode}{void}{$e$.set_curve}{const gf_element & $A$, const gf_element & $B$}
+  $A$ and $B$ are the coefficients of the elliptic curve in short Weierstrass form.  If the
+  discriminant of the given elliptic curve is zero, the \LEH is invoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $e$ be an instance of \code{eco_prime}.
+
+\begin{fcode}{bool}{$e$.is_supersingular}{bigint & $r$}
+  returns \TRUE if and only if the elliptic curve set for $e$ is supersingular.  In this case
+  $r$ is set to the probable group order (according to the probabilistic correctness proof).
+\end{fcode}
+
+\begin{fcode}{bool}{check_j_0_1728}{bigint & $r$}
+  returns \TRUE if and only if the elliptic curve set for $e$ is isogen to a curve with $j$
+  invariant $0$ or $1728$.  In this case $r$ is set to the probable group order (according to
+  the probabilistic correctness proof).
+\end{fcode}
+
+\begin{fcode}{bool}{$e$.is_elkies}{}
+  returns \TRUE if and only if the actually used prime $l$ is a so called Elkies prime, i.e.
+  the characteristic polynomial of the Frobenius endomorphism splits modulo $l$.  It is assumed
+  that the splitting type of the corresponding $l$-th modular polynomial has already been
+  computed.
+\end{fcode}
+
+\begin{cfcode}{long}{$e$.get_prime}{}
+  returns the actually used prime $l$.
+\end{cfcode}
+
+\begin{cfcode}{base_vector< udigit > &}{get_relation}{}
+  returns a vector of all possible candidates for the trace of the Frobenius endomorphism modulo
+  the actual used prime $l$.  It is assumed that this information was already computed.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+Let $e$ be an instance of \code{eco_prime}.
+
+\begin{fcode}{void}{$e$.compute_jinv}{ff_element & $j$}
+  sets $j$ to the $j$-invariant of the elliptic curve of $e$.  If the discriminant of this
+  elliptic curve is zero, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$e$.compute_splitting_type}{}
+  computes the splitting type of the $l$-th equivalent polynomial where $l$ is the internally
+  stored prime.  The splitting type and other relevant information (as roots of the equivalent
+  polynomial) is stored internally.
+\end{fcode}
+
+\begin{fcode}{void}{$e$.set_strategy}{char $m$}
+  sets the strategy which is used for determining the splitting type of equivalent polynomials.
+  The variable $m$ must be one of the types described in the general description of this class,
+  otherwise the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$e$.set_schoof_bound}{unsigned int $m$}
+  set internal bound such that Schoof's algorithm is used for Atkin primes smaller $m$ to
+  determine exact trace of Frobenius.  The default value for this bound is zero, i.e.  Schoof's
+  algorithm is never used.
+\end{fcode}
+
+\begin{fcode}{void}{$e$.set_ev_search_strategy}{char $m$}
+  sets the strategy which is used for computing point multiples when searching the eigenvalue in
+  the Elkies case.  The variable $m$ must be one of the types described in the general
+  description of this class, otherwise the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$e$.compute_mod_2_power}{}
+  computes the exact value of the trace of the Frobenius endomorphism modulo some power of 2.
+    $l$ is set to the corresponding power of 2 and the trace is stored internally.
+\end{fcode}
+
+\begin{fcode}{void}{$e$.compute_trace_atkin}{}
+  computes possible values for the trace of the Frobenius endomorphism modulo the prime $l$ and
+  stores it internally.  This function can be used for Atkin and Elkies primes.
+\end{fcode}
+
+\begin{fcode}{void}{$e$.compute_trace_elkies}{}
+  compute the exact value of the trace of the Frobenius endomorphism modulo the prime $l$ and
+  stores it internally.  This function can only be used for Elkies primes.
+\end{fcode}
+
+\begin{fcode}{void}{$e$.schoof_algorithm}{}
+  compute the exact value of the trace of the Frobenius endomorphism modulo the prime $l$ with
+  Schoof' algorithm and store it internally.  This function should only be used for ``small''
+  Atkin primes.  It assumes that \code{$e$.compute_trace_atkin} has already be called, such that
+  several internal values do exist.
+\end{fcode}
+
+\begin{fcode}{void}{$e$.set_info_mode}{int $i$ = 0}
+  sets the info variable to $i$.  If this info variable is not zero, then the class outputs many
+  information during computations; otherwise no output is given during computations.  The
+  default value of the info variable is zero.
+\end{fcode}
+
+\begin{fcode}{bigint}{$e$.compute_group_order}{}
+  returns the (probable) group order of the elliptic curve stored in $e$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+Input/Output of instances of \code{eco_prime} is currently not possible.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{meq_prime}, \SEE{trace_list}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+The Elliptic Curve Counting Package will be increased in future.
+This will probably also create changes in the class \code{eco_prime}.  In future
+releases we will offer a more comfortable usage of this class,
+even for non experts.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Markus Maurer, Volker M\"uller.

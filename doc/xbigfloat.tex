@@ -1,0 +1,398 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  xbigfloat.tex        LiDIA documentation
+%%
+%%  This file contains the documentation of the class xbigfloat
+%%
+%%  Copyright (c) 1995 by the LiDIA Group
+%%
+%%  Author: Markus Maurer
+%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{xbigfloat} \dotfill multiprecision floating point arithmetic
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{xbigfloat} is a class for doing multiprecision arithmetic with approximations to real
+numbers.  It implements the model for computing with approximations described in
+\cite{Buchmann/Maurer_TR:1998}.  It supports basic arithmetic operations, shift operations,
+comparisons, the square root function, the exponential function, and the logarithmical function.
+In contrast to the class \SEE{bigfloat}, page \pageref{class:bigfloat}, it allows the
+specification of error bounds for most of the functions.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+An \code{xbigfloat} is a pair $(m,e)$, where $m,e$ are integers.  It represents the number
+\begin{displaymath}
+  m \cdot 2^{e-b(m)} \enspace,
+\end{displaymath}
+where $b(m)$ is the number of bits of $m$.  The number $m$ is called the \emph{mantissa} and $e$
+is called the \emph{exponent}.  A complete description of that floating point model together with
+an error analysis can be found in \cite{Buchmann/Maurer_TR:1998}.
+
+For the description of the functions, we introduce the notation of absolute and relative
+approximations.  Let $r \in \bbfR$ and $k \in \bbfZ$.
+
+A relative $k$-approximation to $r$ is an \code{xbigfloat} $f = (m,e)$ with $b(m) q \leq k+3$
+and such that there exists an $\epsilon \in \bbfR$ with $f = r(1+\epsilon)$ and $|\epsilon| <
+2^{-k}$.
+
+An absolute $k$-approximation to $r$ is an \code{xbigfloat} $f = (m,e)$ such that $|f-r| <
+2^{-k}$ and $e \geq b(m)-k-1$.
+
+In the following description of functions, assignment, comparision, and arithmetic are always
+meant as operations on rational numbers without any errors, e.g., due to rounding.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{xbigfloat}{}
+  initializes with 0.
+\end{fcode}
+
+\begin{fcode}{ct}{xbigfloat}{const xbigfloat & $n$}\end{fcode}
+\begin{fcode}{ct}{xbigfloat}{const bigfloat & $n$}\end{fcode}
+\begin{fcode}{ct}{xbigfloat}{const bigint & $n$}\end{fcode}
+\begin{fcode}{ct}{xbigfloat}{long $n$}\end{fcode}
+\begin{fcode}{ct}{xbigfloat}{unsigned long $n$}\end{fcode}
+\begin{fcode}{ct}{xbigfloat}{int $n$}\end{fcode}
+\begin{fcode}{ct}{xbigfloat}{double $n$}
+  initializes with $n$.
+\end{fcode}
+
+\begin{fcode}{dt}{~xbigfloat}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $a$ be of type \code{xbigfloat}.  The operator \code{=} is overloaded.  The user may also
+use the following object methods for assignment:
+
+\begin{fcode}{void}{$a$.assign_zero}{}
+  $a \assign 0$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign_one}{}
+  $a \assign 1$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign}{const xbigfloat & $n$}\end{fcode}
+\begin{fcode}{void}{$a$.assign}{const bigfloat & $n$}\end{fcode}
+\begin{fcode}{void}{$a$.assign}{const bigint & $n$}\end{fcode}
+\begin{fcode}{void}{$a$.assign}{long $n$}\end{fcode}
+\begin{fcode}{void}{$a$.assign}{unsigned long $n$}\end{fcode}
+\begin{fcode}{void}{$a$.assign}{int $n$}\end{fcode}
+\begin{fcode}{void}{$a$.assign}{double $n$}\end{fcode}
+\begin{fcode}{void}{$a$.assign}{xdouble $n$}
+  $a \assign n$
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $a$ be of type \code{xbigfloat}.
+
+\begin{cfcode}{long}{$a$.get_exponent}{}
+  returns the exponent $e$ of $a$.
+\end{cfcode}
+
+\begin{cfcode}{long}{$a$.exponent}{}
+  returns the exponent $e$ of $a$.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$a$.get_mantissa}{}
+  returns the mantissa $m$ of $a$.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$a$.mantissa}{}
+  returns the mantissa $m$ of $a$.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\MODF
+
+\begin{fcode}{void}{$a$.negate}{}
+  $a \assign -a$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.absolute_value}{}
+  $a \assign |a|$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.inc}{}\end{fcode}
+\begin{fcode}{void}{inc}{xbigfloat & $a$}
+  $a \assign a + 1$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.dec}{}\end{fcode}
+\begin{fcode}{void}{dec}{xbigfloat & $a$}
+  $a \assign a - 1$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.multiply_by_2}{}
+  $a \assign a \cdot 2$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.divide_by_2}{}
+  $a \assign a / 2$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.swap}{xbigfloat & $b$}\end{fcode}
+\begin{fcode}{void}{swap}{xbigfloat & $a$, xbigfloat & $b$}
+  Swaps the values of $a$ and $b$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.randomize}{const bigint & $n$, long $f$}
+  Calls the \SEE{bigfloat} functions \code{randomize($n$, $f$)} to create a random
+  \SEE{bigfloat} and assigns it to $a$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+The following operators are overloaded.  The result of these operations is an \code{xbigfloat}
+that represents the rational number which is the result of the operation carried out over the
+rationals without any rounding error.
+
+\begin{center}
+  \code{(unary) -}\\
+  \code{(binary) +, -, *, <<, >>}\\
+  \code{(binary with assignment) +=, -=, *=, <<=, >>=}
+\end{center}
+
+To avoid copying all operators exist also as functions:
+
+\begin{fcode}{void}{add}{xbigfloat & $c$, const xbigfloat & $a$, const xbigfloat & $b$}
+  $c \assign a + b$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{xbigfloat & $c$, const xbigfloat & $a$, const xbigfloat & $b$}
+  $c \assign a - b$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{xbigfloat & $c$, const xbigfloat & $a$, const xbigfloat & $b$}
+  $c \assign a \cdot b$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{xbigfloat & $c$, const xbigfloat & $a$, const xbigfloat & $b$, long $k$}
+  $c$ is a relative $k$-approximation to $a/b$, if $b \neq 0$.  Otherwise the
+  \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{bigint & $q$, const xbigfloat & $a$, const xbigfloat & $b$}
+  $q \assign \lfloor a/b \rfloor$, if $b \neq 0$.  Otherwise the \LEH will be
+  invoked.
+\end{fcode}
+
+\begin{fcode}{void}{square}{xbigfloat & $c$, const xbigfloat & $a$}
+  $c \assign a^2$.
+\end{fcode}
+
+\begin{fcode}{void}{sqrt}{xbigfloat & $c$, const xbigfloat & $a$, long $k$}
+  $c$ is a relative $k$-approximation to $\sqrt{a}$, where $a \geq 0$.  If $a < 0$, the
+  \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{exp}{xbigfloat & $c$, const xbigfloat & $a$, long $k$}
+  $c$ is a relative $k$-approximation to $\exp(a)$.
+\end{fcode}
+
+\begin{fcode}{void}{log}{xbigfloat & $c$, const xbigfloat & $a$, long $k$}
+  $c$ is an absolute $k$-approximation to $\log(a)$ (natural logarithm to base $e \approx
+  2.71828\dots$), where $a > 0$.  If $a \leq 0$, the \LEH will be invoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SHFT
+
+Let $a$ be of type \code{xbigfloat}.  In \code{xbigfloat} shifting, i.e. multiplication with
+powers of $2$, is done using exponent manipulation.
+
+\begin{fcode}{void}{shift_left}{xbigfloat & $c$, const xbigfloat & $b$, long $i$}
+  $c \assign b \cdot 2^i$.
+\end{fcode}
+
+\begin{fcode}{void}{shift_right}{xbigfloat & $c$, const xbigfloat & $b$, long $i$}
+  $c \assign b / 2^i$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+Let $a$ be of type \code{xbigfloat}.  The binary operators \code{==}, \code{!=}, \code{>=},
+\code{<=}, \code{>}, and \code{<} are overloaded.
+
+\begin{cfcode}{bool}{$a$.is_zero}{}
+  returns \TRUE if $a = 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_one}{}
+  returns \TRUE if $a = 1$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_negative}{}
+  returns \TRUE if $a < 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_positive}{}
+  returns \TRUE if $a > 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_equal}{const xbigfloat & $b$}
+  returns \TRUE if $a = b$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{int}{$a$.sign}{}
+  returns $1$, if $a > 0$, $0$ if $a = 0$, and $-1$ otherwise.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+Let $a$ be of type \code{xbigfloat}.
+
+\begin{cfcode}{long}{$a$.b_value}{}
+  returns the $b$ value of $a$, i.e., the exponent of $a$, see \cite{Buchmann/Maurer_TR:1998}.
+\end{cfcode}
+
+\begin{cfcode}{long}{b_value}{const xbigfloat & $a$}
+  returns the $b$ value of $a$, i.e., the exponent of $a$, see \cite{Buchmann/Maurer_TR:1998}.
+\end{cfcode}
+
+\begin{cfcode}{int}{$a$.get_sign}{}
+  returns $1$, if $a > 0$, $0$ if $a = 0$, and $-1$ otherwise.
+\end{cfcode}
+
+\begin{fcode}{void}{ceil}{bigint & $c$, const xbigfloat & $a$}
+  $c \assign \lceil a \rceil$, i.e. $c$ is the smallest integer which is greater than or equal to $a$.
+\end{fcode}
+
+\begin{fcode}{void}{floor}{bigint & $c$, const xbigfloat & $a$}
+  $c \assign \lfloor a \rfloor$, i.e. $c$ is the largest integer which is less than or equal to $a$.
+\end{fcode}
+
+\begin{fcode}{void}{truncate}{xbigfloat & $c$, const xbigfloat & $a$, lidia_size_t $k$}
+  truncates the mantissa of $a$ to $k$ bits and assigns the result to $c$.
+\end{fcode}
+
+\begin{fcode}{static bool}{check_relative_error}{const xbigfloat & $x$,
+    const xbigfloat & $y$, long $k$, long $c$}%
+  This function returns \TRUE, if and only if $|x-y| < v$, where $v = 2^{-k+1} \cdot (2^{b(x)} +
+  2^{b(y)-c})$.
+  
+  This can be used to check the correctness of relative errors.  I.e., if $k \geq 1$, $c \geq 0$,
+  $|x/z - 1| < 2^{-k}$, and $|y/z - 1| < 2^{-k-c}$, then $|x-y| < v$ for $z \neq 0$.
+\end{fcode}
+
+\begin{fcode}{static bool}{check_absolute_error}{const xbigfloat & $x$,
+    const xbigfloat & $y$, long $k$, long $c$}%
+  This function returns \TRUE, if and only if $|x-y| < v$, where $v = 2^{-k} + 2^{-k-c}$.
+  
+  This can be used to check the correctness of absolute errors.  I.e., if $c \geq 0$, $|x - z| <
+  2^{-k}$, and $|y - z| < 2^{-k-c}$, then $|x-y| < v$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+Let $a$ be of type \code{xbigfloat}.
+
+\code{istream} operator \code{>>} and \code{ostream} operator \code{<<} are overloaded.  Input
+and output of a \code{xbigfloat} are in the following format:
+\begin{center}
+  $(m,e)$
+\end{center}
+For example, to input the number $1/2$, you have to enter $(1,0)$, because $1/2 = 1 \cdot
+2^{0-b(1)}$.
+
+For debugging purposes, the following function is implemented too.
+
+\begin{cfcode}{void}{$a$.print_as_bigfloat}{ostream & out = cout}
+  transforms the number into a \code{bigfloat} object and prints it to the stream \code{out}.
+  Note that the output of that function depends on the \SEE{bigfloat} precision and is
+  only an approximation to the number represented by the \code{xbigfloat} object.
+\end{cfcode}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{bigint}, \SEE{bigfloat}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+The following program computes a relative $5$-approximation $x$ to the square root of $2$, i.e.,
+$x \assign sqrt(2) \cdot (1+ \epsilon)$, $|\epsilon| < 2^{-5}$.
+
+For convenience, the program also prints the value as a \code{bigfloat}, but note that the
+result of that output function depends on the precision of \SEE{bigfloat} and is not
+necessarily a relative $5$-approximation anymore.
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/xbigfloat.h>
+
+int main()
+{
+    xbigfloat x;
+
+    sqrt(x,2,5);
+    cout << "Relative 5-approximation x to sqrt(2) = " << x << endl;
+    cout << "x as bigfloat "; x.print_as_bigfloat(); cout << endl;
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+The output of the program is
+\begin{quote}
+\begin{verbatim}
+Relative 5-approximation to sqrt(2) = (181,1)
+x as bigfloat 1.4140625
+\end{verbatim}
+\end{quote}
+
+An extensive example of \code{xbigfloat} can be found in \LiDIA's installation directory under
+\path{LiDIA/src/base/simple_classes/xbigfloat_appl.cc}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Markus Maurer

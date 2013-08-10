@@ -1,0 +1,114 @@
+/* -*- C++ -*- */
+/*==============================================================================================
+//
+//	This file is part of LiDIA --- a library for computational number theory
+//
+//	Copyright (c) 1994--2001 the LiDIA Group.  All rights reserved.
+//
+//	See http://www.informatik.tu-darmstadt.de/TI/LiDIA/
+//
+//----------------------------------------------------------------------------------------------
+//
+//	$Id$
+//
+//	Author	:
+//	Changes	: See CVS log
+//
+//============================================================================================*/
+
+
+/* Define if you have bunzip2 installed. */
+#undef HAVE_BUNZIP2 
+
+/* Define if you have <cassert> */
+#undef HAVE_CASSERT
+
+/* Define if you have <cctype>. */
+#undef HAVE_CCTYPE
+
+/* Define if you have <climits>. */
+#undef HAVE_CLIMITS
+
+/* Define if you have <cmath>. */
+#undef HAVE_CMATH
+
+/* Define if you have <cstddef>. */
+#undef HAVE_CSTDDEF
+
+/* Define if you have <cstdio>. */
+#undef HAVE_CSTDIO
+
+/* Define if you have <cstdlib>. */
+#undef HAVE_CSTDLIB
+
+/* Define if you have <cstring>. */
+#undef HAVE_CSTRING
+
+/* Define if you have <ctime>. */
+#undef HAVE_CTIME
+
+/* Define if you have <dlfcn.h>. */
+#undef HAVE_DLFCN_H
+
+/* Define if you have gunzip installed. */
+#undef HAVE_GUNZIP 
+
+/* Define if you have <inttypes.h>. */
+#undef HAVE_INTTYPES_H
+
+/* Define if you have <iostream>. */
+#undef HAVE_IOSTREAM
+
+/* Define if you have <memory.h>. */
+#undef HAVE_MEMORY_H
+
+/* Define if you have mkstemp. */
+#undef HAVE_MKSTEMP
+
+/* Define if you have POSIX style signals (i.e. sigaction). */
+#undef HAVE_POSIX_SIGNALS
+
+/* Define if you have POSIX time */
+#undef HAVE_POSIX_TIME
+
+/* Define if you have POSIX times */
+#undef HAVE_POSIX_TIMES
+
+/* Define if you have random. */
+#undef HAVE_RANDOM
+
+/* Define if you have <signal.h>. */
+#undef HAVE_SIGNAL_H
+
+/* Define if you have <sstream>. */
+#undef HAVE_SSTREAM
+
+/* Define if you have <strstream>. */
+#undef HAVE_STRSTREAM
+
+/* Define if you have <stdint.h>. */
+#undef HAVE_STDINT_H
+
+/* Define if you have <stdlib.h>. */
+#undef HAVE_STDLIB_H
+
+/* Define if you have <string.h>. */
+#undef HAVE_STRING_H
+
+/* Define if you have <strings.h>. */
+#undef HAVE_STRINGS_H
+
+/* Define if you have <sys/stat.h>. */
+#undef HAVE_SYS_STAT_H
+
+/* Define if you have <sys/times.h>. */
+#undef HAVE_SYS_TIMES_H
+
+/* Define if you have <sys/types.h>. */
+#undef HAVE_SYS_TYPES_H
+
+/* Define if you have <unistd.h>. */
+#undef HAVE_UNISTD_H
+
+/* Define if you don't want assert-macros. */
+#undef NDEBUG

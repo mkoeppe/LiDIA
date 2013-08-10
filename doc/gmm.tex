@@ -1,0 +1,175 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  gmm.tex        LiDIA documentation
+%%
+%%  This file contains the documentation of the class gmm
+%%
+%%  Copyright (c) 1995 by the LiDIA Group
+%%
+%%  Authors: Thomas Papanikolaou
+%%
+
+\newcommand{\SIZE}{\mathit{SIZE}}
+\newcommand{\NMEMB}{\mathit{NMEMB}}
+\newcommand{\NSIZE}{\mathit{NSIZE}}
+\newcommand{\OSIZE}{\mathit{OSIZE}}
+\newcommand{\MODE}{\mathit{MODE}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{gmm} \dotfill general memory manager
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{gmm} is the memory management interface of \LiDIA.  It provides standardized calls to the
+underlying memory manager (which can be either the system's manager or a user implemented one).
+\code{gmm} assumes an uncooperative environment. This means that no special class support is
+needed in order to add memory management to the class.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+\code{gmm} is implemented as a class providing a small set of functions for allocation, memory
+resizing and deallocation. Using this functions overloads the \code{new} and \code{delete}
+operators.  A user class is registered to \code{gmm} by simple inheritance, i.e.
+
+\begin{verbatim}
+ #include <LiDIA/gmm.h>
+
+ class user_class: public gmm { ...  };
+\end{verbatim}
+
+A variable of the class \code{user_class} can then be allocated
+by simply typing
+
+\begin{verbatim}
+    user_class *a = new user_class;
+\end{verbatim}
+
+or equivalently
+
+\begin{verbatim}
+    user_class *a = new (NoGC) user_class;
+\end{verbatim}
+
+The additional argument after the \code{new} keyword denotes the method to be used for the
+allocation of $a$. In order to support garbage collecting and non-garbage collecting memory
+managers \code{gmm} provides three modes
+
+\begin{enumerate}
+\item \code{NoGC}\\
+  allocates an uncollectable item.
+\item \code{AtGC}\\
+  allocates a collectable atomic item, i.e.
+  an object containing no pointers in it.
+\item \code{GC}\\
+  allocates a collectable item.
+\end{enumerate}
+
+Now, if \code{gmm} is implemented by \code{malloc()}, then these three modes are equal (allocate
+always an uncollectable object).  However, if a garbage-collector is used like
+\cite{Boehm/Weiser:1988}, then these three modes are different.
+
+A note on the philosophy of this approach. Garbage collection is expensive in execution
+resources. Although in some examples it does as well as by-hand collection (i.e. the user is
+responsible to free allocated memory, for example be using \code{delete}), in general it is 10\%
+to 20\% slower (most of the time even worse than that). Therefore, \LiDIA functions and classes
+are written using by-hand collection (so that there is no memory leak if a non-collecting
+manager is used). It is clear that avoiding the use of automatic collection implies more work.
+However, we do not want to lose this factor of more than 10\%.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+\begin{fcode}{{static void *}}{allocate}{size_t $\NMEMB$, size_t $\SIZE$}
+  allocates memory for an array of $\NMEMB$ elements of $\SIZE$ bytes each and returns a pointer
+  to the allocated memory. The memory is set to zero.  For \code{allocate($\NMEMB$, $\SIZE$)},
+  the value returned is a pointer to the allocated memory, which is suitably aligned for any
+  kind of variable or \code{NULL} if the request fails.
+\end{fcode}
+
+\begin{fcode}{{static void *}}{allocate}{size_t $\SIZE$}
+  allocates $\SIZE$ bytes and returns a pointer to the allocated memory. The memory ist not
+  cleared.  For \code{allocate($\SIZE$)}, the value returned is a pointer to the
+  allocated memory, which is suitably aligned for any kind of variable or \code{NULL} if the
+  request fails.
+\end{fcode}
+
+\begin{fcode}{{static void *}}{allocate_uncollectable}{size_t $\SIZE$}
+  allocates $\SIZE$ bytes and returns a pointer to the allocated memory. The memory ist not
+  cleared and will not be collected by the implemented memory manager.  For
+  \code{allocate_uncollectable($\SIZE$)}, the value returned is a pointer to the allocated memory,
+  which is suitably aligned for any kind of variable or \code{NULL} if the request fails.
+\end{fcode}
+
+\begin{fcode}{{static void *}}{allocate_atomic}{size_t $\SIZE$}
+  allocates $\SIZE$ bytes and returns a pointer to the allocated memory.
+  \code{allocate_atomic($\SIZE$)} assumes that there are no relevant pointers in the object.
+  The memory ist not cleared.  For \code{allocate_atomic($\SIZE$)}, the value returned is a
+  pointer to the allocated memory, which is suitably aligned for any kind of variable or
+  \code{NULL} if the request fails.
+\end{fcode}
+
+\begin{fcode}{{static void *}}{resize}{void * PTR, size_t $\NSIZE$, size_t $\OSIZE$}
+  changes the size of the memory block pointed to by \code{PTR} to $\NSIZE$ bytes. The contents
+  will be unchanged to the minimum of the $OSIZE$ and $NSIZE$ sizes. Newly allocated memory will
+  be uninitialized. If \code{PTR} is \code{NULL}, the call is equivalent to
+  \code{allocate($\SIZE$)}. If $\NSIZE$ is equal to zero, the call is equivalent to
+  \code{release(PTR)}. Unless $PTR$ is \code{NULL}, it must have been returned by an earlier
+  call of \code{allocate($\SIZE$)} or \code{resize(PTR, $\NSIZE$, $\OSIZE$)}.
+  \code{resize(PTR, $\NSIZE$, $\OSIZE$)} returns a pointer to the newly allocated memory, which is
+  suitably aligned for any kind of variable and may be different from \code{PTR} or \code{NULL} if
+  the request fails or if $\NSIZE$ was equal to 0.
+\end{fcode}
+
+\begin{fcode}{{static void}}{release}{void *PTR}
+  frees the memory space pointed to by \code{PTR}, which must have been returned by a previous
+  call of \code{allocate($\SIZE$)}.  If \code{PTR} is \code{NULL}, no operation is performed.
+\end{fcode}
+
+\begin{fcode}{{static void}}{collect}{}
+  initiates a garbage collection if the implemented memory manager supports garbage collection.
+\end{fcode}
+
+\begin{fcode}{{void *}}{operator new}{size_t $\SIZE$}
+  operator new overloading. Calls \code{allocate($\SIZE$)}.
+\end{fcode}
+
+\begin{fcode}{{void *}}{operator new}{size_t $\SIZE$, memory_manager_mode $\MODE$}
+  operator new overloading with a predefined $\MODE$. Mode can be one of \code{NoGC} (the
+  default), \code{AtGC} or \code{GC}.
+\end{fcode}
+
+\begin{fcode}{{void *}}{operator delete}{void *PTR}
+  operator delete overloading. Class \code{release(PTR)}.
+\end{fcode}
+
+If the compiler allows the overloading of the \code{new} and \code{delete} operators for arrays,
+the following functions are also available:
+
+\begin{fcode}{{void *}}{operator new[]}{size_t $\SIZE$}
+\end{fcode}
+\begin{fcode}{{void *}}{operator new[]}{size_t $\SIZE$, memory_manager_mode $\MODE$}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+UNIX manual page malloc(3).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+Thomas Papanikolaou

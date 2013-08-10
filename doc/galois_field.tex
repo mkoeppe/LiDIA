@@ -1,0 +1,198 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  galois_field.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the class galois_field
+%%
+%%  Copyright   (c)   1995-2004   by  LiDIA-Group
+%%
+%%  Author:  Detlef Anton, Thomas Pfahler
+%%
+
+\newcommand{\degree}{\mathit{degree}}
+\newcommand{\characteristic}{\mathit{characteristic}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{galois_field} \dotfill galois field
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+A variable of type \code{galois_field} represents a finite field $\GF(q)$.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+A variable of type \code{galois_field} contains a reference to an object of type
+\code{galois_field_rep}.  In objects of the latter type we store the characteristic, which is of
+type \code{bigint}, the absolute degree, which is of type \code{lidia_size_t}, and the defining
+polynomial for the field.  We furthermore store the factorization of the order of the
+multiplicative group $\GF(q)^*$.  However, this factorization is computed only when explicitely
+needed.
+
+Any instance of type \code{galois_field} can be deleted when its functionality is no longer
+required.  Instances of type \code{gf_element} do not depend on the existence of objects of type
+\code{galois_field} which they might have been initialized with.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{galois_field}{}
+  initializes with a reference to a mainly useless dummy field.
+\end{fcode}
+
+\begin{fcode}{ct}{galois_field}{const bigint & $\characteristic$, lidia_size_t $\degree$ = 1}
+  constructs a field by giving the $\characteristic$ and $\degree$ of it.  The default degree is
+  1.  If $\characteristic$ is not a prime number, the behaviour of the program is undefined.
+\end{fcode}
+
+%\begin{fcode}{ct}{galois_field}{const bigint & characteristic, lidia_size_t degree, const factorization\TEMPL{bigint}&fact}
+%\end{fcode}
+
+\begin{fcode}{ct}{galois_field}{const bigint & $\characteristic$, lidia_size_t $\degree$,
+    const rational_factorization & $\mathit{fact}$}%
+  constructs a field by giving the $\characteristic$, the $\degree$ and the factorization
+  $\mathit{fact}$ of the number of elements in the multiplicative group of the constructed
+  field.  If $\mathit{fact}$ is not a factorization of $\characteristic^{\degree}-1$ (it does
+  not have to be a prime factorization), the behaviour of the program is undefined.
+\end{fcode}
+
+\begin{fcode}{ct}{galois_field}{const Fp_polynomial & $g$}
+  constructs the finite field $\bbfF_p[X]/(g(X)\bbfF_p[X]) \cong \bbfF_p^n$ by giving a monic
+  irreducible polynomial $g$ of degree $n = \code{$g$.degree()}$ over $\ZpZ$, where $p =
+  \code{$g$.modulus()}$.  The behaviour of the program is undefined if $g$ is not irreducible.
+\end{fcode}
+
+\begin{fcode}{ct}{galois_field}{const Fp_polynomial & $g$, const rational_factorization & $\mathit{fact}$}
+  constructs the finite field $\bbfF_p[X]/(g(X)\bbfF_p[X]) = \bbfF_p^n$ by giving a monic
+  irreducible polynomial $g$ of degree $n = \code{$g$.degree()}$ over $\ZpZ$, where $p =
+  \code{$g$.modulus()}$.  The behaviour of the program is undefined if $f$ is not irreducible.
+  If $\mathit{fact}$ is not a factorization of $p^n-1$ (it does not have to be a prime
+  factorization), the behaviour of the program is undefined.
+\end{fcode}
+
+\begin{fcode}{ct}{galois_field}{const galois_field & $f_2$}
+  constructs a copy of $f_2$.
+\end{fcode}
+
+\begin{fcode}{dt}{~galois_field}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $f$ be an instance of type \code{galois_field}.
+
+\begin{cfcode}{const bigint &}{$f$.characteristic}{}
+  returns the characteristic of the field $f$.
+\end{cfcode}
+
+\begin{cfcode}{lidia_size_t}{$f$.degree}{}
+  returns the degree of the field $f$.
+\end{cfcode}
+
+\begin{cfcode}{const bigint &}{$f$.number_of_elements}{}
+  returns the number of elements of the field $f$.
+\end{cfcode}
+
+\begin{cfcode}{const gf_element&}{$f$.generator}{}
+  returns a generator of the multiplicative group of $f$.
+
+  In contrast to \code{gf_element::assign_primitive_element(galois_field
+  const&)}, \code{$f$.generator()} computes the primitive element only once,
+  stores it and then returns it on all subsequent calls. 
+\end{cfcode}
+
+\begin{cfcode}{const rational_factorization &}{$f$.factorization_of_mult_order}{}
+  returns the prime factorization of the number of elements in the multiplicative group of $f$.
+\end{cfcode}
+
+\begin{cfcode}{Fp_polynomial}{$f$.irred_polynomial}{}
+  returns the defining polynomial of $f$.
+\end{cfcode}
+
+\begin{cfcode}{galois_field_iterator}{$f$.begin}{}
+  provided $f$ is not the empty ``dummy'' field then \code{$f$.begin()}
+  returns an iterator \code{iter} pointing to $0$. Subsequent calls of
+  \code{++iter} or \code{iter++} will eventually traverse the whole field.
+
+  If $f$ is the ``dummy'' field then \code{$f$.begin() == $f$.end()}.
+\end{cfcode}
+
+\begin{cfcode}{galois_field_iterator}{$f$.end}{}
+  returns an iterator pointing one past the last element of $f$. The returned
+  iterator must not be dereferenced.
+\end{cfcode}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $f$ be an instance of type \code{galois_field}.  The operator \code{=} is overloaded.  For
+efficiency reasons, the following function is implemented:
+
+\begin{fcode}{void}{$f$.assign}{const galois_field & $f_2$}
+  $f = f_2$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+The binary operators \code{==}, \code{!=} are overloaded and have the usual meaning.
+Furthermore, the operators \code{<}, \code{>} are overloaded: Let $f$ and \code{f2} be instances
+of type \code{galois_field}.  Then \code{$f$ < $f_2$} returns \TRUE if $f$ is a proper subfield
+of $f_2$, and \FALSE otherwise.  Operator \code{>} is defined analogously.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+The \code{istream} operator \code{>>} and the \code{ostream} operator \code{<<} are overloaded.
+
+\begin{fcode}{istream &}{operator >>}{istream & in, galois_field & $f$}
+  reads a field from \code{istream} \code{in}.  The input must be either of the form ``[$p$,
+  $n$]'', where $p$ is the characteristic and $n$ the degree of the field $f$, or it must be of
+  the form ``$f(X)$ mod $p$'', where $f(X)$ is a polynomial of degree $n$ which is irreducible
+  modulo $p$.
+\end{fcode}
+
+\begin{fcode}{ostream &}{operator <<}{ostream & out, const galois_field & $f$}
+  writes the field $f$ to \code{ostream} \code{out} in form of ``$f(X)$ mod $p$'', where $p$ is
+  the characteristic and $f$ defining polynomial of the field $f$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{gf_element, galois_field_iterator}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+see example for class \code{gf_element}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Detlef Anton, Franz-Dieter Berger, Stefan Neis, Thomas Pfahler

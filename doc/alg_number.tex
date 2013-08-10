@@ -1,0 +1,397 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  alg_number.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the alg_number class
+%%
+%%  Copyright   (c)   1995   by  LiDIA-Group
+%%
+%%  Authors: Stefan Neis
+%%
+
+\newcommand{\num}{\mathit{num}}
+\newcommand{\den}{\mathit{den}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{alg_number} \dotfill arithmetic for algebraic numbers
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{alg_number} is a class for doing multiprecision arithmetic for algebraic numbers.  It
+supports for example arithmetic operations, comparisons, and computations of norm and trace.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+An \code{alg_number} consists of a triple $(\num, \den, \Or)$, where the numerator $\num =
+(\num_0, \dots, \num_{n-1})$ is a \code{math_vector< bigint >} of length $n$, the denominator
+$\den$ is a \code{bigint}, and $\Or$ is a pointer to the \code{nf_base}, that is used to
+represent the number.  The \code{alg_number} $(\num, \den, \Or)$ represents the algebraic number
+\begin{displaymath}
+  \frac{1}{\den} \sum_{i=0}^{n-1} \num_i w_i \enspace,
+\end{displaymath}
+where $w_i$ are the base elements described by the \code{nf_base} pointed to by $\Or$.  The
+components of the numerator $\num$ and the denominator $\den$ of an \code{alg_number} are always
+coprime, the denominator $\den$ is positive.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+In the following constructors there is an optional pointer to an \code{nf_base}.  Instead of
+this pointer, a \code{number_field} or an \code{order} may be given, since there are suitable
+automatic casts.  If however, this argument is completely omitted, the number is generated with
+respect to \code{nf_base::current_base}, which is the base of the \code{number_field} or
+\code{order} that was constructed or read last.  If no \code{number_field} or \code{order} has
+been constructed or read so far, this defaults to a dummy base.  Computations with algebraic
+numbers over this dummy base will lead to unpredictable results or errors, if you do not assign
+meaningful values to such algebraic numbers before using them.
+
+\begin{fcode}{ct}{alg_number}{nf_base * $\Or$ = nf_base::current_base}
+  initializes with zero with respect to the given base.
+\end{fcode}
+
+\begin{fcode}{ct}{alg_number}{const bigint &, nf_base * $\Or_1$ = nf_base::current_base}
+  lifts the given \code{bigint} algebraic number field described by the given \code{nf_base}.
+\end{fcode}
+
+\begin{fcode}{ct}{alg_number}{const base_vector< bigint > & $v$, const bigint & $d$ = 1,
+    nf_base * $\Or_1$ = nf_base::current_base}%
+  initializes with the algebraic number $\frac{1}{d} \sum_{i=0}^{n-1} v[i] w_i$ if $v$ has
+  exactly $n$ components.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{ct}{alg_number}{const bigint *& $v$, const bigint & $d$ = 1,
+    nf_base * $\Or_1$ = nf_base::current_base}%
+  initializes with the algebraic number $\frac{1}{d} \sum_{i=0}^{n-1} v[i] w_i$.  The behaviour
+  of this constructor is undefined if the array $v$ has less than $n$ components.
+\end{fcode}
+
+\begin{fcode}{ct}{alg_number}{const alg_number & $a$}
+  initializes with a copy of the algebraic number $a$.
+\end{fcode}
+
+\begin{fcode}{dt}{~alg_number}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $a$ be of type \code{alg_number}.  The operator \code{=} is overloaded.  For efficiency
+reasons, the following functions are also implemented:
+
+\begin{fcode}{void}{$a$.assign_zero}{}
+  $a \assign 0$.  Note that this embedds zero into the number field which $a$ is a member of.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign_one}{}
+  $a \assign 1$.  Note that this embedds one into the number field which $a$ is a member of.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign}{const bigint & $b$}
+  $a \assign b$.  Note that this embedds $b$ into the number field which $a$ is a member of.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign}{const alg_number & $b$}
+  $a \assign b$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $a$ be of type \code{alg_number} with $a = (\num, \den, \Or)$.
+
+\begin{cfcode}{const math_vector< bigint > &}{$a$.coeff_vector}{}
+  returns the coefficient vector $\num$ of $a$.
+\end{cfcode}
+
+\begin{fcode}{const math_vector< bigint > &}{coeff_vector}{const alg_number & $a$}
+  returns the coefficient vector $\num$ of $a$.
+\end{fcode}
+
+\begin{cfcode}{alg_number}{$a$.numerator}{}
+  returns the \code{alg_number} $(\num, 1, \Or)$.
+\end{cfcode}
+
+\begin{fcode}{alg_number}{numerator}{const alg_number & $a$}
+  returns the \code{alg_number} $(\num, 1, \Or)$.
+\end{fcode}
+
+\begin{cfcode}{const bigint &}{$a$.denominator}{}
+  returns the denominator $\den$ of $a$.
+\end{cfcode}
+
+\begin{fcode}{const bigint &}{denominator}{const alg_number & $a$}
+  returns the denominator $\den$ of $a$.
+\end{fcode}
+
+\begin{cfcode}{nf_base *}{$a$.which_base}{}
+  returns the pointer $\Or$.
+\end{cfcode}
+
+\begin{fcode}{nf_base *}{which_base}{const alg_number & $a$}
+  returns the pointer $\Or$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+The following operators are overloaded and can be used in exactly the same way as in the
+programming language C++.  If you use the binary operators on two algebraic numbers $a$ and $b$,
+this is only successful if $\code{$a$.which_order()} = \code{$b$.which_order()}$, otherwise the
+\LEH will be invoked.
+
+\begin{center}
+  \begin{tabular}{|c|rcl|l|}\hline
+    unary & & $op$ & \code{alg_number} & $op\in\{\code{-}\}$ \\\hline
+    binary & \code{alg_number} & $op$ & \code{alg_number}
+    & $op\in\{\code{+},\code{-},\code{*},\code{/}\}$\\\hline
+    binary with & \code{alg_number} & $op$ & \code{alg_number}
+    & $op\in\{\code{+=},\code{-=},\code{*=},\code{/=}\}$\\
+    assignment & & & &\\\hline
+    binary & \code{alg_number} & $op$ & \code{bigint}
+    & $op \in\{\code{+},\code{-},\code{*},\code{/}\}$\\\hline
+    binary & \code{bigint} & $op$ & \code{alg_number}
+    & $op \in\{\code{+},\code{-},\code{*},\code{/}\}$\\\hline
+    binary with & \code{alg_number} & $op$ & \code{bigint}
+    & $op \in\{\code{+=},\code{-=},\code{*=},\code{/=}\}$\\
+    assignment & & & &\\\hline
+  \end{tabular}
+\end{center}
+
+To avoid copying all operators also exist as functions.
+
+\begin{fcode}{void}{add}{alg_number & $c$, const alg_number & $a$, const alg_number & $b$}
+  $c \assign a + b$ if $a$ and $b$ are members of the same order.  Otherwise the \LEH will be
+  invoked.
+\end{fcode}
+
+\begin{fcode}{void}{add}{alg_number & $c$, const alg_number & $a$, const bigint & $i$}
+  $c \assign a + i$.
+\end{fcode}
+
+\begin{fcode}{void}{add}{alg_number & $c$, const bigint & $i$, const alg_number & $b$}
+  $c \assign i + b$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{alg_number & $c$, const alg_number & $a$, const alg_number & $b$}
+  $c \assign a - b$ if $a$ and $b$ are members of the same order.  Otherwise the \LEH will be
+  invoked.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{alg_number & $c$, const alg_number & $a$, const bigint & $i$}
+  $c \assign a - i$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{alg_number & $c$, const bigint & $i$, const alg_number & $b$}
+  $c \assign i - b$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{alg_number & $c$, const alg_number & $a$, const alg_number & $b$}
+  $c \assign a \cdot b$ if $a$ and $b$ are members of the same order.  Otherwise the \LEH will
+  be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{alg_number & $c$, const alg_number & $a$, const bigint & $i$}
+  $c \assign a \cdot i$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{alg_number & $c$, const bigint & $i$, const alg_number & $b$}
+  $c \assign i \cdot b$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{alg_number & $c$, const alg_number & $a$, const alg_number & $b$}
+  $c \assign a / b$ if $b \neq 0$ and if $a$ and $b$ are members of the same order.  Otherwise
+  the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{alg_number & $c$, const alg_number & $a$, const bigint & $i$}
+  $c \assign a / i$ if $i \neq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{alg_number & $c$, const bigint & $i$, const alg_number & $b$}
+  $c \assign i / b$ if $b \neq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.negate}{}
+  $a \assign -a$.
+\end{fcode}
+
+\begin{fcode}{void}{negate}{alg_number & $a$, const alg_number & $b$}
+  $a \assign -b$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.multiply_by_2}{}
+  $a \assign 2 \cdot a$ (done by shifting).
+\end{fcode}
+
+\begin{fcode}{void}{$a$.divide_by_2}{}
+  $a \assign a / 2$ (done by shifting).
+\end{fcode}
+
+\begin{fcode}{void}{$a$.invert}{}
+  $a \assign 1 / a$ if $a \neq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{invert}{alg_number & $c$, const alg_number & $a$}
+  $c \assign 1 / a$ if $a \neq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{alg_number}{inverse}{const alg_number & $a$}
+  returns $1 / a$ if $a \neq 0$.  Otherwise the the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{square}{alg_number & $c$, const alg_number & $a$}
+  $c \assign a^2$.
+\end{fcode}
+
+\begin{fcode}{void}{power}{alg_number & $c$, const alg_number & $a$, const bigint & $i$}
+  $c \assign a^i$.
+\end{fcode}
+
+\begin{fcode}{void}{power_mod_p}{alg_number & $c$, const alg_number & $a$,
+    const bigint & $i$, const bigint & $p$}%
+  $c \assign a^i \bmod p$, i.e.~every component of the result is reduced modulo $p$.  We assume,
+  that $a$ has denominator $1$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+The binary operators \code{==}, \code{!=}, and the unary operator \code{!}  (comparison with
+zero) are overloaded and can be used in exactly the same way as in the programming language C++
+if the numbers to be compared are members of the same order.  Otherwise the \LEH will be
+invoked.
+
+In addition we offer the following functions for frequently needed special cases.
+
+Let $a$ be an instance of type \code{alg_number}.
+
+\begin{cfcode}{bool}{$a$.is_zero}{}
+  returns \TRUE if $a = 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_one}{}
+  returns \TRUE if $a = 1$, \FALSE otherwise.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+Let $a = (\num, \den, \Or)$ be an instance of type \code{alg_number}.
+
+\begin{cfcode}{lidia_size_t}{$a$.degree}{}
+  returns the degree of the number field described by the base pointed to by $\Or$.
+\end{cfcode}
+
+\begin{fcode}{lidia_size_t}{degree}{const alg_number & $a$}
+  returns the degree of the number field described by the base pointed to by $\Or$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.normalize}{}
+  normalizes the \code{alg_number} $a$ such that the $\gcd$ of the elements representing the
+  numerator and the denominator is $1$ and that the denominator is positive.
+\end{fcode}
+
+\begin{fcode}{void}{swap}{alg_number & $a$, alg_number & $b$}
+  exchanges the values of $a$ and $b$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+Let $a$ be an instance of type \code{alg_number}.
+
+\begin{cfcode}{bigfloat}{$a$.get_conjugate}{lidia_size_t j}
+  for $0 < j \leq \deg(\Or)$ this functions returns the $j$-th conjugate of $a$.  If $j$ is not
+  within the indicated bounds, the \LEH will be invoked.
+\end{cfcode}
+
+\begin{cfcode}{math_vector< bigfloat >}{$a$.get_conjugates}{}
+  returns the vector of conjugates of $a$.
+\end{cfcode}
+
+\begin{fcode}{bigint_matrix}{rep_matrix}{const alg_number & $a$}
+  returns the representation matrix of the numerator of $a$, i.e.~the matrix of the endomorphism
+  $K \rightarrow K, x \mapsto a \cdot \rm \den(a) \cdot x$ with respect to the basis of the
+  number field $K$ pointed to by $\Or$.
+\end{fcode}
+
+\begin{fcode}{bigrational}{norm}{const alg_number & $a$}
+  returns the norm of $a$.
+\end{fcode}
+
+\begin{fcode}{bigrational}{trace}{const alg_number & $a$}
+  returns the trace of $a$.
+\end{fcode}
+
+\begin{fcode}{polynomial< bigint >}{charpoly}{const alg_number & $a$}
+  returns the characteristic polynomial of $a$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+\code{istream} operator \code{>>} and \code{ostream} operator \code{<<} are overloaded.  Input
+and output of an \code{alg_number} have the following format: $[a_0 \dots a_{n-1}] / \den$.
+
+If the denominator is $1$ we omit it, i.e.~in this case the format is $[a_0 \dots a_{n-1}].$
+
+Note that you have to manage by yourself that successive \code{alg_number}s may have to be
+separated by blanks.
+
+Since we didn't want to read the $\Or$-component of each number, we always assume, that we are
+reading a representation with coefficients relative to the base pointed to by
+\code{nf_base::current_base}.  By default, \code{nf_base::current_base} points to the basis of
+the last number field or order that was read or constructed, but you may set it to previously
+defined bases,e.g.~by calling an constructor of the class \code{order} with suitable arguments.
+If \code{nf_base::current_base} was not set before, the number will use some useless dummy base,
+which will produce unpredictable results, if you use such a number in a computation before
+assigning a meaningful value to it.  (Note: Exactly the same mechanism using the same variables
+is used for reading and writing modules and ideals).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{bigint}, \SEE{module}, \SEE{ideal},
+\SEE{number_field}, \SEE{order}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+For an example please refer to \path{LiDIA/src/packages/alg_number/alg_number_appl.cc}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Stefan Neis

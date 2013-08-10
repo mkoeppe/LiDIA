@@ -1,0 +1,167 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  exceptions.tex        LiDIA documentation
+%%
+%%  This file contains the documentation of the exceptions
+%%  thrown by LiDIA.
+%%
+%%  Copyright (c) 2002 by the LiDIA Group
+%%
+%%  Authors: Christoph Ludwig
+%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{basic_error} \dotfill root of \LiDIA's exception hierarchy
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+As long as you did not disable exception handling during configuration, \LiDIA
+reports errors by throwing exceptions. All exceptions thrown are derived from
+class \code{basic_error}. The exception hierarchy is still under development,
+so the actual type of the thrown exceptions is subject to change. For the time
+beeing, the only guarantee is that
+\code{catch(const basic_error& ex) \{ /*...*/ \}} will catch all exceptions
+thrown by \LiDIA.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+Class \code{basic_error} is publicly derived from \code{std::exception}. It
+is designed as an abstract base class of \LiDIA's exception hierarchy, so you
+cannot create objects of type \code{basic_error}. 
+
+In order to allow a smooth transition from \LiDIA's legacy error handlers, a
+concrete subclass \code{generic_error} is provided. But you must not rely on
+the thrown exceptions to be of type \code{generic_error} since we may implement
+specific exception classes without further notice.
+
+\begin{techdoc}
+  Every subclass of \code{basic_error} that is intended to be instantiated must
+  override the method \code{offendingClass()}. Furthermore, a subclass can
+  controll the strings that are passed to \LiDIA's legacy error handler in
+  \code{traditional_error_handler()} by overriding the protected virtual method
+  \code{traditional_error_handler_impl()}.
+\end{techdoc}
+
+Let \code{e} be an object of type \code{basic_error}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{basic_error}{const std::string& msg}
+  Constructs an exception object. The argument is passed on to the constructor
+  of the base class \code{std::runtime_error}. This constructor is protected.
+\end{fcode}
+
+\begin{fcode}{dt}{virtual ~basic_error}{}
+  Destroys an exception. This destructor offers the
+  ``nothrow-guarantee''. Every subclass must explicitly declare its destructor
+  to be nonthrowing with \code{throw()}.
+\end{fcode}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+\begin{cfcode}{virtual const std::string&}{e.offendingClass}{}
+  Returns a textual description where the error occured. This method is pure
+  virtual and must be overridden in all concrete subclasses.
+\end{cfcode}
+
+\begin{cfcode}{virtual const char*}{e.what}{}
+  Returns a textual description of the exception. This
+  method overrides \code{std::exception::what()}
+\end{cfcode}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+\begin{cfcode}{void}{e.traditional_error_handler}{}
+  Calls \LiDIA's traditional error handling module via
+  \code{lidia_error_handler(classname, msg)}. This method does therefore not
+  return. \code{classname} and \code{msg} are determined by the protected
+  virtual member function 
+  \code{traditional_error_handler_impl(string&, string&)}.
+\end{cfcode}
+
+\begin{Tcfcode}{virtual void}{e.traditional_error_handler_impl}{%
+    std::string& classname, std::string& msg}
+  Assigns \code{classname} the return value of \code{offendingClass()} and
+  \code{msg} the return value of \code{what()}. Since this method is virtual,
+  this behaviour can be changed by subclasses. The only intended application
+  of this method is to provide the strings passed to the legacy error handling
+  system in \code{traditional_error_handler()}.
+\end{Tcfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+\code{lidia_error_handler}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\WARNINGS
+
+You must not configure \LiDIA with \code{-{}-enable-exceptions=no} if you want
+\LiDIA to throw exceptions.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <iostream>
+#include <LiDIA/error.h>
+#include <LiDIA/bigint.h>
+#include <LiDIA/base_vector.h>
+
+int main()
+{
+    LiDIA::base_vector<LiDIA::bigint> v(10, FIXED);
+
+    try {
+      // manipulate v ...
+      std::cout << v[10] << std::endl;
+    }
+    catch(const LiDIA::basic_error& ex) {
+      if(/* can we deal with the error? */) {
+        std::clog << "There was a problem in " << ex.offendingClass() << ":\n"
+                  << ex.what() << "\n\n"
+                  << "We can nevertheless continue.\n".
+        // ...
+      }
+      else { // Give up
+        ex.traditional_error_handler();
+      }
+    }
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Christoph Ludwig
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

@@ -1,0 +1,275 @@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  prime_proof.tex       Documentation
+%%
+%%  This file contains the documentation of the classes of the prime_proof-package
+%%
+%%  Copyright   (c)   2002   by  LiDIA Group
+%%
+%%  Author: Jochen Hechler
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\code{prime_proof}\dotfill class for verifying primes
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+The class \code{prime_proof}
+is the class which is called to verify a \code{certificate} or to create one, by
+testing a prime.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+The class \code{prime_proof} uses four different prime proofs, which depend on the 
+number to proof.
+
+At first a pseudo prime test will be used (\code{bigint.is_prime()}), if this test returns \code{false}
+the prime proof will be stopped.
+
+For numbers smaller then $10^{15}$ a \code{SPP} proof is used. Which is a Miller Rabin Test for given Bases.
+
+For numbers greater than $10^{15}$ it is tested whether a \code{n_plus_one} or a \code{n_minus_one}
+proof can be used. If $n$ can't be used for either of them, a \code{ecpp} proof will
+be chosen.
+The latter test will call \code{prime_proof} again to verify a top down list of probable prime numbers,
+which is generated for the final proof.
+The following tests are implemented in \code{prime_proof}:
+\begin{enumerate}
+
+\item \code{SPP} - uses a Miller-Rabin-Test with special bases.
+The test can be used to prove numbers smaller $10^{15}$ to be prime.
+
+\item \code{n_plus_one} - uses the Lucas Sequences and a version of the Lucas Lehmer test to prove whether
+a given probable prime $n$ is prime.
+
+For this test $n+1$ must contain a prime factor $q$ greater than $\sqrt{n+1}$.
+
+With a given prime factor $q$ of $n+1$, a $r$ and $s$ is selected with the corresponding
+Lucas sequence $U$, such that
+\begin{eqnarray*}
+r^2 - 4s = \delta
+{\rm with}
+\left( \frac{\delta}{n} \right) &=& -1 \\
+&{\rm and}&\\
+U(n+1) &\equiv& 0 \bmod n\\
+U\left( \frac{n+1}{q} \right) &\not\equiv& 0 \bmod n
+\end{eqnarray*}
+
+If $r$ and $s$ are found, $n$ is proven to be prime.
+The test tries $50$ random $r$, $s$ is set to one or two depending on $r$.
+
+\item \code{n_minus_one} -  uses the Pocklington Theorem to ensure that
+a given probable prime $n$ is a prime.
+
+For this test $n-1$ must contain a prime factor $q$ greater than $\sqrt{n-1}$ and $\gcd(q,n-1/q)=1$.
+With a given prime factor of $n-1$ the test tries to find an $a > 1$ such that
+\begin{eqnarray*}
+a^{n-1} &\equiv& 1 \bmod n \\
+&{\rm and}& \\
+\gcd(a^{\frac{n-1}{q}}-1,n) &=& 1
+\end{eqnarray*}
+If an $a$ is found, $n$ is proved to be prime.
+
+The test does $50$ iterations, every time choosing a random $a$ in the range from $2$ to $n-2$.
+
+\item \code{ECPP} - uses the elliptic curve primality proving algorithm.
+
+For a given $n$ a lower bound $s=(\sqrt[4]{n}+1)^2$ is calculated. 
+Then an elliptic curve $E$ over $F_n$ is calculated with and suitable order $m$, and a prime $q$ which divides
+$m$ an is greater than $s$. 
+
+For a randomly choosen point $P\not= 0$ on $E$ the test is successful iff
+\begin{eqnarray*}
+m\cdot P &=& \mathcal{O}\\ %\mcO \\
+&{\rm and}& \\
+m/q \cdot P &\not=& \mathcal{O} %\mcO
+\end{eqnarray*}
+
+There are different strategies for the selection of the order of the elliptic curve.
+These are described in the diploma thesis \cite{Hechler_Thesis:2003}.
+
+\end{enumerate}
+At the end a \code{certificate} will be generated, which can be saved.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{prime_proof}{}
+  initialises an empty instance.
+\end{fcode}
+
+\begin{fcode}{ct}{prime_proof}{const bigint &  $p$}
+  initialises an instance with a probable prime $p$
+\end{fcode}
+
+\begin{fcode}{dt}{~prime_proof}{}
+  destructor
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $P$ be an instance of \code{prime_proof}.
+
+\begin{fcode}{void}{$P$.set_prime}{const bigint & $p$} 
+        sets the probable prime number which will be tested
+\end{fcode}
+\begin{fcode}{void}{$P$.set_primelist_length}{const int & $l$}
+        sets the prime list length for the \code{ecpp}. Default value is $100$.
+\end{fcode}
+\begin{fcode}{void}{$P$.set_classnumbers}{const int  min, const int  max}
+        sets the class numbers for the \code{ecpp} mode $2$. Default values are min$=1$ and max$=50$.
+        The other modes will use $999$ as maximum class number.
+\end{fcode}
+\begin{fcode}{void}{$P$.set_ecpp_mode}{const int  $mode$}
+        sets the ecpp mode. Default value is $0$. (first prime list then factorizing $= 0$, only prime list $= 1$       only factorizing $=2$)
+\end{fcode}
+\begin{fcode}{void}{$P$.set_pollard_rho_parameter}{const int  start_length,const int  rounds}
+        sets the pollard rho parameters, which will be used to test whether $n$ is usable for the $n-1$ or $n+1$ test.
+\end{fcode}
+
+\begin{fcode}{void}{$P$.set_verbose}{const bool $v$}
+        if $v$ is set true, a lot of useful information is returned during the process.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $P$ be an instance of \code{prime_proof}.
+%\begin{cfcode}{bool}{$P$.get_verbose}{}
+%        returns true if $P$ is set to verbose.
+%\end{cfcode}
+\begin{cfcode}{int}{$P$.get_primelist_length}{}
+        returns  the length of the \code{ecpp} prime list. Default value is $100$.
+\end{cfcode}
+\begin{cfcode}{int}{$P$.get_ecpp_mode}{}
+        returns  the mode of the \code{ecpp} algorithm used by $P$.
+\end{cfcode}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+Let $P$ be an instance of \code{prime_proof}.
+\begin{cfcode}{bool}{$P$.prove_prime}{}
+        returns \code{true} if $n$ is a prime.
+\end{cfcode}
+\begin{cfcode}{bool}{$P$.prove_prime}{const bigint & $n$}
+        returns \code{true} if $n$ is a prime.
+\end{cfcode}
+%\begin{cfcode}{bool}{$P$.spp}{const bigint & $n$}
+%        returns \code{true} if $n$ is a prime. This test can be used only for $n \leq 10^{15}$.
+%        For greater $n$ it will return \code{false}.
+%\end{cfcode}
+%\begin{cfcode}{bool}{$P$.spp_verify_proof_prime}{const base_vector <bigint> cert_vector}
+%        returns \code{true} if the certificate given by the cert vector is a valid certificate for the 
+%        spp-test.
+%\end{cfcode}
+%\begin{cfcode}{bool}{$P$.n_plus_one}{const bigint & q, const bigint & p}
+%        runs a \code{n_plus_one} test, for $n+1 = p \cdot q$ with $p$ prime an $p>q$.
+%        Returns \code{true} if a $r$ and $s$ is found which fullfill the conditions.
+%\end{cfcode}
+%\begin{cfcode}{bool}{$P$.npo_verify_proof_prime}{const base_vector <bigint> cert_vector}
+%        returns \code{true} if the certificate given by the cert vector is a valid certificate for the 
+%        n-plus-one-test.
+%\end{cfcode}
+%\begin{cfcode}{bool}{$P$.n_minus_one}{const bigint & q, const bigint & p}
+%        runs a \code{n_minus_one} test, for $n-1 = p \cdot q$ with $p$ prime an $p>q$.
+%        Return \code{true} if a base $a$ is found, for which the test is positive.
+%\end{cfcode}
+%\begin{cfcode}{bool}{$P$.nmo_verify_proof_prime}{const base_vector <bigint> cert_vector}
+%        returns \code{true} if the certificate given by the cert vector is a valid certificate for the 
+%        n-minus-one-test.
+%\end{cfcode}
+%\begin{cfcode}{bool}{$P$.ecpp}{}
+%%        runs a \code{ecpp} test. Returns \code{true} if an elliptic curve could and a point on this elliptic
+%        curve could be found which fullfills the Goldwasser Killian conditions.
+%\end{cfcode}
+%\begin{cfcode}{bool}{$P$.ecpp_verify_proof_prime}{const base_vector <bigint> cert_vector}
+%        returns \code{true} if the certificate given by the cert vector is a valid certificate for the 
+%        ecpp-test.
+%\end{cfcode}
+\begin{cfcode}{certificate}{$P$.get_certificate}{}
+        returns a \code{certificate} object.
+        Before calling this function \code{proof_prime} must be called.
+\end{cfcode}
+\begin{cfcode}{bool}{$P$.verify_certificate}{certificate cert}
+        returns \code{true} if \code{cert} is is a certificate for \code{n}.
+\end{cfcode}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+Input/Output of instances of \code{prime_proof} is currently not possible.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{certificate} 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+\begin{quote}
+\begin{verbatim}
+#include <stdio.h>
+#include <LiDIA/bigint.h>
+#include <prime_proof.h>
+#include <certificate.h>
+
+
+void main()
+{
+bigint p;
+cout << "Please enter possible prime : "; 
+cin >>p;
+
+
+prime_proof pp;
+certificate c;
+
+pp.set_verbose(true);
+pp.set_ecpp_mode(0);
+pp.set_prime(p);
+
+bool suc = pp.prove_prime();
+
+if(suc)cout<<p<<" is prime"<<endl;
+else cout<<p<<" is not prime"<<endl;
+
+c = pp.get_certificate();
+c.write_certificate("cert.f");
+
+if(pp.verify_certificate(c))cout<<"verify success"<<endl;
+else cout<<"the certificate is not correct"<<endl;
+}
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Jochen Hechler

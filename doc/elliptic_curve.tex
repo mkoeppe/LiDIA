@@ -1,0 +1,365 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  elliptic_curve.tex  Documentation
+%%
+%%  This file contains the documentation of the class elliptic_curve
+%%
+%%  Copyright   (c)   1997   by  LiDIA Group
+%%
+%%  Authors: Nigel Smart, Volker Mueller, John Cremona,
+%%           Birgit Henhapl, Markus Maurer
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\code{elliptic_curve< T >} \dotfill class for an elliptic curve defined over a field \code{T}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+An elliptic curve is a curve of the form
+\begin{displaymath}
+  Y^2 + a_1 X Y + a_3 Y = X^3 + a_2 X^2 + a_4 X + a_6
+\end{displaymath}
+which is non-singular.  For some cases also the projective model
+\begin{displaymath}
+  Y^2 Z + a_1 X Y Z + a_3 Y Z^2 = X^3 + a_2 X^2 Z + a_4 X Z^2 + a_6 Z^3
+\end{displaymath}
+is supported.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+\code{elliptic_curve< T >} is a class for working with elliptic curves defined over arbitrary
+fields.  Therefore the template type \code{T} is assumed to represent a field.  The current
+version of \code{elliptic_curve< T >} supports the template types \code{bigrational}, and
+\code{gf_element}.  Instances for these classes are already included in the \LiDIA library per
+default.  Moreover a specialization for \code{elliptic_curves< bigint >} is also generated per
+default.
+
+For the affine model, the class offers three different formats for the elliptic curves: long
+Weierstrass form as above, short Weierstrass form ($a_1 = a_2 = a_3 = 0$), if the characteristic
+of the field represented by the template type \code{T} is odd, and a format especially well
+suited for elliptic curves defined over fields of characteristic two ($a_1 = 1$ and $a_3 = a_4 =
+0$).  The currently used form is internally stored, such that points can use optimized
+algorithms for the group operations (see also \code{point< T >}).  Moreover the curve
+coefficients $a_i$ are also stored.  The projective model is only available for curves over
+finite fields, i.e.  \code{gf_element}, in short Weierstrass form.
+
+The template class \code{elliptic_curve< T >} supports a different set of functions depending on
+the characteristic of the field represented by \code{T}.  If \code{T} represents a finite field,
+i.e.  \code{gf_element}, several functions like computing the order of the curve, computing the
+isomorphism type of the curve, etc. are available in addition to generally available functions.
+
+The template class \code{elliptic_curve< T >} is closely linked with the template class
+\code{point< T >} which is used for holding points on elliptic curves.  Therefore it is advised
+to read also the documentation of that class.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{elliptic_curve< T >}{}
+  constructs an invalid curve, i.e. all coefficients are set to zero.
+\end{fcode}
+
+\begin{fcode}{ct}{elliptic_curve< T >}{const T & $a$, const T & $b$,
+    elliptic_curve_flags::curve_model m = elliptic_curve_flags::AFFINE}%
+  If the characteristic of the field is not equal to two, then an elliptic curve in short
+  Weierstrass form is constructed.  If however the characteristic is two, then an elliptic curve
+  in the special form for fields of characteristic two is generated (i.e. $a_1 = 1$, $a_2 = a$
+  and $a_6 = b$).  If the discriminant of the elliptic curve is zero, then the \LEH is invoked.
+  The model is affine by default, and projective if $m$ is set to
+  \code{elliptic_curve_flags::PROJECTIVE}.
+\end{fcode}
+
+\begin{fcode}{ct}{elliptic_curve< T >}{const T & $a_1$, const T & $a_2$, const T & $a_3$,
+    const T & $a_4$, const T & $a_6$,
+    elliptic_curve_flags::curve_model m = elliptic_curve_flags::AFFINE}%
+  constructs a curve in long Weierstrass form.  If the discriminant of the elliptic curve is
+  zero, then the \LEH is invoked.  The model is affine by default, and this is the only
+  supported model at the moment for long Weierstrass form.
+\end{fcode}
+
+\begin{fcode}{dt}{~elliptic_curve< T >}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+The operator \code{=} is overloaded.  In addition, there are the following functions for
+initializing a curve.  Let $C$ be an instance of type \code{elliptic_curve< T >}.
+
+\begin{fcode}{void}{$C$.set_coefficients}{const T & $a$, const T & $b$,
+    elliptic_curve_flags::curve_model m = elliptic_curve_flags::AFFINE}%
+  If the characteristic of the field is not equal to two, then an elliptic curve in short
+  Weierstrass form is constructed.  If however the characteristic is two, then an elliptic curve
+  in the special form for fields of characteristic two is generated (i.e. $a_1 = 1$, $a_2 = a$
+  and $a_6 = b$).  If the discriminant of the elliptic curve is zero, then the \LEH is invoked.
+  The model is affine by default, and projective if $m$ is set to
+  \code{elliptic_curve_flags::PROJECTIVE}.
+\end{fcode}
+
+\begin{fcode}{void}{$C$.set_coefficients}{const T & $a_1$,
+    const T & $a_2$, const T & $a_3$,
+    const T & $a_4$, const T & $a_6$,
+    elliptic_curve_flags::curve_model m = elliptic_curve_flags::AFFINE}%
+  constructs a curve in long Weierstrass form.  If the discriminant of the elliptic curve is
+  zero, then the \LEH is invoked.  The model is affine by default, and this is the only
+  supported model at the moment for long Weierstrass form.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $C$ be an instance of type \code{elliptic_curve< T >}.
+
+\begin{cfcode}{T}{$C$.discriminant}{}
+  returns the discriminant of $C$.
+\end{cfcode}
+
+\begin{cfcode}{T}{$C$.get_a1}{}returns the coefficient $a_1$.
+\end{cfcode}
+
+\begin{cfcode}{T}{$C$.get_a2}{}returns the coefficient $a_2$.
+\end{cfcode}
+
+\begin{cfcode}{T}{$C$.get_a3}{}returns the coefficient $a_3$.
+\end{cfcode}
+
+\begin{cfcode}{T}{$C$.get_a4}{}returns the coefficient $a_4$.
+\end{cfcode}
+
+\begin{cfcode}{T}{$C$.get_a6}{}returns the coefficient $a_6$.
+\end{cfcode}
+
+\begin{cfcode}{T}{$C$.get_b2}{}returns $b_2 = a_1^2 + 4 a_2$.
+\end{cfcode}
+
+\begin{cfcode}{T}{$C$.get_b4}{}returns $b_4 = a_1 a_3 + 2 a_4$.
+\end{cfcode}
+
+\begin{cfcode}{T}{$C$.get_b6}{}returns $b_6 = a_3^2 + 4 a_6$.
+\end{cfcode}
+
+\begin{cfcode}{T}{$C$.get_b8}{}returns $b_8 = (b_2 b_6 - b_4^2)/4$.
+\end{cfcode}
+
+\begin{cfcode}{T}{$C$.get_c4}{}returns $c_4 = b_2^2 - 24 b_4$.
+\end{cfcode}
+
+\begin{cfcode}{T}{$C$.get_c6}{}returns $c_6 = -b_2^3+ 36 b_2 b_4 - 216 b_6$.
+\end{cfcode}
+
+\begin{cfcode}{void}{$C$.get_ai}{T & $a_1$, T & $a_2$, T & $a_3$, T & $a_4$, T & $a_6$}
+  gets all the values of the $a_i$'s at once.
+\end{cfcode}
+
+\begin{cfcode}{void}{$C$.get_bi}{T & $b_2$, T & $b_4$, T & $b_6$, T & $b_8$}
+  gets all the values of the $b_i$'s at once.
+\end{cfcode}
+
+\begin{cfcode}{void}{$C$.get_ci}{T & $c_4$, T & $c_6$}
+  gets all the values of the $c_i$'s at once.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+Let $C$ be an instance of \code{elliptic_curve< T >}.
+
+\begin{cfcode}{T}{$C$.j_invariant}{}
+  returns the $j$-invariant of $C$, namely $c_4^3 / \D$.
+\end{cfcode}
+
+\begin{fcode}{void}{$C$.transform}{const T & $r$, const T & $s$, const T & $t$}
+  performs the change of variable $x = x' +r$ and $y = y' + s x' + t$.
+\end{fcode}
+
+\begin{cfcode}{int}{$C$.is_null}{}tests whether $C$ has all its coefficients set to zero.
+\end{cfcode}
+
+\begin{cfcode}{int}{$C$.is_singular}{}tests whether the discriminant is zero.
+\end{cfcode}
+
+\begin{fcode}{void}{set_verbose}{int $i$}
+  sets the internal info variable to $i$.  If this info variable is not zero, then the class
+  outputs many information during computations; otherwise no output is given during
+  computations.  The default value of the info variable is zero.
+\end{fcode}
+
+\begin{cfcode}{void}{verbose}{}
+  outputs the current value of the internal info variable.
+\end{cfcode}
+
+In addition to the functions described above, there exist several functions valid only for
+\code{elliptic_curve< gf_element >}.
+
+\begin{fcode}{bool}{$C$.is_supersingular}{}
+  returns \TRUE if and only if the curve $C$ is supersingular.
+\end{fcode}
+
+\begin{cfcode}{unsigned int}{$C$.degree_of_definition}{}
+  returns the extension degree of the field of definition of $C$ over the corresponding prime
+  field.
+\end{cfcode}
+
+\begin{fcode}{point< T >}{random_point}{const elliptic_curve< T > & $C$}
+  returns a random point on the elliptic curve $C$.
+\end{fcode}
+
+\begin{fcode}{bigint}{$C$.group_order}{}
+  determines the order of the group of points on $C$ over the finite field specified by the
+  template type \code{T}.  Note that this field might be bigger than the field of definition of
+  $C$ (e.g., in the case of \code{T} equals \code{gf2n}).
+\end{fcode}
+
+\begin{fcode}{void}{$C$.isomorphism_type}{bigint & $m$, bigint & $n$}
+  determines the isomorphism type of the group of points over the finite field specified by the
+  template type \code{T}, i.e. determines integers $m$ and $n$ such that $C$ is isomorphic to
+  $\ZmZ \times \ZnZ$ and $n$ divides $m$.  The input variables $m$ and $n$ are set to these
+  values.
+\end{fcode}
+
+\begin{fcode}{void}{$C$.isomorphism_type}{bigint & $m$, bigint & $n$,
+    point< T > & $P$, point< T > & $Q$}%
+  determines the isomorphism type of the group of points over the finite field specified by the
+  template type \code{T}, i.e. determines integers $m$ and $n$ such that $C$ is isomorphic to
+  $\ZmZ \times \ZnZ$ and $n$ divides $m$.  The input variables $m$ and $n$ are set to these
+  values.  Moreover generators for the two subgroups are computed.  The point $P$ is set to a
+  generator for the subgroup isomorphic to $\ZmZ$, $Q$ is set to a generator for the $\ZnZ$
+  part.
+\end{fcode}
+
+\begin{fcode}{bool}{$C$.is_cyclic}{}
+  returns \TRUE if and only if the curve $C$ is cyclic.
+\end{fcode}
+
+\begin{fcode}{bool}{$C$.probabilistic_is_order}{const bigint & $r$, unsigned int $t$ = 5}
+  chooses $t$ random points on the elliptic curve and tests whether $r$ is a multiple of the
+  order of all these points.  If $r$ satisfies all these tests, then \TRUE is returned,
+  otherwise the function returns \FALSE.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+Input and output for the projective model is not yet implemented.
+
+There are four output modes for elliptic curves which can be used (with corresponding aliases):
+\begin {enumerate}
+\item[(0)] Short Format which outputs in the form ``[a1,a2,a3,a4,a6]'' (alias \code{SHORT}).
+\item[(1)] Long Format which outputs all the information known about the curve (alias
+  \code{LONG}).
+\item[(2)] Pretty Format which outputs the equation (alias \code{PRETTY}).
+\item[(3)] TeX Format which outputs the equation as \TeX/\LaTeX\ source (alias \code{TEX}).
+\end {enumerate}
+You can set the output mode using the aliases given above.  The default value for the output
+mode is \code{SHORT}.
+
+\begin{fcode}{void}{set_output_mode}{long $i$}
+  Sets the current output mode to $i$.  Note that $i$ should be one of the aliases described
+  above.
+\end{fcode}
+
+The \code{ostream} operator \code{<<} has been overloaded and will produce output in the form
+specified by the current output mode.  For convenience the following member functions are also
+defined.
+
+\begin{cfcode}{void}{$C$.output_short}{ostream & out}
+  Send output in ``short'' format to the ostream \code{out}.
+\end{cfcode}
+
+\begin{cfcode}{void}{$C$.output_long}{ostream & out}
+  Send output in ``long'' format to the ostream \code{out}.
+\end{cfcode}
+
+\begin{cfcode}{void}{$C$.output_tex}{ostream & out}
+  Send output in ``\TeX'' format to the ostream \code{out}.
+\end{cfcode}
+
+\begin{cfcode}{void}{$C$.output_pretty}{ostream & out}
+  Send output in ``pretty'' format to the ostream \code{out}.
+\end{cfcode}
+
+The \code{istream} operator \code{>>} has been overloaded and allows input in one of two forms
+$[ a_1,a_2,a_3,a_4,a_6 ]$ or ``$a_1 \quad a_2 \quad a_3 \quad a_4 \quad a_6$''.  In addition the
+following member function is also defined.
+
+\begin{fcode}{void}{$C$.input}{istream & in}
+  Reads in coefficients for curve $C$ from the istream \code{in}.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{point< T >}, \SEE{elliptic_curve_flags},
+\SEE{gf_element}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+The elliptic curve package of \LiDIA will be increased in future.  Therefore the interface of
+the described functions might change in future.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/bigint.h>
+#include <LiDIA/galois_field.h>
+#include <LiDIA/gf_element.h>
+#include <LiDIA/elliptic_curve.h>
+
+int main()
+{
+    bigint p;
+    cout << "\n Input prime characteristic : "; cin >> p;
+
+    galois_field F(p);
+
+    gf_element a4, a6;
+
+    a4.assign_zero(F);
+    a6.assign_zero(F);
+
+    cout << "\n Coefficient a_4 : "; cin >> a4;
+    cout << "\n Coefficient a_6 : "; cin >> a6;
+
+    elliptic_curve< gf_element > e(a4, a6);
+
+    cout << "\n Group order is " << e.group_order();
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Birgit Henhapl, John Cremona, Markus Maurer, Volker M\"uller, Nigel Smart.

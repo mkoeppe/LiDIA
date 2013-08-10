@@ -1,0 +1,764 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  bigint.tex        LiDIA documentation
+%%
+%%  This file contains the documentation of the class bigint
+%%
+%%  Copyright (c) 1995 by the LiDIA Group
+%%
+%%  Authors: Thomas Papanikolaou
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{bigint} \dotfill multiprecision integer arithmetic
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{bigint} is a class that provides a multiprecision integer arithmetic.  A variable of type
+\code{bigint} can hold an integer with arbitrarily many digits.  Since all operators which are
+available for machine integers (e.g.~\code{int}) are also defined for the type \code{bigint} you
+can regard a variable of type \code{bigint} as an \code{int} variable without length
+restriction.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+\label{bigint_description}\code{bigint} is an interface that calls
+functions provided by the kernel.  Thus the representation of variables depends on the data
+types used in that level.  There is a fixed base $B > 0$, which we call \code{bigint} base and
+which determines the representation of each integer $n$ by the array $[m_0, m_1, \dots, m_{l -
+  1}]$, with $l = \lfloor \log_B (n) \rfloor + 1$, $m_i \geq 0$ for $0 \leq i < l$ and
+
+\begin{displaymath}
+  n = \sgn(n) \cdot \sum_{i = 0}^{l - 1} {m_i \cdot B^i}
+\end{displaymath}
+
+The coefficients $m_i$ are called \emph{base digits}, $l$ is called the \emph{length} of the
+representation and the \emph{mantissa} is the array $[m_0, m_1, \dots, m_{l-1}]$.  We assume
+that the kernel supports such a vector based representation for long integers, i.e., it defines
+such a base $B$, the functions \code{sign} for the calculation of the sign of a long integer,
+\code{length} for the length of a long integer, and pointers to the mantissas of represented
+integers.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{bigint}{}
+  Initializes with 0.
+\end{fcode}
+
+\begin{fcode}{ct}{bigint}{const bigint & $n$}\end{fcode}
+\begin{fcode}{ct}{bigint}{long $n$}\end{fcode}
+\begin{fcode}{ct}{bigint}{unsigned long $n$}\end{fcode}
+\begin{fcode}{ct}{bigint}{int $n$}
+  Initializes with $n$.
+\end{fcode}
+
+\begin{fcode}{ct}{bigint}{double $n$}
+  Initializes with $\lfloor n \rfloor$.
+\end{fcode}
+
+\begin{fcode}{dt}{~bigint}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+\begin{cfcode}{int}{$a$.bit}{unsigned int $i$}
+  returns the $i$-th bit of $a$.  Bits are numbered from $0$ to $\code{$a$.bit_length()}-1$,
+  where the least significant bit of $a$ has index $0$.  If $i \geq \code{$a$.bit_length()}$,
+  the function always returns $0$.
+\end{cfcode}
+
+\begin{cfcode}{unsigned long}{$a$.least_significant_digit}{}
+  returns the least significant digit of $a$, i.e., if the mantissa of $a$ is $[ m_0, m_1,
+  \dots, m_{l-1} ]$ the function returns $m_0$ (see basic description, page
+  \pageref{bigint_description}).
+\end{cfcode}
+
+\begin{cfcode}{unsigned long}{$a$.most_significant_digit}{}
+  returns the most significant digit of $a$ i.e.  if the mantissa of $a$ is $[ m_0, m_1, \dots,
+  m_{l - 1} ]$ the function returns $m_{l - 1}$ (see basic description, page
+  \pageref{bigint_description}).
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $a$ be of type \code{bigint}.  The operator \code{=} is overloaded.  The user may also use
+the following object methods for assignment:
+
+\begin{fcode}{void}{$a$.assign_zero}{}
+  $a \assign 0$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign_one}{}
+  $a \assign 1$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign}{int $n$}\end{fcode}
+\begin{fcode}{void}{$a$.assign}{long $n$}\end{fcode}
+\begin{fcode}{void}{$a$.assign}{unsigned long $n$}\end{fcode}
+\begin{fcode}{void}{$a$.assign}{double $n$}\end{fcode}
+\begin{fcode}{void}{$a$.assign}{const bigint & $n$}
+  $a \assign n$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\MODF
+
+\begin{fcode}{void}{$a$.negate}{}
+  $a \assign -a$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.inc}{}\end{fcode}
+\begin{fcode}{void}{inc}{bigint & $a$}
+  $a \assign a + 1$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.dec}{}\end{fcode}
+\begin{fcode}{void}{dec}{bigint & $c$}
+  $a \assign a - 1$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.multiply_by_2}{}
+  $a \assign a \cdot 2$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.divide_by_2}{}
+  $a \assign \sgn(a) \cdot \left\lfloor \frac{|a|}{2} \right\rfloor$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.swap}{bigint & $b$}\end{fcode}
+\begin{fcode}{void}{swap}{bigint & $a$, bigint & $b$}
+  exchanges the values of $a$ and $b$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.absolute_value}{}
+  $a \assign |a|$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.abs}{}
+  $a \assign |a|$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.randomize}{const bigint & $b$}
+  assigns to $a$ a random value $r$ by means of the random number generator defined in the
+  kernel; $r \in [0, \dots, b-1]$ if $b > 0$ and $r \in [b+1, \dots, 0]$ if $b < 0$; if $b$ is
+  equal to zero, the \LEH will be invoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+The following operators are overloaded and can be used in exactly the same way as for machine
+types in C++ (e.g.~\code{int}):
+
+\begin{center}
+\code{(unary) -, ++, -{}-}\\
+\code{(binary) +, -, *, /, \%, <<, >>, ~, &, |, ^}\\
+\code{(binary with assignment) +=,  -=,  *=,  /=, %=, <<=, >>=,}\\
+\code{&=, |=, ^=}
+\end{center}
+
+To avoid copying, these operations can also be performed by the following functions:
+
+\begin{fcode}{void}{negate}{bigint & $b$, const bigint & $a$}
+  $b \assign -a$.
+\end{fcode}
+
+\begin{fcode}{void}{add}{bigint & $c$, const bigint & $a$, const bigint & $b$}\end{fcode}
+\begin{fcode}{void}{add}{bigint & $c$, const bigint & $a$, long $b$}\end{fcode}
+\begin{fcode}{void}{add}{bigint & $c$, const bigint & $a$, unsigned long $b$}\end{fcode}
+\begin{fcode}{void}{add}{bigint & $c$, const bigint & $a$, int $b$}
+  $c \assign a + b$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{bigint & $c$, const bigint & $a$, const bigint & $b$}\end{fcode}
+\begin{fcode}{void}{subtract}{bigint & $c$, const bigint & $a$, long $b$}\end{fcode}
+\begin{fcode}{void}{subtract}{bigint & $c$, const bigint & $a$, unsigned long $b$}\end{fcode}
+\begin{fcode}{void}{subtract}{bigint & $c$, const bigint & $a$, int $b$}
+  $c \assign a - b$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{bigint & $c$, const bigint & $a$, const bigint & $b$}\end{fcode}
+\begin{fcode}{void}{multiply}{bigint & $c$, const bigint & $a$, long $b$}\end{fcode}
+\begin{fcode}{void}{multiply}{bigint & $c$, const bigint & $a$, unsigned long $b$}\end{fcode}
+\begin{fcode}{void}{multiply}{bigint & $c$, const bigint & $a$, int $b$}
+  $c \assign a \cdot b$.
+\end{fcode}
+
+\begin{fcode}{void}{square}{bigint & $a$, const bigint & $b$}
+  $a \assign b^2$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{bigint & $c$, const bigint & $a$, const bigint & $b$}\end{fcode}
+\begin{fcode}{void}{divide}{bigint & $c$, const bigint & $a$, long $b$}\end{fcode}
+\begin{fcode}{void}{divide}{bigint & $c$, const bigint & $a$, unsigned long $b$}\end{fcode}
+\begin{fcode}{void}{divide}{bigint & $c$, const bigint & $a$, int $b$}
+  $c \assign a / b$, if $b \neq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{remainder}{bigint & $c$, const bigint & $a$, const bigint & $b$}\end{fcode}
+\begin{fcode}{void}{remainder}{bigint & $c$, const bigint & $a$, long $b$}\end{fcode}
+\begin{fcode}{void}{remainder}{bigint & $c$, const bigint & $a$, unsigned long $b$}\end{fcode}
+\begin{fcode}{void}{remainder}{bigint & $c$, const bigint & $a$, int $b$}\end{fcode}
+\begin{fcode}{void}{remainder}{unsigned long & $c$, const bigint & $a$, unsigned long $b$}\end{fcode}
+\begin{fcode}{void}{remainder}{long & $c$, const bigint & $a$, long $i$}
+  computes $c$, with $c \equiv a \pmod{i}$, $|c| < |i|$ and $\sgn(c) = \sgn(a)$.
+\end{fcode}
+
+\begin{fcode}{long}{remainder}{const bigint & $a$, long $i$}
+  returns a value $c$, with $c \equiv a \pmod{i}$, $|c| < |i|$ and $\sgn(c) = \sgn(a)$.
+\end{fcode}
+
+\begin{fcode}{void}{div_rem}{bigint & $q$,  bigint & $r$, const bigint & $a$, const bigint & $b$}\end{fcode}
+\begin{fcode}{void}{div_rem}{bigint & $q$,  bigint & $r$, const bigint & $a$, long $b$}\end{fcode}
+\begin{fcode}{void}{div_rem}{bigint & $q$,  bigint & $r$, const bigint & $a$, unsigned long $b$}\end{fcode}
+\begin{fcode}{void}{div_rem}{bigint & $q$,  bigint & $r$, const bigint & $a$, int $b$}\end{fcode}
+\begin{fcode}{void}{div_rem}{bigint & $q$, long & $r$, const bigint & $a$, long $i$}
+  computes $q$ and $r$ such that $a = i \cdot q + r$, $|r| < |i|$ and $\sgn(r) = \sgn(a)$.
+\end{fcode}
+
+\begin{fcode}{void}{sqrt}{bigint & $a$, const bigint & $b$}
+  $a$ is set to the positive value of $\lfloor \sqrt{b} \rfloor$ if $b \geq 0$.  Otherwise the
+  \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{power}{bigint & $c$, const bigint & $a$, const bigint & $b$}\end{fcode}
+\begin{fcode}{void}{power}{bigint & $c$, const bigint & $a$, long $b$}
+  $c \assign a^b$.  For negative exponents $b$, the result of this computation will be 0 if $a > 1$,
+  $\pm 1$ respectively if $a = \pm 1$ and 0 if $a = 0$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SHFT
+
+\begin{fcode}{void}{shift_left}{bigint & $c$, const bigint & $a$, long $i$}
+  $c \assign a \code{<<} i$, if $i \geq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{shift_right}{bigint & $c$, const bigint & $a$, long $i$}
+  $c \assign a \code{>>} i$, if $i \geq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BIT
+
+\begin{fcode}{void}{bitwise_and}{bigint & $c$, const bigint & $a$, const bigint & $b$}
+  $c \assign a \wedge b$.
+\end{fcode}
+
+\begin{fcode}{void}{bitwise_or}{bigint & $c$, const bigint & $a$, const bigint & $b$}
+  $c \assign a \vee b$.
+\end{fcode}
+
+\begin{fcode}{void}{bitwise_xor}{bigint & $c$, const bigint & $a$, const bigint & $b$}
+  $c \assign a \oplus b$.
+\end{fcode}
+
+\begin{fcode}{void}{bitwise_not}{bigint & $c$, const bigint & $a$}
+  $c \assign \neg a$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+The binary operators \code{==}, \code{!=}, \code{>=}, \code{<=}, \code{>}, \code{<} and the
+unary operator \code{!} (comparison with zero) are overloaded and can be used in exactly the
+same way as for machine types in C++ (e.g.~\code{int}).  Let $a$ be an instance of type
+\code{bigint}.
+
+
+\begin{cfcode}{int}{$a$.abs_compare}{const bigint & $b$}\end{cfcode}
+\begin{cfcode}{int}{$a$.abs_compare}{unsigned long $b$}
+  returns $\sgn(|a|-|b|)$.
+\end{cfcode}
+
+\begin{cfcode}{int}{$a$.compare}{const bigint & $b$}\end{cfcode}
+\begin{cfcode}{int}{$a$.compare}{unsigned long $b$}\end{cfcode}
+\begin{cfcode}{int}{$a$.compare}{long $b$}
+  returns $\sgn(a-b)$.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_zero}{}
+  returns \TRUE if $a = 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_one}{}
+  returns \TRUE if $a = 1$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_gt_zero}{}
+  returns \TRUE if $a > 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_ge_zero}{}
+  returns \TRUE if $a \geq 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_lt_zero}{}
+  returns \TRUE if $a < 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_le_zero}{}
+  returns \TRUE if $a \leq 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_positive}{}
+  returns \TRUE if $a > 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_negative}{}
+  returns \TRUE if $a < 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{int}{$a$.sign}{}
+  returns $-1$, $0$, $1$ if $a <, =, >$ 0, respectively.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_even}{}
+  returns \TRUE if $a \bmod 2 = 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_odd}{}
+  returns \TRUE if $a \bmod 2 = 1$, \FALSE otherwise.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\TYPE
+
+Before assigning a \code{bigint} variable to a machine type variable (e.g.~\code{int}) it is
+often useful to perform a test which checks whether the assignment can be done without overflow.
+Let $a$ be an object of type \code{bigint}.  The following methods return \TRUE if an
+assignment is possible, \FALSE otherwise.
+
+\begin{cfcode}{bool}{$a$.is_char}{}\end{cfcode}
+\begin{cfcode}{bool}{$a$.is_uchar}{}\end{cfcode}
+\begin{cfcode}{bool}{$a$.is_short}{}\end{cfcode}
+\begin{cfcode}{bool}{$a$.is_ushort}{}\end{cfcode}
+\begin{cfcode}{bool}{$a$.is_int}{}\end{cfcode}
+\begin{cfcode}{bool}{$a$.is_uint}{}\end{cfcode}
+\begin{cfcode}{bool}{$a$.is_long}{}\end{cfcode}
+\begin{cfcode}{bool}{$a$.is_ulong}{}\end{cfcode}
+
+There methods also exists as procedural versions, however, the object methods are preferred over
+the procedures.
+\begin{fcode}{bool}{is_char}{const bigint & $a$}\end{fcode}
+\begin{fcode}{bool}{is_uchar}{const bigint & $a$}\end{fcode}
+\begin{fcode}{bool}{is_short}{const bigint & $a$}\end{fcode}
+\begin{fcode}{bool}{is_ushort}{const bigint & $a$}\end{fcode}
+\begin{fcode}{bool}{is_int}{const bigint & $a$}\end{fcode}
+\begin{fcode}{bool}{is_uint}{const bigint & $a$}\end{fcode}
+\begin{fcode}{bool}{is_long}{const bigint & $a$}\end{fcode}
+\begin{fcode}{bool}{is_ulong}{const bigint & $a$}\end{fcode}
+
+
+\begin{cfcode}{bool}{$a$.intify}{int & $i$}
+  checks whether $a$ can be converted into an \code{int}.  If this can successfully be done, the
+  function will assign $i \assign a$ and return \FALSE; otherwise, it returns \TRUE and $i$ will
+  be left unchanged.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.longify}{long & $l$}
+  checks whether $a$ can be converted into a \code{long}.  If this can successfully be done, the
+  function will assign $l \assign a$ and return \FALSE; otherwise, it returns \TRUE and $l$ will
+  be left unchanged.
+\end{cfcode}
+
+\begin{fcode}{double}{dbl}{const bigint & $a$}
+  returns the \code{double} $x = a$, where $x$ will be set to the special value \code{infinity},
+  if $a$ is too large to be stored in a \code{double} variable; this is used in C++ to denote a
+  value too large to be stored in a \code{double} variable.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+Let $a$ be of type \code{bigint}.
+
+\begin{cfcode}{lidia_size_t}{$a$.length}{}
+  returns the number of base digits of the mantissa of $a$.
+\end{cfcode}
+
+\begin{cfcode}{lidia_size_t}{$a$.bit_length}{}
+  returns the number of bits of the mantissa of $a$.
+\end{cfcode}
+
+\begin{fcode}{unsigned int}{decimal_length}{const bigint & $a$}
+  return the decimal length of $|a|$.
+\end{fcode}
+
+\begin{fcode}{void}{seed}{const bigint & $a$}
+  initializes the random number generator defined in the kernel with $a$.
+\end{fcode}
+
+\begin{fcode}{bigint}{randomize}{const bigint & $a$}
+  returns a random value $r$ by means of the random number generator defined in the kernel; $r
+  \in [0, \dots, a-1]$ if $a > 0$ and $r \in [a+1, \dots, 0]$ if $a < 0$; if $a$ is equal to
+  zero, the \LEH will be invoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+\begin{fcode}{bigint}{dl}{const bigint & $a$, const bigint & $b$, const bigint & $p$}
+  computes a solution to $a^x \equiv b \pmod{p}$.  The solution is given in the range $0 \leq x
+  < p - 1$ and is unique modulo the order of $a$ mod $p$.  If $p$ is not a prime number,
+  \code{dl()} returns $-1$.  If $b$ is not in the subgroup generated by $a$, \code{dl()} returns
+  $-2$.  To use this function include \path{LiDIA/dlp.h}.
+\end{fcode}
+
+\begin{fcode}{bool}{fermat}{const bigint & $a$}
+  performs a probabilistic primality test on $a$ using Fermat's theorem (see \cite{Cohen:1995}).
+  The return value will be \FALSE, if the function recognizes $a$ as composite; otherwise, it
+  will be \TRUE.  For any input $a \leq 1$ this function returns \FALSE.
+\end{fcode}
+
+%\begin{fcode}{int}{integer_log}{unsigned long $x$}
+%  returns the position of the most significant bit in an \code{unsigned long}.  For non-zero
+%  $x$, the return value of this function will be at least 1; it corresponds to the value
+%  $\lfloor \log_2(x) \rfloor + 1$.
+%\end{fcode}
+
+\begin{cfcode}{bool}{$a$.is_prime}{int $n$ = 10}\end{cfcode}
+\begin{fcode}{bool}{is_prime}{const bigint & $a$, int $n$ = 10}
+  performs a probabilistic primality test on $a$ using the Miller-Rabin method (see \cite[page
+  415]{Cohen:1995}).  If $a > 1$, then the return value \FALSE implies that $a$ is composite.
+  If $a>1$ and \code{is_prime($a$, $n$)} returns \TRUE, then $a$ is probably a prime number; the
+  probability, that this answer is wrong is less or equal to $(1/4)^{n}$.  For any input $a \leq
+  1$ the return value of \code{is_prime($a$, $n$)} is \FALSE .
+\end{fcode}
+
+\begin{fcode}{int}{jacobi}{const bigint & $a$, const bigint & $b$}
+  returns the value of the Jacobi symbol $\jacobi{a}{b}$, hence the Legendre symbol when $b$ is
+  an odd prime (see \cite[page 28]{Cohen:1995}).  The Legendre symbol is defined to be $1$ if
+  $a$ is a quadratic residue mod $b$, $1$ if $a$ is a quadratic non-residue mod $b$ and $0$ if
+  $a$ is a multiple of $b$.
+\end{fcode}
+
+\begin{fcode}{bool}{cornacchia}{bigint & $x$, bigint & $y$, const bigint & $D$, const bigint & $p$}
+  determines (if possible) solutions for $x^2 + |D| \cdot y^2 = 4 \cdot p$, where $D = 0,1$
+  modulo $4$, $D < 0$, $|D| < 4 \cdot p$, $p$ odd.  Sets $x, y$ and returns \TRUE, if a solution
+  was found.  Otherwise it returns \FALSE.
+\end{fcode}
+
+\begin{fcode}{void}{nearest}{bigint & $z$,  const bigint & $u$, const bigint & $v$}
+  computes an integer $z$ with minimal distance $|\frac{u}{v} - z|$ if $v \neq 0$.  If there are
+  two possible values, the one with the absolutely greater value will be chosen.  If $v = 0$,
+  the \LEH will be invoked.
+\end{fcode}
+
+\begin{cfcode}{bigint}{$a$.next_prime}{}\end{cfcode}
+\begin{fcode}{bigint}{next_prime}{const bigint & $a$}
+  returns the least integer number greater than $a$ that satisfies the primality test in
+  function \code{is_prime($a$)}.  For any input $a \leq 1$ this function returns $2$.
+\end{fcode}
+
+\begin{cfcode}{bigint}{$a$.previous_prime}{}\end{cfcode}
+\begin{fcode}{bigint}{previous_prime}{const bigint & $a$}
+  returns the greatest integer number smaller than $ a$ that satisfies the primality test in
+  function \code{is_prime($a$)}.  For any input $a \leq 2$ this function returns $0$.
+\end{fcode}
+
+\begin{fcode}{bigint}{chinese_remainder}{const bigint & $a$, const bigint & $m$,
+    const bigint & $b$, const bigint & $n$}%
+  returns the smallest non negative integer which is congruent to $a$ mod $m$ and $b$ mod $n$.
+  If a simultaneous solution does not exist (note that $m$ and $n$ are not necessarily coprime),
+  the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{power_mod}{bigint & $\mathit{res}$, const bigint & $a$, const bigint & $n$,
+    const bigint & $m$, int $\mathit{err}$ = 0}%
+  calculates in $\mathit{res}$ the least non-negative residue of $a^n$ modulo $m$ ($\mathit{res}
+  \equiv a^n$ mod $m$, $0 \leq \mathit{res} < |m|$) using the right-to-left binary
+  exponentiation method (see \cite[page 8]{Cohen:1995}).
+  
+  For negative exponents $n$, this function tries to compute the multiplicative inverse of
+  $a^{-n}$.  If it does not exist and $\mathit{err} = 0$, then the \LEH will be invoked.  If the
+  multiplicative inverse does not exist and $\mathit{err} \neq 0$, the gcd of $ a^{-n}$ and $m$
+  will be assigned to $\mathit{res}$ and the function terminates.
+\end{fcode}
+
+\begin{cfcode}{long}{$a$.is_power}{bigint & $b$}\end{cfcode}
+\begin{fcode}{long}{is_power}{bigint & $b$, const bigint & $a$}
+  tests, whether $a$ is a perfect power.  If $a$ is a $k$-th power, then $b$ is set to $k$-th
+  root (i.e.~$b^k=a$) and $k$ is returned; otherwise the function returns $0$.
+\end{fcode}
+
+\begin{fcode}{void}{ressol}{bigint & $r$, const bigint & $a$, const bigint & $p$}
+  returns a square root $r$ mod $p$ with $0 \leq r < p$ by using a method of Shanks.  It is
+  assumed that $p$ is prime.
+%and $0 \leq a < p$.
+  A further condition is that $p = 2^s \cdot (2k+1) + 1$ where $s$ fits in a \code{long}.
+\end{fcode}
+
+\begin{cfcode}{bool}{$a$.is_square}{bigint & $r$}\end{cfcode}
+\begin{fcode}{bool}{is_square}{bigint & $r$, const bigint & $a$}
+  returns \TRUE if $a$ is a square in $\bbfZ$, and \FALSE otherwise.  If $a$ is a square, $r$ is
+  the root of $a$.
+\end{fcode}
+
+\begin{cfcode}{bool}{$a$.is_square}{}\end{cfcode}
+\begin{fcode}{bool}{is_square}{const bigint & $a$}
+  returns \TRUE if $a$ is a square in $\bbfZ$, and \FALSE otherwise.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\STITLE{Greatest Common Divisor}
+
+\begin{fcode}{bigint}{gcd}{const bigint & $a$, const bigint & $b$}
+  returns the greatest common divisor (gcd) of $a$ and $b$ as a positive \code{bigint}.
+\end{fcode}
+
+\begin{fcode}{bigint}{bgcd}{const bigint & $a$, const bigint & $b$}
+  calculates the gcd of $a$ and $b$ as a positive \code{bigint} using a binary method.
+\end{fcode}
+
+\begin{fcode}{bigint}{dgcd}{const bigint & $a$, const bigint & $b$}
+  calculates the gcd of $a$ and $b$ as a positive \code{bigint} using Euclidian division and
+  returns its value.
+\end{fcode}
+
+\begin{fcode}{bigint}{xgcd}{bigint & $u$, bigint & $v$, const bigint & $a$, const bigint & $b$}
+  returns the gcd of $a$ and $b$ as a positive \code{bigint} and computes coefficients $u$ and
+  $v$ with $|u| \leq \frac{|b|}{2 \gcd(a, b)}$ and $|v| \leq \frac{|a|}{2 \gcd(a,b)}$ such that
+  $\gcd(a, b) = u \cdot a + v \cdot b$, i.e.  using an extended gcd algorithm.
+\end{fcode}
+
+\begin{fcode}{bigint}{xgcd_left}{bigint & $u$, const bigint & $a$, const bigint & $b$}
+  returns the gcd of $a$ and $b$ as a positive \code{bigint} and computes a coefficient $u$
+  such that for some integer $t$ $\gcd(a, b) = u \cdot a + t \cdot b$.
+\end{fcode}
+
+\begin{fcode}{bigint}{xgcd_right}{bigint & $v$, const bigint & $a$, const bigint & $b$}
+  returns the gcd of $a$ and $b$ as a positive \code{bigint} and computes a coefficient $v$
+  such that for some integer $t$ $\gcd(a, b) = t \cdot a + v \cdot b$.
+\end{fcode}
+
+\begin{fcode}{bigint}{lcm}{const bigint & $a$, const bigint & $b$}
+  returns the least common multiple (lcm) of $a$ and $b$ as a positive \code{bigint}.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+Let $a$ be of type \code{bigint}.
+
+The \code{istream} operator \code{>>} and the \code{ostream} operator
+\code{<<} are overloaded. Both operators support\footnote{Piologie supports
+  only decimal in- and output of integers. If you use \LiDIA on top of
+  Piologie, then the format flags mentioned above are ignored.}
+the format flags
+\code{std::ios::hex}, \code{std::ios::dec}, \code{std::ios::oct}, and
+\code{std::ios::showbase}. They behave like the respective oprators for the
+built in type \code{int}, except for negative numbers: if
+\code{$a$.is_negative() == true}, then \code{os << a} is equivalent to
+\code{os << '-' << -$a$}. (The output operators for \code{int} first casts its
+argument to \code{unsigned int}.) For example, the program
+\begin{quote}
+\begin{verbatim}
+#include <iostream>
+#include <iomanip>
+#include <LiDIA/bigint.h>
+
+int main() {
+    LiDIA::bigint x = 42;
+
+    std::cout << "Default:\n"
+              << "  x == " << x << "\n"
+              << " -x == " << -x << "\n\n";
+
+    std::cout << std::oct << std::noshowbase
+              << "Octal, no showbase:\n"
+              << "  x == " << x << "\n"
+              << " -x == " << -x << "\n\n";
+        
+    std::cout << std::oct << std::showbase
+              << "Octal, showbase:\n"
+              << "  x == " << x << "\n"
+              << " -x == " << -x << "\n\n";
+        
+    std::cout << std::hex << std::noshowbase
+              << "Hexadecimal, no showbase:\n"
+              << "  x == " << x << "\n"
+              << " -x == " << -x << "\n\n";
+        
+    std::cout << std::hex << std::showbase
+              << "Hexadecimal, showbase:\n"
+              << "  x == " << x << "\n"
+              << " -x == " << -x << "\n\n";
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+yields the following output:
+\begin{quote}
+\begin{verbatim}
+Default:
+  x == 42
+ -x == -42
+
+Octal, no showbase:
+  x == 52
+ -x == -52
+
+Octal, showbase:
+  x == 052
+ -x == -052
+
+Hexadecimal, no showbase:
+  x == 2A
+ -x == -2A
+
+Hexadecimal, showbase:
+  x == 0x2A
+ -x == -0x2A
+
+\end{verbatim}
+\end{quote}
+
+Furthermore, you can use the following member functions below for writing to and reading from a
+file in binary or ASCII format, respectively.
+
+\begin{fcode}{void}{$a$.read_from_file}{FILE * fp}
+  reads $a$ from the binary file \code{fp} using \code{fread}.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.write_to_file}{FILE * fp}
+  writes $a$ to binary file \code{fp} using \code{fwrite}.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.scan_from_file}{FILE * fp}
+  scans $a$ from the ASCII file \code{fp} using \code{fscanf}.  We assume that the file contains
+  the number in decimal representation.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.print_to_file}{FILE * fp}
+  prints $a$ in decimal representation to the ASCII file \code{fp} using \code{fprintf}.
+\end{fcode}
+
+The input and output format of a \code{bigint} consist only of the number itself without
+blanks.  Note that you have to manage by yourself that successive \code{bigint}s have to be
+separated by blanks.
+
+When entering a \code{bigint}, the input may be splitted over several lines by ending each
+line, except the last one (optionally), by a backslash immediately followed by a new line, e.g.,
+you may enter
+\begin{verbatim}
+   1234567890\
+   12345678\
+   232323
+\end{verbatim}
+If a \code{bigint} is printed, the output may also be splitted over several lines, where each
+line is ended by a backslash immediately followed by a new line.  The number of characters per
+line can be controlled by the following static member functions.
+
+\begin{fcode}{void}{bigint::set_chars_per_line}{int $\mathit{cpl}$}
+  When printing a \code{bigint}, $\mathit{cpl}$ characters will be written in one line followed
+  by a backslash and a new line character.  If $\mathit{cpl}$ is less than $2$, line splitting
+  is turned off for printing.
+\end{fcode}
+
+\begin{fcode}{int}{bigint::get_chars_per_line}{}
+  Returns the current value for the number of characters that will be written in one line, when
+  printing a \code{bigint}.
+\end{fcode}
+
+\code{LIDIA_CHARS_PER_LINE} is the default value for the number of characters per line which is
+defined in \code{LiDIA/LiDIA.h}.  It may be changed at compile time.
+
+The following functions allow conversion between \code{bigint} values and strings:
+
+\begin{fcode}{int}{string_to_bigint}{const char *s, bigint & $a$}
+  converts the string \code{s} into the \code{bigint} $a$ and returns the number of used
+  characters.
+\end{fcode}
+
+\begin{fcode}{int}{bigint_to_string}{const bigint & $a$, char *s}
+  converts the bigint $a$ into the string \code{s} and returns the number of used characters.
+  The number of characters allocated for string $s$ must be at least $\code{$a$.bit_length()}/3
+  + 10$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+UNIX manual page mp(3x)
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+The member functions \code{scan_from_file()}, \code{print_to_file()}, \code{read_from_file()}
+and \code{write_to_file()} are included because there are still C++ compilers which do not
+handle fstreams correctly.  In a future release those functions will disappear.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/bigint.h>
+
+int main()
+{
+    bigint a, b, c;
+
+    cout << "Please enter a : "; cin >> a ;
+    cout << "Please enter b : "; cin >> b ;
+    cout << endl;
+    c = a + b;
+    cout << "a + b = " << c << endl;
+}
+\end{verbatim}
+\end{quote}
+
+For further examples please refer to \path{LiDIA/src/interfaces/INTERFACE/bigint_appl.cc}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Thomas Papanikolaou

@@ -1,0 +1,271 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  sf_bigint.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the specialisation
+%%  single_factor< bigint >, factorization< bigint >.
+%%
+%%  Copyright   (c)   1998  by  LiDIA-Group
+%%
+%%  Author: Volker Mueller
+%%
+
+\newcommand{\upperbound}{\mathit{upper\uscore bound}}
+\newcommand{\lowerbound}{\mathit{lower\uscore bound}}
+\newcommand{\size}{\mathit{size}}
+\newcommand{\step}{\mathit{step}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+\CLASS{single_factor< bigint >} \dotfill a single factor of a bigint
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{single_factor< bigint >} is used for storing a single factor of a factorization of
+rational integers (see the general template class \code{factorization< T >}).  It is a
+specialization of \code{single_factor< T >} with some additional functionality, namely different
+factorization algorithms.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+\code{single_factor< bigint >} is used for storing a single factor of a factorization of
+rational integers (see the general template class \code{factorization< T >}).  It is a
+specialization of \code{single_factor< T >} with some additional functionality, namely different
+factorization algorithms.  All functions for \code{single_factor< T >} can be applied to objects
+of class \code{single_factor< bigint >}, too.  These basic functions are not described here any
+further; you will find the description of the latter in \code{single_factor< T >}.
+
+At the moment we have implemented the following factorization algorithms: trial division (TD),
+Pollard Rho algorithm, Pollard $p-1$ algorithm, Williams $p+1$ algorithm, the elliptic curve
+method (\emph{ECM}) and the self initializing variant of the Quadratic sieve (\emph{MPQS}) with
+Block Lanczos algorithm as system solver.  The Pollard $p-1$ algorithm, Williams $p+1$
+algorithm, and \emph{ECM} use the so called Improved Standard Continuation.  A description of
+the theory of these algorithms can for example be found in \cite{Riesel:1994},
+\cite{Alford/Pomerance:1993}, and in several diploma theses (see \cite{Denny_Thesis:1993},
+\cite{Sosnowski_Thesis:1994}, \cite{Berger_Thesis:1993}, \cite{Mueller_Thesis:1995}).
+
+We do not describe the general template functions offered by \code{single_factor< T >}.  A
+description for these functions can be found in the manual for this template class.  Here we
+concentrate on the different factorization algorithms implemented for factorization of rational
+integers.  These factorization algorithm usually stop after a non trivial factor of the input
+number has been found.  Therefore note that the result of a factorization algorithm is not
+necessary a prime factorization.  Moreover it is possible that the returned factorization just
+has one member, namely the input number itself.  This can happen when the used factorization
+algorithm has not found a proper factor.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\STITLE{Factorization Algorithms}
+
+Let $a$ be an instance of type \code{single_factor< bigint >}.
+
+It should be mentioned that all factorization implementations which have some integer $x$ as
+input return in any case a factorization which has the same value as $x$.  If a factor of $x$
+has been found, then the result is a non trivial factorization; otherwise the result is a
+trivial factorization holding only $x$ itself.
+
+\begin{fcode}{factorization< bigint >}{$a$.TrialDiv}{unsigned int $\upperbound$ = 1000000,
+    unsigned int $\lowerbound$ = 1}%
+  tries to factor the integer stored in $a$ by using \emph{TD} with all primes $p$ satisfying
+  $\lowerbound \leq p \leq \upperbound$.  For unreasonable parameters as negative values for
+  $\lowerbound$, the \LEH is invoked.  Found factors (with appropriate exponents) are returned
+  as factorization.  If the found factorization is a prime factorization, then the complete
+  prime factorization is returned and $a$ is set to one.  Otherwise found factors are returned
+  as factorization and $a$ is set to the remaining composite part.
+\end{fcode}
+
+\begin{fcode}{factorization< bigint >}{TrialDiv}{const bigint & $x$, unsigned int $\upperbound$ = 1000000,
+    unsigned int $\lowerbound$ = 1}%
+  tries to factor the integer $x$ by using \emph{TD} with all primes $p$ satisfying $\lowerbound
+  \leq p \leq \upperbound$.  The function returns the factorization found with this method.
+  Unreasonable input leads to a call to the \LEH.
+\end{fcode}
+
+\begin{fcode}{factorization< bigint >}{$a$.PollardPminus1}{int $\size$ = 9}
+  tries to factor the integer stored in $a$ by using Pollard's $(p-1)$ method.  Parameters are
+  chosen as in \emph{ECM} for finding factors of size $\size$ with some probability.  If a
+  factor is found, the factorization of $a$ is returned and $a$ is set to one; otherwise $a$
+  remains unchanged and an empty factorization is returned.  Unreasonable values for $\size$
+  lead to a call of the \LEH.
+\end{fcode}
+
+\begin{fcode}{factorization< bigint >}{PollardPminus1}{const bigint & $x$, int $\size$ = 9}  
+  tries to factor the integer $x$ by using Pollard's $(p-1)$ method.  Parameters are chosen as in
+  \emph{ECM} to find factors of size $\size$ with some probability.  A factorization of $x$
+  is returned.
+\end{fcode}
+
+\begin{fcode}{factorization< bigint >}{$a$.PollardRho}{int $\size$ = 7}
+  tries to factor the integer stored in $a$ by using Pollard's rho method.  Parameters are
+  chosen for finding factors of size $\size$ with some probability.  If a factor is found, the
+  factorization is returned and $a$ is set to one; otherwise $a$ remains unchanged and an empty
+  factorization is returned.  Unreasonable values for $\size$ lead to a call of the \LEH.
+\end{fcode}
+
+\begin{fcode}{factorization< bigint >}{PollardRho}{const bigint & $x$, int $\size$ = 9}
+  tries to factor the integer $x$ by using Pollard's rho method.  Parameters are chosen for
+  finding factors of size $\size$.  A factorization of $x$ is returned.  Unreasonable values
+  for $\size$ lead to a call of the \LEH.
+\end{fcode}
+
+\begin{fcode}{factorization< bigint >}{$a$.WilliamsPplus1}{int $\size$ = 9}
+  tries to factor the integer stored in $a$ by using Williams $p+1$ method.  Parameters are
+  chosen as in \emph{ECM} to find factors of size $\size$ with some probability.  If a
+  factor is found, the factorization is returned and $a$ is set to one; otherwise $a$ is
+  unchanged and an empty factorization is returned.  Unreasonable values for $\size$ lead to
+  a call of the \LEH.
+\end{fcode}
+
+\begin{fcode}{factorization< bigint >}{WillaimsPplus1}{const bigint & $x$, int $\size$ = 9}
+  tries to factor the integer $x$ by using Williams $p+1$ method.  Parameters are chosen as in
+  \emph{ECM} to find factors of size $\size$ with some probability.  A factorization of $x$
+  is returned.  Unreasonable values for $\size$ lead to a call to the \LEH.
+\end{fcode}
+
+\begin{fcode}{factorization< bigint >}{$a$.Fermat}{}
+  tries to factor the integer stored in $a$ by using Fermat's method with a fixed number of
+  iterations.  If a factor is found, this factorization is returned and $a$ is set to one;
+  otherwise $a$ is unchanged and an empty factorization is returned.
+\end{fcode}
+
+\begin{fcode}{factorization< bigint >}{Fermat}{const bigint & $x$}
+  tries to factor the integer stored in $x$ by using Fermat's method with a fixed number of
+  iterations.  A factorization of $x$ is returned.
+\end{fcode}
+
+The following functions require some understanding of the underlying strategy of \emph{ECM}.  A
+detailed description of the implementation of \emph{TD} and \emph{ECM} can be found in
+\cite{Berger_Thesis:1993} and \cite{Mueller_Thesis:1995}.  \emph{ECM} uses the following
+strategy, which is parameterized by the int variables $\lowerbound$, $\upperbound$ and $\step$.
+These variables can be chosen by the user.  It starts to look for factors with $\lowerbound$
+decimal digits.  After having tried a ``few'' curves and not having found a factor the
+parameters of \emph{ECM} are changed and we try to find $(\lowerbound + \step)$-digit factors,
+$(\lowerbound + 2\,step)$-digit factors and so on, until the decimal size of the factors we are
+looking for exceeds $\upperbound$.  The number of curves which is used for finding a $d$-digit
+factor is chosen such that we find a $d$-digit factor with probability of at least $50 \%$ if it
+exists.  Note that found factors can be composite.  The built-in default values are $\lowerbound
+= 6, \step = 3$ and $\upperbound$ is set to half the decimal length of the number to be factored.
+The bounds $\lowerbound \geq 6$ and $\upperbound \leq 34$ are limited because we have only
+precomputed parameters for \emph{ECM} for factors of that size.
+
+\begin{fcode}{factorization< bigint >}{$a$.ECM}{int $\upperbound$ = 34,
+    int $\lowerbound$ = 6, int $\step$ = 3, bool jump_to_QS = false}%
+  tries to factor the integer stored in $a$ by using the ECM method with the strategy described
+  above.  If \code{jump_to_QS} is set to \TRUE, then the function uses some heuristic to check
+  whether \emph{MPQS} would be faster, if so, it starts the \emph{MPQS} algorithm to factor the
+  integer.  The function returns a factorization of the integer stored in $a$.  If a proper
+  factor was found, then $a$ is set to one.
+\end{fcode}
+
+\begin{fcode}{factorization< bigint >}{ECM}{const bigint & $x$,
+    int $\upperbound$ = 34, int $\lowerbound$ = 6, int $\step$ = 3}
+  tries to factor the integer stored in $x$ by using the \emph{ECM} method with the strategy
+  described above.  A factorization of $x$ is returned.
+\end{fcode}
+
+The version of \emph{MPQS} used in \LiDIA is called self initializing multiple polynomial large
+prime quadratic sieve.  A description of the algorithm can be found in
+\cite{Alford/Pomerance:1993}, \cite{Denny_Thesis:1993} or \cite{Sosnowski_Thesis:1994}.  The
+linear equation step uses an implementation of the Block Lanczos algorithm for $\bbfZ/2\bbfZ$.
+Note that the running time of \emph{MPQS} depends on the size of the number to be factored, not
+on the size of the factors.
+
+\begin{fcode}{factorization< bigint >}{$a$.MPQS}{}
+  returns a factorization of the integer stored in $a$ by using the \emph{MPQS} method.
+\end{fcode}
+
+\begin{fcode}{factorization< bigint >}{MPQS}{const bigint & $x$}
+  returns a factorization of the integer $x$ by using the \emph{MPQS} method.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{cfcode}{factorization< bigint >}{$a$.factor}{int $\size$ = 34}
+  returns a factorization of $a$ using a strategy which tries to apply an ``optimal''
+  combination of the above algorithms.  Parameters are chosen such that the algorithms whose
+  running time depends on the size of the factor will find factors of size $\size$ with 50 \%
+  probability.  A factorization of $a$ is returned, $a$ is set to one.
+\end{cfcode}
+
+\begin{fcode}{factorization< bigint >}{sf_factor}{const bigint & $x$, int $\size$ = 34}
+  returns a factorization of $x$ using a strategy which tries to apply an ``optimal''
+  combination of the above algorithms.  Parameters are chosen such that the algorithms whose
+  running time depends on the size of the factor will find factors of size $\size$ with 50 \%
+  probability.
+\end{fcode}
+
+\begin{cfcode}{factorization< bigint >}{$a$.completely_factor}{}
+  returns a prime factorization of $a$ using a strategy which tries to apply always the fastest
+  of the above algorithms.  $a$ is set to one.
+\end{cfcode}
+
+\begin{fcode}{factorization< bigint >}{completely_factor}{const bigint & $x$}
+  returns a prime factorization of $x$ using a strategy which tries to apply an ``optimal''
+  combination of the above algorithms.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{factorization< T >}, \SEE{bigint},
+\SEE{single_factor< T >},
+\SEE{rational_factorization}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\WARNINGS
+
+\emph{ECM} fails to factor integers that only consist of prime factors smaller than $1000$.
+Therefore it is strongly recommended to use the function \code{sf_factor} or to ensure with the
+function \code{TrialDiv}, that there are no such small prime factors left before calling
+functions which use \emph{ECM}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/bigint.h>
+#include <LiDIA/factorization.h>
+
+int main()
+{
+    bigint f;
+    factorization< bigint > u;
+
+    cout << "Please enter f : "; cin >> f ;
+
+    u = sf_factor(f);
+
+    cout << "\nFactorization of f : " << u << endl;
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+For further examples please refer to
+\path{LiDIA/src/templates/factorization/bigint/fact_bi_appl.cc}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Volker M\"uller, based on previous implementations of Oliver Braun and
+Emre Binisik.

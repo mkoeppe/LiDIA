@@ -1,0 +1,63 @@
+Enter a curve: Default output:  	[1,0,0,-1070,7812]
+output_short():  	[1,0,0,-1070,7812]
+output_long():   	[1,0,0,-1070,7812]
+b2 = 1; b4 = -2140; b6 = 31248; b8 = -1137088
+c4 = 51361; c6 = -6826609
+disc = 51438240000; bad primes = [ 2 3 5 7 ]; # real components = 2
+Conductor = 210
+
+Reduction type at bad primes:
+p	ord(d)	ord(N)	ord(denom(j))	Kodaira	c_p
+2	8	1	8		I8	8
+3	8	1	8		I8	8
+5	4	1	4		I4	4
+7	2	1	2		I2	2
+Product of c_p = 512
+
+
+output_pretty(): 	Y^2 + X*Y = X^3 - 1070 * X + 7812
+output_tex():    	$y^2 + xy = x^3 - 1070x + 7812$
+Default output after set_output_mode(1): 	[1,0,0,-1070,7812]
+b2 = 1; b4 = -2140; b6 = 31248; b8 = -1137088
+c4 = 51361; c6 = -6826609
+disc = 51438240000; bad primes = [ 2 3 5 7 ]; # real components = 2
+Conductor = 210
+
+Reduction type at bad primes:
+p	ord(d)	ord(N)	ord(denom(j))	Kodaira	c_p
+2	8	1	8		I8	8
+3	8	1	8		I8	8
+5	4	1	4		I4	4
+7	2	1	2		I2	2
+Product of c_p = 512
+
+
+Default output after set_output_mode(2): 	Y^2 + X*Y = X^3 - 1070 * X + 7812
+Default output after set_output_mode(3): 	$y^2 + xy = x^3 - 1070x + 7812$
+Default output after set_output_mode(0): 	[1,0,0,-1070,7812]
+
+Torsion order = 16
+Torsion points:
+	0 ) [0 : 1 : 0], 	order 1
+	1 ) [244 : -3902 : 1], 	order 8
+	2 ) [64 : -482 : 1], 	order 4
+	3 ) [34 : -122 : 1], 	order 8
+	4 ) [28 : -14 : 1], 	order 2
+	5 ) [34 : 88 : 1], 	order 8
+	6 ) [64 : 418 : 1], 	order 4
+	7 ) [244 : 3658 : 1], 	order 8
+	8 ) [-288 : 144 : 8], 	order 2
+	9 ) [-26 : 148 : 1], 	order 8
+	10 ) [-8 : 130 : 1], 	order 4
+	11 ) [4 : 58 : 1], 	order 8
+	12 ) [62 : -31 : 8], 	order 2
+	13 ) [4 : -62 : 1], 	order 8
+	14 ) [-8 : -122 : 1], 	order 4
+	15 ) [-26 : -122 : 1], 	order 8
+Non-cyclic: C2 x C8, generators [-288 : 144 : 8], [244 : -3902 : 1]
+
+Periods 
+Omega_1 = (-0.326204617220376048345387201491230071343e-111,-0.4309028743584948650112829254396820581247)
+Omega_2 = (0.5129665050097666315838565942842701045585,0)
+Height Constant
+10.7501

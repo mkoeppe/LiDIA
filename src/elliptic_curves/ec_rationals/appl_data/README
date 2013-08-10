@@ -1,0 +1,9 @@
+Test Results:
+
+1. quartic_appl crashes.
+2. curve_isomorphism_appl is ok.
+3. point_bigint_appl is ok.
+4. minimal_model_appl: is ok.
+5. elliptic_curve_bigint_test is ok. 
+
+

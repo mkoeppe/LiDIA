@@ -1,0 +1,185 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  lidia_signal.tex        LiDIA documentation
+%%
+%%  This file contains the documentation of the class
+%%  lidia_signal.
+%%
+%%  Copyright (c) 1997 by the LiDIA Group
+%%
+%%  Authors: Markus Maurer
+%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{lidia_signal} \dotfill stacks for signals
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{lidia_signal} is a class that contains a collection of stacks, one for each signal.  It is
+used by those functions of \LiDIA, that define their own handlers for signals to guarantee that
+user defined handlers will be reinstalled, when the program leaves the scope of the \LiDIA
+functions.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+The class \code{lidia_signal} contains a stack for each signal, that is defined by the system.
+It assumes the following scenario: A user (i.e., a function outside the \LiDIA library) installs
+a handler for a signal and then calls some \LiDIA function.  That function and further \LiDIA
+routines also install handlers for this signal, but exclusively by using the \code{lidia_signal}
+class.  When the first \LiDIA function installs a handler for the signal, the user defined
+signal is stored on bottom of the stack and the \LiDIA handler above.  Every further \LiDIA
+handler is stored on top of the stack.  Before the program returns to the user (leaves the scope
+of the \LiDIA functions), all \LiDIA functions must have uninstalled their handlers.  If the
+stack only contains one (the user defined) handler, the \code{lidia_signal} class reinstalls
+that handler and cleans the stack.
+
+To obtain automatic deinstallation of a handler, the class \code{lidia_signal} only provides a
+constructor and a destructor.
+
+Please use the macro \code{LIDIA_SIGNAL_FUNCTION} to define a handler for a signal.  Then the
+return and parameter type of the handler is set appropriately; see definition of function
+\code{myhandler} in the example at the end of the description.  The macro is defined in the file
+\path{LiDIA/lidia_signal.h}.
+
+The implementation of the class \code{lidia_signal} can be found in the directory
+\path{LiDIA/src/portability}.
+
+
+\path{LiDIA/lidia_signal.h} defines all signals for which a handler can be installed.  It
+follows the list of those signals:
+\begin{enumerate}
+ \item \code{LIDIA_SIGHUP} hangup
+ \item \code{LIDIA_SIGINT} interrupt (rubout)
+ \item \code{LIDIA_SIGQUIT} quit (ASCII FS)
+ \item \code{LIDIA_SIGILL} illegal instruction (not reset when
+ \item \code{LIDIA_SIGTRAP} trace trap (not reset when
+ \item \code{LIDIA_SIGIOT} IOT instruction
+ \item \code{LIDIA_SIGABRT} used by abort, replace SIGIOT
+ \item \code{LIDIA_SIGEMT} EMT instruction
+ \item \code{LIDIA_SIGFPE} floating point exception
+ \item \code{LIDIA_SIGKILL} kill (cannot be caught or ignored)
+ \item \code{LIDIA_SIGBUS} bus error
+ \item \code{LIDIA_SIGSEGV} segmentation violation
+ \item \code{LIDIA_SIGSYS} bad argument to system call
+ \item \code{LIDIA_SIGPIPE} write on a pipe with
+ \item \code{LIDIA_SIGALRM} alarm clock
+ \item \code{LIDIA_SIGTERM} software termination signal from kill
+ \item \code{LIDIA_SIGUSR1} user defined signal 1
+ \item \code{LIDIA_SIGUSR2} user defined signal 2
+ \item \code{LIDIA_SIGCLD} child status change
+ \item \code{LIDIA_SIGCHLD} child status change alias (POSIX)
+ \item \code{LIDIA_SIGPWR} power-fail restart
+ \item \code{LIDIA_SIGWINCH} window size change
+ \item \code{LIDIA_SIGURG} urgent socket condition
+ \item \code{LIDIA_SIGPOLL} pollable event occured
+ \item \code{LIDIA_SIGIO} socket I/O possible (SIGPOLL alias)
+ \item \code{LIDIA_SIGSTOP} stop (cannot be caught or
+ \item \code{LIDIA_SIGTSTP} user stop requested from tty
+ \item \code{LIDIA_SIGCONT} stopped process has been continued
+ \item \code{LIDIA_SIGTTIN} background tty read attempted
+ \item \code{LIDIA_SIGTTOU} background tty write attempted
+ \item \code{LIDIA_SIGVTALRM} virtual timer expired
+ \item \code{LIDIA_SIGPROF} profiling timer expired
+ \item \code{LIDIA_SIGXCPU} exceeded cpu limit
+ \item \code{LIDIA_SIGXFSZ} exceeded file size limit
+ \item \code{LIDIA_SIGWAITING} process's lwps are blocked
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{lidia_signal}{int $\mathit{sig}$, lidia_signal_handler_t h}
+  stores signal $\mathit{sig}$ and installs handler \code{h} for signal $\mathit{sig}$.  If
+  $\mathit{sig}$ can not be found in the signal list, the \LEH is called.
+\end{fcode}
+
+\begin{fcode}{dt}{~lidia_signal}{}
+  uninstalls the handler for the stored signal.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+\begin{fcode}{static void}{print_stack}{int $\mathit{sig}$}
+  Prints the content of the stack of signal $\mathit{sig}$ to \code{stdout}.  If $\mathit{sig}$
+  can not be found in the signal list, the \LEH is called.
+\end{fcode}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/lidia_signal.h>
+
+LIDIA_SIGNAL_FUNCTION(myhandler)
+{
+    cout << " Hello, this is the myhandler function.\n";
+    cout << " I have caught your LIDIA_SIGINT.\n";
+    cout << endl;
+    cout.flush();
+}
+
+
+void foo()
+{
+    // install myhandler for LIDIA_SIGINT
+    lidia_signal s(LIDIA_SIGINT,myhandler);
+
+    cout << endl;
+    cout << " If you type Ctrl-C within the next 15 seconds,\n";
+    cout << " the function myhandler is called.\n";
+    cout << " sleep(15) ...\n\n";
+    cout.flush();
+
+    sleep(15);
+
+    // The automatic call of the destructor reinstalls
+    // the previous handler for LIDIA_SIGINT.
+}
+
+
+int main()
+{
+    cout << endl;
+    cout << "Going into function foo ..." << endl;
+
+    foo();
+
+    cout << "Back from foo.\n";
+    cout << "The default handler for LIDIA_SIGINT is installed again.\n";
+    cout << "sleep(15) ...\n\n";
+    cout.flush();
+
+    sleep(15);
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+Please refer to \path{LiDIA/src/portability/lidia_signal_appl.cc}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Sascha Demetrio, Markus Maurer

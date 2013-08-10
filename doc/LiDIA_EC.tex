@@ -1,0 +1,51 @@
+%===========================================================================
+%
+%       ${srcdir}/doc/LiDIA_EC.tex
+%
+%---------------------------------------------------------------------------
+%
+%       $Id: LiDIA_EC.tex,v 1.1.1.1 2001/05/02 16:27:03 lidiaadm Exp $
+%
+%===========================================================================
+
+\part*{The \LiDIA EC package}\label{LiDIA-EC}
+\addcontentsline{toc}{part}{\LiDIA EC package}
+
+% The \LiDIA EC package contains the classes which deal with elliptic curves over the integers and
+% over finite fields.  It requires the \LiDIA base package, the \LiDIA FF package, and the \LiDIA
+% LA package.
+
+
+\chapter{Elliptic Curve Related Classes}
+
+\begin{class}{elliptic_curve_flags}
+  \input{elliptic_curve_flags}
+\end{class}
+
+\begin{class}{elliptic_curve}
+  \input{elliptic_curve}
+\end{class}
+
+\begin{class}{point}
+  \input{point}
+\end{class}
+
+\begin{class}{elliptic_curve< bigint >}
+  \input{elliptic_curve_bigint}
+\end{class}
+
+\begin{class}{point< bigint >}
+  \input{point_bigint}
+\end{class}
+
+\begin{class}{curve_isomorphism}
+  \input{curve_isomorphism}
+\end{class}
+
+\begin{class}{quartic}
+  \input{quartic}
+\end{class}
+
+\begin{class}{Kodaira_code}
+  \input{kodaira_code}
+\end{class}

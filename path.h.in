@@ -1,0 +1,42 @@
+// -*- C++ -*-
+//==============================================================================================
+//
+//	This file is part of LiDIA --- a library for computational number theory
+//
+//	Copyright (c) 1994--2001 the LiDIA Group.  All rights reserved.
+//
+//	See http://www.informatik.tu-darmstadt.de/TI/LiDIA/
+//
+//----------------------------------------------------------------------------------------------
+//
+//	$Id$
+//
+//	Author	: C. Cornelssen
+//	Changes	: See CVS log
+//
+//==============================================================================================
+
+
+#ifndef LIDIA_PATH_H_GUARD_
+#define LIDIA_PATH_H_GUARD_
+
+/* The filename of LiDIA's GF(2^n) database */
+#undef LIDIA_GF2N_DB
+
+/* The filename of LiDIA's primes list for remainder arithmetic */
+#undef LIDIA_PRIMELIST_NAME
+
+/* The directory holding LiDIA ECO's GF(p) database files */
+#undef LIDIA_ECO_DB
+
+/* The directory holding LiDIA ECO's GF(2^n) database files */
+#undef LIDIA_ECO2_DB
+
+/* The directory holding LiDIA GEC's imaginary quadratic discriminant database files */
+#undef LIDIA_DISCRIMINANTS_DB
+
+/* The file holding the differences of subsequential primes used for LiDIA GEC's prime_proo */
+#undef LIDIA_PRIME_DIFFS
+
+#endif	// LIDIA_PATH_H_GUARD_
+

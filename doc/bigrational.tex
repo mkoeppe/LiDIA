@@ -1,0 +1,437 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  bigrational.tex      LiDIA documentation
+%%
+%%  This file contains the documentation of the class bigrational
+%%
+%%  Copyright (c) 1995 by the LiDIA Group
+%%
+%%  Authors: Thomas Papanikolaou
+%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{bigrational} \dotfill multiprecision  rational  arithmetic
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{bigrational} is a class for doing multiprecision rational arithmetic.  It supports for
+example arithmetic operations, comparisons, and exponentiation.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+A \code{bigrational} consists of a pair of two \code{bigint}s $(\mathit{num}, \mathit{den})$,
+the numerator $\mathit{num}$ and the denominator $\mathit{den}$.  The \code{bigrational}
+$(\mathit{num}, \mathit{den})$ represents the rational number $\frac{num}{den}$.  The numerator
+num and the denominator den of a \code{bigrational} are always coprime; the denominator den is
+positive.  Arithmetic is done using the algorithms described in \cite{Knuth_2:1981}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{bigrational}{}
+  $\mathit{num} \assign 0$, $\mathit{den} \assign 1$.
+\end{fcode}
+
+\begin{fcode}{ct}{bigrational}{const bigrational & $b$}
+  $\mathit{num} \assign \code{$b$.numerator()}$, $\mathit{den} \assign
+  \code{$b$.denominator()}$.
+\end{fcode}
+
+\begin{fcode}{ct}{bigrational}{const bigint & $n$, const bigint & $d$}
+  $\mathit{num} \assign n$, $\mathit{den} \assign d$.
+\end{fcode}
+
+\begin{fcode}{ct}{bigrational}{const bigint & $n$}\end{fcode}
+\begin{fcode}{ct}{bigrational}{long $n$}\end{fcode}
+\begin{fcode}{ct}{bigrational}{unsigned long $n$}\end{fcode}
+\begin{fcode}{ct}{bigrational}{int $n$}
+  $\mathit{num} \assign n$, $\mathit{den} \assign 1$.
+\end{fcode}
+
+\begin{fcode}{ct}{bigrational}{double $d$}
+  $\mathit{num} \assign \code{bigint($d$)}$, $\mathit{den} \assign 1$.
+\end{fcode}
+
+\begin{fcode}{dt}{~bigrational}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $a$ be of type \code{bigrational} The operator \code{=} is overloaded.  The user may also
+use the following object methods for assignment:
+
+\begin{fcode}{void}{$a$.assign_zero}{}
+  $a \assign 0$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign_one}{}
+  $a \assign 1$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign}{const bigrational & $b$}
+  $a \assign b$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign}{const bigint & $n$, const bigint & $d$}
+  $a \assign \frac{n}{d}$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign}{const bigint & $n$}\end{fcode}
+\begin{fcode}{void}{$a$.assign}{long $n$}\end{fcode}
+\begin{fcode}{void}{$a$.assign}{unsigned long $n$}\end{fcode}
+\begin{fcode}{void}{$a$.assign}{int $n$}
+  $a \assign n$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign}{double $n$}
+  $a \assign \lfloor n \rfloor$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+\begin{cfcode}{const bigint &}{$a$.numerator}{}\end{cfcode}
+\begin{fcode}{const bigint &}{numerator}{const bigrational & $a$}
+  returns the numerator of $a$.
+\end{fcode}
+
+\begin{cfcode}{const bigint &}{$a$.denominator}{}\end{cfcode}
+\begin{fcode}{const bigint &}{denominator}{const bigrational & $a$}
+  returns the denominator of $a$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\MODF
+
+\begin{fcode}{void}{$a$.negate}{}
+  $a \assign -a$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.inc}{}\end{fcode}
+\begin{fcode}{void}{inc}{bigrational & $a$}
+  $a \assign a + 1$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.dec}{}\end{fcode}
+\begin{fcode}{void}{dec}{bigrational & $a$}
+  $a \assign a - 1$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.multiply_by_denominator}{}
+  Multiplies $a$ by its denominator.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.multiply_by_2}{}
+  $a \assign 2 \cdot a$ (done by shifting).
+\end{fcode}
+
+\begin{fcode}{void}{$a$.divide_by_2}{}
+  $a \assign a / 2$ (done by shifting).
+\end{fcode}
+
+\begin{fcode}{void}{$a$.invert}{}
+  $a \assign 1 / a$, if $a \neq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+The following operators are overloaded and can be used in exactly the same way as in C++:
+
+\begin{center}
+  \code{(unary) -, ++, -{}-}\\
+  \code{(binary) +, -, *, /,  >>, <<}\\
+  \code{(binary with assignment) +=, -=, *=, /=, >>=, <<=}
+\end{center}
+
+To avoid copying all operators also exist as functions.
+
+\begin{fcode}{void}{negate}{bigrational & $a$, const bigrational & $b$}
+  $a \assign -b$.
+\end{fcode}
+
+\begin{fcode}{void}{add}{bigrational & $c$, const bigrational & $a$, const bigrational & $b$}\end{fcode}
+\begin{fcode}{void}{add}{bigrational & $c$, const bigrational & $a$, const bigint & $b$}\end{fcode}
+\begin{fcode}{void}{add}{bigrational & $c$, const bigrational & $a$, long $b$}\end{fcode}
+\begin{fcode}{void}{add}{bigrational & $c$, const bigrational & $a$, unsigned long $b$}\end{fcode}
+\begin{fcode}{void}{add}{bigrational & $c$, const bigrational & $a$, int $b$}
+  $c \assign a + b$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{bigrational & $c$, const bigrational & $a$, const bigrational & $b$}\end{fcode}
+\begin{fcode}{void}{subtract}{bigrational & $c$, const bigrational & $a$, const bigint & $b$}\end{fcode}
+\begin{fcode}{void}{subtract}{bigrational & $c$, const bigrational & $a$, long $b$}\end{fcode}
+\begin{fcode}{void}{subtract}{bigrational & $c$, const bigrational & $a$, unsigned long $b$}\end{fcode}
+\begin{fcode}{void}{subtract}{bigrational & $c$, const bigrational & $a$, int $b$}
+  $c \assign a - b$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{bigrational & $c$, const bigrational & $a$, const bigrational & $b$}\end{fcode}
+\begin{fcode}{void}{multiply}{bigrational & $c$, const bigrational & $a$, const bigint & $b$}\end{fcode}
+\begin{fcode}{void}{multiply}{bigrational & $c$, const bigrational & $a$, long $b$}\end{fcode}
+\begin{fcode}{void}{multiply}{bigrational & $c$, const bigrational & $a$, unsigned long $b$}\end{fcode}
+\begin{fcode}{void}{multiply}{bigrational & $c$, const bigrational & $a$, int $b$}
+  $c \assign a \cdot i$.
+\end{fcode}
+
+\begin{fcode}{void}{square}{bigrational & $c$, const bigrational & $a$}
+  $c \assign a^2$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{bigrational & $c$, const bigrational & $a$, const bigrational & $b$}\end{fcode}
+\begin{fcode}{void}{divide}{bigrational & $c$, const bigrational & $a$, const bigint & $b$}\end{fcode}
+\begin{fcode}{void}{divide}{bigrational & $c$, const bigrational & $a$, long $b$}\end{fcode}
+\begin{fcode}{void}{divide}{bigrational & $c$, const bigrational & $a$, unsigned long $b$}\end{fcode}
+\begin{fcode}{void}{divide}{bigrational & $c$, const bigrational & $a$, int $b$}
+  $c \assign a / i$, if $i \neq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{invert}{bigrational & $a$, const bigrational & $b$}
+  $a \assign 1 / b$, if $b \neq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{bigrational}{inverse}{const bigrational & $a$}
+  returns $1 / a$, if $a \neq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{power}{bigrational & $c$, const bigrational & $a$, const bigint & $i$}\end{fcode}
+\begin{fcode}{void}{power}{bigrational & $c$, const bigrational & $a$, long $i$}
+  $c \assign a^i$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SHFT
+
+\begin{fcode}{void}{shift_left}{bigrational & $c$, const bigrational & $a$, long $i$}
+  $c \assign a \cdot 2^i$.
+\end{fcode}
+
+\begin{fcode}{void}{shift_right}{bigrational & $c$, const bigrational & $a$, long $i$}
+  $c \assign a / 2^i$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+The binary operators \code{==}, \code{!=}, \code{>=}, \code{<=}, \code{>}, \code{<} and the
+unary operator \code{!} (comparison with zero) are overloaded and can be used in exactly the
+same way as in C++.  Let $a$ be of type \code{bigrational}.
+
+\begin{cfcode}{bool}{$a$.is_positive}{}
+  returns \TRUE if $a > 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_negative}{}
+  returns \TRUE if $a < 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_zero}{}
+  returns \TRUE if $a = 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_ge_zero}{}
+  returns \TRUE if $a \geq 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_gt_zero}{}
+  returns \TRUE if $a > 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_le_zero}{}
+  returns \TRUE if $a \leq 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_lt_zero}{}
+  returns \TRUE if $a < 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_one}{}
+  returns \TRUE if $a = 1$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{int}{$a$.compare}{const bigrational & $b$}\end{cfcode}
+\begin{cfcode}{int}{$a$.compare}{const bigint & $b$}\end{cfcode}
+\begin{cfcode}{int}{$a$.compare}{long $b$}\end{cfcode}
+\begin{cfcode}{int}{$a$.compare}{unsigned long $b$}\end{cfcode}
+\begin{cfcode}{int}{$a$.compare}{int $b$}
+  returns $\sgn(a - b)$.
+\end{cfcode}
+
+\begin{cfcode}{int}{$a$.abs_compare}{const bigrational & $b$}\end{cfcode}
+\begin{cfcode}{int}{$a$.abs_compare}{const bigint & $b$}\end{cfcode}
+\begin{cfcode}{int}{$a$.abs_compare}{unsigned long $b$}
+  returns $\sgn(|a| - |b|)$.
+\end{cfcode}
+
+\begin{cfcode}{int}{$a$.sign}{}
+  returns $-1$, $0$, $1$ if $a <, =, > 0$ respectively.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\TYPE
+
+Before assigning a \code{bigrational} to a \code{bigint} it is often useful to check whether
+precision is lost, i.e. if the denominator is not equal to one.
+
+\begin{cfcode}{bool}{is_bigint}{const bigrational & $a$}
+  returns \TRUE if the denominator of $a$ is one, \FALSE, otherwise.
+\end{cfcode}
+
+\begin{cfcode}{double}{dbl}{const bigrational & $a$}
+  returns the value of $a$ as a double approximation.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.intify}{int & $i$}
+  performs the assignment $i \assign \lfloor \code{$a$.numerator()} / \code{$a$.denominator()}
+  \rfloor$ provided that this assignment can be done without overflow.  In that case the
+  function returns \FALSE, otherwise it returns \TRUE and lets the value of $i$ unchanged.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.longify}{long & $i$}
+  performs the assignment $i \assign \lfloor \code{$a$.numerator()} / \code{$a$.denominator()}
+  \rfloor$ provided that this assignment can be done without overflow.  In that case the
+  function returns \FALSE, otherwise it returns \TRUE and lets the value of $i$ unchanged.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+\begin{fcode}{bigrational}{abs}{const bigrational & $a$}
+  returns $|a|$.
+\end{fcode}
+
+\begin{fcode}{bigint}{ceiling}{const bigrational & $a$}
+  returns the least integer $b$ with $b \geq a$.
+\end{fcode}
+
+\begin{fcode}{bigint}{floor}{const bigrational & $a$}
+  returns the greatest integer $b$ with $b \leq a$.
+\end{fcode}
+
+\begin{fcode}{bigint}{round}{const bigrational & $a$}
+  returns the nearest integer to $a$.
+\end{fcode}
+
+\begin{fcode}{bigint}{truncate}{const bigrational & $a$}
+  returns the integer part $b$ of $a$, i.e.  $b \assign \frac{\lfloor a \rfloor + \lceil a
+    \rceil -1}{2}$.
+\end{fcode}
+
+\begin{fcode}{bool}{square_root}{bigrational & $\mathit{root}$, const bigrational & $a$}
+  returns \TRUE, if $a$ is square.  In this case $\mathit{root}$ is a square root of $a$.
+  Otherwise it returns \FALSE, but the value of $\mathit{root}$ may be changed.
+\end{fcode}
+
+\begin{fcode}{bool}{cube_root}{bigrational & $\mathit{root}$, const bigrational & $a$}
+  returns \TRUE, if $a$ is a cube.  In this case $\mathit{root}$ is a cubic root of $a$.
+  Otherwise it returns \FALSE, but the value of $\mathit{root}$ may be changed.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+Let $a$ be of type \code{bigrational}.  \code{istream} operator \code{>>} and
+\code{ostream} operator \code{<<} are overloaded.  Furthermore, you can use the following
+member functions for writing to and reading from a file in binary or ASCII format, respectively.
+Input and output of a \code{bigrational} have the following format:
+\begin{quote}
+  num/den
+\end{quote}
+(without blanks).  Note that you have to manage by yourself that successive
+\code{bigrational}s have to be separated by blanks.
+
+\begin{fcode}{int}{string_to_bigrational}{char *s, const char *t, bigrational & $a$}
+  converts the strings $s$ and $t$ to \code{bigint}s $s', t'$ and sets $a \assign s'/t'$, returns
+  the total number of converted characters.
+\end{fcode}
+
+\begin{fcode}{int}{bigrational_to_string}{const bigrational & $a$, char *s, char *t}
+  converts the denominator of $a$ to string $s$, the numerator of $a$ to string $t$ and returns
+  the number of used characters.
+\end{fcode}
+
+\begin{fcode}{int}{$a$.read_from_file}{FILE *fp}
+  reads $a$ from \code{fp} using \code{fread}.
+\end{fcode}
+
+\begin{fcode}{int}{$a$.write_to_file}{FILE *fp}
+  writes $a$ to \code{fp} using \code{fwrite}.
+\end{fcode}
+
+\begin{fcode}{int}{$a$.scan_from_file}{FILE *fp}
+  scans $a$ from \code{fp} using \code{fscanf}.
+\end{fcode}
+
+\begin{fcode}{int}{$a$.print_to_file}{FILE *fp}
+  prints $a$ to \code{fp} using \code{fprintf}.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{bigint}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/bigrational.h>
+
+int main()
+{
+    bigrational a, b, c;
+
+    cout << "Please enter a : "; cin >> a ;
+    cout << "Please enter b : "; cin >> b ;
+    cout << endl;
+    c = a + b;
+    cout << "a + b = " << c << endl;
+}
+
+\end{verbatim}
+\end{quote}
+
+For further reference please refer to \path{LiDIA/src/simple_classes/bigrational_appl.cc}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Volker M\"uller, Thomas Papanikolaou

@@ -1,0 +1,28 @@
+//==============================================================================================
+//
+//	This file is part of LiDIA --- a library for computational number theory
+//
+//	Copyright (c) 1994--2001 the LiDIA Group.  All rights reserved.
+//
+//	See http://www.informatik.tu-darmstadt.de/TI/LiDIA/
+//
+//----------------------------------------------------------------------------------------------
+//
+//	$Id: $
+//
+//	Author	:
+//	Changes	: See CVS log
+//
+//==============================================================================================
+
+// This file stores default parameters. For computing
+// more optimal parameters for your machine, type
+//  'make optimize' and wait a while. A program will
+// be compiled that runs several comparison tests and 
+// determines "optimal" parameters.
+
+
+const int CROSSOVER_PLAININV_NEWTON = 14; 
+const int CROSSOVER_DIVIDE = 2; 
+const int CROSSOVER_REDUCE = 30; 
+const int CROSSOVER_REDUCE_SQUARE = 14; 

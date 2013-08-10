@@ -1,0 +1,192 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  trace_list.tex      Documentation
+%%
+%%  This file contains the documentation of the class trace_list.
+%%
+%%  Copyright   (c)   1998   by  LiDIA Group
+%%
+%%  Authors: Volker Mueller
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\code{trace_list} \dotfill class for storing a list of \code{trace_mod}s
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+The class \code{trace_list} is used for storing information on the trace of the Frobenius
+endomorphism computed with the class \code{eco_prime} and stored in instances of the class
+\code{trace_mod}.  Moreover \code{trace_list} offers a Babystep Giantstep algorithm to find a
+candidate for the group order.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+\code{trace_list} is a class for storing the information computed with the class
+\code{eco_prime}.  These information is stored in several instances of the class
+\code{trace_mod}.  Moreover there exist function to decide when enough information has been
+computed to start a combination step and to determine a candidate for the group order with a
+Babystep Giantstep type algorithm.
+
+The class stores a list of \code{trace_mod} which contain information about traces modulo
+primes.  In this list only these \code{trace_mod}s are stored, which do not contain the exact
+value of the trace modulo the corresponding prime $l$.  In addition to this list an instance of
+\code{trace_list} contains two variables $C_3$ and $M_3$, which hold integers such that the
+trace of Frobenius is congruent to $C_3$ modulo $M_3$.  Moreover some variable stores the size
+of the Hasse interval for the actual computation.
+
+After the combination step two more moduli are set.  The variables $M_1$, $M_2$ hold the moduli
+used for the Babystep, Giantstep list, respectively.  A description of the combination step can
+be found in the master thesis of Markus Maurer \cite{Maurer_Thesis:1994}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{trace_list}{}
+  constructs an uninitialized instance.
+\end{fcode}
+
+\begin{fcode}{ct}{trace_list}{const bigint & $q$}
+  constructs an instance for a point computation over a field with $q$ elements, i.e. the size
+  of the Hasse interval is $4 \sqrt{q}$ in this case.
+\end{fcode}
+
+\begin{fcode}{dt}{~trace_list}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $t$ be an instance of \code{trace_list}.
+
+\begin{fcode}{void}{$t$.clear}{}
+  deletes all internal data, except the size of the Hasse interval.
+\end{fcode}
+
+\begin{fcode}{void}{$t$.set_curve}{const elliptic_curve< gf_element > & $e$}
+  Initializes with curve $e$.
+\end{fcode}
+
+\begin{fcode}{static void}{set_info_mode}{int $i$ = 0}
+  set the internal info variable to $i$.  If this variable is not zero, then some information is
+  printed during the Babystep Giantstep algorithm; otherwise no output is done.  The default
+  value for the info variable is zero.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $t$ be an instance of \code{trace_list}.
+
+\begin{cfcode}{bigint}{$t$.get_M1}{}
+  returns the modulus for the Babystep list.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$t$.get_M2}{}
+  returns the modulus for the Giantstep list.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$t$.get_M3}{}
+  returns the modulus for which we know the trace of Frobenius exact.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$t$.get_C3}{}
+  returns the trace of Frobenius modulo $C_3$.
+\end{cfcode}
+
+\begin{cfcode}{const sort_vector< trace_mod >}{$t$.get_list}{}
+  returns the list of \code{trace_mod}s stored internally.
+\end{cfcode}
+
+\begin{fcode}{bigint}{$t$.number_of_combinations}{}
+  returns the total number of possibilities which have to be checked.  If the product of the
+  three moduli is not bigger than the size of Hasse's interval, then $-1$ is returned.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+Let $t$ be an instance of \code{trace_list}.
+
+\begin{fcode}{bool}{$t$.append}{const trace_mod & $m$}
+  appends $m$ to the \code{trace_list} $t$.  Then it checks whether the number of possible
+  values is smaller than some predefined value and the product of all internal moduli is big
+  enough.  If these two conditions are fulfilled, then \TRUE is returned, otherwise \FALSE is
+  returned.
+\end{fcode}
+
+\begin{fcode}{bool}{$t$.split_baby_giant}{sort_vector< bigint > & $b$,
+    sort_vector< bigint > & $g$}%
+  sets $b$ to the list of Babystep indices, $g$ to the list of Giantstep indices and returns
+  \TRUE, if the number of possible candidates is smaller than some predefined bound.  Otherwise
+  both vectors are emptied and \FALSE is returned.
+\end{fcode}
+
+\begin{fcode}{bigint}{bg_algorithm}{const point< ff_element > & $P$,
+    sort_vector< bigint > & $b$, sort_vector< bigint > & $g$, const bigint & $q$}%
+  uses the two lists for a Babystep Giantstep algorithm to find a multiple of the order of the
+  point $P$ in the Hasse interval.  This value is returned.
+\end{fcode}
+
+\begin{fcode}{bigint}{bg_search_for_order}{}
+  Generates a random point $P$ and uses the trace information for a Babystep Giantstep algorithm
+  to find a multiple of the order of the point $P$ in the Hasse interval.  This value is
+  returned.
+\end{fcode}
+
+\begin{fcode}{bigint}{simple_search_for_order}{}
+  Generates a random point $P$, computes all possible traces, and checks for each trace
+  candidate, whether the corresping group order candidate is a multiple of the order of the
+  point $P$ in the Hasse interval.  This value is returned.
+\end{fcode}
+
+\begin{fcode}{bool}{baby_giant_lists_correct}{const bigint & $n$}
+  Uses the group order $n$ to verify, that the baby step and the giant step list is correct, in
+  the sense, that the correct trace can be found in the lists.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+The \code{istream} operator \code{>>} and the \code{ostream} operator \code{<<} are
+overloaded.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{eco_prime}, \SEE{trace_mod}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+The Elliptic Curve Counting Package will change in future releases.  Then
+probably the interface of the class \code{trace_list} will also change.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Markus Maurer, Volker M\"uller.

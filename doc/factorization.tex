@@ -1,0 +1,462 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  factorization.tex
+%%
+%%  This file contains the documentation of the class factorization < T >
+%%
+%%  Copyright (c) 1996 by LiDIA-Group
+%%
+%%  Author:  Oliver Braun, Thomas Pfahler, Stefan Neis
+%%
+
+\newcommand{\ibase}{\mathit{ibase}}
+\newcommand{\expt}{\mathit{exp}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{factorization< T >} \dotfill parameterized class for computing with
+factorizations
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+Including \path{LiDIA/factorization.h} in an application allows the use of the C++ type
+\code{factorization< T >} for some data type \code{T} which is allowed to be either a built-in
+type or a class.
+
+\code{factorization< T >} is a class for holding factorizations.  There are elementary access
+functions, functions for computing with factorizations and modifying operations.
+
+The class \code{factorization< T >} is the return type of the factorization algorithms in the
+class \code{single_factor< T >}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+The factorization of an element of type \code{T} is internally represented by
+
+\begin{itemize}
+\item a unit $\epsilon$, which is automatically extracted from all bases (see function
+  \code{extract_unit()} of class \code{single_factor< T >}) and
+  
+\item two \emph{vector}s $p$ and $c$ of pairs $p_i = (\ibase_i(p),\expt_i(p))$ and $c_i =
+  (\ibase_i(c),\expt_i(c))$ with $l(p)$ and $l(c)$ components, respectively.  These vectors
+  represent the factors assumed to be prime (or irreducible) and those where we know nothing
+  about primality (or irreducibility), respectively.  In an abuse of language, we call the bases
+  of the components of $c$, i.e.~the components which might be composite factors, the
+  ``composite components'', although this is not generally correct.
+  
+  $(\ibase_i(x), \expt_i(x))$ denotes the $i$-th component of the vector $x$, where
+  \begin{itemize}
+  \item $\ibase_i(x)$ is of type \code{single_factor< T >}, and
+  \item $\expt_i(x)$ is of type \code{lidia_size_t}.
+  \end{itemize}
+\end{itemize}
+
+So a \code{factorization< T >} $f$ represents the element
+
+\begin{displaymath}
+  f = \epsilon \cdot \prod_{i=0}^{l(p)-1} \ibase_i\code{.base}(p)^{\expt_i(p)} \,
+  \prod_{i=0}^{l(c)-1} \ibase_i\code{.base}(c)^{\expt_i(c)} \enspace.
+\end{displaymath}
+
+Different bases $\ibase_i(x), \ibase_j(y)$ ($i \neq j$) of the vectors are not necessarily coprime.
+Especially, a \code{factorization< T >} does not generally represent a prime factorization.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{factorization< T >}{}
+  initializes a factorization of length zero.  $\epsilon$ is set to ``$1$'' (the identity element
+  of the multiplication for elements of type \code{T}).
+\end{fcode}
+
+\begin{fcode}{ct}{factorization< T >}{const factorization< T > & $f$}
+  initializes the factorization with a copy of $f$.
+\end{fcode}
+
+\begin{fcode}{ct}{factorization< T >}{const single_factor< T > & $a$}
+  initializes the factorization with $a$.
+\end{fcode}
+
+\begin{fcode}{dt}{~factorization< T >}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+The operator \code{=} is overloaded and additionally the following assignment
+functions exist:
+
+Let $f$ be an instance of type \code{factorization< T >}.
+
+\begin{fcode}{void}{$f$.assign}{const factorization< T > & $g$}
+  $f \assign g$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign}{const single_factor< T > & $a$}
+  $f \assign a$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+The binary operators \code{==} and \code{!=} are overloaded.
+
+%Let $f$ and $g$ be two \code{factorization< T >}.
+%  Let $f'$ and $g'$ be the normalized factorizations of $f$ and $g$, respectively (see
+%  function \code{normalize()}).
+%  Then $f$ and $g$ are considered to be equal if
+%  \begin{itemize}
+%     \item $f'.unit() = g'.unit()$
+%     \item $f'.no_of_components() = g'.no_of_components()$   and
+%     \item $f'.ibase(i) = g'.ibase(i)$ for $i = 0,\dots,f'.no_of_components()-1$ ,
+%  \end{itemize}
+%  where ``=='' is the operator defined for the data type \code{T} and the class \code{single_factor< T >},
+%  respectively.
+Two \code{factorization< T >}s $f$ and $g$ are considered to be equal if the value represented
+by $f$ is equal to the value represented by $g$.  Note that this can be checked efficiently by
+using factor refinement.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+The following operators are overloaded:
+
+\begin{center}
+  \code{(binary) *, /}
+\end{center}
+
+These operations can also be performed by the functions \code{multiply()} and \code{divide()}
+(which avoid copying and are therefore faster than the operators).
+
+\begin{fcode}{void}{multiply}{factorization< T > & $h$, const factorization< T > & $f$, const factorization< T > & $g$}
+  $h = f \cdot g$, i.e.~the components of the factorizations of $f$ and $g$ are combined to the
+  factorization $h$, such that $h$ represents the element $f \cdot g$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{factorization< T > & $h$, const factorization< T > & $f$,
+    const single_factor< T > & $a$}%
+  $h = f \cdot a$, i.e.~the components of the factorization of $f$ and the \code{single_factor<
+    T >} $a$ are combined to the factorization $h$, such that $h$ represents the element $f
+  \cdot a$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{factorization< T > & $h$, const factorization< T > & $f$,
+    const factorization< T > & $g$}%
+  $h = f / g$, i.e.~the components of the factorizations of $f$ and $g$ are combined to the
+  factorization $h$, such that $h$ represents the element $f / g$.
+\end{fcode}
+
+In the following, let $f$ be an instance of type \code{factorization< T >}.
+
+\begin{fcode}{void}{$f$.invert}{}
+  $f$ is inverted (by negating the exponents).
+\end{fcode}
+
+%     All exponents of $f$ are negated and $\epsilon$ is set to $1/\epsilon$,
+%     where `1' is the identity element of the multiplication for elements of type
+%     \bf{T}.}
+
+\begin{fcode}{void}{invert}{factorization< T > & $h$,  const factorization< T > & $f$}
+  sets $h = f^{-1}$.
+\end{fcode}
+
+\begin{fcode}{factorization< T >}{inverse}{factorization< T > & $f$}
+  returns $f^{-1}$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.square}{}
+  sets $f = f^2$, i.e.~all exponents in the representation of $f$ are multiplied by 2 and the
+  unit is squared.
+\end{fcode}
+
+\begin{fcode}{void}{square}{factorization< T >& $h$,  const factorization< T >& $f$}
+  sets $h = f^2$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.power}{lidia_size_t $i$}
+  sets $f = f^i$, i.e.~all exponents in the represenation of $f$ are multiplied by i and the
+  unit is replaced by its $i$-th power.
+\end{fcode}
+
+\begin{fcode}{void}{power}{factorization< T >& $h$, const factorization< T >& $f$,  lidia_size_t $i$}
+  sets $h = f^i$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $f$ be an instance of type \code{factorization< T >}.
+
+\begin{fcode}{single_factor< T >}{$f$.prime_base}{lidia_size_t $i$}
+  returns $\ibase_i(p)$.  If $i < 0$ or if $i$ is greater than or equal to the number of components
+  of $p$, the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{single_factor< T >}{$f$.composite_base}{lidia_size_t $i$}
+  returns $\ibase_i(c)$.  If $i < 0$ or if $i$ is greater than or equal to the number of components
+  of $c$, the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{lidia_size_t}{$f$.prime_exponent}{lidia_size_t $i$}
+  returns $\expt_i(p)$.  If $i < 0$ or if $i$ is greater than or equal to the number of components of
+  $p$, the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{lidia_size_t}{$f$.composite_exponent}{lidia_size_t $i$}
+  returns $\expt_i(c)$.  If $i < 0$ or if $i$ is greater than or equal to the number of components of
+  $c$, the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{lidia_size_t}{$f$.no_of_prime_components}{}
+  returns the number of components of $p$, which is the number of $(\ibase, \expt)$-pairs of $p$.
+\end{fcode}
+
+\begin{fcode}{lidia_size_t}{$f$.no_of_composite_components}{}
+  returns the number of components of $c$, which is the number of $(\ibase, \expt)$-pairs of $c$.
+\end{fcode}
+
+\begin{fcode}{lidia_size_t}{$f$.no_of_components}{}
+  returns the number of components of $f$, which is the sum of the number of prime and composite
+  components.
+\end{fcode}
+
+\begin{fcode}{T}{$f$.unit}{}
+  returns the unit $\epsilon$.
+\end{fcode}
+
+\begin{fcode}{T}{$f$.value}{}
+  returns the element of type \code{T} that is represented by the factorization of $f$.  Note
+  that this computation will take a long time and will consume lots of memory, if the exponents
+  involved in the computation are large.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+Let $f$ be an instance of type \code{factorization< T >}.
+
+
+\STITLE{Modifying Operations}
+
+\begin{fcode}{void}{$f$.replace}{lidia_size_t $\mathit{pos}$, factorization< T > $g$}
+  This function is used to replace a composite component by its factorization.  It replaces the
+  composite component at position $\mathit{pos}$ by the composite components of the
+  factorization $g$.  The prime components of $g$ are appended to the prime components of $f$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.sort}{}
+  sorts the prime components as well as the composite componentes of the factorization in
+  ascending order according to the size of the \code{single_factor< T >} and the size of the
+  exponents, so that $f.\ibase(i) \leq f.\ibase(j)$ for all $i < j$ and, if $f.\ibase(i) =
+  f.\ibase(j)$, $f.\expt(i) \leq f.\expt(j)$.  The operators ``\code{<=}'' and ``\code{==}'' are
+  to be defined in the class \code{single_factor< T >}.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.normalize}{}
+  sorts the factorization $f$ and collects equal bases, such that $f.ibase_i(p) \neq
+  f.\ibase_j(p)$, $f.\ibase_i(c) \neq f.\ibase_j(c)$ for all $i \neq j$, and $f.\ibase_i(p) \neq
+  f.\ibase_j(c)$ for all $i,j$.  ``\code{!=}'' has to be defined in the class
+  \code{single_factor< T >}.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.refine}{}
+  refines the factorization $f$ such that the bases of $f$ are pairwise coprime, i.e.
+  $\gcd\bigl(f.\ibase_i(x), f.\ibase_j(y)\bigr) = '1'$ for $x,y \in \{ p, c \}$ and all $i,j$.
+  The function \code{gcd} has to be defined in the class \code{single_factor< T >}.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.factor_all_components}{}
+  factors all composite components and replaces each such component $f.\ibase_i(c)$ by its
+  factorization \code{factor($f.\ibase_i(c)$)}, $i = 0, \dots,
+  \code{$f$.no_of_composite_components()} - 1$ using the function \code{replace} described above.
+  The function \code{factor} must be defined in the class \code{single_factor< T >}.
+\end{fcode}
+
+
+\STITLE{Nonmodifying Operations}
+
+\begin{fcode}{factorization< T >}{factor_all_components}{factorization< T >
+    const& $f$}
+  returns a copy of $f$ on which the member function \code{factor()} described
+  above was called.
+\end{fcode}
+
+
+\STITLE{Queries}
+
+\begin{fcode}{bool}{$f$.is_prime_factorization}{int $\mathit{test}$ = 0}
+  returns \TRUE, if $f$ is a prime factorization according to the test in class
+  \code{single_factor< T >}.  This test can either be a \emph{compositeness test}, which decides
+  whether $f$ is composite or probably prime or a \emph{primality test} which proofs that $f$ is
+  prime.
+  
+  If $\mathit{test} \neq 0$, an explicit test is done for every composite component with unknown
+  prime state, otherwise we only check, whether there are composite components.
+\end{fcode}
+
+%     returns \TRUE, if $f$ is a prime factorization according to the (compositeness)
+%     primality test in class \code{single_factor< T >}.
+%     If $test \neq 0$, an explicit primality test is done for every base (if
+%     necessary), otherwise only flags are checked.
+%     Therefore, the return value \FALSE may not be correct if $test = 0$.
+%     The return value \TRUE is always correct
+%     (as stated above, according to the primality test in class \code{single_factor< T >}).
+
+\begin{fcode}{bool}{$f$.is_sorted}{}
+  returns \TRUE, if $f$ has already been sorted using the function \code{$f$.sort()} (which is
+  decided by checking a flag).
+\end{fcode}
+
+%  returns \TRUE, if $f.ibase_i(x) <= f.ibase_j(x)$ for all $i < j$
+%  and, if $f.ibase_i(x) = f.ibase_j(x)$, $f.exp_i(x) \leq
+%  f.exp_j(x)$ for both $x = p$ and $x = c$;
+%  otherwise, \FALSE is returned.  The operators ``\code{<=}'' and
+%  ``\code{==}'' are defined in the class \code{single_factor< T >}.}
+
+\begin{fcode}{bool}{$f$.is_normalized}{}
+  returns \TRUE, if $f$ has been normalized using the function \code{$f$.normalize()} (which is
+  decided by checking a flag).
+\end{fcode}
+
+%  returns \TRUE, if $f$ is normalized, i.e. $f$ is sorted and
+%  $\code{$f$.ibase($i$)} \neq \code{$f$.ibase($j$)}$ for all $i \neq j$, where
+%  ``\code{!=}'' is defined in the class \code{single_factor< T >}.  Otherwise, \FALSE is
+%  returned.}
+
+\begin{fcode}{bool}{$f$.is_refined}{}
+  returns \TRUE, if $f$ has been refined using the function \code{$f$.refine()} (which is decided
+  by checking a flag).
+\end{fcode}
+
+%  returns \TRUE, if $f$ is normalized and $\gcd(\code{$f$.ibase($i$)},
+%  \code{$f$.ibase($j$)}) = '1'$ for all $i \neq j$, where the function \code{gcd}
+%  is defined in the class \code{single_factor< T >}).  Otherwise, \FALSE is returned.}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+The \code{istream} operator \code{>>} and the \code{ostream} operator\code{<<} are overloaded.
+The \code{ostream} operator \code{<<} prints a \code{factorization< T >} in the following
+format:
+
+\begin{center}
+   $[ \epsilon , [\ibase_0(p).base, \expt_0(p)],\,
+                         [\ibase_1(p).base, \expt_1(p)], \dots,
+                         [\ibase_{l-1}(p).base,\expt_{l(p)-1}(p)],$\\
+   $                [\ibase_0(c).base, \expt_0(c)],\,
+                         [\ibase_1(c).base, \expt_1(c)],\dots,
+                         [\ibase_{l-1}(c).base, \expt_{l(c)-1}(c)]\,]$
+\end{center}
+
+where $\epsilon$ is a unit (as explained at the beginning), If this unit is the neutral element
+of multiplication, it is omitted unless $l(p) = l(c) = 0$.
+
+The \code{istream} operator \code{>>} assumes all components to be composite, so the input
+format is the following (again, the unit is optional unless $l(c) = 0$):
+
+\begin{center}
+   $[ \epsilon , [\ibase_0(c).base, \expt_0(c)],
+            \dots, [\ibase_{l-1}(c).base, \expt_{l(c)-1}(c) ] ]$
+\end{center}
+
+So in practice input/output looks like
+
+\begin{verbatim}
+[ [ x^2 - 1 mod 5, 1], [x^2 + 1 mod 5, 2] ].
+\end{verbatim}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+\begin{itemize}
+\item The type \code{T} must at least have the following functions:
+  \begin{itemize}
+  \item the assignment operator \code{=}
+  \item the operator \code{=} (\code{int}), if you don't specialize the constructors
+  \item a swap function \code{void swap(T&, T&)}
+  \item the friend-functions \code{multiply}, \code{divide}, \code{gcd}
+  \item the input-operator \code{>>} and
+  \item the output-operator \code{<<}
+  \item the comparison-operators \code{<}, \code{<=}, \code{==}, \code{!=}
+  \end{itemize}
+\item The numeration of the components in a \code{factorization< T >}
+  starts with zero.  (As usually in C++)
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{single_factor}, \SEE{sort_vector}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/Fp_polynomial.h>
+#include <LiDIA/factorization.h>
+
+int main()
+{
+    factorization< Fp_polynomial > f;
+
+    cout << "Please enter a factorization of type Fp_polynomial:";
+    cout << endl;
+
+    cin >> f;
+
+    cout << "You entered a factorization with ";
+    cout << f.no_of_components();
+    cout << " components." << endl << endl;
+
+    cout << "The value represented by the factorization is " << endl;
+    cout << f.value() << "." << endl << endl;
+
+    f.factor_all_components();
+
+    cout << "The prime factorization is :" << endl;
+    cout << f <<endl;
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+%Franz-Dieter Berger,
+Oliver Braun, Thomas F.~Denny,
+%Andreas M\"uller, Volker M\"uller,
+Stefan Neis, Thomas Pfahler
+%Thomas Sosnowski

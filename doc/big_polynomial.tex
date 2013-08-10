@@ -1,0 +1,272 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  polynomial.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the template class polynomial
+%%
+%%  Copyright   (c)   1996   by  LiDIA-Group
+%%
+%%  Authors: Stefan Neis, adding some own code to rewritten code of
+%%  Victor Shoup, Thomas Papanikolaou, Nigel Smart, Damian Weber who each
+%%  contributed some part of the original code.
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+%\CLASS{polynomial< bigint >,polynomial< bigrational >,\\
+%polynomial< bigfloat >,\\polynomial< bigcomplex >}{polynomial_bigint}  \dotfill
+\CLASS{polynomial< bigint >},\\
+\CLASS{polynomial< bigrational >},\\
+\CLASS{polynomial< bigfloat >},\\
+\CLASS{polynomial< bigcomplex >} \dotfill specializations of the polynomials
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{polynomial< bigint >}, \code{polynomial< bigrational >}, \code{polynomial< bigfloat >},
+and \code{polynomial< bigcomplex >} are classes for computations with polynomials over
+\code{bigint}s, \code{bigfloat}s, \code{bigrational}s and \code{bigcomplex}es.  These classes
+are spezializations of the general \code{polynomial< T >}, and you can apply all the functions
+and operators of the general class \code{polynomial< T >}.  Moreover these classes support some
+additional functionality; especially functions involving division (or pseudo-division for
+\code{bigint}s) are offered.
+
+In the following we will describe the additional functions of the classes \code{polynomial<
+  bigint >}, \code{polynomial< bigrational >}, \code{polynomial< bigfloat >}, and
+\code{polynomial< bigcomplex >} We will use the parameter \code{type} to describe the fact that
+the corresponding function exists in all four classes and has the same functionality in each
+case.  Differences in the classes will be explained separately.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+The specializations use the same representation as the general class \code{polynomial< T >}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+The specializations support the same constructors as the general type.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+There are automatic upcasts, which convert a \code{polynomial< bigint >} to a \code{polynomial<
+  bigrational >}, a \code{polynomial< bigfloat >} or a \code{polynomial< bigcomplex >}.  In the
+same way conversions from a \code{polynomial< bigrational >} to a \code{polynomial< bigfloat >}
+or a \code{polynomial< bigcomplex >} and from a \code{polynomial< bigfloat >} to a
+\code{polynomial< bigcomplex >} are supported.  Thus it is possible to compute e.g.~the complex
+roots of a \code{polynomial< bigint >} without having to convert it to a \code{polynomial<
+  bigcomplex >} explicitly.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+In addition to the operators of \code{polynomial< T >} the following operators are overloaded:
+
+\begin{center}
+  \begin{tabular}{|c|rcl|l|}\hline
+    binary & \code{polynomial< type >} & $op$ & \code{polynomial< type >}
+    & $op \in \{ \code{/}, \code{\%} \}$\\\hline
+    binary with & \code{polynomial< type >} & $op$ & \code{polynomial< type >}
+    & $op \in \{ \code{/=}, \code{\%=} \}$\\
+    assignment & & & &\\\hline
+    binary & \code{polynomial< type >} & $op$ & \code{type}
+    & $op \in \{ \code{/} \}$\\\hline
+    binary with & \code{polynomial< type >} & $op$ & \code{type}
+    & $op \in \{ \code{/=} \}$\\
+    assignment & & & &\\\hline
+  \end{tabular}
+\end{center}
+Note that over the \code{bigint}s these operators involve pseudo-division.  So do the following
+functions which can be used instead of the operators to avoid copying.  (Let $f$ be of type
+\code{polynomial< type >}.):
+
+\begin{fcode}{void}{div_rem}{polynomial< type > & $q$, const polynomial< type > & $r$,
+    const polynomial< type > & $f$, const polynomial< type > & $g$}%
+  $f = q \cdot g + r$, where $\deg(r) < \deg(g)$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{polynomial< type > & $q$, const polynomial< type > & $f$, const polynomial< type > & $g$}
+  Computes a polynomial $q$, such that $\deg(f - q \cdot g) < \deg(g)$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{polynomial< type > & $q$, const polynomial< type > & $f$, const type & $a$}
+  $q = f / a$; for \code{polynomial< bigint >} the \LEH is invoked, if $a$ does not divide every
+  coefficient of $f$.
+\end{fcode}
+
+\begin{fcode}{void}{remainder}{polynomial< type > & $r$, const polynomial< type > & $f$,
+    const polynomial< type > & $g$}%
+  Computes $r$ with $r \equiv f \pmod{g}$ and $\deg(r) < \deg(g)$.
+\end{fcode}
+
+\begin{fcode}{void}{power_mod}{polynomial< type > & $x$, const polynomial< type > & $a$,
+    const bigint & $e$, const polynomial< type > & $f$}%
+  $x \equiv a^e \pmod{f}$.  For \code{polynomial< bigint >} the result may be a multiple of $x$,
+  since pseudo-division is used to reduce a given polynomial mod $f$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\STITLE{Greatest Common Divisor}
+
+\begin{fcode}{polynomial< type >}{gcd}{const polynomial< type > & $f$, const polynomial< type > & $g$}
+  returns $\gcd(f, g)$.  Note that these implementations are simply using the euclidean
+  algorithm and thus are far from being very efficient (especially for \code{polynomial< bigint
+    >} and \code{polynomial< bigrational >}).  For \code{polynomial< bigint >} the euclidean
+  algorithm uses pseudo-division thus possibly producing a multiple of the ``real'' gcd, which
+  one would obtain over the bigrationals.
+\end{fcode}
+
+\begin{fcode}{polynomial< type >}{xgcd}{polynomial< type > & $s$, polynomial< type > & $t$,
+    const polynomial< type > & $f$, const polynomial< type > & $g$}%
+  returns $\gcd(f, g) = s \cdot f + t \cdot g$.  This function has the same efficiency problems
+  as ``gcd''.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+\begin{fcode}{bigint}{cont}{const polynomial< bigint > & $f$}
+  returns the content of the polynomial $f$, i.e.~the gcd of all coefficients.
+\end{fcode}
+
+\begin{fcode}{polynomial< bigint >}{pp}{const polynomial< bigint > & $f$}
+  returns the primitive part of the polynomial $f$, i.e.~$f$ divided by its content.
+\end{fcode}
+
+\begin{fcode}{lidia_size_t}{no_of_real_roots}{const polynomial< bigint > & $f$}
+  return the number of real roots of the polynomial $f$.
+\end{fcode}
+
+\begin{fcode}{bigint}{resultant}{const polynomial< bigint > & $f$, const polynomial< bigint > & $g$}
+  returns the resultant of two polynomials $f$ and $g$.
+\end{fcode}
+
+\begin{fcode}{bigint}{discriminant}{const polynomial< bigint > & $f$}
+  returns the discriminant of the polynomials $f$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\STITLE{Integration}
+
+\begin{fcode}{void}{integral}{polynomial< type > & $f$, const polynomial< type > & $g$}
+  computes $f$, such that $f' = g$.
+\end{fcode}
+
+\begin{fcode}{polynomial< type >}{integral}{const polynomial< type > & $g$}
+  returns a polynomial $f$, such that $f' = g$.
+\end{fcode}
+
+\begin{fcode}{bigcomplex}{integral}{const bigfloat & $a$, const bigfloat & $b$, const polynomial< bigcomplex > & $f$}
+  computes $\int_a^bf(x)dx$.  Note that this function may also be applied to a \code{polynomial<
+    type >} since there are automatic casts to \code{polynomial< bigcomplex >}.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\STITLE{Computation of Complex Roots}
+
+Note that the following functions may also be applied to a \code{polynomial< type >} since there
+are automatic casts to \code{polynomial< bigcomplex >}.
+
+\begin{fcode}{bigcomplex}{root}{const polynomial< bigcomplex > & $f$, const bigcomplex & $s$}
+  returns an arbitrary root of $f$, using $s$ as a first approximation to the root.
+\end{fcode}
+
+\begin{fcode}{void}{cohen}{const polynomial< bigcomplex > & $f$, bigcomplex * $w$, int $r$, int & $c$}
+  computes the zeros of a squarefree polynomial $f$ and stores them in the array $w$ starting at
+  position $c$.  If less than $c + \deg(f)$ elements are allocated for $w$ before calling this
+  routine, this results in undefined behaviour.  The flag $r$ may be set, if all coefficients of
+  the polynomial are real numbers (This will speed up the computation).  The function will
+  return with $w[c]$ being the first unused element of the array $w$.
+\end{fcode}
+
+\begin{fcode}{void}{roots}{const polynomial< bigcomplex > & $f$, bigcomplex * $w$}
+  computes the zeros of an arbitrary polynomial $f$ and stores them in the array $w$.  If less
+  than deg($f$) elements are allocated for $w$ before calling this routine, this results in
+  undefined behaviour.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+The \code{istream} operator \code{>>} and the \code{ostream} operator \code{<<} are overloaded.
+The input formats and the output format are the same as for the general class.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{bigint}, \SEE{polynomial< T >}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \NOTES
+%
+% Special thanks to all the people who contributed code to these classes,
+% i.e.~to Roland Dreier (discriminant and resultant), Thomas Papanikolaou
+% (polynomial< bigcomplex >), Nigel Smart (part of
+% polynomial< bigint >), and Damian Weber (modular computations in
+% polynomial< bigint >).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/polynomial.h>
+
+int main()
+{
+    polynomial< bigint > f, g, h;
+
+    cout << "Please enter f : "; cin >> f;
+    cout << "Please enter g : "; cin >> g;
+
+    h = f * g;
+
+    cout << "f * g = " << h << endl;
+
+    bigcomplex * zeros = new bigcomplex[h.degree()+1];
+
+    roots(h, zeros);
+    cout << "Zeros of " << h << "are :" << endl;
+    for (long int i = 0; i < h.degree(); i++)
+    cout << "\n\t" << zeros[i];
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Roland Dreier, Stefan Neis, Thomas Papanikolaou, Nigel Smart, Damian Weber

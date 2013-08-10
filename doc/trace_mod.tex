@@ -1,0 +1,142 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  trace_list.tex      Documentation
+%%
+%%  This file contains the documentation of the class trace_list.
+%%
+%%  Copyright   (c)   1998   by  LiDIA Group
+%%
+%%  Authors: Volker Mueller
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\code{trace_mod} \dotfill class for storing the trace of the Frobenius endomorphism modulo a
+prime power
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+The class \code{trace_mod} is used as a container to store information on the trace of the
+Frobenius endomorphism computed with the class \code{eco_prime}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+\code{trace_mod} is a class for storing information about the trace of the Frobenius
+endomorphism computed with the help of \code{eco_prime}.  The class offers essentially only
+administrative functions and simplifies handling these information.
+
+The class stores a variable $l$ and a vector which holds the different values of the trace
+of Frobenius modulo $l$.  Moreover it determines a so called density which is defined as
+the size of this vector divided by $l$.  This density is used in the class
+\code{trace_list} to sort different \code{trace_mod}s.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{trace_mod}{}
+  constructs an empty instance.
+\end{fcode}
+
+\begin{fcode}{dt}{~trace_mod}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+The operator \code{=} is overloaded.  Moreover there exists the following assignment function.
+Let $t$ be an instance of \code{trace_mod}.
+
+\begin{fcode}{void}{$m$.set_first_element}{udigit $ll$, udigit $cc$}
+  sets the internal value of $l$ to $ll$ and the first entry of the vector to $cc$.  Moreover
+  the size of the vector is set to one.
+\end{fcode}
+
+\begin{fcode}{void}{$m$.set_vector}{udigit $ll$, const base_vector< udigit > & $cc$}
+  sets the internal value of $l$ to $ll$ and the internal vector to $cc$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $m$ be an instance of \code{trace_mod}.
+
+\begin{cfcode}{lidia_size_t}{$m$.get_size_of_trace_mod}{}
+  returns the size of the internal vector, i.e.  the number of possible candidates for the trace
+  of Frobenius modulo the current prime $l$.
+\end{cfcode}
+
+\begin{cfcode}{udigit}{$m$.get_modulus}{}
+  returns the modulus $l$.
+\end{cfcode}
+
+\begin{cfcode}{udigit}{$m$.get_first_element}{}
+  returns the first element of the internal vector, i.e.  the element stored at index 0.  If the
+  vector is empty, the \LEH is invoked.
+\end{cfcode}
+
+\begin{cfcode}{udigit}{$m$.get_element}{udigit $n$}
+  returns the element of the internal vector stored at index $n$.  If $n$ is bigger than the
+  size of the internal vector, the \LEH is invoked.
+\end{cfcode}
+
+\begin{fcode}{void}{swap}{trace_mod & $s$, trace_mod & $t$}
+  swaps the two instances.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+The operators \code{==}, \code{<}, \code{<=}, \code{>=}, and \code{>} are overloaded.  These
+operators compare the density of two instances of \code{trace_mod}.
+
+\begin{fcode}{bool}{cmp}{const trace_mod & $t$, const trace_mod & $s$}
+  returns $-1$, if the density of $t$ is smaller than the density of $s$, $0$ if the two
+  densities are equal, and $1$ otherwise.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+The \code{ostream} operator \code{<<} and the \code{istream} operator \code{>>} have been
+overloaded.  The \code{istream} operator first expects input of the prime $l$ and then input of
+vector of possibilities for the trace of Frobenius modulo $l$.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{eco_prime}, \SEE{trace_list}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+The Elliptic Curve Counting Package will change in future releases.  This will also affect the
+class \code{trace_mod}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Markus Maurer, Volker M\"uller.

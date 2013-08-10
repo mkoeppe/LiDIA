@@ -1,0 +1,379 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  polynomial.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the template class polynomial
+%%
+%%  Copyright   (c)   1996   by  LiDIA-Group
+%%
+%%  Authors: Stefan Neis, adding some own code to rewritten code of
+%%  Victor Shoup, Thomas Papanikolaou, Nigel Smart, Damian Weber who each
+%%  contributed some part of the original code.
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{polynomial< T >}  \dotfill parameterized polynomials
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{polynomial< T >} is a class for doing elementary polynomial computations.  A variable of
+type \code{polynomial< T >} can hold polynomials of arbitrary degree.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+A variable $f$ of type \code{polynomial< T >} is internally represented as a coefficient array
+with entries of type \code{T}.  The zero polynomial is a zero length array; otherwise, $f[0]$ is
+the constant-term, and $f[\deg(f)]$ is the leading coefficient, which must always be non-zero.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{polynomial< T >}{}
+  initializes a zero polynomial.
+\end{fcode}
+
+\begin{fcode}{ct}{polynomial< T >}{T $x$}
+  initializes with the constant polynomial $x$.
+\end{fcode}
+
+\begin{fcode}{ct}{polynomial< T >}{const T * $v$, lidia_size_t $d$}
+  initializes with the polynomial $\sum_{i=0}^d v_i x^i$.  The behaviour of this constructor is
+  undefined if the array $v$ has less than $d + 1$ elements.
+\end{fcode}
+
+\begin{fcode}{ct}{polynomial< T >}{const vector< T > $v$}
+  initializes with the polynomial $\sum_{i=0}^{n-1} v_i x^i$ where
+  $n = v$\code{.get_size()}.
+\end{fcode}
+
+\begin{fcode}{ct}{polynomial< T >}{const polynomial< T > & $f$}
+  initializes with a copy of the polynomial $f$.
+\end{fcode}
+
+\begin{fcode}{dt}{~polynomial< T >}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $f$ be of type \code{polynomial< T >}.
+
+The operator \code{=} is overloaded.  For efficiency reasons, the following functions are also
+implemented:
+
+\begin{fcode}{void}{$f$.assign_zero}{}
+  sets $f$ to the zero polynomial.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign_one}{}
+  sets $f$ to the polynomial $1 \cdot x^0$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign_x}{}
+  sets $f$ to the polynomial $1 \cdot x^1+0 \cdot x^0$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign}{const T & $a$}
+  $f \assign a \cdot x^0$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign}{const polynomial< T > & $g$}
+  $f \assign g$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+Let $f$ be of type \code{polynomial< T >}.
+
+\begin{fcode}{void}{$f$.remove_leading_zeros}{}
+  removes leading zeros.  Afterwards, if $f$ is not the zero polynomial,
+  $\code{$f$.lead_coeff()} \neq 0$.  Note that leading zeros will break the code, therefore,
+  this function is usually called automatically.  However, if you manipulate the coefficients by
+  hand or if you used \code{set_degree()}, you may need to explicitly call this function.
+\end{fcode}
+
+\begin{fcode}{void}{swap}{polynomial< T > & $a$, polynomial< T > & $b$}
+  exchanges the values of $a$ and $b$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $f$ be of type \code{polynomial< T >}.
+
+\begin{cfcode}{lidia_size_t}{$f$.degree}{}
+  returns the degree of $f$.  For the zero polynomial we return $-1$.
+\end{cfcode}
+
+\begin{fcode}{void}{$f$.set_degree}{lidia_size_t $n$}
+  sets the degree of the polynomial to $n$.  If the polynomial is not modified (by one of the
+  following functions) in such a way that it really has this pretended degree before doing
+  computations with the polynomial, this leads to undefined behaviour.  The value of $f$ is
+  always unchanged.
+\end{fcode}
+
+\begin{fcode}{bigint &}{$f$.operator[]}{lidia_size_t $i$}
+  returns a reference to the coefficient of $x^i$ of $f$.  $i$ must be non-negative and less
+  than or equal to the degree of $f$.  This operator may be used to assign a value to a
+  coefficient.
+\end{fcode}
+
+\begin{fcode}{int}{$f$.set_data}{const T * $d$, lidia_size_t $l$}
+  sets $f$ to the polynomial $\sum_{i=0}^{l-1} v_i x^i$.  The behaviour of this function is
+  undefined if the array $v$ has less than $l$ elements. The return value of
+  this function is always zero.
+\end{fcode}
+
+\begin{cfcode}{T *}{$f$.get_data}{}
+  returns a pointer to a copy of the array of coefficients of $f$.  If $f$ is the zero
+  polynomial it returns a pointer to an array with one element which is zero.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$f$.lead_coeff}{}
+  returns $f[\deg(f)]$, i.e.~the leading coefficient of $f$; returns zero if $f$ is the zero
+  polynomial.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$f$.const_term}{}
+  returns $f[0]$, i.e.~the constant term of $f$; returns zero if $f$ is the zero polynomial.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+The following operators are overloaded:
+
+\begin{center}
+  \begin{tabular}{|c|rcl|l|}\hline
+    unary & & $op$ & \code{polynomial< T >} & $op\in\{\code{-}\}$ \\\hline
+    binary & \code{polynomial< T >} & $op$ & \code{polynomial< T >}
+    & $op\in\{\code{+},\code{-},\code{*}\}$\\\hline
+    binary with & \code{polynomial< T >} & $op$ & \code{polynomial< T >}
+    & $op\in\{\code{+=},\code{-=},\code{*=}\}$\\
+    assignment & & & &\\\hline
+    binary & \code{polynomial< T >} & $op$ & \code{T}
+    & $op \in\{\code{+},\code{-},\code{*}\}$\\\hline
+    binary & \code{T} & $op$ & \code{polynomial< T >}
+    & $op \in\{\code{+},\code{-},\code{*}\}$\\\hline
+    binary with & \code{polynomial< T >} & $op$ & \code{T}
+    & $op \in\{\code{+=},\code{-=},\code{*=}\}$\\
+    assignment & & & &\\\hline
+  \end{tabular}
+\end{center}
+
+To avoid copying, these operations can also be performed by
+the following functions (Let $f$ be of type \code{polynomial< T >}).
+
+%\begin{fcode}{void}{$f$.negate}{}
+%       $f \assign -f$.
+%\end{fcode}
+
+\begin{fcode}{void}{negate}{polynomial< T > & $g$, const polynomial< T > & $h$}
+  $g \assign -h$.
+\end{fcode}
+
+\begin{fcode}{void}{add}{polynomial< T > & $f$, const polynomial< T > & $g$, const polynomial< T > & $h$}
+  $f \assign g + h$.
+\end{fcode}
+
+\begin{fcode}{void}{add}{polynomial< T > & $f$, const polynomial< T > & $g$, const T & $a$}
+  $f \assign g + a$.
+\end{fcode}
+
+\begin{fcode}{void}{add}{polynomial< T > & $f$, const T & $a$, const polynomial< T > & $g$}
+  $f \assign g + a$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{polynomial< T > & $f$, const polynomial< T > & $g$, const polynomial< T > & $h$}
+  $f \assign g - h$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{polynomial< T > & $f$, const polynomial< T > & $g$, const T & $a$}
+  $f \assign g - a$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{polynomial< T > & $f$, const T & $a$, const polynomial< T > & $g$}
+  $f \assign a - g$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{polynomial< T > & $f$, const polynomial< T > & $g$, const polynomial< T > & $h$}
+  $f \assign g \cdot h$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{polynomial< T > & $f$, const polynomial< T > & $g$, const T & $a$}
+  $f \assign g \cdot a$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{polynomial< T > & $f$, const T & $a$, const polynomial< T > & $g$}
+  $f \assign g \cdot a$.
+\end{fcode}
+
+\begin{fcode}{void}{power}{polynomial< T > & $f$, const polynomial< T > & $g$, const bigint & $e$}
+  $f \assign g^e$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+The binary operators \code{==}, \code{!=} are overloaded.
+
+Let $f$ be an instance of type \code{polynomial< T >}.
+
+\begin{cfcode}{bool}{$f$.is_zero}{}
+  returns \TRUE if $f$ is the zero polynomial; \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$f$.is_one}{}
+  returns \TRUE if $f$ is a constant polynomial and the constant coefficient equals $1$; \FALSE
+  otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$f$.is_x}{}
+  returns \TRUE if $f$ is a polynomial of degree $1$, the leading coefficient equals $1$ and the
+  constant coefficient equals $0$; \FALSE otherwise.
+\end{cfcode}
+
+%\begin{cfcode}{bool}{$f$.is_monic}{}
+%       returns \TRUE if $f$ is a monic polynomial, i.e.~if $f$ is not
+%       the zero polynomial and $f.lead_coeff() = 1$.
+%\end{cfcode}
+%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+Let $f$ be an instance of type \code{polynomial< T >}.
+
+\begin{fcode}{void}{derivative}{polynomial< T > & $f$, const polynomial< T > & $g$}
+  $f \assign g'$, i.e.~the (formal) derivative of $g$.
+\end{fcode}
+
+\begin{fcode}{base_polynomial< T >}{derivative}{const base_polynomial< T > & $g$}
+  returns $g'$, i.e.~the (formal) derivative of $g$.
+\end{fcode}
+
+\begin{cfcode}{bigint}{$f$.operator()}{const bigint & $a$}
+  returns $\sum_{i=0}^{\deg(f)} f_i \cdot a^i$, where $f = \sum_{i=0}^{\deg(f)} f_i \cdot x^i$.
+\end{cfcode}
+
+%
+% \begin{fcode}{void}{swap}{polynomial< T > & $f$, polynomial< T > & $g$}
+%    swaps the values of $f$ and $g$.
+%\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+The \code{istream} operator \code{>>} and the \code{ostream} operator \code{<<}
+are overloaded.\\
+Let $f = \sum_{i=0}^{n} f_{i} \cdot x^{i}$ where $n$ denotes the degree of the polynomial $f$.
+
+We support two different I/O-formats:
+\begin{itemize}
+\item The more simple format is
+\begin{verbatim}
+ [ f_0 f_1 ... f_n ]
+\end{verbatim}
+
+  with elements $f_i$ of type \code{T}.  Leading zeros will be removed at input.
+
+\item The more comfortable format (especially for sparse polynomials) is
+
+\begin{verbatim} f_n * x^n + ... + f_2 * x^2 + f_1 * x + f_0 \end{verbatim}
+At output, zero coefficients are omitted, as well as you may omit them at input.  In fact the
+input is even much less restrictive: you may ommit the ``*'' and you also may permute the
+monomials, writing e.g.~$a_0 + a_n x^n + a_1*x +\dots$.
+\end{itemize}
+
+Both formats may be used as input --- they are distiguished automatically by the first character
+of the input, being `[' or not `['.  The \code{ostream} operator \code{<<} always uses the
+second format.
+% The second output format can be obtained using the member function
+% \begin{cfcode}{void}{$f$.pretty_print}{ostream & os}
+% \end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{polynomial< bigint >},
+\SEE{polynomial< bigrational >},
+\SEE{polynomial< bigfloat >},
+\SEE{polynomial< bigcomplex >},
+\SEE{Fp_polynomial}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+Special thanks to Victor Shoup and Thomas Papanikolaou, who gave permission to rewrite and
+include their code.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BUGS
+
+Since this is a template class, I have to rely on other classes for reading input and producing
+output.  Therefore I don't see, how to prevent ``ugly'' output like
+\begin{verbatim} 3 * x^4 + -5 * x^2 + -7 .\end{verbatim}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/polynomial.h>
+
+int main()
+{
+    polynomial< bigfloat > f, g, h;
+
+    cout << "Please enter f : "; cin >> f;
+    cout << "Please enter g : "; cin >> g;
+
+    h = f * g;
+
+    cout << "f * g   =  " << h << endl;;
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Stefan Neis, Thomas Papanikolaou, Victor Shoup

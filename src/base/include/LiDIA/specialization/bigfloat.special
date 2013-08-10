@@ -1,0 +1,37 @@
+// -*- C++ -*-
+//==============================================================================================
+//
+//	This file is part of LiDIA --- a library for computational number theory
+//
+//	Copyright (c) 1994--2001 the LiDIA Group.  All rights reserved.
+//
+//	See http://www.informatik.tu-darmstadt.de/TI/LiDIA/
+//
+//----------------------------------------------------------------------------------------------
+//
+//	$Id: bigfloat.special,v 2.0 2001/05/02 16:39:25 lidiaadm Exp $
+//
+//	Author	:
+//	Changes	: See CVS log
+//
+//==============================================================================================
+
+
+#ifdef LIDIA_CLASS_POLYNOMIAL
+
+# ifndef __LIDIA_BIGFLOAT_POLYNOMIAL_H
+#  include	<LiDIA/bigfloat_polynomial.h>
+# endif
+
+#endif
+
+
+#if 0
+#ifdef LIDIA_CLASS_MATRIX
+
+# ifndef __LIDIA_BIGFLOAT_MATRIX_H
+#  include	<LiDIA/bigfloat_matrix.h>
+# endif
+
+#endif
+#endif

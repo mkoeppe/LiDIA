@@ -1,0 +1,95 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  exceptions.tex        LiDIA documentation
+%%
+%%  This file contains the documentation of the exceptions
+%%  thrown by LiDIA.
+%%
+%%  Copyright (c) 2002 by the LiDIA Group
+%%
+%%  Authors: Christoph Ludwig
+%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{cast_error} \dotfill exception indicating that a cast failed
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+If \LiDIA has to perform a cast but cannot  guarantee that the cast will
+succeed (e.\,g.\ in \code{precondition_error::paramValue<T>()}) then it will
+throw a \code{cast_error} in case of failure.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+Class \code{cast_error} is publicly derived from \code{basic_error} as well as
+\code{std::bad_cast}. 
+
+Let \code{e} be an object of type \code{cast_error}. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{cast_error}{const std::string& classname, 
+                                 const std::string& what_msg}
+  Constructs a new cast error object. The semantic of \code{classname} and
+  \code{what_msg} is the same as in \code{lidia_error_handler()}. When the
+  constructor returns the invariants \code{classname ==
+  this->offendingClass()} and \code{what_msg == this->what()} will hold.
+\end{fcode}
+
+\begin{fcode}{dt}{virtual ~cast_error}{}
+  Frees all resources hold by this object.
+\end{fcode}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+\begin{cfcode}{virtual const std::string&}{e.offendingClass}{}
+  Returns a textual description where the error occured. Corresponds to the
+  first parameter of \code{lidia_error_handler}.
+\end{cfcode}
+
+\begin{cfcode}{virtual const char*}{e.what}{}
+  Returns a textual description of the error. Corresponds to the second
+  parameter of \code{lidia_error_handler}.
+
+  This method overrides \code{basic_error::what()} as well as
+  \code{std::bad_cast::what()} and thereby resolves any ambiguity.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+\code{lidia_error_handler, basic_error, std::bad_cast}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\WARNINGS
+
+\LiDIA's exception hierarchy is still experimental. We may change it without
+prior notice.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Christoph Ludwig
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

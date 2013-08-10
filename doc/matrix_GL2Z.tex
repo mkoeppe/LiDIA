@@ -1,0 +1,201 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  matrix_GL2Z.tex        LiDIA documentation
+%%
+%%  This file contains the documentation of the class gl2z
+%%
+%%  Copyright (c) 1995 by the LiDIA Group
+%%
+%%  Authors:  Thomas Papanikolaou
+%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{matrix_GL2Z} \dotfill multiprecision $\GL(2, \bbfZ)$ arithmetic
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{matrix_GL2Z} is a class for doing multiprecision arithmetic with matrices of $\GL(2, \bbfZ
+)$.  It was designed especially for the algorithms which deal with unimodular transformations of
+variables of binary quadratic forms.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+A \code{matrix_GL2Z} consists of a quadruple of \code{bigint}s
+\begin{displaymath}
+  \begin{pmatrix}
+    s & u \\
+    t & v
+  \end{pmatrix}
+\end{displaymath}
+with $s v - t u = \pm 1$.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{matrix_GL2Z}{}
+  initializes with the identity matrix.
+\end{fcode}
+
+\begin{fcode}{ct}{matrix_GL2Z}{const bigint & $a$, const bigint & $c$, const bigint & $b$, const bigint & $d$}
+  initializes with the matrix $\begin{pmatrix} a & b \\ c & d \end{pmatrix}$.  If the
+  determinant is $\neq \pm 1$, the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{ct}{matrix_GL2Z}{const bigint_matrix & $U$}
+  constructs a copy of the matrix $U$.  If $U$ is not $2 \times 2$ or does not have determinant $\pm
+  1$, the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{ct}{matrix_GL2Z}{const matrix_GL2Z & $U$}
+  constructs a copy of the matrix $U$.
+\end{fcode}
+
+\begin{fcode}{dt}{~matrix_GL2Z}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+The operator \code{=} is overloaded, and assignments from both \code{matrix_GL2Z} and
+\code{bigint_matrix} are possible.  The user may also use the following object methods for
+assignment:
+
+\begin{fcode}{void}{$U$.assign_zero}{}
+  $U \assign \begin{pmatrix} 0 & 0 \\ 0 & 0 \end{pmatrix}$
+\end{fcode}
+
+\begin{fcode}{void}{$U$.assign_one}{}
+  $U \assign \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}$
+\end{fcode}
+
+\begin{fcode}{void}{$U$.assign}{const matrix_GL2Z & $V$}
+  $U \assign V$
+\end{fcode}
+
+\begin{fcode}{void}{$U$.assign}{const bigint_matrix & $V$}
+  $U \assign V$ if $V$ is a $2 \times 2$ matrix with determinant $\pm 1$, otherwise the \LEH is
+  invoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $U$ be of type \code{matrix_GL2Z}.
+
+\begin{cfcode}{int}{$U$.det}{}
+  returns the value of the determinant of $U$.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$U$.get_s}{}
+  returns the value of $s$.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$U$.get_t}{}
+  returns the value of $t$.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$U$.get_u}{}
+  returns the value of $u$.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$U$.get_v}{}
+  returns the value of $v$.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$U$.operator()}{int $i$, int $j$}
+  returns $U(i,j)$ if $i,j \in \{ 0, 1 \}$ (element of the $i$-th row and $j$-th column).  If $i$
+  or $j$ are not in $\{ 0, 1 \}$, the \LEH will be invoked.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+The operators \code{*}, \code{/}, \code{*=}, and \code{/=} are overloaded.  To avoid copying,
+these operations can also be performed by the following functions:
+
+\begin{fcode}{void}{multiply}{matrix_GL2Z & $S$, const matrix_GL2Z & $U$, const matrix_GL2Z & $V$}
+  $S = U \cdot V$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{matrix_GL2Z & $S$, const matrix_GL2Z & $U$, const matrix_GL2Z & $V$}
+  $S = U \cdot V^{-1}$.
+\end{fcode}
+
+\begin{fcode}{void}{$U$.invert}{}
+  $U = U^{-1}$.
+\end{fcode}
+
+\begin{fcode}{matrix_GL2Z}{inverse}{const matrix_GL2Z $U$}
+  returns the $U^{-1}$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+The operators \code{==} and \code{!=} are overloaded.  Let $U$ be of type \code{matrix_GL2Z}.
+
+\begin{cfcode}{bool}{$U$.is_zero}{}
+  Returns \TRUE if $U = \begin{pmatrix} 0 & 0 \\ 0 & 0 \end{pmatrix}$ and \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$U$.is_one}{}
+  Returns \TRUE if $U = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}$ and \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$U$.is_equal}{const matrix_GL2Z & $V$}
+  Returns \TRUE if $U = V$ and \FALSE otherwise.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+The operators \code{<<} and \code{>>} are overloaded.  Input and output of a \code{matrix_GL2Z}
+have the following ASCII-format, where $s$, $t$, $u$ and $v$ are \code{bigint}s:
+
+\begin{quote}
+\begin{verbatim}
+( s u )
+( t v )
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{quadratic_form}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \EXAMPLES
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Thomas Papanikolaou

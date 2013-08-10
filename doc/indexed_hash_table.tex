@@ -1,0 +1,269 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  indexed_hash_table.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the indexed hash table class
+%%
+%%  Copyright   (c)   1996   by  LiDIA-Group
+%%
+%%  Author:  Michael J. Jacobson, Jr.
+%%
+
+\newcommand{\IHT}{\mathit{IHT}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{indexed_hash_table< T >} \dotfill hash table with sequential access
+capability
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+The class \code{indexed_hash_table< T >} represents a hash table consisting of elements which
+are of some data type \code{T} in exactly the same way as the class \code{hash_table< T >}.
+However, this class also allows access to the elements in the table by index, i.e., a regular
+sequential table.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+An instance of a \code{indexed_hash_table< T >} consists of a \code{hash_table< T >} together
+with a list of pointers to elements in the \code{hash_table< T >}.  The initialization of the
+table and definition of the key function work the same as in the class \code{hash_table< T >}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{indexed_hash_table< T >}{}
+\end{fcode}
+
+\begin{fcode}{dt}{~indexed_hash_table< T >}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\INIT
+
+Let $\IHT$ be of type \code{indexed_hash_table< T >}.  The initialization function and key
+setting function are exactly the same as those of the class \code{hash_table< T >}.
+
+\begin{fcode}{void}{$\IHT$.initialize}{const lidia_size_t table_size}
+\end{fcode}
+
+\begin{fcode}{void}{$\IHT$.set_key_function}{bigint (*get_key) (const T & $G$)}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $IHT$ be of type \code{indexed_hash_table< T >}.  The operator \code{=} is overloaded.  For
+efficiency, the following function is also implemented:
+
+\begin{fcode}{void}{$\IHT$.assign}{const hash_table< T > & $\IHT'$}
+  $\IHT$ is assigned a copy of $\IHT'$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $\IHT$ be of type \code{indexed_hash_table< T >}.  The following functions are exactly the
+same as those of the class \code{hash_table< T >}.
+
+\begin{cfcode}{lidia_size_t}{$\IHT$.no_of_buckets}{}
+\end{cfcode}
+
+\begin{cfcode}{lidia_size_t}{$\IHT$.no_of_elements}{}
+\end{cfcode}
+
+\begin{fcode}{void}{$\IHT$.remove}{const T & $G$}
+\end{fcode}
+
+\begin{fcode}{void}{$\IHT$.empty}{}
+\end{fcode}
+
+\begin{cfcode}{const T &}{$\IHT$.last_entry}{}
+\end{cfcode}
+
+\begin{fcode}{void}{$\IHT$.hash}{const T & $G$}
+\end{fcode}
+
+\begin{cfcode}{T *}{$\IHT$.search}{const T & $G$}
+\end{cfcode}
+
+The following functions are specific to the class \code{indexed_hash_table< T >}, and are
+related to the sequential access capability.
+
+\begin{cfcode}{const T &}{operator[]}{lidia_size_t $i$}
+  returns a constant reference to element $i$ in the hash table (zero denotes the first
+  element).  If $i$ is greater than or equal to the number of elements in the table or less than
+  $0$, the \LEH will be evoked.
+\end{cfcode}
+
+\begin{cfcode}{const T &}{$\IHT$.member}{lidia_size_t $i$}
+  returns a constant reference to element $i$ in the hash table (zero denotes the first
+  element).  If $i$ is greater than or equal to the number of elements in the table or less than
+  $0$, the \LEH will be evoked.
+\end{cfcode}
+
+\begin{fcode}{void}{$\IHT$.remove_from}{const lidia_size_t $i$}
+  deletes element $i$ from the hash table.  If $i$ is greater than or equal to the number of
+  elements in the table or less than $0$, the \LEH will be evoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+Let $IHT$ be of type \code{indexed_hash_table< T >}.  The \code{istream} operator \code{>>} and
+the \code{ostream} operator \code{<<} are overloaded.  Input works in the same way as
+\code{hash_table< T >}.  Output is done either sequentially, each element in the table printed
+sequentially one element per line, or in the same way as the class \code{hash_table< T >}.  The
+following function may be used to set the output style for a particular instance of
+\code{indexed_hash_table< T >}.
+
+\begin{fcode}{void}{$\IHT$.output_style}{const int $\mathit{style}$}
+  sets the output style for $\IHT$.  If $\mathit{style} = 0$, sequential output will be used.
+  If $\mathit{style} = 1$, output will be done in the same style as \code{hash_table< T >}.  The
+  default is sequential output.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{hash_table}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\BUGS
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+\begin{itemize}
+\item The base type \code{T} must have at least the following capabilities:
+\begin{itemize}
+\item the assignment-operator \code{=},
+\item the equality-operator \code{==},
+\item the input-operator \code{>>}, and
+\item the output-operator \code{<<}.
+\end{itemize}
+\item The enumeration of the buckets and the elements both start with zero (like C++)
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/indexed_hash_table.h>
+
+bigint
+ikey(const int & G) { return bigint(G); }
+
+int main()
+{
+    indexed_hash_table < int > IHT;
+    int i, x, *y;
+
+    IHT.initialize(100);
+    IHT.set_key_function(&ikey);
+
+    cout << "#buckets = " << IHT.no_of_buckets() << endl;
+    cout << "current size = " << IHT.no_of_elements() << "\n\n";
+
+    for (i = 0; i < 4; ++i) {
+        cout << "Enter an integer: ";
+        cin >> x;
+        IHT.hash(x);
+    }
+
+    cout << "\ncurrent size = " << IHT.no_of_elements() << endl;
+    x = IHT.last_entry();
+    cout << "last entry = " << x << endl;
+    y = IHT.search(x);
+    if (y)
+        cout << "search succeeded!  Last entry is in the table.\n";
+    else
+        cout << "search failed!  Please report this bug!\n";
+
+    cout << "\nsequential access:\n";
+    for (i=0; i<3; ++i)
+    cout << "element " << i << " = " << IHT[i] << endl;
+
+    cout << "\nContents of IHT:\n";
+    cout << IHT << endl;
+
+    IHT.output_style(1);
+    cout << "\nAs regular hash table:\n";
+    cout << IHT << endl;
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+Example:
+\begin{quote}
+\begin{verbatim}
+#buckets = 101
+current size = 0
+
+Enter an integer: 5
+Enter an integer: 12345
+Enter an integer: -999
+Enter an integer: 207
+
+current size = 4
+last entry = 207
+search succeeded!  Last entry is in the table.
+
+sequential access:
+element 0 = 5
+element 1 = 12345
+element 2 = -999
+
+Contents of IHT:
+0: 5
+1: 12345
+2: -999
+3: 207
+
+
+As regular hash table:
+[5] : 5 : 207
+[11] : -999
+[23] : 12345
+\end{verbatim}
+\end{quote}
+
+For further examples please refer to
+\path{LiDIA/src/templates/hash_table/indexed_hash_table_appl.cc}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Michael J.~Jacobson, Jr.

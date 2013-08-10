@@ -1,0 +1,371 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  xdouble.tex        LiDIA documentation
+%%
+%%  This file contains the documentation of the class xdouble
+%%
+%%  Copyright (c) 1995 by the LiDIA Group
+%%
+%%  Authors: Thomas Papanikolaou
+%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{xdouble} \dotfill double+double precision arithmetic
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{xdouble} is a class for (\code{double}+\code{double}) arithmetic over $\bbfR$.  It
+supports mainly the same functions as the built-in type double according to IEEE (see
+\cite{IEEE:754}).  Several conversion routines have been added.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+An \code{xdouble} $x$ is represented by two \code{double}s $\mathit{lo}, \mathit{hi}$, where
+$|\mathit{lo}| < |\mathit{hi}|$.  The addition of $\mathit{lo}$ and $\mathit{hi}$ will give you
+the value of $x$
+\begin{displaymath}
+  x = \mathit{lo} + \mathit{hi}
+\end{displaymath}
+
+A complete description of the representation, the algorithms for the basic operations (\code{+,
+  -, *, /}) and the more sophisticated algorithms of \code{xdouble} can be found in the papers
+of T.J.~Decker, S.~Linnainmaa and D.~Priest (see \cite{Dekker:1971}, \cite{Linnainmaa:1981}, \cite{Priest:1992}).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{xdouble}{}
+  initializes with 0.
+\end{fcode}
+
+\begin{fcode}{ct}{xdouble}{double $\mathit{hi}$, double $\mathit{lo}$ = 0.0}
+  initializes with $\mathit{hi} + \mathit{lo}$. 
+\end{fcode}
+
+\begin{fcode}{ct}{xdouble}{const xdouble &}
+  initializes with a \code{xdouble}.
+\end{fcode}
+
+\begin{fcode}{ct}{xdouble}{char *}
+  string conversion.
+\end{fcode}
+
+\begin{fcode}{dt}{~xdouble}{}
+  deletes the \code{xdouble} object.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $a$ be of type \code{xdouble}.  The operator \code{=} is overloaded for \code{xdouble} and
+any other built-in type.  The follwing routines convert an \code{xdouble} into a built-in type
+and return the converted element.  No overflow check is done.
+
+\begin{fcode}{double}{double_xdbl}{const xdouble &}
+  convert an \code{xdouble} to a \code{double}.
+\end{fcode}
+
+\begin{fcode}{unsigned long}{ulong_xdbl}{const xdouble &}
+  convert an \code{xdouble} to an \code{unsigned long}.
+\end{fcode}
+
+\begin{fcode}{long}{long_xdbl}{const xdouble &}
+  convert an \code{xdouble} to a \code{long}.
+\end{fcode}
+
+\begin{fcode}{unsigned int}{uint_xdbl}{const xdouble &}
+  convert an \code{xdouble} to an \code{unsigned int}.
+\end{fcode}
+
+\begin{fcode}{int}{int_xdbl}{const xdouble &}
+  convert an \code{xdouble} to an \code{int}.
+\end{fcode}
+
+\begin{fcode}{unsigned short}{ushort_xdbl}{const xdouble &}
+  convert an \code{xdouble} to an \code{unsigned short}.
+\end{fcode}
+
+\begin{fcode}{short}{short_xdbl}{const xdouble &}
+  convert an \code{xdouble} to a \code{short}.
+\end{fcode}
+
+\begin{fcode}{unsigned char}{uchar_xdbl}{const xdouble &}
+  convert an \code{xdouble} to an \code{unsigned char}.
+\end{fcode}
+
+\begin{fcode}{char}{char_xdbl}{const xdouble &}
+  convert an \code{xdouble} to a \code{char}.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $a$ be of type \code{xdouble}.
+
+\begin{fcode}{double}{$a$.h}{}
+  returns the $\mathit{hi}$ part of $a$.
+\end{fcode}
+
+\begin{fcode}{double}{$a$.l}{}
+  returns the $\mathit{lo}$ part of $a$.
+\end{fcode}
+
+\begin{fcode}{xdouble}{ldexp}{const xdouble & $a$, const int $\mathit{exp}$}
+  returns the result of multiplying the $a$ by $2$ raised to the power $\mathit{exp}$.
+\end{fcode}
+
+\begin{fcode}{xdouble}{modf}{const xdouble & $a$, xdouble * $\mathit{id}$}
+  breaks the argument $a$ into an integral part and a fractional part, each of which has the
+  same sign as $a$.  The integral part is stored in $\mathit{id}$.  Returns the fractional part
+  of $a$.
+\end{fcode}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+The following operators are overloaded and can be used in exactly the same way as in C++:
+
+\begin{center}
+  \code{(unary) -}\\
+  \code{(binary) +, -, *, /}\\
+  \code{(binary with assignment) +=, -=, *=, /=}
+\end{center}
+
+\begin{fcode}{xdouble}{sqr}{const xdouble & $a$}
+  returns $a^2$.
+\end{fcode}
+
+\begin{fcode}{xdouble}{cub}{const xdouble & $a$}
+  returns $a^3$.
+\end{fcode}
+
+\begin{fcode}{xdouble}{sqrt}{const xdouble & $a$}
+  returns $\sqrt{a}$, where $a \geq 0$.  If $a < 0$, the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{xdouble}{pow}{const xdouble & $a$, const xdouble & $b$}
+  returns $a^b$, where $b > 0$.  If $b \leq 0$, the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{xdouble}{powint}{const xdouble & $a$, long $b$}
+  returns $a^b$, where $b > 0$.  If $b \leq 0$, the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{xdouble}{fmod}{const xdouble & $a$, const int $n$}
+  returns the remainder of dividing $a$ by $n$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+Let $a$ be of type \code{xdouble}.  The binary operators \code{==}, \code{!=}, \code{>=},
+\code{<=}, \code{>}, \code{<} and the unary operator \code{!} (comparison with zero) are
+overloaded and can be used in exactly the same way as in C++.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+Let $a$ be of type \code{xdouble}.
+
+\begin{fcode}{int}{sign}{const xdouble & $a$}
+  returns 1 if $a > 0$, $0$ if $a = 0$ and $1$ otherwise.
+\end{fcode}
+
+\begin{fcode}{xdouble}{fabs}{const xdouble & $a$}
+  returns $|a|$.
+\end{fcode}
+
+\begin{fcode}{xdouble}{ceil}{const xdouble & $a$}
+  returns $\lceil a \rceil$, i.e. $c$ is the smallest integer which is greater than or equal to
+  $a$.
+\end{fcode}
+
+\begin{fcode}{xdouble}{floor}{const xdouble & $a$}
+  returns $\lfloor a \rfloor$, i.e. $c$ is the largest integer which is less than or equal to
+  $a$.
+\end{fcode}
+
+\begin{fcode}{xdouble}{rint}{const xdouble & $a$}
+  returns $\lfloor a + 1/2 \rfloor$, i.e. $c$ is the nearest integer to $a$.
+\end{fcode}
+
+\begin{fcode}{xdouble}{trunc}{const xdouble & $a$}
+  returns $\sgn(a) \cdot \lfloor |a| \rfloor$.
+\end{fcode}
+
+\begin{fcode}{xdouble}{exp}{const xdouble & $a$}
+  returns $e^a$.
+\end{fcode}
+
+\begin{fcode}{xdouble}{log}{const xdouble & $a$}
+  returns $\log(a)$ (natural logarithm to base $e \approx 2.71828\dots$), where $a > 0$.  If $a
+  \leq 0$ the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{xdouble}{log10}{const xdouble & $a$}
+  returns $\log(a)$ (logarithm to base 10), where $a > 0$.  If $a \leq 0$ the \LEH will be
+  invoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\STITLE{(Inverse) Trigonometric Functions}
+
+Note that the arguments of the trigonometrical functions are supposed to be given as radiants.
+
+\begin{fcode}{xdouble}{sin}{const xdouble & $a$}
+  returns $\sin(a)$.
+\end{fcode}
+
+\begin{fcode}{xdouble}{cos}{const xdouble & $a$}
+  returns $\cos(a)$.
+\end{fcode}
+
+\begin{fcode}{void}{sin}{const xdouble & $a$, xdouble & $\mathit{sinx}$, xdouble & $\mathit{cosx}$}
+  $\mathit{sinx} = \sin(a)$ and $\mathit{cosx} = \cos(a)$.  Faster than two explicit calls.
+\end{fcode}
+
+\begin{fcode}{xdouble}{tan}{const xdouble & $a$}
+  returns $\tan(a)$ if $a \neq (2k+1)\;\pi/2$, $k \in \bbfZ$.  Otherwise the \LEH will be
+  invoked.
+\end{fcode}
+
+\begin{fcode}{xdouble}{asin}{const xdouble & $a$}
+  returns $\arcsin(a)$ if $a \in [ -1, 1 ]$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{xdouble}{acos}{const xdouble & $a$}
+  returns $\arccos(a)$ if $a \in [ -1, 1 ]$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{xdouble}{atan}{const xdouble & $a$}
+  returns $\arctan(a)$.
+\end{fcode}
+
+\begin{fcode}{xdouble}{atan2}{const xdouble & $a$, const xdouble & $b$}
+  returns $\arctan(a / b)$ in the range of $[ -\pi, \pi [$, i.e. \code{atan2($a$, $b$)}
+  calculates the argument (respectively phase) of $a, b$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\STITLE{(Inverse) Hyperbolic Trigonometric Functions}
+
+\begin{fcode}{xdouble}{sinh}{const xdouble & $a$}
+  returns $\sinh(a)$.
+\end{fcode}
+
+
+\begin{fcode}{xdouble}{cosh}{const xdouble & $a$}
+  returns $\cosh(a)$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\STITLE{Constants}
+
+Useful Constants.
+
+\begin{fcode}{xdouble}{Log2}{}
+    $\ln 2 \approx 0.6931471805599453094172321214581765680755$
+\end{fcode}
+\begin{fcode}{xdouble}{Log10}{}
+  $\ln 10 \approx 2.302585092994045684017991454684364207601$ 
+\end{fcode}
+\begin{fcode}{xdouble}{Pi}{}
+  $\pi \approx 3.1415926535897932384626433832795028841972$ 
+\end{fcode}
+\begin{fcode}{xdouble}{TwoPi}{}
+  $2 \pi \approx 6.2831853071795864769252867665590057683943$ 
+\end{fcode}
+\begin{fcode}{xdouble}{Pion2}{}
+  $\frac{\pi}{2} \approx 1.5707963267948966192313216916397514420985$ 
+\end{fcode}
+\begin{fcode}{xdouble}{Pion4}{}
+  $\frac{\pi}{4} \approx 0.7853981633974483096156608458198757210493$ 
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+Let $a$ be of type \code{xdouble}.
+
+\code{istream} operator \code{>>} and \code{ostream} operator \code{<<} are overloaded.
+
+\begin{fcode}{void}{string_to_xdouble}{char * s, xdouble & $a$}
+  converts the string \code{s} to an \code{xdouble} $a$.
+\end{fcode}
+
+\begin{fcode}{void}{xdouble_to_string}{const xdouble & $a$, char * s}
+  converts the \code{xdouble} $a$ to a string \code{s}.  The number of characters allocated for
+  $s$ must be at least 42 characters large to carry the digits of $a$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{bigfloat}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+Optimization may cause problems with an FPU having more than 64 bits.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+The following program calculates an approximate to the number $\sqrt{\pi}$ .
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/xdouble.h>
+
+int main()
+{
+    xdouble x = sqrt(xdouble::Pi);
+    cout << "\n sqrt(pi) = " << x << flush;
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Original code by Keith Briggs.  Ported to \LiDIA by Werner Backes and Thomas Papanikolaou

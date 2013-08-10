@@ -1,0 +1,826 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  bigfloat.tex        LiDIA documentation
+%%
+%%  This file contains the documentation of the class bigfloat
+%%
+%%  Copyright (c) 1995 by the LiDIA Group
+%%
+%%  Authors: Thomas Papanikolaou
+%%
+
+\newcommand{\base}{\mathit{base}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{bigfloat} \dotfill multiprecision floating point arithmetic
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{bigfloat} is a class for doing multiprecision arithmetic over $\bbfR$.  It supports for
+example arithmetic operations, shift operations, comparisons, the square root function, the
+exponential function, the logarithmical function, (inverse) trigonometric functions etc.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+Before declaring a \code{bigfloat} it is possible to set the decimal precision $p$ by
+
+\begin{quote}
+  \code{bigfloat::set_precision($p$)}
+\end{quote}
+
+Then the \emph{base digit} precision (see class \code{bigint}, page \pageref{class:bigint}) is
+\begin{displaymath}
+  t = \left\lceil\frac{p \cdot \log(10)}{\log(\base)}\right\rceil + 3 \enspace ,
+\end{displaymath}
+where $\base$ is the value of the \emph{bigint base}.  If the precision has not been set, a
+default precision of $t = 5$ \code{bigint} base digits is used.  If the decimal precision is set
+to $p$ then a \code{bigfloat} is a pair $(m, e)$, where $m$ is a \code{bigint} with $|m| <
+\base^p$ and $e$ is a machine integer.  It represents the number
+\begin{displaymath}
+  0.m \cdot 2^e \enspace.
+\end{displaymath}
+
+The number $m$ is called the \emph{mantissa} and the number $e$ is called the \emph{exponent}.
+
+A complete description of the floating point representation and the algorithms for the basic
+operations (\code{+, -, *, /}) of \code{bigfloat} can be found in the book of D. Knuth (see
+\cite{Knuth_2:1981}).  The more sophisticated algorithms which are used in \code{bigfloat} are
+implemented according to R.P.~Brent (see \cite{Brent:1976b}, \cite{Brent/McMillan:1980},
+\cite{Brent:1976c}) and J.M.~and P.B.~Borwein (see \cite{BorweinJM/BorweinPB:1987}).  There one
+can also find the time- and error-bound analysis of these algorithms.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{bigfloat}{}
+  initializes with 0.
+\end{fcode}
+
+\begin{fcode}{ct}{bigfloat}{const bigfloat & $n$}\end{fcode}
+\begin{fcode}{ct}{bigfloat}{const bigint & $n$}\end{fcode}
+\begin{fcode}{ct}{bigfloat}{long $n$}\end{fcode}
+\begin{fcode}{ct}{bigfloat}{unsigned long $n$}\end{fcode}
+\begin{fcode}{ct}{bigfloat}{int $n$}\end{fcode}
+\begin{fcode}{ct}{bigfloat}{double $n$}
+  initializes with $n$.
+\end{fcode}
+
+\begin{fcode}{ct}{bigfloat}{const bigint & $n$, const bigint & $d$}
+  This constructor initializes a \code{bigfloat} with the result of the floating point division
+  of two \code{bigint}s.  Rounding is performed according to the current rounding mode.  For this
+  see the function \code{set_mode(rounding mode)}.
+\end{fcode}
+
+\begin{fcode}{ct}{bigfloat}{const bigrational & $n$}
+  This constructor initializes a \code{bigfloat} with the result of the floating point division
+  of the numerator and the denominator of $b$.  Rounding is performed according to the current
+  rounding mode.  For this see the functions \code{set_mode} and \code{get_mode} below.
+\end{fcode}
+
+\begin{fcode}{dt}{~bigfloat}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\INIT
+
+\label{bigfloat_init}
+\begin{fcode}{static void}{set_precision}{long $p$}
+  sets the global decimal precision to $p$ decimal places.  Then the base digit precision is $t
+  = \lceil(p\cdot\log(10)/\log(\base))\rceil + 3$, where $\base$ is the \code{bigint} base.
+  Thus we have $|m| \leq \base^p$ for all \code{bigfloat}s $(m, e)$, i.e.~$m$ is a \code{bigint}
+  of length at most $t$.  Whenever necessary, internal computations are done with a higher
+  precision.
+\end{fcode}
+
+\begin{fcode}{static long}{get_precision}{}
+  returns the current decimal precision.
+\end{fcode}
+
+\begin{fcode}{static void}{set_mode}{long $m$}
+  sets the rounding mode for the normalization routine according to the IEEE standard (see
+  \cite{IEEE:754}).  The following modes are available:
+  \begin{itemize}
+  \item \code{MP_TRUNC}: round to zero.
+  \item \code{MP_RND}: round to nearest.  If there are two possibilities to do this, round to
+    even.
+  \item \code{MP_RND_UP}: round to $+\infty$.
+  \item \code{MP_RND_DOWN}: round to $-\infty$.
+  \end{itemize}
+\end{fcode}
+
+\begin{fcode}{static int}{get_mode}{}
+  return the current rounding mode.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $a$ be of type \code{bigfloat}.
+
+\begin{fcode}{long}{$a$.exponent}{}
+  returns the exponent of $a$.
+\end{fcode}
+
+\begin{fcode}{bigint}{$a$.mantissa}{}
+  returns the mantissa of $a$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $a$ be of type \code{bigfloat}.  The operator \code{=} is overloaded.  The user may also use
+the following object methods for assignment:
+
+\begin{fcode}{void}{$a$.assign_zero}{}
+  $a \assign 0$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign_one}{}
+  $a \assign 1$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign}{const bigfloat & $n$}\end{fcode}
+\begin{fcode}{void}{$a$.assign}{const bigint & $n$}\end{fcode}
+\begin{fcode}{void}{$a$.assign}{long $n$}\end{fcode}
+\begin{fcode}{void}{$a$.assign}{unsigned long $n$}\end{fcode}
+\begin{fcode}{void}{$a$.assign}{int $n$}\end{fcode}
+\begin{fcode}{void}{$a$.assign}{double $n$}
+  $a \assign n$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign}{const bigint & $n$, const bigint & $d$}
+  $a \assign n / d$ (floating point division) if $d \neq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\MODF
+
+\begin{fcode}{void}{$a$.negate}{}
+  $a \assign -a$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.absolute_value}{}
+  $a \assign |a|$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.inc}{}
+\end{fcode}
+\begin{fcode}{void}{inc}{bigfloat & $a$}
+  $a \assign a + 1$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.dec}{}\end{fcode}
+\begin{fcode}{void}{dec}{bigfloat & $a$}
+  $a \assign a - 1$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.multiply_by_2}{}
+  $a \assign a \cdot 2$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.divide_by_2}{}
+  $a \assign a / 2$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.invert}{}
+  $a \assign 1 / a$, if $a \neq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.swap}{bigfloat & $b$}\end{fcode}
+\begin{fcode}{void}{swap}{bigfloat & $a$, bigfloat & $b$}
+  swaps the values of $a$ and $b$
+\end{fcode}
+
+\begin{fcode}{void}{$a$.randomize}{const bigint & $n$, long $f$}
+  sets $a$ to $m \cdot 2^e$, where $|m| < n$, $|e| \leq f$, and $e$ positive iff $f$ is
+  even.  $m$ is chosen randomly using the \code{randomize($n$)} function of \SEE{bigint}
+  and $e$ using the class \SEE{random_generator}.  $n$ must not be equal to
+  zero.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+The following operators are overloaded and can be used in exactly the same way as in C++:
+
+\begin{center}
+  \code{(unary) -, ++, -{}-}\\
+  \code{(binary) +, -, *, /, <<, >>}\\
+  \code{(binary with assignment) +=, -=, *=, /=, <<=, >>=}
+\end{center}
+
+To avoid copying all operators exist also as functions:
+
+\begin{fcode}{void}{add}{bigfloat & $c$, const bigfloat & $a$, const bigfloat & $b$}
+  $c \assign a + b$.
+\end{fcode}
+
+\begin{fcode}{void}{add}{bigfloat & $c$, const bigfloat & $a$, long $i$}
+  $c \assign a + i$.
+\end{fcode}
+
+\begin{fcode}{void}{add}{bigfloat & $c$, long $i$, const bigfloat & $b$}
+  $c \assign i + b$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{bigfloat & $c$, const bigfloat & $a$, const bigfloat & $b$}
+  $c \assign a - b$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{bigfloat & $c$, const bigfloat & $a$, long $i$}
+  $c \assign a - i$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{bigfloat & $c$, long $i$, const bigfloat & $b$}
+  $c \assign i - b$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{bigfloat & $c$, const bigfloat & $a$, const bigfloat & $b$}
+  $c \assign a \cdot b$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{bigfloat & $c$, const bigfloat & $a$, long $i$}
+  $c \assign a \cdot i$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{bigfloat & $c$, long $i$, const bigfloat & $b$}
+  $c \assign i \cdot b$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{bigfloat & $c$, const bigfloat & $a$, const bigfloat & $b$}
+  $c \assign a / b$, if $b \neq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{bigfloat & $c$, const bigfloat & $a$, long $i$}
+  $c \assign a / i$, if $i \neq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{bigfloat & $c$, long $i$, const bigfloat & $b$}
+  $c \assign i / b$, if $b \neq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{bigfloat & $c$, long $i$, long $j$}
+  $c \assign i / j$ (floating point division) if $j \neq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{negate}{bigfloat & $a$, const bigfloat & $b$}
+  $a \assign -b$.
+\end{fcode}
+
+\begin{fcode}{void}{invert}{bigfloat & $a$, const bigfloat & $b$}
+  $a \assign 1 / b$, if $b \neq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{inverse}{const bigfloat & $a$}
+  returns $1 / a$, if $a \neq 0$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{square}{bigfloat & $c$, const bigfloat & $a$}
+  $c \assign a^2$.
+\end{fcode}
+
+\begin{fcode}{void}{sqrt}{bigfloat & $c$, const bigfloat & $a$}
+  $c \assign \sqrt{a}$, where $a \geq 0$.  If $a < 0$, the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{sqrt}{const bigfloat & $a$}
+  returns $\sqrt{a}$, where $a \geq 0$.  If $a < 0$, the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{power}{bigfloat & $c$, const bigfloat & $a$, long $i$}
+  $c \assign a^i$.
+\end{fcode}
+
+\begin{fcode}{void}{power}{bigfloat & $c$, const bigfloat & $a$, const bigfloat & $b$}
+  $c \assign a^b$. If $a < 0$ and $b$ is not an integer, the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{power}{const bigfloat & $a$, const bigfloat & $b$}
+  returns $a^b$. If $a < 0$ and $b$ is not an integer, the \LEH will be invoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SHFT
+
+Let $a$ be of type \code{bigfloat}.  In \code{bigfloat} shifting, i.e.~multiplication with
+powers of $2$, is done using exponent manipulation.
+
+\begin{fcode}{void}{shift_left}{bigfloat & $c$, const bigfloat & $b$, long $i$}
+  $c \assign b \cdot 2^i$.
+\end{fcode}
+
+\begin{fcode}{void}{shift_right}{bigfloat & $c$, const bigfloat & $b$, long $i$}
+  $c \assign b / 2^i$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+Let $a$ be of type \code{bigfloat}.  The binary operators \code{==}, \code{!=}, \code{>=},
+\code{<=}, \code{>}, \code{<} and the unary operator \code{!} (comparison with zero) are
+overloaded and can be used in exactly the same way as in C++.
+
+\begin{cfcode}{bool}{$a$.is_zero}{}
+  returns \TRUE if $a = 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_approx_zero}{}
+  returns \TRUE if $|a| < \mathit{\base}^{-t}$ (see initialization, page
+  \pageref{bigfloat_init}), \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_one}{}
+  returns \TRUE if $a = 1$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_gt_zero}{}
+  returns \TRUE if $a > 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_ge_zero}{}
+  returns \TRUE if $a \geq 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_lt_zero}{}
+  returns \TRUE if $a < 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_le_zero}{}
+  returns \TRUE if $a \leq 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{int}{$a$.abs_compare}{const bigfloat & $b$}
+  returns $\sgn(|a| - |b|)$.
+\end{cfcode}
+
+\begin{cfcode}{int}{$a$.compare}{const bigfloat & $b$}
+  returns $\sgn(a - b)$.
+\end{cfcode}
+
+\begin{cfcode}{int}{$a$.sign}{}
+  returns 1 if $a > 0$, $0$ if $a = 0$ and $1$ otherwise.
+\end{cfcode}
+
+\begin{fcode}{int}{sign}{const bigfloat & $a$}
+  returns 1 if $a > 0$, $0$ if $a = 0$ and $1$ otherwise.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\TYPE
+
+Before assigning a \code{bigfloat} to a machine type (e.g.~\code{int}) it is often useful to
+perform a test which checks whether the assignment can be done without overflow.  Let $a$ be of
+type \code{bigfloat}.  The following methods return \TRUE if the assignment would be successful,
+\FALSE otherwise.  No rounding is done.
+
+\begin{fcode}{bool}{$a$.is_char}{const bigfloat &}\end{fcode}
+\begin{fcode}{bool}{$a$.is_uchar}{const bigfloat &}\end{fcode}
+\begin{fcode}{bool}{$a$.is_short}{const bigfloat &}\end{fcode}
+\begin{fcode}{bool}{$a$.is_ushort}{const bigfloat &}\end{fcode}
+\begin{fcode}{bool}{$a$.is_int}{const bigfloat &}\end{fcode}
+\begin{fcode}{bool}{$a$.is_uint}{const bigfloat &}\end{fcode}
+\begin{fcode}{bool}{$a$.is_long}{const bigfloat &}\end{fcode}
+\begin{fcode}{bool}{$a$.is_ulong}{const bigfloat &}\end{fcode}
+\begin{fcode}{bool}{$a$.is_double}{const bigfloat &}\end{fcode}
+
+There methods also exists as procedural versions, however, the object methods are preferred over
+the procedures.
+\begin{fcode}{bool}{is_char}{const bigfloat & $a$}\end{fcode}
+\begin{fcode}{bool}{is_uchar}{const bigfloat & $a$}\end{fcode}
+\begin{fcode}{bool}{is_short}{const bigfloat & $a$}\end{fcode}
+\begin{fcode}{bool}{is_ushort}{const bigfloat & $a$}\end{fcode}
+\begin{fcode}{bool}{is_int}{const bigfloat & $a$}\end{fcode}
+\begin{fcode}{bool}{is_uint}{const bigfloat & $a$}\end{fcode}
+\begin{fcode}{bool}{is_long}{const bigfloat & $a$}\end{fcode}
+\begin{fcode}{bool}{is_ulong}{const bigfloat & $a$}\end{fcode}
+\begin{fcode}{bool}{is_double}{const bigfloat & $a$}\end{fcode}
+
+\begin{cfcode}{void}{$a$.bigintify}{bigint & $b$}
+  $b \assign \lfloor a + 1/2 \rfloor$, i.e.~$b$ is the nearest integer to $a$.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.doublify}{double & $d$}
+  tries to perform the assignment $d \assign a$.  If successful, i.e. no overflow occurs, the function
+  returns \FALSE and assigns $a$ to $d$.  Otherwise it returns \TRUE and leaves the value of $d$
+  unchanged.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.intify}{int & $i$}
+  tries to perform the assignment $i \assign a$.  If successful, i.e. no overflow occurs, the function
+  returns \FALSE and assigns $a$ to $i$.  Otherwise it returns \TRUE and leaves the value of $i$
+  unchanged.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.longify}{long & $l$}
+  tries to perform the assignment $l \assign a$.  If successful, i.e. no overflow occurs, the function
+  returns \FALSE and assigns $a$ to $l$.  Otherwise it returns \TRUE and leaves the value of $l$
+  unchanged.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+Let $a$ be of type \code{bigfloat}.
+
+\begin{cfcode}{lidia_size_t}{$a$.bit_length}{}
+  returns the length of the mantissa of $a$ in binary digits.
+\end{cfcode}
+
+\begin{cfcode}{lidia_size_t}{$a$.length}{}
+  returns the length of the mantissa of $a$ in \code{bigint} base digits.
+\end{cfcode}
+
+\begin{fcode}{bigfloat}{abs}{const bigfloat & $a$}
+  returns $|a|$.
+\end{fcode}
+
+\begin{fcode}{void}{besselj}{bigfloat & $c$, int $n$, const bigfloat & $a$}
+  $c \assign J_n(a)$ (Bessel Function of first kind and integer order).
+\end{fcode}
+
+\begin{fcode}{bigfloat}{besselj}{int $n$, const bigfloat & $a$}
+  returns $J_n(a)$ (Bessel Function of first kind and integer order).
+\end{fcode}
+
+\begin{fcode}{void}{ceil}{bigint & $c$, const bigfloat & $a$}
+\end{fcode}
+\begin{fcode}{void}{ceil}{bigfloat & $c$, const bigfloat & $a$}
+  $c \assign \lceil a \rceil$, i.e. $c$ is the smallest integer which is greater than or equal
+  to $a$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{ceil}{const bigfloat & $a$}
+  returns $\lceil a \rceil$, i.e. $c$ is the smallest integer which is greater than or equal to
+  $a$.
+\end{fcode}
+
+\begin{fcode}{void}{floor}{bigint & $c$, const bigfloat & $a$}
+\end{fcode}
+\begin{fcode}{void}{floor}{bigfloat & $c$, const bigfloat & $a$}
+  $c \assign \lfloor a \rfloor$, i.e. $c$ is the largest integer which is less than or equal to
+  $a$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{floor}{const bigfloat & $a$}
+  returns $\lfloor a \rfloor$, i.e. $c$ is the largest integer which is less than or equal to
+  $a$.
+\end{fcode}
+
+\begin{fcode}{void}{round}{bigint & $c$, const bigfloat & $a$}
+\end{fcode}
+\begin{fcode}{void}{round}{bigfloat & $c$, const bigfloat & $a$}
+  $c \assign \lfloor a + 1/2 \rfloor$, i.e. $c$ is the nearest integer to $a$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{round}{const bigfloat & $a$}
+  returns $\lfloor a + 1/2 \rfloor$, i.e. $c$ is the nearest integer to $a$.
+\end{fcode}
+
+\begin{fcode}{void}{truncate}{bigint & $c$, const bigfloat & $a$}
+\end{fcode}
+\begin{fcode}{void}{truncate}{bigfloat & $c$, const bigfloat & $a$}
+  $c \assign \sgn(a) \cdot \lfloor |a| \rfloor$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{truncate}{const bigfloat & $a$}
+  returns $\sgn(a) \cdot \lfloor |a| \rfloor$.
+\end{fcode}
+
+\begin{fcode}{void}{exp}{bigfloat & $c$, const bigfloat & $a$}
+  $c \assign e^a$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{exp}{const bigfloat & $a$}
+  returns $\exp(a) = e^a$ ($e \approx 2.1828\dots$).
+\end{fcode}
+
+\begin{fcode}{void}{log}{bigfloat & $c$, const bigfloat & $a$}
+  $c \assign \log(a)$ (natural logarithm to base $e \approx 2.71828\dots$), where $a > 0$.  If
+  $a \leq 0$, the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{log}{const bigfloat & $a$}
+  returns $\log(a)$ (natural logarithm to base $e = 2.71828\dots$), where $a > 0$.  If $a \leq
+  0$ the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{log2p1}{const bigfloat & $a$}
+  returns $\log_2(1+a)$ (logarithm to base $2$).  If $a < \sqrt2/2$, the Taylor series is used.
+  (written by John Bunda \url{bunda@centtech.com})
+\end{fcode}
+
+\begin{fcode}{long}{exponent}{const bigfloat & $a$}
+  returns the exponent of $a$.
+\end{fcode}
+
+\begin{fcode}{bigint}{mantissa}{const bigfloat & $a$}
+  returns the mantissa of $a$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\STITLE{(Inverse) Trigonometric Functions}
+
+Note that the arguments of the trigonometrical functions are supposed to be given as radiants.
+
+
+\begin{fcode}{void}{sin}{bigfloat & $c$, const bigfloat & $a$}
+  $c \assign \sin(a)$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{sin}{const bigfloat & $a$}
+  returns $\sin(a)$.
+\end{fcode}
+
+\begin{fcode}{void}{cos}{bigfloat & $c$, const bigfloat & $a$}
+  $c \assign \cos(a)$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{cos}{const bigfloat & $a$}
+  returns $\cos(a)$.
+\end{fcode}
+
+\begin{fcode}{void}{tan}{bigfloat & $c$, const bigfloat & $a$}
+  $c \assign \tan(a)$ if $a \neq (2k+1)\;\pi/2$, $k \in \bbfZ$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{tan}{const bigfloat & $a$}
+  returns $\tan(a)$ if $a \neq (2k+1)\;\pi/2$, $k \in \bbfZ$.  Otherwise the \LEH will be
+  invoked.
+\end{fcode}
+
+\begin{fcode}{void}{cot}{bigfloat & $c$, const bigfloat & $a$}
+  $c \assign \cot(a)$ if $a \neq k\;\pi$, $k \in \bbfZ$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{cot}{const bigfloat & $a$}
+  returns $\cot(a)$ if $a \neq k\;\pi$, $k \in \bbfZ$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{asin}{bigfloat & $c$, const bigfloat & $a$}
+  $c \assign \arcsin(a)$ if $a \in [ -1, 1 ] $.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{asin}{const bigfloat & $a$}
+  returns $\arcsin(a)$ if $a \in [ -1, 1 ]$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+
+\begin{fcode}{void}{acos}{bigfloat & $c$, const bigfloat & $a$}
+  $c \assign \arccos(a)$ if $a \in [ -1, 1 ]$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{acos}{const bigfloat & $a$}
+  returns $\arccos(a)$ if $a \in [ -1, 1 ]$.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{atan}{bigfloat & $c$, const bigfloat & $a$}
+  $c \assign \arctan(a)$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{atan}{const bigfloat & $a$}
+  returns $\arctan(a)$.
+\end{fcode}
+
+\begin{fcode}{void}{atan2}{bigfloat & $c$, const bigfloat & $a$, const bigfloat & $b$}
+  $c \assign \arctan(a / b)$ in the range of $[-\pi, \pi[$, i.e. \code{atan2($a$, $b$)}
+  calculates the argument (respectively phase) of $a, b$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{atan2}{const bigfloat & $a$, const bigfloat & $b$}
+  returns $\arctan(a / b)$ in the range of $[-\pi, \pi[$, i.e. \code{atan2($a$, $b$)} calculates
+  the argument (respectively phase) of $a, b$.
+\end{fcode}
+
+\begin{fcode}{void}{acot}{bigfloat & $c$, const bigfloat & $a$}
+  $c \assign \arccot(a)$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{acot}{const bigfloat & $a$}
+  returns $\arccot(a)$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\STITLE{(Inverse) Hyperbolic Trigonometric Functions}
+
+\begin{fcode}{void}{sinh}{bigfloat & $c$, const bigfloat & $a$}
+  $c \assign \sinh(a)$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{sinh}{const bigfloat & $a$}
+  returns $\sinh(a)$.
+\end{fcode}
+
+\begin{fcode}{void}{cosh}{bigfloat & $c$, const bigfloat & $a$}
+  $c \assign \cosh(a)$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{cosh}{const bigfloat & $a$}
+  returns $\cosh(a)$.
+\end{fcode}
+
+\begin{fcode}{void}{tanh}{bigfloat & $c$, const bigfloat & $a$}
+  $c \assign \tanh(a)$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{tanh}{const bigfloat & $a$}
+  returns $\tanh(a)$.
+\end{fcode}
+
+\begin{fcode}{void}{coth}{bigfloat & $c$, const bigfloat & $a$}
+  $c \assign \coth(a)$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{coth}{const bigfloat & $a$}
+  returns $\coth(a)$.
+\end{fcode}
+
+\begin{fcode}{void}{asinh}{bigfloat & $c$, const bigfloat & $a$}
+  $c \assign \arsinh(a)$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{asinh}{const bigfloat & $a$}
+  returns $\arsinh(a)$.
+\end{fcode}
+
+\begin{fcode}{void}{acosh}{bigfloat & $c$, const bigfloat & $a$}
+  $c \assign \arcosh(a)$, where $a \geq 1$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{acosh}{const bigfloat & $a$}
+  returns $\arcosh(a)$, where $a \geq 1$.
+\end{fcode}
+
+\begin{fcode}{void}{atanh}{bigfloat & $c$, const bigfloat & $a$}
+  $c \assign \artanh(a)$, where $a \in ]-1, 1[$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{atanh}{const bigfloat & $a$}
+  returns $\artanh(a)$, where $a \in ] -1, 1 [$.
+\end{fcode}
+
+\begin{fcode}{void}{acoth}{bigfloat & $c$, const bigfloat & $a$}
+  $c \assign \arcoth(a)$, where $a \in \bbfR \setminus [-1, 1]$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{acoth}{const bigfloat & $a$}
+  returns $\arcoth(a)$, where $a \in \bbfR \setminus [ -1, 1 ]$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\STITLE{Constants}
+
+Constants are calculated according to the precision set in the initialization phase (i.e.
+\code{bigfloat::precision}).
+
+\begin{fcode}{void}{constant_E}{bigfloat & $a$}
+  $a \assign e \approx 2.718281828459\dots$
+\end{fcode}
+
+\begin{fcode}{void}{constant_Pi}{bigfloat & $a$}
+  $a \assign \pi \approx 3.141592653589\dots$
+\end{fcode}
+
+\begin{fcode}{void}{constant_Euler}{bigfloat & $a$}
+  $a \assign \gamma = 0.5772156649\dots$
+\end{fcode}
+
+\begin{fcode}{void}{constant_Catalan}{bigfloat & $a$}
+  $a \assign G \approx 0.9159655941\dots$
+\end{fcode}
+
+\begin{fcode}{bigfloat}{E}{}
+\end{fcode}
+\begin{fcode}{bigfloat}{Pi}{}
+\end{fcode}
+\begin{fcode}{bigfloat}{Euler}{}
+\end{fcode}
+\begin{fcode}{bigfloat}{Catalan}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+Let $a$ be of type \code{bigfloat}.
+
+\code{istream} operator \code{>>} and \code{ostream} operator \code{<<} are overloaded.
+Furthermore, you can use the following member functions for writing to and reading from a file
+in binary or ASCII format, respectively.  Input and output of a \code{bigfloat} are in the
+following format:
+\begin{displaymath}
+  \pm z E \pm l \quad\text{or}\quad \pm z e \pm l \enspace,
+\end{displaymath}
+where $z$ has the form $x$, $x.y$ or $y$ where $x$ and $y$ are of type int and $l$ is of type
+long.  Note that you have to manage by yourself that successive \code{bigfloat}s have to be
+separated by blanks.
+
+\begin{fcode}{int}{$a$.scan_from_file}{FILE * fp}
+  scans $a$ form the ASCII file \code{fp} using \code{fscanf}.
+\end{fcode}
+
+\begin{cfcode}{int}{$a$.print_to_file}{FILE * fp}
+  prints $a$ in ASCII format to the file \code{fp} using \code{fprintf}.
+\end{cfcode}
+
+\begin{fcode}{int}{string_to_bigfloat}{char * s, bigfloat & $a$}
+  converts the string \code{s} to a \code{bigfloat} $a$ and returns the number of used characters.
+\end{fcode}
+
+\begin{fcode}{int}{bigfloat_to_string}{const bigfloat & $a$, char * s}
+  converts the \code{bigfloat} $a$ to a string \code{s} and returns the number of used
+  characters.  The number of characters allocated for \code{s} must be at least
+  $\code{$a$.bit_length()/3 + 10}$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{bigint}, \SEE{bigrational}, \SEE{bigcomplex}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+The implementation of the transcendental functions is optimized for the \code{sun4}
+architecture.
+
+The member functions \code{scan_from_file(FILE *)} and \code{print_to_file(FILE *)} are included
+because there are still compilers which do not handle \code{fstream}s correctly.  In a future
+release those functions will disappear.
+
+Storing a double variable $d$ into a \code{bigfloat} $x$ (i.e. using the assignment $x \assign d$)
+is done with the precision of the double mantissa.  The precision of IEEE doubles is 53 bits).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+The  following  program  calculates  the number $\sqrt{\pi}$
+to 100 decimal places.
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/bigfloat.h>
+
+int main()
+{
+    bigfloat::set_precision(100);
+
+    bigfloat x = sqrt(Pi());
+
+    cout << "\n sqrt(Pi) = " << x << flush;
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+An extensive example of \code{bigfloat} can be found in \LiDIA's installation directory under
+\path{LiDIA/src/simple_classes/bigfloat_appl.cc}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Thomas Papanikolaou

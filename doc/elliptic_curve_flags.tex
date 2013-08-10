@@ -1,0 +1,128 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  elliptic_curve.tex  Documentation
+%%
+%%  This file contains the documentation of the class
+%%  elliptic_curve_flags.
+%%
+%%  Copyright   (c)   1999   by  LiDIA Group
+%%
+%%  Authors: Nigel Smart, Volker Mueller, John Cremona,
+%%           Birgit Henhapl, Markus Maurer
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\code{elliptic_curve_flags} \dotfill class for providing elliptic curve related flags.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+The class \code{elliptic_curve_flags} collects the flags, that are necessary for computing with
+elliptic curves.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+\code{elliptic_curve_flags} is a class that simply collects all flags that can be used when
+computing with elliptic curves.  The flags can be accessed by giving the prefix
+\code{elliptic_curve_flags::}, e.g.
+\begin{verbatim}
+   elliptic_curve_flags::SHORT_W.
+\end{verbatim}
+
+The flags of type \code{elliptic_curve_flags::curve_parametrization}
+are:
+\begin{verbatim}
+      SHORT_W // Y^2 = X^3 + a4*X + a6 (affine)
+              // Y^2 Z = X^3 + a4*X Z^2 + a6 Z^3 (projective)
+
+      LONG_W  // Y^2+a1*X*Y+a3*Y = X^3+a2*X^2+a4*X+a6 (affine)
+              // Y^2 Z +a1*X*Y*Z+a3*Y*Z^2 =
+              // X^3+a2*X^2*Z+a4*X*Z^2+a6 Z^3 (projective)
+
+      GF2N_F  // Y^2 +X*Y = X^3 + a2*X^2 + a6 (affine)
+              // Y^2 Z + X*Y*Z = X^3 + a2*X^2*Z + a6 Z^3 (projective)
+\end{verbatim}
+
+
+The flags of type \code{elliptic_curve_flags::curve_output_mode} are:
+\begin{verbatim}
+      SHORT       // [a1,a2,a3,a4,a6,X] only, where X is either
+                  // "A" (for AFFINE) or "P" for (PROJECTIVE), respectively.
+                  // If ",X" is omitted the model is affine.
+      LONG        // as SHORT + b_i, c_j, delta,
+                  // and more in derived classes;
+      PRETTY      // equation form
+      TEX         // equation form in TeX format
+\end{verbatim}
+
+The flags of type \code{elliptic_curve_flags::curve_model} are:
+\begin{verbatim}
+      AFFINE      // affine model
+      PROJECTIVE  // projective model
+\end{verbatim}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{point< T >},
+\SEE{elliptic_curve< T >}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+The elliptic curve package of \LiDIA will be increased in future.  Therefore
+the interface of the described functions might change in future.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/bigint.h>
+#include <LiDIA/galois_field.h>
+#include <LiDIA/gf_element.h>
+#include <LiDIA/elliptic_curve.h>
+
+int main()
+{
+    bigint p;
+    cout << "\n Input prime characteristic : "; cin >> p;
+
+    galois_field F(p);
+
+    gf_element a4, a6;
+
+    a4.assign_zero(F);
+    a6.assign_zero(F);
+
+    cout << "\n Coefficient a_4 : "; cin >> a4;
+    cout << "\n Coefficient a_6 : "; cin >> a6;
+
+    elliptic_curve< gf_element > e(a4, a6, elliptic_curve_flags::AFFINE);
+
+    cout << "\n Group order is " << e.group_order();
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Birgit Henhapl, John Cremona, Markus Maurer, Volker M\"uller, Nigel Smart.

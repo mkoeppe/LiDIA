@@ -1,0 +1,74 @@
+LiDIA Open Issues
+=================
+
+This file is kind of a notebook for the LiDIA developers to keep track
+of known bugs, planned improvements and so on. It is more or less free
+form and may refer to internal discussions among the maintainers;
+don't expect that everything mentioned here makes sense to you.
+
+If you find a bug or miss a feature in LiDIA that is not already
+mentioned in this file, please tell us about it on the mailing list
+lidia@cdc.informatik.tu-darmstadt.de. (You need to subscribe at
+http://www.cdc.informatik.tu-darmstadt.de/mailman/listinfo/lidia/.)
+
+* Fix documentation of prime_list. Make it a class template.
+
+* Make configure fail if the programs that determine the sizeof(int)
+  etc. can't be executed. (Most likely, the loader didn't find the
+  correct runtime library if several compilers are installed.)
+
+* src/finite_fields/Fp_polynomial/factoring.cc:271:
+  warning: control reaches end of non-void function
+  `LiDIA::find_factor_degree_d(const LiDIA::Fp_polynomial &, int)'
+
+* xdoubles: fix xdoubles without `-ffloat-store'
+  [ccorn: May 11, 2002; Oct 24, 2002; Nov 12, 2002]
+
+* doublecheck gmp/udigit_interface.h: More bugs like the one causing
+  stack corruption on alpha? (Maybe there's the cause for the "random
+  behaviour comparing bigints" on alpha?)
+  [cludwig: Nov 12, 2002, jcremona: Sep 24, 2002]
+  Hint: grep for mpn_ function calls
+
+* Incorporate EC-Bugfixes provided by J. Cremona / S. Labour
+  [jcremona: Oct 02, 2002]
+
+* Make the documentation and the library consistent again.
+
+* Check the examples whether they produce correct results.
+
+* Create a testsuite.  Basic idea: define check_PROGRAMS and TESTS,
+  the latter including some scripts to run the former (if I/O needed).
+
+* configure.ac:
+  check --with-extra-libs, --with-extra-includes earlier, i.e.
+  before first compilation.  Same with -fno-implicit-template & Co.
+
+* Manual: base_matrix: A(r,c) = A.member(r,c) => const
+  [justin: Sep 29, 2002]
+
+* Move: either {ring,field}_matrix_appl.cc => LA package
+  or required ring_matrix<> instantiations => base package
+  [ccorn: Jul 31, 2002]
+
+* Check that all valid subsets of LiDIA packages can be built
+  without losing required instantiations.  (Method: build the full
+  package, then reconfigure for some package subset, remove
+  `library/libLiDIA.la' and "make examples".  Reconfigure for another
+  subset etc.  This should not require recompilations.
+
+* Base: Timer: really use real time, not user+sys time!
+
+* GEC: define and use default for LIDIA_DISCRIMINANTS
+
+* Rational factorization: Reduce usage of ECM for short numbers
+
+* Rational factorization: Recheck MPQS/Lanczos
+
+* random_generator: uniformize distribution
+  [ccorn: Jul 12, 2002]
+
+* Clean up tuning scheme (test_machine.cc, make_crossover.cc)
+
+* Memory managers: Include or withdraw?
+

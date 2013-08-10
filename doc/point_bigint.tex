@@ -1,0 +1,314 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  point_bigint.tex    Documentation
+%%
+%%  This file contains the documentation of the class point< bigint >
+%%
+%%  Copyright   (c)   1998   by  LiDIA group
+%%
+%%  Authors: Nigel Smart, John Cremona
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\code{point< bigint >} \dotfill class for holding a point on a minimal model of an elliptic
+curve over the rationals.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+A point on a minimal model of an elliptic curve is held in ``projective'' representation as $P =
+(x:y:z) = (x/z, y/z)$.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+This class is a specialization of the general template class \code{point< T >}.  Any point holds
+a pointer to the curve it sits on, in addition the addition routines ``know'' about the type of
+curve, i.e. whether it is in short or long Weierstrass form.  Algorithms are then optimized for
+working with such curves.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{point< bigint >}{}
+  constructs an invalid point.
+\end{fcode}
+
+\begin{fcode}{ct}{point< bigint >}{const bigint & $x$, const bigint & $y$,
+    const elliptic_curve< bigint > & $E$}%
+  constructs the point $P = (x:y:1)$ on the curve $E$.
+\end{fcode}
+
+\begin{fcode}{ct}{point< bigint >}{const bigint & $x$, const bigint & $y$,
+    const bigint & $z$, const elliptic_curve< bigint > & $E$}%
+  constructs the point $P = (x:y:z)$ on the curve $E$.
+\end{fcode}
+
+\begin{fcode}{ct}{point< bigint >}{const point< bigint > & $P$}
+  Copy constructor for a point.
+\end{fcode}
+
+\begin{fcode}{ct}{point< bigint >}{const elliptic_curve< bigint > & $E$}
+  constructs the point at infinity on the elliptic curve $E$.
+\end{fcode}
+
+\begin{fcode}{dt}{~point< bigint >}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+The operator \code{=} is overloaded.  However for efficiency the following functions are also
+defined.  Let $P$ be of type \code{point< bigint >}.
+
+\begin{fcode}{void}{$P$.assign_zero}{const elliptic_curve< bigint > & $E$}
+  assigns to $P$ the point at infinity on the elliptic curve $E$.
+\end{fcode}
+
+\begin{fcode}{void}{$P$.assign}{const point< bigint > & $Q$}
+  assigns to $P$ the point $Q$.
+\end{fcode}
+
+\begin{fcode}{void}{$P$.assign}{const bigint & $x$, const bigint & $y$,
+    const elliptic_curve< bigint > & $E$}%
+  assigns to $P$ the point $(x:y:1)$ on the curve $E$.
+\end{fcode}
+
+\begin{fcode}{void}{$P$.assign}{const bigint & $x$, const bigint & $y$,
+    const bigint & $z$, const elliptic_curve< bigint > & $E$}%
+  assigns to $P$ the point $(x:y:z)$ on the curve $E$.
+\end{fcode}
+
+If $P$ is a point defined on a given curve, the following assignments exist which use the same
+curve.  They should for this reason be used with care.
+
+\begin{fcode}{void}{$P$.assign_zero}{}
+\end{fcode}
+
+\begin{fcode}{void}{$P$.assign}{const bigint & $x$, const bigint & $y$}
+\end{fcode}
+
+\begin{fcode}{void}{$P$.assign}{const bigint & $x$, const bigint & $y$, const bigint & $z$}
+\end{fcode}
+
+\begin{fcode}{void}{swap}{point< bigint > & $P$, point < bigint > & $Q$}
+  swaps the points $P$ and $Q$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+The binary operators \code{==}, \code{!=} are overloaded.  Two points are considered equal if
+they lie on the same curve and their coordinates are equal.  Let $P$ be of type \code{point<
+  bigint >} then the following functions are also defined:
+
+\begin{cfcode}{bool}{$P$.on_curve}{}
+  returns \TRUE if and only if $P$ is actually on the curve.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$P$.is_zero}{}
+  returns \TRUE if and only if $P$ is the point at infinity.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$P$.is_integral}{}
+  returns \TRUE if and only if $P$ is an integral point.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$P$.is_negative_of}{const point < bigint > & $Q$}
+  returns \TRUE if and only if $P$ is equal to $-Q$.
+\end{cfcode}
+
+\begin{fcode}{int}{eq}{const point< bigint > & $P$, const point< bigint > & $Q$}
+  returns \TRUE if $P = Q$, otherwise returns \FALSE.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $P$ be of type \code{point< bigint >}.
+
+\begin{cfcode}{bigint}{$P$.get_xyz}{bigint & $x$, bigint & $y$, bigint & $z$}
+  returns the $x$, $y$ and $z$ coordinates of $P$.
+\end{cfcode}
+
+\begin{cfcode}{const elliptic_curve< bigint > *}{$P$.get_curve}{}
+  OBSOLETE.  Use the function below.
+\end{cfcode}
+
+\begin{cfcode}{elliptic_curve< bigint >}{$P$.get_curve}{}
+  returns the curve on which the point $P$ sits.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+The following operators are overloaded and can be used in exactly the same way as for machine
+types in C++ (e.g.~\code{int}):
+\begin{center}
+  \code{(unary) -} \\
+  \code{(binary) +, -} \\
+  \code{(binary with assignment) +=,  -= }
+\end {center}
+The \code{*} operator is overloaded by
+
+\begin{fcode}{point< bigint >}{operator *}{const bigint & $n$, const point< bigint > & $P$}
+  returns $n \cdot P$.
+\end{fcode}
+
+For efficiency we also have the following functions
+
+\begin{fcode}{void}{negate}{point< bigint > & $P$, const point< bigint > & $Q$}
+  $P \assign -Q$.
+\end{fcode}
+
+\begin{fcode}{void}{add}{point< bigint > & $R$, const point< bigint > & $P$,
+    const point< bigint > & $Q$}%
+  $R \assign P + Q$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{point< bigint > & $R$,
+    const point< bigint > & $P$, const point< bigint > & $Q$}%
+  $R \assign P - Q$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply_by_2}{point< bigint > & $P$, const point< bigint > & $Q$}
+  $P \assign 2 \cdot Q$.
+\end{fcode}
+
+\begin{cfcode}{point< bigint >}{$P$.twice}{}
+  returns $2 \cdot P$. 
+\end{cfcode}
+
+\begin{fcode}{void}{multiply}{point< bigint > & $P$, const bigint & $n$, const point< bigint > & $Q$}
+  $P \assign n \cdot Q$
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+Input/Output functions are exactly the same as in the template class \code{point< T >}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+Let $P$ be of type \code{point< bigint >}.
+
+\begin{fcode}{bigfloat}{$P$.get_height}{}
+  returns the canonical height of $P$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{$P$.get_naive_height}{}
+  returns the naive height of the point $P$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{$P$.get_pheight}{const bigint & $p$}
+  returns the local height of the point $P$ at the prime $p$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{$P$.get_realheight}{}
+  returns the local height at infinity of the point $P$.
+\end{fcode}
+
+\begin{fcode}{int}{$P$.get_order}{}
+  returns the order of the point $P$ in the Mordell-Weil group, this function returns $-1$ if
+  the point has infinite order.
+\end{fcode}
+
+\begin{fcode}{int}{order}{point< bigint > & $P$, base_vector< point< bigint > > & $\mathit{list}$}
+  computes the order of the point $P$, if the point has finite order then $\mathit{list}$
+  contains the list of all multiples of the point $P$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/elliptic_curve_bigint.h>
+#include <LiDIA/point_bigint.h>
+
+int main()
+{
+    cout << "Enter a_1, ..., a_6" << endl;
+    bigint a1, a2, a3, a4, a6;
+    cin >> a1 >> a2 >> a3 >> a4 >> a6;
+
+    elliptic_curve< bigint > ER(a1, a2, a3, a4, a6);
+
+    cout << ER << endl;
+
+    cout << "Enter point on this curve [x,y]" << endl;
+    bigint x,y;
+    cin >> x >> y;
+
+    point< bigint > P(x,y,ER);
+    point< bigint > Q(ER),H(ER);
+
+    if (P.on_curve())
+        cout << " The point is on curve\n" << endl;
+    else
+        lidia_error_handler("ec","point not on curve");
+
+    for (i = 1; i <= 1000; i++) {
+        add(Q, Q, P);
+        if (!Q.on_curve()) {
+            cerr << "\n Q = " << i << " * P = " << Q;
+            cerr << " is not on curve any more\n";
+            return 1;
+        }
+        multiply(H, i, P);
+
+        if (Q != H) {
+            cerr << "\n Q = " << i << " * P = " << Q;
+            cerr << "\n H = " << H << " is different\n";
+            return 1;
+        }
+        cout << i << "  " << Q << "\n     " << Q.get_height();
+        cout << "\n     " << Q.get_naive_height();
+        cout << endl;
+    }
+    cout<<"\n found no errors\n\n";
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{elliptic_curve< T >},
+\SEE{point< T >},
+\SEE{elliptic_curve< bigint >}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+John Cremona, Nigel Smart.

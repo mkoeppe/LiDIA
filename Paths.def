@@ -1,0 +1,106 @@
+##	=========================================================
+##
+##	Paths.def - include file for LiDIA build path definitions
+##
+##	=========================================================
+
+## This file is included by (almost) every Makefile.am,
+## and should be appropriate for being sourced by shell scripts as well.
+## Therefore, the notation ${var} should be preferred over $(var) here,
+## and spaces around assignment operators should be avoided.
+
+## The following is for Automake's comment rearrangement ambitions:
+ #
+## Hopefully, the remaining Makefile comments are left in place.
+
+## Take care to only specify relative paths that do not explicitly begin
+## with ${top_srcdir} or ${srcdir}.  Otherwise, the dist* targets may
+## produce bullshit, and VPATH building would be less flexible.
+
+#
+# Use the following prefix for stuff that is normally found in ${top_srcdir}
+# but must be specified in a simple-minded fashion (i.e. ${top_builddir}).
+# Note that the normal path can be made by prepending ${srcdir}/,
+# though that results in weird paths like ../../../library/base/../../xxx.
+#
+topdir=${top_builddir}
+
+#
+# Main directories of the LiDIA packages
+#
+
+LIDIA_DATADIR=${topdir}/share
+LIDIA_PKGDATADIR=${LIDIA_DATADIR}/LiDIA
+
+LIDIA_CONFIG_LINKDIR=${top_builddir}/src/base/interfaces
+LIDIA_CONFIG_SRCDIR=${topdir}/src/interfaces
+LIDIA_CONFIG_INCLUDEDIR=${top_builddir}/include
+LIDIA_CONFIG_PKGINCLUDEDIR=${LIDIA_CONFIG_INCLUDEDIR}/LiDIA
+
+LIDIA_PORTAB_SRCDIR=${topdir}/src/portability
+
+LIDIA_BASE_SRCDIR=${topdir}/src/base
+LIDIA_BASE_INCLUDEDIR=${LIDIA_BASE_SRCDIR}/include
+LIDIA_BASE_PKGINCLUDEDIR=${LIDIA_BASE_INCLUDEDIR}/LiDIA
+
+LIDIA_FF_SRCDIR=${topdir}/src/finite_fields
+LIDIA_FF_INCLUDEDIR=${LIDIA_FF_SRCDIR}/include
+LIDIA_FF_PKGINCLUDEDIR=${LIDIA_FF_INCLUDEDIR}/LiDIA
+
+LIDIA_LA_SRCDIR=${topdir}/src/linear_algebra
+LIDIA_LA_INCLUDEDIR=${LIDIA_LA_SRCDIR}/include
+LIDIA_LA_PKGINCLUDEDIR=${LIDIA_LA_INCLUDEDIR}/LiDIA
+
+LIDIA_LT_SRCDIR=${topdir}/src/lattices
+LIDIA_LT_INCLUDEDIR=${LIDIA_LT_SRCDIR}/include
+LIDIA_LT_PKGINCLUDEDIR=${LIDIA_LT_INCLUDEDIR}/LiDIA
+
+LIDIA_NF_SRCDIR=${topdir}/src/number_fields
+LIDIA_NF_INCLUDEDIR=${LIDIA_NF_SRCDIR}/include
+LIDIA_NF_PKGINCLUDEDIR=${LIDIA_NF_INCLUDEDIR}/LiDIA
+
+LIDIA_EC_SRCDIR=${topdir}/src/elliptic_curves
+LIDIA_EC_INCLUDEDIR=${LIDIA_EC_SRCDIR}/include
+LIDIA_EC_PKGINCLUDEDIR=${LIDIA_EC_INCLUDEDIR}/LiDIA
+
+LIDIA_ECO_SRCDIR=${topdir}/src/ec_order
+LIDIA_ECO_INCLUDEDIR=${LIDIA_ECO_SRCDIR}/include
+LIDIA_ECO_PKGINCLUDEDIR=${LIDIA_ECO_INCLUDEDIR}/LiDIA
+
+LIDIA_GEC_SRCDIR=${topdir}/src/gec
+LIDIA_GEC_INCLUDEDIR=${LIDIA_GEC_SRCDIR}/include
+LIDIA_GEC_PKGINCLUDEDIR=${LIDIA_GEC_INCLUDEDIR}/LiDIA
+
+
+#
+# Path to the Libtool library libLiDIA.la resulting from the build
+#
+LIDIA_LTLIB=${top_builddir}/library/libLiDIA.la
+
+#
+# libLiDIA's version info for Libtool,
+# specified as a triplet CURRENT:REVISION:AGE of non-negative integers.
+# CURRENT identifies the set of object interfaces exported by the library.
+# REVISION specifies CURRENT's implementation release number.
+# AGE specifies how many interface sets preceding CURRENT are supported.
+# The precise meaning of the version info numbers is defined in the Libtool
+# texinfo manual, together with rules for updating them.
+# Never try to achieve similarity with the package version!
+#
+LIDIA_LTVERSION=7:0:0
+
+#
+# Paths to each package's Libtool convenience library.
+# The configure-determined variable LIDIA_LTCLIBS refers
+# to a subset of these variables.
+#
+LIDIA_BASE_LTCLIB=${top_builddir}/library/base/libLiDIA-base.la
+LIDIA_FF_LTCLIB=${top_builddir}/library/finite_fields/libLiDIA-FF.la
+LIDIA_LA_LTCLIB=${top_builddir}/library/linear_algebra/libLiDIA-LA.la
+LIDIA_LT_LTCLIB=${top_builddir}/library/lattices/libLiDIA-LT.la
+LIDIA_NF_LTCLIB=${top_builddir}/library/number_fields/libLiDIA-NF.la
+LIDIA_EC_LTCLIB=${top_builddir}/library/elliptic_curves/libLiDIA-EC.la
+LIDIA_ECO_LTCLIB=${top_builddir}/library/ec_order/libLiDIA-ECO.la
+LIDIA_GEC_LTCLIB=${top_builddir}/library/gec/libLiDIA-GEC.la
+
+## EOF

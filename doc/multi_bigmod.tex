@@ -1,0 +1,482 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  multi_bigmod.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the class multi_bigmod
+%%
+%%  Copyright   (c)   1995   by  LiDIA-Group
+%%
+%%  Authors: Thomas Papanikolaou, Oliver Morsch
+%%
+
+
+\NAME
+
+\CLASS{multi_bigmod} \dotfill multiprecision modular integer arithmetic
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{multi_bigmod} is a class for doing multiprecision modular arithmetic over $\ZmZ$.  It
+supports for example arithmetic operations, comparisons and exponentiation.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+A \code{multi_bigmod} is a pair of two \code{bigint}s $(\mathit{man}, m)$, where $\mathit{man}$
+is called \emph{mantissa} and $m$ \emph{modulus}.  Each \code{multi_bigmod} has got its own
+modulus which can be set by a constructor or by
+\begin{quote}
+  \code{$a$.set_modulus(const bigint & $m$)}
+\end{quote}
+where $a$ is of type \code{multi_bigmod}.
+
+Each equivalence class modulo $m$ is represented by its least non-negative representative, i.e.
+the mantissa of a \code{multi_bigmod} is chosen in the interval $[ 0, \dots, |m|-1 ]$.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+If $m = 0$, the \LEH will be invoked.
+
+\begin{fcode}{ct}{multi_bigmod}{}
+  initializes the mantissa and the modulus with 0.
+\end{fcode}
+
+\begin{fcode}{ct}{multi_bigmod}{const multi_bigmod & $n$}
+  initializes with $n$.
+\end{fcode}
+
+\begin{fcode}{ct}{multi_bigmod}{const bigint & $n$, const bigint & $m$}\end{fcode}
+\begin{fcode}{ct}{multi_bigmod}{long $n$, const bigint & $m$}\end{fcode}
+\begin{fcode}{ct}{multi_bigmod}{unsigned long $n$, const bigint & $m$}\end{fcode}
+\begin{fcode}{ct}{multi_bigmod}{int $n$, const bigint & $m$}
+  initializes the mantissa with $n$ and the modulus with $|m|$.
+\end{fcode}
+
+\begin{fcode}{ct}{multi_bigmod}{double $n$, const bigint & $m$}
+  initializes the mantissa with $\lfloor d \rfloor$ and the modulus with $|m|$.
+\end{fcode}
+
+\begin{fcode}{dt}{~multi_bigmod}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\INIT
+
+\begin{fcode}{void}{$a$.set_modulus}{const bigint & $m$}
+  sets the modulus of the \code{multi_bigmod} $a$ to $|m|$; if $m = 0$, the \LEH will be
+  invoked.  The mantissa of $a$ will not automatically be reduced modulo $m$.  You have to call
+  one of the two following normalization functions to reduce the mantissa.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.normalize}{}
+  normalizes the \code{multi_bigmod} $a$ such that the mantissa of $a$ is in the range $[0,
+  \dots, m-1]$, where $m$ is the modulus of $a$.
+\end{fcode}
+
+\begin{fcode}{void}{normalize}{multi_bigmod & $a$, const multi_bigmod & $b$}
+  sets the modulus of $a$ to the modulus of $b$, the mantissa of $a$ to the mantissa of $b$ and
+  normalizes $a$ such that the mantissa of $a$ is in the range $[0, \dots, m-1]$, where $m$ is
+  the modulus of $b$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $a$ be of type \code{multi_bigmod} The operator \code{=} is overloaded.  The user may also
+use the following object methods for assignment:
+
+\begin{fcode}{void}{$a$.assign_zero}{}
+  $\mantissa(a) \assign 0$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign_one}{}
+  $\mantissa(a) \assign 1$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign_zero}{const bigint & $m$}
+  $\mantissa(a) \assign 0$, $\modulus(a) \assign |m|$.  If $m = 0$, the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign_one}{const bigint & $m$}
+  $\mantissa(a) \assign 1$, $\modulus(a) \assign |m|$.  If $m = 0$, the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign}{int $i$, const bigint & $m$}
+  $\mantissa(a) \assign i$, $\modulus(a) \assign |m|$.  If $m = 0$, the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign}{long $i$, const bigint & $m$}
+  $\mantissa(a) \assign i$, $\modulus(a) \assign |m|$.  If $m = 0$, the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign}{unsigned long $i$, const bigint & $m$}
+  $\mantissa(a) \assign i$, $\modulus(a) \assign |m|$.  If $m = 0$, the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign}{const bigint & $b$, const bigint & $m$}
+  $\mantissa(a) \assign b$, $\modulus(a) \assign |m|$.  If $m = 0$, the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign}{const multi_bigmod & $b$}
+  $a \assign b$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.set_mantissa}{int $i$}
+  $\mantissa(a) \assign i$ and the mantissa of $a$ will be reduced modulo the modulus of $a$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.set_mantissa}{long $i$}
+  $\mantissa(a) \assign i$ and the mantissa of $a$ will be reduced modulo the modulus of $a$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.set_mantissa}{unsigned long $i$}
+  $\mantissa(a) \assign i$ and the mantissa of $a$ will be reduced modulo the modulus of $a$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.set_mantissa}{const bigint & $b$}
+  $\mantissa(a) \assign b$ and the mantissa of $a$ will be reduced modulo the modulus of $a$.
+\end{fcode}
+
+\begin{fcode}{double}{dbl}{const multi_bigmod & $a$}
+  returns the mantissa of $a$ as a double approximation.
+\end{fcode}
+
+\begin{cfcode}{bool}{$a$.intify}{int & $i$}
+  performs the assignment $i \assign \mantissa(a)$ provided the assignment can be done without
+  overflow.  In that case the function returns \FALSE, otherwise it returns \TRUE and the value
+  of $i$ will be unchanged.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.longify}{long & $i$}
+  performs the assignment $i \assign \mantissa(a)$ provided the assignment can be done without
+  overflow.  In that case the function returns \FALSE, otherwise it returns \TRUE and the value
+  of $i$ will be unchanged.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+\begin{fcode}{bigint}{mantissa}{const multi_bigmod & $a$}
+  returns the mantissa of the \code{multi_bigmod} $a$.  The mantissa is chosen in the interval
+  $[0, \dots, m-1]$, where $m$ is the modulus of $a$.
+\end{fcode}
+
+\begin{cfcode}{const bigint &}{$a$.mantissa}{}
+  returns the mantissa of the \code{multi_bigmod} $a$.  The mantissa is chosen in the interval
+  $[0, \dots, m-1]$, where $m$ is the modulus of $a$.
+\end{cfcode}
+
+\begin{cfcode}{const bigint &}{$a$.modulus}{}
+  returns the modulus of the \code{multi_bigmod} $a$.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\MODF
+
+\begin{fcode}{void}{$a$.negate}{}
+  $a \assign -a$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.inc}{}
+\end{fcode}
+\begin{fcode}{void}{inc}{multi_bigmod & $a$}
+  $a \assign a + 1$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.dec}{}\end{fcode}
+\begin{fcode}{void}{dec}{multi_bigmod & $a$}
+  $a \assign a - 1$.
+\end{fcode}
+
+\begin{fcode}{bigint}{$a$.invert}{int $\mathit{verbose}$ = 0}
+  sets $a \assign a^{-1}$, if the inverse of $a$ exists.  If the inverse does not exist and
+  $\mathit{verbose} = 0$, the \LEH will be invoked.  If the inverse does not exist and
+  $\mathit{verbose} \neq 0$, then the function prints a warning and returns the gcd of $a$ and
+  its modulus.  In this case $a$ remains unchanged and the program does not exit.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.multiply_by_2}{}
+  $a \assign 2 \cdot a$ (using shift-operations).
+\end{fcode}
+
+\begin{fcode}{void}{$a$.divide_by_2}{}
+  computes a number $b\in [0, \dots, m-1]$ such that $2 b\equiv \mantissa(a)\bmod m$, where $m$
+  is the modulus of $a$, and sets $\mantissa(a) \assign b$ (note: this is not equivalent to the
+  multiplication of $a$ with the inverse of 2).  The \LEH will be invoked if the
+  operation is impossible, i.e.~if the mantissa of $a$ is odd and $m$ is even.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.swap}{multi_bigmod & $b$}\end{fcode}
+\begin{fcode}{void}{swap}{multi_bigmod & $a$, multi_bigmod & $b$}
+  exchanges the mantissa and the modulus of $a$ and $b$.
+\end{fcode}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+The binary operations require that the operands have the same modulus; in case of different
+moduli, the \LEH will be invoked.  Binary operations that obtain an operand $a \in \ZmZ$, where
+$m$ is the modulus of $a$, and an operand $b \in \bbfZ$, i.e. $b$ of type \code{int},
+\code{long}, \code{bigint}, map $b$ to $\ZmZ$.
+
+The following operators are overloaded and can be used in exactly the same way as in C++:
+
+\begin{center}
+  \code{(unary) -, ++, -{}-}\\
+  \code{(binary) +, -, *, /}\\
+  \code{(binary with assignment) +=, -=, *=, /=}
+\end{center}
+
+The operators \code{/} and \code{/=} denote ``multiplication with the inverse''.  If the inverse
+does not exist, the \LEH will be invoked.  To avoid copying all operators also exist as
+functions.
+
+\begin{fcode}{void}{negate}{multi_bigmod & $a$, const multi_bigmod & $b$}
+  $a \assign -b$.
+\end{fcode}
+
+\begin{fcode}{void}{add}{multi_bigmod & $c$, const multi_bigmod & $a$, const multi_bigmod & $b$}\end{fcode}
+\begin{fcode}{void}{add}{multi_bigmod & $c$, const multi_bigmod & $a$, const bigmod & $b$}\end{fcode}
+\begin{fcode}{void}{add}{multi_bigmod & $c$, const multi_bigmod & $a$, const bigint & $b$}\end{fcode}
+\begin{fcode}{void}{add}{multi_bigmod & $c$, const multi_bigmod & $a$, long $b$}\end{fcode}
+\begin{fcode}{void}{add}{multi_bigmod & $c$, const multi_bigmod & $a$, unsigned long $b$}\end{fcode}
+\begin{fcode}{void}{add}{multi_bigmod & $c$, const multi_bigmod & $a$, int $b$}
+  $c \assign a + b$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{multi_bigmod & $c$, const multi_bigmod & $a$, const multi_bigmod & $b$}\end{fcode}
+\begin{fcode}{void}{subtract}{multi_bigmod & $c$, const multi_bigmod & $a$, const bigmod & $b$}\end{fcode}
+\begin{fcode}{void}{subtract}{multi_bigmod & $c$, const multi_bigmod & $a$, const bigint & $b$}\end{fcode}
+\begin{fcode}{void}{subtract}{multi_bigmod & $c$, const multi_bigmod & $a$, long $b$}\end{fcode}
+\begin{fcode}{void}{subtract}{multi_bigmod & $c$, const multi_bigmod & $a$, unsigned long $b$}\end{fcode}
+\begin{fcode}{void}{subtract}{multi_bigmod & $c$, const multi_bigmod & $a$, int $b$}
+  $c \assign a - b$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{multi_bigmod & $c$, const multi_bigmod & $a$, const multi_bigmod & $b$}\end{fcode}
+\begin{fcode}{void}{multiply}{multi_bigmod & $c$, const multi_bigmod & $a$, const bigmod & $b$}\end{fcode}
+\begin{fcode}{void}{multiply}{multi_bigmod & $c$, const multi_bigmod & $a$, const bigint & $b$}\end{fcode}
+\begin{fcode}{void}{multiply}{multi_bigmod & $c$, const multi_bigmod & $a$, long $b$}\end{fcode}
+\begin{fcode}{void}{multiply}{multi_bigmod & $c$, const multi_bigmod & $a$, unsigned long $b$}\end{fcode}
+\begin{fcode}{void}{multiply}{multi_bigmod & $c$, const multi_bigmod & $a$, int $b$}
+  $c \assign a \cdot b$.
+\end{fcode}
+
+\begin{fcode}{void}{square}{multi_bigmod & $c$, const multi_bigmod & $a$}
+  $c \assign a^2$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{multi_bigmod & $c$, const multi_bigmod & $a$, const multi_bigmod & $b$}\end{fcode}
+\begin{fcode}{void}{divide}{multi_bigmod & $c$, const multi_bigmod & $a$, const bigmod & $b$}\end{fcode}
+\begin{fcode}{void}{divide}{multi_bigmod & $c$, const multi_bigmod & $a$, const bigint & $b$}\end{fcode}
+\begin{fcode}{void}{divide}{multi_bigmod & $c$, const multi_bigmod & $a$, long $b$}\end{fcode}
+\begin{fcode}{void}{divide}{multi_bigmod & $c$, const multi_bigmod & $a$, unsigned long $b$}\end{fcode}
+\begin{fcode}{void}{divide}{multi_bigmod & $c$, const multi_bigmod & $a$, int $b$}
+  $c \assign a \cdot i^{-1}$, if the inverse of $i$ does not exist, the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{invert}{multi_bigmod & $a$, const multi_bigmod & $b$}
+  sets $a \assign b^{-1}$, if the inverse of $b$ exists.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{multi_bigmod}{inverse}{const multi_bigmod & $a$}
+  returns $a^{-1}$, if the inverse of $a$ exists.  Otherwise the \LEH will be invoked.
+\end{fcode}
+
+\begin{fcode}{void}{power}{multi_bigmod & $c$, const multi_bigmod & $a$, const bigint & $b$}\end{fcode}
+\begin{fcode}{void}{power}{multi_bigmod & $c$, const multi_bigmod & $a$, long $b$}
+  $c \assign a^b$ (done with right-to-left binary exponentiation).
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+\code{multi_bigmod} supports the binary operators \code{==}, \code{!=} and additionally the
+unary operator \code{!} (comparison with zero).  Let $a$ be an instance of type
+\code{multi_bigmod}.
+
+\begin{cfcode}{bool}{$a$.is_equal}{const multi_bigmod & $b$}\end{cfcode}
+\begin{cfcode}{bool}{$a$.is_equal}{const bigmod & $b$}
+  if $b = a$ return \TRUE, else \FALSE.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_equal}{const bigint & $b$}\end{cfcode}
+\begin{cfcode}{bool}{$a$.is_equal}{long $b$}
+  if $b \geq 0$, \TRUE is returned if $b = \mantissa(a)$, \FALSE otherwise.  If $b < 0$, then
+  \TRUE is returned if $b + \code{bigmod::modulus()} = \mantissa(a)$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_equal}{unsigned long $b$}
+  if $b \geq 0$, \TRUE is returned if $b = \mantissa(a)$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_zero}{}
+  returns \TRUE if $\mantissa(a) = 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_one}{}
+  returns \TRUE if $\mantissa(a) = 1$, \FALSE otherwise.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\TYPE
+
+Before assigning a \code{multi_bigmod} (i.e.~the mantissa of a \code{multi_bigmod}) to a machine
+type (e.g.~\code{int}) it is often useful to perform a test which checks whether the assignment
+could be done without overflow.  Let $a$ be an object of type \code{multi_bigmod}.  The
+following methods return \TRUE if the assignment would be successful, \FALSE otherwise.
+
+\begin{cfcode}{bool}{$a$.is_char}{}\end{cfcode}
+\begin{cfcode}{bool}{$a$.is_uchar}{}\end{cfcode}
+\begin{cfcode}{bool}{$a$.is_short}{}\end{cfcode}
+\begin{cfcode}{bool}{$a$.is_ushort}{}\end{cfcode}
+\begin{cfcode}{bool}{$a$.is_int}{}\end{cfcode}
+\begin{cfcode}{bool}{$a$.is_uint}{}\end{cfcode}
+\begin{cfcode}{bool}{$a$.is_long}{}\end{cfcode}
+\begin{cfcode}{bool}{$a$.is_ulong}{}\end{cfcode}
+
+There methods also exists as procedural versions, however, the object methods are preferred over
+the procedures.
+\begin{fcode}{bool}{is_char}{const multi_bigmod & $a$}\end{fcode}
+\begin{fcode}{bool}{is_uchar}{const multi_bigmod & $a$}\end{fcode}
+\begin{fcode}{bool}{is_short}{const multi_bigmod & $a$}\end{fcode}
+\begin{fcode}{bool}{is_ushort}{const multi_bigmod & $a$}\end{fcode}
+\begin{fcode}{bool}{is_int}{const multi_bigmod & $a$}\end{fcode}
+\begin{fcode}{bool}{is_uint}{const multi_bigmod & $a$}\end{fcode}
+\begin{fcode}{bool}{is_long}{const multi_bigmod & $a$}\end{fcode}
+\begin{fcode}{bool}{is_ulong}{const multi_bigmod & $a$}\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+Let $a$ be of type \code{multi_bigmod}.
+
+\begin{cfcode}{lidia_size_t}{$a$.bit_length}{}
+  returns the bit-length of $a$'s mantissa (see class \code{bigint}, page \pageref{class:bigint}).
+\end{cfcode}
+
+\begin{cfcode}{lidia_size_t}{$a$.length}{}
+  returns the word-length of $a$'s mantissa (see class \code{bigint}, page
+  \pageref{class:bigint}).
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+\begin{fcode}{multi_bigmod}{randomize}{const multi_bigmod & $a$}
+  returns a random \code{multi_bigmod} $b$ with random mantissa in the range
+  $[0, \dots, \mantissa(b)-1]$, $\modulus(b) = \modulus(a)$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.randomize}{const bigint & $m$}
+  computes a random mantissa of $a$ in the range $[0, \dots, |m|-1]$, $\modulus(a) = |m|$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+Let $a$ be of type \code{multi_bigmod}.
+
+The \code{istream} operator \code{>>} and the \code{ostream} operator \code{<<} are
+overloaded.  Furthermore, you can use the following member functions for writing to and reading
+from a file in binary or ASCII format, respectively.  The input and output format of a
+\code{multi_bigmod} are
+\begin{center}
+  \code{(mantissa, modulus)}.
+\end{center}
+
+\begin{fcode}{int}{$x$.read_from_file}{FILE *fp}
+  reads $x$ from the binary file \code{fp} using \code{fread}.
+\end{fcode}
+
+\begin{fcode}{int}{$x$.write_to_file}{FILE *fp}
+  writes $x$ to the binary file \code{fp} using \code{fwrite}.
+\end{fcode}
+
+\begin{fcode}{int}{$x$.scan_from_file}{FILE *fp}
+  scans $x$ from the ASCII file \code{fp} using \code{fscanf}.
+\end{fcode}
+
+\begin{fcode}{int}{$x$.print_to_file}{FILE *fp}
+  prints $x$ to the ASCII file \code{fp} using \code{fprintf}.
+\end{fcode}
+
+\begin{fcode}{int}{string_to_multi_bigmod}{char *s, multi_bigmod & $a$}
+  converts the string $s$ to a \code{multi_bigmod} $a$ and returns the number of converted
+  characters.
+\end{fcode}
+
+\begin{fcode}{int}{multi_bigmod_to_string}{const multi_bigmod & $a$, char *s}
+  converts the \code{multi_bigmod} $a$ to a string $s$ and returns the number of used
+  characters.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{bigint}, \SEE{bigmod}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/multi_bigmod.h>
+
+int main()
+{
+    multi_bigmod a, b, c;
+
+    a.set_modulus(10);
+    b.set_modulus(10);
+    cout << "Please enter a : "; cin >> a ;
+    cout << "Please enter b : "; cin >> b ;
+    cout << endl;
+    c = a + b;
+    cout << "a + b = " << c << endl;
+}
+\end{verbatim}
+\end{quote}
+
+For further reference please refer to \path{LiDIA/src/simple_classes/multi_bigmod_appl.cc}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Markus Maurer, Thomas Papanikolaou
+

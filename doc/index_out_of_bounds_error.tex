@@ -1,0 +1,100 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  exceptions.tex        LiDIA documentation
+%%
+%%  This file contains the documentation of the exceptions
+%%  thrown by LiDIA.
+%%
+%%  Copyright (c) 2002 by the LiDIA Group
+%%
+%%  Authors: Christoph Ludwig
+%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{index_out_of_bounds_error} \dotfill a sequence was subscripted with an
+invalid index.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+An \code{index_out_of_bounds_error} is thrown if an element access in a
+sequence or container fails due to an invalid index.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+Class \code{index_out_of_bounds_error} is publicly derived from
+\code{basic_error} as well as \code{std::out_of_range}. 
+
+Let \code{e} be an object of type \code{index_out_of_bounds_error}. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{index_out_of_bounds_error}{const std::string& classname, 
+    unsigned long $n$}
+  Constructs a new \code{index_out_of_bounds_error} object. \code{classname}
+  describes the class and / or function where the error was detected.
+  When the constructor returns the invariant \code{classname ==
+  e.offendingClass()} and \code{$n$ == e.offendingIndex()} will hold.
+\end{fcode}
+
+\begin{fcode}{dt}{virtual ~index_out_of_bounds_error}{}
+  Frees all resources hold by this object.
+\end{fcode}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+\begin{cfcode}{unsigned long}{e.offendingIndex}{}
+  Returns the index that prompted the exception to be thrown.
+\end{cfcode}
+
+\begin{cfcode}{virtual const std::string&}{e.offendingClass}{}
+  Returns a textual description where the error occured. Corresponds to the
+  first parameter of \code{lidia_error_handler}.
+\end{cfcode}
+
+\begin{cfcode}{virtual const char*}{e.what}{}
+  Returns \code{"index out of bounds"}. Corresponds to the second
+  parameter of \code{lidia_error_handler}.
+
+  This method overrides \code{basic_error::what()} as well as
+  \code{std::out_of_range::what()} and thereby resolves any ambiguity.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+\code{lidia_error_handler, basic_error, std::out_of_range}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\WARNINGS
+
+\LiDIA's exception hierarchy is still experimental. We may change it without
+prior notice.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Christoph Ludwig
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% TeX-master: t
+%%% End: 

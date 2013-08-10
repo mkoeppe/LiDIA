@@ -1,0 +1,630 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  quadratic_order.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the class quadratic_order
+%%
+%%  Copyright   (c)   1996   by  LiDIA-Group
+%%
+%%  Author: Michael J. Jacobson, Jr.
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{quadratic_order} \dotfill class describing quadratic
+orders
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{quadratic_order} is a class for representing quadratic orders and computing many related
+invariants and functions, such as the ideal class number, regulator, $L$-function, Littlewood
+indices, etc \dots
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+A \code{quadratic_order} $\Or$ is represented simply by a \code{bigint} $\D$, which is a
+quadratic discriminant, i.e., a non-square integer congruent to 0 or 1 modulo 4.  Unlike the
+case of higher degree orders (see the description of \code{order}), we do not require a
+multiplication table to perform arithmetic with elements in the order since we can represent any
+element in $\Or$ as $a + b(\D + \sqrt{\D})/2$ where $a,b \in \bbfZ$.
+
+Several invariants related to a specific quadratic order are stored along with the discriminant,
+since some of them can be very time-consuming to compute, and knowledge of them often simplifies
+other computations.  We store the following invariants once they have been computed:
+\begin{itemize}
+\item factorization of $\D$ (\code{rational_factorization})
+\item ideal class number (\code{bigint})
+\item approximation of the regulator (\code{bigfloat})
+\item elementary divisors of the ideal class group (\code{base_vector< bigint >})
+\item generators of each cyclic subgroup in the decomposition of the ideal class group
+  (\code{base_vector} of \code{qi_class})
+\item approximation of $L(1,\chi )$ (\code{bigfloat})
+\item approximation of $C(\D )$ (\code{bigfloat})
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{quadratic_order}{}
+    initializes an empty quadratic order ($\D = 0$)).
+\end{fcode}
+
+\begin{fcode}{ct}{quadratic_order}{long $\D$}
+  if $\D$ is a quadratic discriminant, initializes a \code{quadratic_order} of discriminant
+  $\D$, otherwise an empty quadratic order ($\D = 0$) is initialized.
+\end{fcode}
+
+\begin{fcode}{ct}{quadratic_order}{const bigint & $\D$}
+  if $\D$ is a quadratic discriminant, initializes a \code{quadratic_order} of discriminant
+  $\D$, otherwise an empty quadratic order ($\D = 0$) is initialized.
+\end{fcode}
+
+\begin{fcode}{ct}{quadratic_order}{const quadratic_order & $\Or$}
+  initializes a copy of $\Or$.
+\end{fcode}
+
+\begin{fcode}{dt}{~quadratic_order}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\INIT
+
+Let $\Or$ be of type \code{quadratic_order}.
+
+\begin{fcode}{static void}{quadratic_order::verbose}{int $\mathit{state}$}
+  sets the amount of information which is printed during computations.  If $\mathit{state} = 1$,
+  then the elapsed CPU time of some computations is printed.  If $\mathit{state} = 2$, then
+  extra run-time data is printed during the execution of the subexponential class group
+  algorithm and verifications.  If $\mathit{state} = 0$, no extra information is printed.  The
+  default is $\mathit{state} = 0$.
+\end{fcode}
+
+\begin{fcode}{static void}{quadratic_order::verification}{int $\mathit{level}$}
+  sets the level of post-computation verification performed.  If $\mathit{level} = 0$ no extra
+  verification is performed, otherwise, the following levels of verification are used:
+  \begin{itemize}
+  \item $\mathit{level} = 1$ --- regulator is verified, orders of generators of the class group
+    are verified
+  \item $\mathit{level} = 2$ --- same as $1$, plus all prime ideals not in the factor base with
+    norm less than Bach's bound are factored over the factor base (only for the subexponential
+    algorithm)
+  \item $\mathit{level} = 3$ --- same as $2$, plus all prime ideals with norm less than Bach's
+    bound are represented over a system of generators (only for the subexponential algorithm)
+%\item  $\mathit{level} = 4$ --- same as $2$, but all primes less than
+%Minkowski's bound are factored over the factor base
+%\item  $\mathit{level} = 5$ --- same as $3$, but all primes less than
+%Minkowski's bound are represented over a system of generators
+  \end{itemize}
+  Note that level $2$ is sufficient to provide a conditional verification of the output of the
+  subexponential algorithm under the Extended Riemann Hypothesis (ERH).
+%and level $5$ provides an unconditional verification.  Naturally, an
+%unconditional verification is rather time-consuming, and is not recommended
+%for large discriminants.
+  The success of the verification will be output only if the verbose mode is set to a non-zero
+  value, but any failures are always output.  The default is $\mathit{level} = 0$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $\Or$ be of type \code{quadratic_order}.  The operator \code{=} is overloaded.  For
+efficiency reasons, the following functions are also implemented:
+
+\begin{fcode}{bool}{$\Or$.assign}{long $\D$}
+  if $D$ is a quadratic discriminant, $\Or$ is set to the quadratic order of discriminant $D$
+  and \TRUE is returned, otherwise $\Or$ is set to an empty quadratic order ($\D = 0$) and
+  \FALSE is returned.
+\end{fcode}
+
+\begin{fcode}{bool}{$\Or$.assign}{const bigint & $\D$}
+  if $D$ is a quadratic discriminant, $\Or$ is set to the quadratic order of discriminant $D$
+  and \TRUE is returned, otherwise $\Or$ is set to an empty quadratic order ($\D = 0$) and
+  \FALSE is returned.
+\end{fcode}
+
+\begin{fcode}{void}{$\Or$.assign}{const quadratic_order & $\Or_2$}
+  $\Or \assign \Or_2$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $\Or$ be of type \code{quadratic_order}.
+
+\begin{cfcode}{bigint}{$\Or$.discriminant}{}
+  returns the discriminant $\D$ of $\Or$.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+The binary operators \code{==}, \code{!=}, \code{<=}, \code{<} (true subset), \code{>=},
+\code{>} and the unary operator \code{!} (comparison with $(0)$) are overloaded and can be used
+in exactly the same way as in the programming language C++.  Let $\Or$ be of type
+\code{quadratic_order}.
+
+\begin{cfcode}{bool}{$\Or$.is_zero}{}
+  returns \TRUE if the discriminant is zero, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$\Or$.is_equal}{const quadratic_order & $\Or_2$}
+  returns \TRUE if $\Or = \Or_2$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{fcode}{bool}{$\Or$.is_subset}{quadratic_order & $\Or_2$}
+  returns \TRUE if $\Or$ is a subset of $\Or_2$, \FALSE otherwise.  The discriminant is factored
+  if necessary.
+\end{fcode}
+
+\begin{fcode}{bool}{$\Or$.is_proper_subset}{quadratic_order & $\Or_2$}
+  returns \TRUE if $\Or$ is a proper subset of $\Or_2$, \FALSE otherwise.  The discriminant is
+  factored if necessary.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+\begin{fcode}{bool}{is_quadratic_discriminant}{const long $\D$}
+  returns \TRUE if $D$ is a quadratic discriminant, \FALSE otherwise.
+\end{fcode}
+
+\begin{fcode}{bool}{is_quadratic_discriminant}{const bigint & $\D$}
+  returns \TRUE if $D$ is a quadratic discriminant, \FALSE otherwise.
+\end{fcode}
+
+\begin{cfcode}{bool}{$\Or$.is_imaginary}{}
+  returns \TRUE if $\Or$ is an imaginary quadratic order (negative discriminant), \FALSE
+  otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$\Or$.is_real}{}
+  returns \TRUE if $\Or$ is a real quadratic order (positive discriminant), \FALSE otherwise.
+\end{cfcode}
+
+\begin{fcode}{void}{swap}{quadratic_order & $A$, quadratic_order & $B$}
+  exchanges $A$ and $B$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+Let $\Or$ be of type \code{quadratic_order}.
+
+\begin{fcode}{int}{$\Or$.bach_bound}{}
+  returns a constant such that the prime ideals of norm less than this constant generate the
+  class group (under the ERH).  This function assumes that $\Or$ is not maximal.
+\end{fcode}
+
+\begin{fcode}{int}{$\Or$.bach_bound}{bool $\mathit{is\uscore max}$}
+  returns a constant such that the prime ideals of norm less than this constant generate the
+  class group (under the ERH).  If the parameter is \TRUE, $\Or$ will be assumed to be maximal,
+  otherwise non-maximal.
+\end{fcode}
+
+\begin{fcode}{bigint}{$\Or$.conductor}{}
+  returns the conductor of $\Or$, i.e., the integer $f$ such that $\D = f^2 \D_0$ where $\D_0$ is
+  a fundamental discriminant (the discriminant of a maximal order).  The factorization of the
+  discriminant is computed if it has not been already.
+\end{fcode}
+
+\begin{fcode}{bool}{$\Or$.is_maximal}{}
+  returns \TRUE if $\Or$ is a maximal order, \FALSE otherwise.  The factorization of the
+  discriminant is computed if it has not been already.
+\end{fcode}
+
+\begin{fcode}{quadratic_order}{$\Or$.maximize}{}
+  returns the maximal order in which $\Or$ is contained.  The factorization of the discriminant
+  is computed if it has not been already.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SSTITLE{$L$-functions, Littlewood indices, $C$-function}
+
+The function $L(s,\chi ) = \sum_{n=1}^{\infty} \frac{\chi (n)}{n^s}$, where $\chi$ is taken to
+be the Kronecker symbol, is intimately related to computations in class groups of quadratic
+orders, especially at $s=1$, due to the analytic class number formula of Dirichlet.
+
+The Littlewood indices \cite{Littlewood:1928,Shanks:1973} are values which test the accuracy of
+Littlewood's bounds on $L(1,\chi )$ and a related function $L_{\D}(1) = (2 -
+\kronecker{\D}{2})/2 \,L(1,\chi )$ defined by Shanks \cite{Shanks:1973}.  Under the ERH, we
+expect the lower Littlewood indices to be greater than 1 for all discriminants $\D$ (with a few
+exceptions of very small discriminants) and that they should come close to 1 for discriminants
+with exceptionally small values of $L(1,\chi )$ or $L_D(1)$.  Similarly, we expect the upper
+Littlewood indices to be less than 1 and to approach 1 for discriminants with exceptionally
+large values of $L(1,\chi )$ or $L_{\D}(1)$.
+
+The function $C(\D) = \prod_{p \geq 3} 1 - \kronecker{\D}{p} / (p-1)$ provides an indication of
+whether a related quadratic polynomial will have an asymptotically large number of prime values,
+based on a conjecture of Hardy and Littlewood \cite{Hardy/Littlewood:1923,Fung/Williams:1990}.
+If $\D$ is odd, then for $A = (1-\D)/4$ the polynomial $x^2 + x + A$ will have a large
+asymptotic density of prime values when $C(\D )$ is large.  If $\D$ is even, then for $A = \D /
+4$ the corresponding polynomial is $x^2 + A$.
+
+\begin{fcode}{int}{kronecker}{const bigint & $D$, const bigint & $p$}
+  computes the value of the Kronecker symbol $\kronecker{D}{p}$, where $p$ is prime.
+\end{fcode}
+
+\begin{fcode}{long}{$\Or$.generate_optimal_Q}{}
+  generates the optimal value of $Q$ for the function \code{estimate_L1} to compute a
+  sufficiently accurate estimate from which a value $h^*$ can be computed satisfying $h^* < h <
+  2h^*$ for imaginary orders and $h^* < hR < 2h^*$ for real orders.
+\end{fcode}
+
+\begin{fcode}{long}{$\Or$.get_optimal_Q}{}
+  returns, from a precomputed list, a value of Q that is sufficiently large to satisfy the
+  conditions given above.
+\end{fcode}
+
+\begin{fcode}{long}{$\Or$.generate_optimal_Q_cnum}{const bigfloat & $h_2$, const bigfloat & $t$}
+  generates the optimal value of $Q$ for the function \code{estimate_L1} to compute a
+  sufficiently accurate estimate to prove that $h = h_2$ when the fractional part of the
+  approximation of $h$ is less that $t$.  See \cite{Mollin/Williams:1992} for more details.
+\end{fcode}
+
+\begin{fcode}{long}{$\Or$.get_optimal_Q_cnum}{}
+  returns, from a precomputed list, a value of Q that is sufficiently large to satisfy the
+  conditions given above.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{$\Or$.estimate_L}{const int $s$, const long $Q$}
+  computes a truncated product approximation of $L(s, \chi)$ using primes less than $Q$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{$\Or$.estimate_L1}{const long $Q$}
+  computes an approximation of $L(1, \chi)$ using Bach's averaging method \cite{Bach:1995}
+  with primes less than $2 Q$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{$\Or$.estimate_L1_error}{const long $Q$}
+  computes an estimate of the error (conditional on EHR) in the approximation of $L(1, \chi)$
+  using Bach's method \cite{Bach:1995} with primes less than $2Q$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{$\Or$.Lfunction}{}
+  computes an approximation of $L(1, \chi)$ via the analytic class number formula.  The class
+  number and regulator are computed if they have not been already.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{$\Or$.LDfunction}{}
+  returns an approximation of $L_{\D}(1)$.  The class number and regulator are computed if they
+  have not been already.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{$\Or$.LLI}{}
+  returns an approximation of the lower Littlewood index related to a lower bound on $L(1,
+  \chi)$ due to Littlewood.  The class number and regulator are computed if they have not been
+  already.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{$\Or$.LLI_D}{}
+  returns an approximation of the lower Littlewood index related to a lower bound on $L_{\D}(1)$
+  due to Shanks.  The class number and regulator are computed if they have not been already.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{$\Or$.ULI}{}
+  returns an approximation of the upper Littlewood index related to an upper bound on $L(1,
+  \chi)$ due to Littlewood.  The class number and regulator are computed if they have not been
+  already.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{$\Or$.ULI_D}{}
+  returns an approximation of the upper Littlewood index related to an upper bound on
+  $L_{\D}(1)$ due to Shanks.  The class number and regulator are computed if they have not been
+  already.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{$\Or$.Cfunction}{}
+  returns an approximation of the function $C(\D)$ accurate to 8 significant digits.  The class
+  number, regulator, and the prime factorization of $\D$ are computed if they have not been
+  already.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SSTITLE{Regulator, class number, and class group}
+
+The regulator is defined as the natural logarithm of the fundamental unit and the class number
+is the order of the group of ideal equivalence classes.  We denote the regulator by $R$, the
+class group by $\Cl$ and the class number by $h$.  By the structure of the class group, we mean
+the unique positive integers $m_1, \dots, m_k$ with $m_1 > 1$, $m_i \mid m_{i+1}$ for $1 \leq i
+\leq k$ such that there is an isomorphism $\phi : \Cl \rightarrow \bbfZ /m_1 \bbfZ \times \dots
+\times \bbfZ /m_k \bbfZ$.  The integers $m_i$ are called the elementary divisors of the class
+group.
+
+The following general functions are provided, which intelligently select an appropriate
+algorithm based on the size of the discriminant.
+
+\begin{fcode}{bigfloat}{$\Or$.regulator}{}
+  returns an approximation of the regulator of $\Or$.  If the regulator has not already been
+  computed, either \code{regulator_BJT}, \code{regulator_shanks}, or \code{regulator_subexp} is
+  used, depending on the size of the discriminant.  If $\Or$ is imaginary, the regulator is set
+  to $1$.
+\end{fcode}
+
+\begin{fcode}{bigint}{$\Or$.class_number}{}
+  returns the ideal class number of $\Or$.  If the class number has not already been computed,
+  either \code{class_number_shanks} or \code{class_group_subexp} is used, depending on the size
+  of the discriminant.
+\end{fcode}
+
+\begin{fcode}{base_vector< bigint >}{$\Or$.class_group}{}
+  returns the vector of invariants representing the structure of the ideal class group of $\Or$.
+  If the class group has not already been computed, either \code{class_group_BJT},
+  \code{class_group_shanks}, \code{class_group_randexp}, \code{class_group_mpqs}, or
+  \code{class_group_siqs} depending on the size of the discriminant.
+\end{fcode}
+
+The following functions all make use of a specific algorithm.
+
+\begin{fcode}{bigfloat}{$\Or$.regulator_BJT}{}
+  computes an unconditionally correct approximation of the regulator of $\Or$ using a variation
+  of the algorithm of \cite{Biehl/Buchmann:1995} which has unconditional complexity
+  $\Omikron(\sqrt{R})$.  If $\Or$ is not real, the regulator is set to $1$.  If the regulator
+  has already been computed, the function simply returns this value.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{$\Or$.regulator_shanks}{}
+  computes an unconditionally correct approximation of the regulator of $\Or$ using the
+  algorithm of \cite{Jacobson/Lukes/Williams:1995} based on the baby-step giant-step method in
+  \cite{Mollin/Williams:1992}, which has complexity $\Omikron(\D ^{1/5})$ under the ERH.  If
+  $\Or$ is not real, the regulator is set to $1$.  If the regulator has already been computed,
+  the function simply returns this value.
+\end{fcode}
+
+%\begin{fcode}{bigfloat}{$\Or$.regulator_subexp}{}
+%computes an approximation of the regulator of $\Or$ using the
+%subexponential algorithm of \cite{Jacobson:1999}.
+%If $\Or$ is not real, the regulator is set to
+%$1$.  If the regulator has already been computed, the
+%function simply returns this value.  The computation is done by calling
+%the function \code{class_group_subexp}, so the structure of the class group
+%is computed simultaneously.
+%\end{fcode}
+
+\begin{fcode}{bool}{$\Or$.verify_regulator}{}
+  returns true if the regulator is correct, as determined by a polynomial-time verification.
+\end{fcode}
+
+\begin{fcode}{bigint}{$\Or$.class_number_shanks}{}
+  computes the ideal class number of $\Or$ using the algorithm of \cite{Fung/Williams:1990}
+  based on the ideas of \cite{LenstraHW:1982} for imaginary quadratic orders, and the algorithm
+  of \cite{Jacobson/Lukes/Williams:1995} based on the ideas in \cite{Mollin/Williams:1992} for
+  real quadratic orders.  Both algorithms have complexity $\Omikron(|\D |^(1/5))$, and the
+  correctness and the complexity are both conditional on the truth of the ERH.  If the class
+  number has already been computed, the function simply returns this value.
+\end{fcode}
+
+\begin{fcode}{base_vector< bigint >}{$\Or$.class_group_BJT}{}
+  computes the structure of the ideal class group of $\Or$ using the method of
+  \cite{Buchmann/Jabobson/Teske:1997} for imaginary orders and \cite{Jacobson:1998} for real
+  orders, which have complexity $\Omikron(\sqrt{h})$ and $\Omikron(\sqrt{h R})$ respectively.
+  The correctness of both algorithms is conditional on the truth of the ERH but the complexity
+  results are not.  If the class group has already been computed, the function simply returns
+  this value.
+\end{fcode}
+
+\begin{fcode}{base_vector< bigint >}{$\Or$.class_group_shanks}{}
+  computes the structure of the ideal class group of $\Or$ using variations of the methods of
+  \cite{Schoof:1982} which have complexity $\Omikron(|\D|^(1/4))$.  The correctness and
+  complexity of both algorithms are conditional on the truth of the ERH.  If the class group has
+  already been computed, the function simply returns this value.
+\end{fcode}
+
+\begin{fcode}{base_vector< bigint >}{$\Or$.class_group_randexp}{}
+  computes the structure of the ideal class group of $\Or$ using a practical variation of the
+  sub-exponential method of Hafner and McCurley \cite{Hafner/McCurley:1989} due to D\"ullmann
+  \cite{Duellmann_Thesis:1991} for imaginary orders and Cohen, Diaz y Diaz, and Olivier
+  \cite{Cohen/Diaz/Olivier:1993} for real orders, as presented in \cite{Jacobson_Thesis:1999}.
+  Note that if $\Or$ is real, this function also computes the regulator.  If the class group has
+  already been computed, the function simply returns this value.  Turning the verification off
+  with \code{quadratic_order::verification($0$)} will result in much faster execution of this
+  algorithm, but the result is no longer certifiably correct under the ERH since a smaller
+  factor-base is used than is theoretically necessary.  However, as experimental results show
+  \cite{Jacobson:1998}, it is extremely unlikely that the computed result will be false.
+\end{fcode}
+
+\begin{fcode}{base_vector< bigint >}{$\Or$.class_group_mpqs}{}
+  computes the structure of the ideal class group of $\Or$ using the algorithm of
+  \cite{Jacobson:1999} as presented in \cite{Jacobson_Thesis:1999}, in which the relation
+  generation strategy is based on the MPQS factoring algorithm.  Note that if $\Or$ is real,
+  this function also computes the regulator.  If the class group has already been computed, the
+  function simply returns this value.  Turning the verification off with
+  \code{quadratic_order::verification($0$)} will result in much faster execution of this
+  algorithm, but the result is no longer certifiably correct under the ERH since a smaller
+  factor-base is used than is theoretically necessary.  However, as experimental results show
+  \cite{Jacobson:1998}, it is extremely unlikely that the computed result will be false.
+\end{fcode}
+
+\begin{fcode}{base_vector< bigint >}{$\Or$.class_group_siqs}{}
+  computes the structure of the ideal class group of $\Or$ using an algorithm from
+  \cite{Jacobson_Thesis:1999}, in which the relation generation strategy is based on the
+  self-initializing MPQS factoring algorithm.  Note that if $\Or$ is real, this function also
+  computes the regulator.  If the class group has already been computed, the function simply
+  returns this value.  Turning the verification off with
+  \code{quadratic_order::verification($0$)} will result in much faster execution of this
+  algorithm, but the result is no longer certifiably correct under the ERH since a smaller
+  factor-base is used than is theoretically necessary.  However, as experimental results show
+  \cite{Jacobson:1998}, it is extremely unlikely that the computed result will be false.
+\end{fcode}
+
+\begin{fcode}{base_vector< bigint >}{$\Or$.class_group_lp}{}
+  computes the structure of the ideal class group of $\Or$ using an algorithm from
+  \cite{Jacobson_Thesis:1999}, in which the relation generation strategy is based on the
+  self-initializing MPQS factoring algorithm with large prime variant.  Note that if $\Or$ is
+  real, this function also computes the regulator.  If the class group has already been
+  computed, the function simply returns this value.  Turning the verification off with
+  \code{quadratic_order::verification($0$)} will result in much faster execution of this
+  algorithm, but the result is no longer certifiably correct under the ERH since a smaller
+  factor-base is used than is theoretically necessary.  However, as experimental results show
+  \cite{Jacobson:1998}, it is extremely unlikely that the computed result will be false.
+\end{fcode}
+
+\begin{fcode}{bool}{$\Or$.verify_class_group}{int level}
+  returns true if the class group is correct as determined by a polynomial-time verification,
+  using the given verification level
+\end{fcode}
+
+\begin{fcode}{bool}{$\Or$.verify_class_group}{}
+  returns true if the class group is correct as determined by a polynomial-time verification,
+  using the global verification level.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SSTITLE{Additional functions}
+
+\begin{fcode}{rational_factorization}{$\Or$.factor_h}{}
+  returns a \code{rational_factorization} of the class number.  The class number is computed if
+  it has not been already.
+\end{fcode}
+
+\begin{fcode}{bigint}{$\Or$.exponent}{}
+  returns the exponent of the class group, i.e., the largest cyclic factor.  The class group is
+  computed if it has not been already.
+\end{fcode}
+
+\begin{fcode}{int}{$\Or$.p_rank}{const bigint & $p$}
+  returns the p-rank of the ideal class group.  The class group is computed if it has not been
+  already.
+\end{fcode}
+
+\begin{fcode}{base_vector< qi_class >}{$\Or$.generators}{}
+  returns a vector of generators of the cyclic subgroups of the ideal class group of $\Or$.  The
+  class group is computed if it has not been already.
+\end{fcode}
+
+\begin{fcode}{rational_factorization}{$\Or$.factor_discriminant}{}
+  returns the prime factorization of the discriminant of $\Or$ using the 2-Sylow subgroup of the
+  class group.  The class group and a set of generators are computed if they have not been
+  already.  At present, this function is only implemented for imaginary orders.  If $\Or$ is
+  real, the discriminant is simply factored with the \code{rational_factorization} function
+  \code{factor}.
+\end{fcode}
+
+\begin{fcode}{math_vector < bigint >}{$\Or$.represent_over_generators}{qi_class & $A$}
+  returns an exponent vector corresponding to the representation of $A$ over the system of
+  generators of the class group.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+Let $\Or$ be of type \code{quadratic_order}.  The \code{istream} operator \code{>>} and the
+\code{ostream} operator \code{<<} are overloaded.  Input consists of reading a \code{bigint}
+value for the discriminant.  Output of a \code{quadratic_order} has the following format:
+
+\begin{verbatim}
+Quadratic Order:
+   Delta = (discriminant of QO) (decimal digits)
+         = (prime factorization of the discriminant of QO)
+   R = (regulator)
+   h = (class number)
+   CL = (vector of class group invariants)
+   generators = (vector of generators of the cyclic subgroups)
+   L(1,X) = (L function)
+   C(Delta) = (C function)
+\end{verbatim}
+
+The discriminant is always displayed, while the other invariants are displayed only if they have
+been computed.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{qi_class},
+\SEE{qi_class_real},
+\SEE{order}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\NOTES
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/quadratic_order.h>
+
+int main()
+{
+    bigint D;
+    quadratic_order QO;
+
+    do {
+        cout << "Please enter a quadratic discriminant: "; cin >> D;
+    } while (!QO.assign(D));
+    cout << endl;
+
+    QO.class_group();
+    QO.generators();
+    QO.Lfunction();
+
+    cout << QO;
+
+    cout << "   ULI = " << QO.ULI() << endl;
+    cout << "   LLI = " << QO.LLI() << endl;
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+Example:
+\begin{quote}
+\begin{verbatim}
+Please enter a quadratic discriminant: -501510767
+
+Quadratic Order:
+   Delta = -501510767 (9)
+   h = 18522
+   CL = [ 7 7 378 ]
+   generators = [ (3286, 1657) (1144, 439) (2934, 61) ]
+   L(1,X) = 2.5983498285787
+   ULI = 0.243356600232444
+   LLI = 16.865670804095
+\end{verbatim}
+\end{quote}
+
+For further examples please refer to
+\path{LiDIA/src/packages/quadratic_order/quadratic_order_appl.cc}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Michael J.~Jacobson, Jr.

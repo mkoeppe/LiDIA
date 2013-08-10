@@ -1,0 +1,574 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  Fp_rational_function.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the class Fp_polynomial
+%%
+%%  Copyright   (c)   1998   by  LiDIA-Group
+%%
+%%  Authors: Volker Mueller
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{Fp_rational_function} \dotfill rational functions over finite prime
+fields
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{Fp_rational_function} is a class for doing very fast computations with rational functions
+modulo an odd prime.  This class is an extension of the polynomial class \code{Fp_polynomial}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+\code{Fp_rational_function} is a class for doing very fast computations with rational functions
+modulo an odd prime $p$.  A variable $f$ of type \code{Fp_rational_function} is internally
+represented with two pointers to instances of type \code{Fp_polynomial}, the numerator and the
+denominator of $f$.  Each \code{Fp_rational_function} has it's own modulus which must be set
+explicitely if $f$ is not the result of an arithmetical operation (note the equivalence to
+\code{Fp_polynomial}).  We use a ``lazy evaluation'' strategy in all operations, i.e.~numerator
+and denominator of a \code{Fp_rational_function} are not necessarily coprime.  There exists
+however a function to achieve coprimeness.  Similar as in \code{Fp_polynomial} several high
+level functions like evaluation at a \code{bigint}, derivation and arithmetical operations
+exist.  In addition to these ordinary arithmetical operations we have implemented modular
+versions where the numerator and the denominator are reduced modulo some given
+\code{Fp_polynomial}.  These modular versions also exist for a polynomial modulus given by an
+instance of \code{poly_modulus}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{Fp_rational_function}{}
+  initializes a zero rational function with uninitialized modulus.
+\end{fcode}
+
+\begin{fcode}{ct}{Fp_rational_function}{const bigint & $p$}
+  initializes a zero rational function with modulus $p$.  If $p$ is no odd prime number, the
+  \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{ct}{Fp_rational_function}{const Fp_polynomial & $f$}
+  initializes with a copy of the polynomial $f$.  The modulus is set to the modulus of $f$.
+\end{fcode}
+
+\begin{fcode}{ct}{Fp_rational_function}{const Fp_polynomial & $n$, const Fp_polynomial & $d$}
+  initializes with the rational function $n / d$.  If the moduli of $n$ and $d$ are different,
+  the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{ct}{Fp_rational_function}{const Fp_rational_function & $f$}
+  initializes with a copy of the rational function $f$.  The modulus is set to the modulus of
+  $f$.
+\end{fcode}
+
+\begin{fcode}{dt}{~Fp_rational_function}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $f$ be of type \code{Fp_rational_function}.  The operator \code{=} is overloaded.  All
+assignment functions set the modulus of the result to the modulus of the input variable (if
+possible).  For efficiency reasons, the following functions are also implemented:
+
+\begin{fcode}{void}{$f$.assign_zero}{}
+  sets $f$ to the zero rational function.  If the modulus of $f$ is zero, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign_one}{}
+  sets $f$ to the rational function $1 \cdot x^0$.  If the modulus of $f$ is zero, the \LEH is
+  invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign_x}{}
+  sets $f$ to the rational function $1 \cdot x^1+0 \cdot x^0$.  If the modulus of $f$ is zero,
+  the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign}{const Fp_rational_function & $g$}
+  $f \assign g$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign}{const Fp_polynomial & $g$}
+  $f \assign g$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign}{const Fp_polynomial & $n$, const Fp_polynomial & $d$}
+  sets $f \assign n / d$.  If the moduli of $n$ and $d$ are different, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign_numerator}{const Fp_polynomial & $g$}
+  set the numerator of $f$ to $g$.  If the modulus of $g$ is different from the modulus of $f$,
+  the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign_denominator}{const Fp_polynomial & $g$}
+  set the denominator of $f$ to $g$.  If the modulus of $g$ is different from the modulus of
+  $f$, the \LEH is invoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+Let $f$ be of type \code{Fp_rational_function}.
+
+\begin{fcode}{void}{$f$.set_modulus}{const bigint & $p$}
+  sets the modulus for the rational function $f$ to $p$.  $p$ must be an odd prime.  The
+  primality of $p$ is not tested, but be aware that the behaviour of this class is not defined
+  if $p$ is not prime (feature inherited from \code{Fp_polynomial}).
+\end{fcode}
+
+\begin{cfcode}{const bigint &}{$f$.modulus}{}
+  returns the modulus of $f$.  If $f$ has not been assigned a modulus yet (explicitely by
+  \code{$f$.set_modulus()} or implicitly by an operation), the value zero is returned.
+\end{cfcode}
+
+\begin{fcode}{void}{$f$.kill}{}
+  deallocates the rational function's coefficients and sets $f$ to zero.  The modulus of $f$ is
+  also set to zero.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $f$ be of type \code{Fp_rational_function}.  All returned coefficients of the following
+functions lie in the interval $[ 0, \dots, p-1 ]$, where $p$ is the modulus of $f$.
+
+\begin{fcode}{Fp_polynomial &}{$f$.numerator}{}
+  returns a reference to the numerator of $f$.
+\end{fcode}
+
+\begin{cfcode}{const Fp_polynomial &}{$f$.numerator}{}
+  returns a \code{const} reference to the numerator of $f$.
+\end{cfcode}
+
+\begin{fcode}{Fp_polynomial &}{$f$.denominator}{}
+  returns a reference to the denominator of $f$.
+\end{fcode}
+
+\begin{cfcode}{const Fp_polynomial &}{$f$.denominator}{}
+  returns a \code{const} reference to the denominator of $f$.
+\end{cfcode}
+
+\begin{cfcode}{lidia_size_t}{$f$.degree_numerator}{}
+  returns the degree of the numerator of $f$.  For the zero rational function, the return value
+  is $-1$.
+\end{cfcode}
+
+\begin{cfcode}{lidia_size_t}{$f$.degree_denominator}{}
+  returns the degree of the denominator of $f$.  For the zero rational function the return value
+  is $-1$.
+\end{cfcode}
+
+\begin{cfcode}{const bigint &}{$f$.lead_coefficient_numerator}{}
+  returns the leading coefficient of the numerator of $f$ (zero if $f$ is the zero rational
+  function).
+\end{cfcode}
+
+\begin{cfcode}{const bigint &}{$f$.lead_coefficient_denominator}{}
+  returns the leading coefficient of the denominator of $f$.  If $f$ is the zero rational
+  function, the \LEH is invoked.
+\end{cfcode}
+
+\begin{cfcode}{const bigint &}{$f$.const_term_numerator}{}
+  returns the constant term of the numerator of $f$ (zero if $f$ is the zero rational function).
+\end{cfcode}
+
+\begin{cfcode}{const bigint &}{$f$.const_term_denominator}{}
+  returns the constant term of the denominator of $f$.  If $f$ is the zero rational function,
+  the \LEH is invoked.
+\end{cfcode}
+
+\begin{cfcode}{void}{$f$.get_coefficient_numerator}{bigint & $a$, lidia_size_t $i$}
+  sets $a \assign c_i$, where $c_i$ is the coefficient of $x^i$ of the numerator of $f$.  If $i$
+  is bigger than the degree of the numerator of $f$, then $a$ is set to zero.  For negative
+  values of $i$ the \LEH is invoked.
+\end{cfcode}
+
+\begin{cfcode}{void}{$f$.get_coefficient_denominator}{bigint & $a$, lidia_size_t $i$}
+  sets $a \assign c_i$, where $c_i$ is the coefficient of $x^i$ of the denominator of $f$.  If
+  $i$ is bigger than the degree of the denominator of $f$, then $a$ is set to zero.  For
+  negative values of $i$ the \LEH is invoked.
+\end{cfcode}
+
+\begin{fcode}{void}{$f$.set_coefficient_numerator}{const bigint & $a$, lidia_size_t $i$}
+  sets coefficient of $x^i$ of the numerator of $f$ to $a \pmod{p}$, where $p$ is the modulus of
+  $f$.  Note that the function changes the degree of the numerator of $f$ if $i$ is bigger than
+  the degree of the numerator of $f$.  The \LEH is invoked for negative values of $i$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.set_coefficient_numerator}{lidia_size_t $i$}
+  sets coefficient of $x^i$ of the numerator of $f$ to one.  Note that the function changes the
+  degree of the numerator of $f$ if $i$ is bigger than the degree of the numerator of $f$.  The
+  \LEH is invoked for negative values of $i$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.set_coefficient_denominator}{const bigint & $a$, lidia_size_t $i$}
+  sets coefficient of $x^i$ of the denominator of $f$ to $a \pmod{p}$, where $p$ is the modulus
+  of $f$.  Note that the function changes the degree of the denominator of $f$ if $i$ is bigger
+  than the degree of the denominator of $f$.  The \LEH is invoked for negative values of $i$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.set_coefficient_denominator}{lidia_size_t $i$}
+  sets coefficient of $x^i$ of the denominator of $f$ to one.  Note that the function changes
+  the degree of the denominator of $f$ if $i$ is bigger than the degree of the denominator of
+  $f$.  The \LEH is invoked for negative values of $i$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+All arithmetical operations are done modulo the modulus assigned to the input instances of
+\code{Fp_rational_function}.  Input variables of type \code{bigint} are automatically reduced.
+The \LEH is invoked if the moduli of the input instances are different.  The modulus of the
+result is determined by the modulus of the input rational functions.
+
+The following operators are overloaded and can be used in exactly the same way
+as for machine types in C++ (e.g.~\code{int}) :
+
+\begin{center}
+\code{(unary) -}\\
+\code{(binary) +, -, *, /}\\
+\code{(binary with assignment) +=,  -=,  *=,  /=}
+\end{center}
+
+Let $f$ be of type \code{Fp_rational_function}.  To avoid copying, these operations can also be
+performed by the following functions:
+
+\begin{fcode}{void}{$f$.negate}{}
+  $f \assign -f$.
+\end{fcode}
+
+\begin{fcode}{void}{negate}{Fp_rational_function & $f$, const Fp_rational_function & $g$}
+  $f \assign -g$.
+\end{fcode}
+
+\begin{fcode}{void}{add}{Fp_rational_function & $f$, const Fp_rational_function & $g$,
+    const Fp_rational_function & $h$}%
+  $f \assign g + h$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{Fp_rational_function & $f$, const Fp_rational_function & $g$,
+    const Fp_rational_function & $h$}%
+  $f \assign g - h$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{Fp_rational_function & $f$, const Fp_rational_function & $g$,
+    const Fp_rational_function & $h$}%
+  $f \assign g \cdot h$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{Fp_rational_function & $f$, const Fp_rational_function & $g$,
+    const Fp_polynomial & $a$}%
+  $f \assign g \cdot a$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{Fp_rational_function & $f$, const Fp_polynomial & $a$,
+    const Fp_rational_function & $g$}%
+  $f \assign g \cdot a$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{Fp_rational_function & $f$, const Fp_rational_function & $g$,
+    const bigint & $a$}%
+  $f \assign g \cdot a$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{Fp_rational_function & $f$, const bigint & $a$,
+    const Fp_rational_function & $g$}%
+  $f \assign g \cdot a$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.multiply_by_2}{}
+  $f \assign 2 \cdot f$.
+\end{fcode}
+
+\begin{fcode}{void}{square}{Fp_rational_function & $f$, const Fp_rational_function & $g$}
+  $f \assign g^2$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{Fp_rational_function & $f$, const Fp_rational_function & $g$,
+    const Fp_rational_function & $h$}%
+  $f \assign g / h$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{Fp_rational_function & $f$, const Fp_rational_function & $g$,
+    const Fp_polynomial & $h$}%
+  $f \assign g / h$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{Fp_rational_function & $f$, const Fp_polynomial & $g$,
+    const Fp_rational_function & $h$}%
+  $f \assign g / h$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.invert}{}
+  $f \assign 1 / f$.
+\end{fcode}
+
+\begin{fcode}{void}{invert}{Fp_rational_function & $f$, const Fp_rational_function & $g$}
+  $f \assign 1 / g$.
+\end{fcode}
+
+\begin{fcode}{void}{div_rem}{Fp_polynomial & $q$, Fp_rational_function & $f$}
+  determine for given input value $f = n / d$ a polynomial $q$ such that $n = q \cdot d + r$ with
+  $\deg(r) < \deg (d)$.  $f$ is set to $r / d$.
+\end{fcode}
+
+\begin{fcode}{void}{shift}{Fp_rational_function & $g$, const Fp_rational_function & $f$,
+    lidia_size_t $n$}%
+  sets $g \assign f \cdot x^n$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+The binary operators \code{==}, \code{!=} are overloaded and can be used in exactly the same way
+as for machine types in C++ (e.g.~\code{int}).  Let $f$ be an instance of type
+\code{Fp_rational_function}.
+
+\begin{cfcode}{bool}{$f$.is_zero}{}
+  returns \TRUE if $f$ is the zero rational function; \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$f$.is_one}{}
+  returns \TRUE if $f$ is one; \FALSE otherwise.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+Let $f$ be an instance of type \code{Fp_rational_function}.
+
+\begin{fcode}{void}{$f$.randomize}{lidia_size_t $n$, lidia_size_t $d$ = 0}
+  assigns to $f$ a randomly chosen rational function where the degree of the numerator and the
+  denominator is $n$, $d$, respectively.  If the modulus of $f$ is zero, the \LEH is invoked.
+\end{fcode}
+
+\begin{cfcode}{bigint}{$f$.operator ()}{const bigint & $a$}
+  evaluate the rational function $f$ at the \code{bigint} $a$ modulo the modulus of $f$ and
+  return the result.  If the denominator of $f$ is evaluated to zero, the \LEH is invoked.
+\end{cfcode}
+
+\begin{fcode}{void}{derivative}{Fp_rational_function & $f$, const Fp_rational_function & $g$}
+  sets $f$ to the derivative of $g$.
+\end{fcode}
+
+\begin{fcode}{Fp_rational_function}{derivative}{const Fp_rational_function & $g$}
+  returns the derivative of $f$.
+\end{fcode}
+
+\begin{fcode}{void}{swap}{Fp_rational_function & $f$, Fp_rational_function & $g$}
+  swaps the values of $f$ and $g$.
+\end{fcode}
+
+
+\STITLE{Modular Arithmetic without pre-conditioning}
+
+All arithmetical operations shown above can also be performed modulo some given input variable
+$f$ of type \code{Fp_polynomial}.  These functions do not invert the denominator of the rational
+function modulo $f$, but perform modular polynomial operations for numerator and denominator
+(``lazy evaluation'').  Therefore the degree of the numerator and the denominator of the
+resulting rational function are bounded by the degree of $f$.  The \LEH is invoked if the moduli
+of the input instances and the polynomial modulus $f$ are different.  The modulus of the result
+is given as the modulus of the input rational functions.
+
+\begin{fcode}{void}{$g$.reduce}{const Fp_polynomial & $f$}
+  reduce the numerator and the denominator of $g$ modulo $f$.
+\end{fcode}
+
+\begin{fcode}{void}{add_mod}{Fp_rational_function & $g$, const Fp_rational_function & $a$,
+    const Fp_rational_function & $b$, const Fp_polynomial & $f$}%
+  determines $g \assign a + b \bmod f$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract_mod}{Fp_rational_function & $g$, const Fp_rational_function & $a$,
+    const Fp_rational_function & $b$, const Fp_polynomial & $f$}%
+  determines $g \assign a - b \bmod f$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply_mod}{Fp_rational_function & $g$, const Fp_rational_function & $a$,
+    const Fp_rational_function & $b$, const Fp_polynomial & $f$}%
+  determines $g \assign a \cdot b \bmod f$.
+\end{fcode}
+
+\begin{fcode}{void}{square_mod}{Fp_rational_function & $g$, const Fp_rational_function & $a$,
+    const Fp_polynomial & $f$}%
+determines $g \assign a^2 \bmod f$.
+\end{fcode}
+
+\begin{fcode}{void}{divide_mod}{Fp_rational_function & $g$, const Fp_rational_function & $a$,
+    const Fp_rational_function & $b$, const Fp_polynomial & $f$}
+  determines $g \assign a / b \bmod f$.
+\end{fcode}
+
+\begin{fcode}{void}{convert_mod}{Fp_polynomial & $g$, const Fp_rational_function & $a$,
+    const Fp_polynomial & $f$}%
+  sets $g$ to a polynomial which is equivalent to $a \pmod{f}$.  If the denominator of $a$ is
+  not invertible modulo $f$, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{bool}{convert_mod_status}{Fp_polynomial & $g$, const Fp_rational_function & $a$,
+    const Fp_polynomial & $f$}%
+  If the denominator of $a$ can be inverted modulo $f$, then the function sets $g$ to a
+  polynomial which is equivalent to $a \pmod{f}$ and returns \TRUE.  Otherwise $a$ is set to the
+  gcd of the denominator of $a$ and $f$ and \FALSE is returned.
+\end{fcode}
+
+\begin{fcode}{bool}{equal_mod}{const Fp_rational_function & $g$,
+    const Fp_rational_function & $h$, const Fp_polynomial & $f$}%
+  returns \TRUE if $g$ and $h$ are equivalent modulo $f$; \FALSE otherwise.
+\end{fcode}
+
+
+\STITLE{Modular Arithmetic with pre-conditioning}
+
+If you want to do a lot of modular computations modulo the same modulus, then it is worthwhile
+to precompute some information about the modulus and store these information in a variable of
+type \code{poly_modulus} (see \code{poly_modulus}).  Therefore all modular arithmetical
+operations shown above can also be performed modulo a given input variable $f$ of type
+\code{poly_modulus}.  The behaviour of these functions is exactly the same as for the modular
+functions without pre-conditioning.
+
+Note that the class \code{poly_modulus} assumes that the degree of input polynomials is bounded
+by the degree of the polynomial modulus.  This condition can be assured with the following
+member function which should therefore be called before the functions for modular arithmetic are
+used.
+
+\begin{fcode}{void}{g.reduce}{const poly_modulus & $f$}
+  reduces the numerator and the denominator of $g$ modulo the polynomial stored in $f$.
+\end{fcode}
+
+\begin{fcode}{void}{add}{Fp_rational_function & $g$, const Fp_rational_function & $a$,
+    const Fp_rational_function & $b$, const poly_modulus & $f$}%
+  determines $g \assign a + b \bmod f$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{Fp_rational_function & $g$, const Fp_rational_function & $a$,
+    const Fp_rational_function & $b$, const poly_modulus & $f$}
+  determines $g \assign a - b \bmod f$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{Fp_rational_function & $g$, const Fp_rational_function & $a$,
+    const Fp_rational_function & $b$, const poly_modulus & $f$}%
+  determines $g \assign a \cdot b \bmod f$.
+\end{fcode}
+
+\begin{fcode}{void}{square}{Fp_rational_function & $g$, const Fp_rational_function & $a$,
+    const poly_modulus & $f$}%
+  determines $g \assign a^2 \bmod f$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{Fp_rational_function & $g$, const Fp_rational_function & $a$,
+    const Fp_rational_function & $b$, const poly_modulus & $f$}%
+  determines $g \assign a / b \bmod f$.
+\end{fcode}
+
+\begin{fcode}{bool}{equal}{const Fp_rational_function & $g$, const Fp_rational_function & $h$,
+    const poly_modulus & $f$}%
+  returns \TRUE if $g$ and $h$ are equivalent modulo $f$; \FALSE otherwise.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+The \code{istream} operator \code{>>} and the \code{ostream} operator \code{<<} are overloaded.
+We support two different I/O-formats:
+\begin{itemize}
+\item
+  The more simple format is
+\begin{verbatim} [ c_n ... c_0 ] / [ d_m ... d_0 ] mod p \end{verbatim}
+with integers $c_i, d_j, p$.  Here $c_i$ ($d_i$) is the coefficient of the numerator
+(denominator) of $x^i$, respectively.  All numbers will be reduced modulo $p$ at input; leading
+zeros will be removed.
+
+\item
+  The more comfortable format (especially for sparse rational functions) is
+\begin{verbatim} c_n * x^n + ... + c_2 * x^2 + c_1 * x + c_0 / d_m *
+x^m + ... + d_2 * x^2 + d_1 * x + d_0 mod p
+\end{verbatim}
+  At output zero coefficients are omitted, as well as you may omit them
+  at input.
+\end{itemize}
+
+In the case you want to input a polynomial, it is in both formats also possible to use the input
+format of class \code{Fp_polynomial} (i.e. ignore '/' and the denominator part).  In this case
+the input format looks like
+\begin{verbatim}
+  [ c_n ... c_0 ] mod p   ,    c_n*x^n + ... + c_0 mod p ,
+\end{verbatim}
+respectively.
+
+Both formats may be used as input --- they are distinguished automatically by the first
+character of the input, being `[' or not `['.  In addition to the \code{istream} operator
+\code{>>} the following function exists:
+
+\begin{fcode}{void}{$f$.read}{istream & is = cin}
+\end{fcode}
+
+The \code{ostream} operator \code{<<} always uses the second output format.  The first output
+format can be obtained using the member function
+
+\begin{cfcode}{void}{$f$.print}{ostream & os = cout}
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{bigint}, \SEE{Fp_polynomial}, \SEE{poly_modulus}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/Fp_rational_function.h>
+
+int main()
+{
+    Fp_rational_function f, g, h;
+
+    cout << "Please enter f : "; cin >> f;
+    cout << "Please enter g : "; cin >> g;
+
+    h = f * g;
+    cout << "\n f * g   =  " << h;
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Volker M\"uller

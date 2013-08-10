@@ -1,0 +1,26 @@
+// -*- C++ -*-
+//==============================================================================================
+//
+//	This file is part of LiDIA --- a library for computational number theory
+//
+//	Copyright (c) 1994--2001 the LiDIA Group.  All rights reserved.
+//
+//	See http://www.informatik.tu-darmstadt.de/TI/LiDIA/
+//
+//----------------------------------------------------------------------------------------------
+//
+//	$Id: alg_ideal.special,v 2.0 2001/05/02 16:45:20 lidiaadm Exp $
+//
+//	Author	:
+//	Changes	: See CVS log
+//
+//==============================================================================================
+
+
+#ifdef LIDIA_CLASS_SINGLE_FACTOR
+
+# ifndef __LIDIA_SF_ALG_IDEAL_H
+#  include	<LiDIA/number_fields/sf_alg_ideal.h>
+# endif
+
+#endif

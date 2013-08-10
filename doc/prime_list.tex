@@ -1,0 +1,284 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  prime_list.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the class prime_list
+%%
+%%  Copyright (c) 2000 by the LiDIA Group
+%%
+%%  Authors: Dirk Schramm
+%%
+
+\newcommand{\upperbound}{\mathit{upper\uscore bound}}
+\newcommand{\lowerbound}{\mathit{lower\uscore bound}}
+\newcommand{\maxnumberofprimes}{\mathit{max\uscore number\uscore of\uscore primes}}
+\newcommand{\mode}{\mathit{mode}}
+\renewcommand{\prime}{\mathit{prime}}
+\newcommand{\pl}{\mathit{pl}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{prime_list} \dotfill prime number calculation
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{prime_list} is a class that provides efficient calculation and storage of prime number
+intervals in memory.  Loading and saving lists from/to files is also supported.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+\code{prime_list} implements five algorithms to calculate prime number intervals with different
+speed and memory usage.
+
+\begin{center}
+  \begin{tabular}{|l|l|r|} \hline
+    algorithm & memory requirement & example \\\hline
+    sieve of Erathostenes & $(ub - lb) + \min(lb, \sqrt{ub})$ & 1000000 \\
+    (mode 'E') & & \\\hline
+    $6k\pm 1$ sieve & $((ub - lb) + \min(lb, \sqrt{ub})) / 3$ & 333333 \\
+    (mode 'K') & & \\\hline
+    sieve of Erathostenes & $((ub - lb) + \min(lb, \sqrt{ub})) / 8$ & 125000 \\
+    bit-level (mode 'B') & & \\\hline
+    $6k\pm 1$ bit sieve & $((ub - lb) + \min(lb, \sqrt{ub})) / 24$ & 41666 \\
+    (mode '6', default) & & \\\hline
+    interval sieve & $\min(1000000, \max((ub - lb),$ & 1000574 \\
+    (mode 'I') & $\sqrt{ub})) + \sqrt{ub} / \log(\sqrt{ub}) \cdot 4$ & \\\hline
+  \end{tabular}
+\end{center}
+
+``memory requirement'' estimates the approximate amount of memory in bytes used \emph{during
+  calculation} of an interval from $lb$ (lower bound) to $ub$ (upper bound) on a 32-bit machine.
+
+The column example shows the memory requirement for an interval of primes from 2 to
+$10^{6}$.
+
+Under normal conditions the $6k\pm 1$ bit sieve is the fastest algorithm and therefore
+used by default.  To get an exact comparison of the algorithms on your machine, you can run the
+benchmark application \code{prime_list_bench_appl}.
+
+After calculation only the differences between neighbored primes are stored, so (in the default
+configuration) each prime in the list needs just one byte of memory.  Additionally the
+differences are organized in blocks to speed up random access to the list.
+
+Besides memory the used data types limit the primes that can be calculated.  By default the upper
+bound is $2^{32}$ on a 32-bit machine and $2^{38}$ on a 64-bit machine.  But \code{prime_list}
+can easily be reconfigured to support greater primes by changing the following types:
+
+\begin{center}
+  \begin{tabular}{ll}
+    name & default type \\\hline
+    \code{PRIME_LIST_NUMBER} & \code{unsigned long} \\
+    \code{PRIME_LIST_COUNTER} & \code{long} \\
+    \code{PRIME_LIST_FLOAT_NUMBER} & \code{double} \\
+    \code{PRIME_LIST_DIFF} & \code{unsigned char} \\
+  \end{tabular}
+\end{center}
+
+For more information, see \path{LiDIA/include/LiDIA/prime_list.h}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{prime_list}{}
+  Creates an empty list.
+\end{fcode}
+
+\begin{fcode}{ct}{prime_list}{PRIME_LIST_NUMBER $\upperbound$, char $\mode$ = '6'}
+  Creates a list with primes from 2 to $\upperbound$.  Uses the algorithm specified by $\mode$.
+\end{fcode}
+
+\begin{fcode}{ct}{prime_list}{PRIME_LIST_NUMBER $\lowerbound$, PRIME_LIST_NUMBER $\upperbound$, char $\mode$ = '6'}
+  Creates a list with primes from $\lowerbound$ to $\upperbound$.  Uses the algorithm specified
+  by $\mode$.
+\end{fcode}
+
+\begin{fcode}{ct}{prime_list}{const char *filename, lidia_size_t $\maxnumberofprimes$ = 0}
+  Loads primes from a file.  The numbers in the file must be primes, sorted in ascending or
+  descending order and there may be no primes missing inside the interval.  The number of primes
+  being read can be limited by $\maxnumberofprimes$.
+\end{fcode}
+
+\begin{fcode}{ct}{prime_list}{const prime_list & $A$}
+  Copies primes from $A$.
+\end{fcode}
+
+\begin{fcode}{dt}{~prime_list}{}
+  Deletes the \code{prime_list} object.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+Let $\pl$ be of type \code{prime_list}.
+
+\begin{cfcode}{PRIME_LIST_NUMBER}{$\pl$.get_lower_bound}{}
+  Returns the lower bound of $\pl$.
+\end{cfcode}
+
+\begin{cfcode}{PRIME_LIST_NUMBER}{$\pl$.get_upper_bound}{}
+  Returns the upper bound of $\pl$.
+\end{cfcode}
+
+\begin{fcode}{void}{$\pl$.set_lower_bound}{PRIME_LIST_NUMBER $\lowerbound$, char $\mode$ = '6'}
+  Sets a new lower bound for $\pl$ and deletes primes or calculates new ones (with the algorithm
+  specified by $\mode$) as necessary.
+\end{fcode}
+
+\begin{fcode}{void}{$\pl$.set_upper_bound}{PRIME_LIST_NUMBER $\upperbound$, char $\mode$ = '6'}
+  Sets a new upper bound for $\pl$ and deletes primes or calculates new ones (with the algorithm
+  specified by $\mode$) as necessary.
+\end{fcode}
+
+\begin{fcode}{void}{$\pl$.resize}{PRIME_LIST_NUMBER $\lowerbound$,
+    PRIME_LIST_NUMBER $\upperbound$, char $\mode$ = '6'}%
+  Sets a new lower and upper bound for $\pl$ and deletes primes and/or calculates new ones (with
+  the algorithm specified by $\mode$) as necessary.
+\end{fcode}
+
+\begin{cfcode}{bool}{$\pl$.is_empty}{}
+  Returns \TRUE if $\pl$ is empty, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{lidia_size_t}{$\pl$.get_number_of_primes}{}
+  Returns the number of primes in $\pl$.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$\pl$.is_element}{PRIME_LIST_NUMBER $\prime$}
+  Returns \TRUE if $\pl$ contains $\prime$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{lidia_size_t}{$\pl$.get_index(PRIME_LIST_NUMBER $\prime$}{}
+  Returns the index of $\prime$ in $\pl$ or $-1$ if $\prime$ is not in $\pl$.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $\pl$ be of type \code{prime_list}.
+
+\begin{cfcode}{PRIME_LIST_NUMBER}{$\pl$.get_current_prime}{}
+  Returns the current prime of $\pl$.  This is the prime returned by the latest called
+  $get_???_prime$ function.
+\end{cfcode}
+
+\begin{cfcode}{lidia_size_t}{$\pl$.get_current_index}{}
+  Returns the index of the current prime of $\pl$.
+\end{cfcode}
+
+\begin{cfcode}{PRIME_LIST_NUMBER}{$\pl$.get_first_prime}{}
+  Returns the first prime in $\pl$ or 0 if $\pl$ is empty.  Updates the current prime.
+\end{cfcode}
+
+\begin{cfcode}{PRIME_LIST_NUMBER}{$\pl$.get_first_prime}{PRIME_LIST_NUMBER $\prime$}
+  Returns the first number in $\pl$ which is greater than or equal to $\prime$ or 0 if $\prime$ is
+  greater than the last prime in $\pl$.  Updates the current prime.
+\end{cfcode}
+
+\begin{cfcode}{PRIME_LIST_NUMBER}{$\pl$.get_next_prime}{}
+  Returns the number that follows the current prime in $\pl$ or 0 if the current prime is already
+  the last prime in $\pl$.  Updates the current prime.
+\end{cfcode}
+
+\begin{cfcode}{PRIME_LIST_NUMBER}{$\pl$.get_last_prime}{}
+  Returns the last prime in $\pl$ or 0 if $\pl$ is empty.  Updates the current prime.
+\end{cfcode}
+
+\begin{cfcode}{PRIME_LIST_NUMBER}{$\pl$.get_last_prime}{PRIME_LIST_NUMBER $\prime$}
+  Returns the last number in $\pl$ which is less than or equal to $\prime$ or 0 if $\prime$ is
+  less than the first prime in $\pl$.  Updates the current prime.
+\end{cfcode}
+
+\begin{cfcode}{PRIME_LIST_NUMBER}{$\pl$.get_prev_prime}{}
+  Returns the number that precedes the current prime in $\pl$ or 0 if the current prime is
+  already the first prime in $\pl$.  Updates the current prime.
+\end{cfcode}
+
+\begin{cfcode}{PRIME_LIST_NUMBER}{$\pl$.get_prime}{lidia_size_t $\mathit{index}$}
+  Returns the number at position $\mathit{index}$ (starting with 0) in $\pl$ or 0 if
+  $\mathit{index}$ is out of bounds.  Updates the current prime.
+\end{cfcode}
+
+The overloaded operator \code{[]} can be used instead of \code{get_prime}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+Let $\pl$ be of type \code{prime_list}.
+
+\begin{fcode}{void}{$\pl$.load_from_file}{const char *filename, lidia_size_t $\maxnumberofprimes$ = 0}
+  Deletes the current content of $\pl$ and loads primes from a file.  The numbers in the file
+  must be primes, sorted in ascending or descending order and there may be no primes missing
+  inside the interval.  The number of primes being read can be limited by $\maxnumberofprimes$.
+\end{fcode}
+
+\begin{cfcode}{void}{$\pl$.save_to_file}{const char *filename, bool descending = false}
+  Writes all primes in $\pl$ to a file in ascending or descending order (according to the value
+  of \code{descending}) with one number per line.  If the file already exists, it is
+  overwritten.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $\pl$ be of type \code{prime_list}.
+
+\begin{fcode}{void}{$\pl$.assign}{const prime_list & $A$}
+  Deletes the current content of $\pl$ and copies primes from $A$.
+\end{fcode}
+
+The overloaded operator \code{=} can be used instead of \code{assign}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/prime_list.h>
+
+int main()
+{
+    unsigned long lb, ub, p;
+
+    cout << "Please enter lower bound: "; cin >> lb ;
+    cout << "Please enter upper bound: "; cin >> ub ;
+    cout << endl;
+    prime_list pl(lb, ub);
+    p = pl.get_first_prime();
+    while (p)
+    {
+        cout << p << endl;
+        p = pl.get_next_prime();
+    }
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Dirk Schramm

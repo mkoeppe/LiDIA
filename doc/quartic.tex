@@ -1,0 +1,212 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  point_bigint.tex    Documentation
+%%
+%%  This file contains the documentation of the class quartic
+%%
+%%  Copyright   (c)   1998   by  LiDIA group
+%%
+%%  Authors: Nigel Smart, John Cremona
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\code{quartic} \dotfill class for holding a curve of the form $y^2 = a x^4 + b x^3 + c x^2 + d x
++ e$.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+Curves of the form $y^2 = a x^4 + b x^3 + c x^2 +d x + e$, hereafter called quartics, arise in
+algorithms to find Mordell-Weil groups of elliptic curves.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{quartic}{}
+  constructs an invalid quartic.
+\end{fcode}
+
+\begin{fcode}{ct}{quartic}{const bigint & $a$, const bigint & $b$,
+    const bigint & $c$, const bigint & $d$, const bigint & $e$}%
+  constructs the quartic $y^2 = a x^4 + b x^3 + c x^2 +d x + e$.
+\end{fcode}
+
+\begin{fcode}{ct}{quartic}{const quartic & $Q$}
+  copy constructor for a quartic.
+\end{fcode}
+
+\begin{fcode}{dt}{~quartic}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+The operator \code{=} is overloaded.  However for efficiency the following are also defined.
+Let $Q$ be of type \code{quartic}.
+
+\begin{fcode}{void}{$Q$.assign}{const bigint & $a$, const bigint & $b$,
+    const bigint & $c$, const bigint & $d$, const bigint & $e$}%
+  assigns $Q$ the quartic $y^2 = a x^4 + b x^3 + c x^2 +d x + e$.
+\end{fcode}
+
+\begin{fcode}{void}{$Q$.assign}{const quartic & $R$}
+  assigns to $Q$ the quartic $R$. 
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $Q$ be of type \code{quartic}.
+
+\begin{cfcode}{bigint}{$Q$.get_a}{}
+  returns the coefficient $a$.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$Q$.get_b}{}
+  returns the coefficient  $b$.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$Q$.get_c}{}
+  returns the coefficient  $c$.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$Q$.get_d}{}
+  returns the coefficient  $d$.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$Q$.get_e}{}
+  returns the coefficient  $e$.
+\end{cfcode}
+
+\begin{cfcode}{void}{$Q$.get_coeffs}{bigint & $a$, bigint & $b$, bigint & $c$, bigint & $d$, bigint & $e$}
+  sets $a,b,c,d,e$ to be the requisite coefficients of $Q$.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+Let $Q$ be of type \code{quartic}.
+
+\begin{cfcode}{int}{$Q$.get_type}{}
+  returns the type of the quartic.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$Q$.get_I}{}
+  returns the $I$-invariant of $Q$.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$Q$.get_J}{}
+  returns the $J$-invariant of $Q$.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$Q$.get_H}{}
+  returns the semiinvariant $H$ of $Q$.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$Q$.get_discriminant}{}
+  returns the discriminant of $Q$.
+\end{cfcode}
+
+\begin{cfcode}{bigcomplex *}{$Q$.get_roots}{}
+  returns the complex roots of $a x^4 + b x^3 + c x^2 +d x + e = 0$.  Note the return type of this
+  function WILL change in later releases once we have settled on how we are to use this function
+  when implementing \code{mwrank}.
+\end{cfcode}
+
+\begin{fcode}{void}{$Q$.doubleup}{}
+  changes the curve by $b \assign 2b$, $c \assign 4 c$, $d \assign 8 d$, and $e \assign 16 e$.
+\end{fcode}
+
+\begin{cfcode}{int}{$Q$.trivial}{}
+  tests for a rational root, i.e. does $Q$ represent the trivial element in the Selmer group.
+\end{cfcode}
+
+\begin{cfcode}{long}{$Q$.no_roots_mod}{long $p$}
+  returns the number of roots of $a x^4 + b x^3 + c x^2 +d x +e$ modulo $p$, including those at
+  infinity.  This may seem like an obscure function but it is used in an equivalence check in
+  \code{mwrank} based on an idea of Siksek.
+
+\end{cfcode}
+
+\begin{cfcode}{int}{$Q$.zp_soluble}{const bigint & $p$, const bigint & $x_0$, long $\nu$}
+  tests whether there is a solution to $Q$ in the $p$-adic integers with $x \equiv x_0
+  \pmod{p^{\nu}}$.
+\end{cfcode}
+
+\begin{cfcode}{int}{$Q$.qp_soluble}{const bigint & $p$}
+  tests whether $Q$ is locally soluble at $p$.  This uses the naive test for small values of $p$
+  and the conjectured polynomial time test of Siksek for large $p$.
+
+\end{cfcode}
+
+\begin{cfcode}{int}{$Q$.locally_soluble}{const sort_vector< bigint > & $\mathit{plist}$}
+  checks local solubility at infinity and at the set of primes in the list $\mathit{plist}$.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+Only the \code{ostream} operator \code{<<} has been overloaded.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/quartic.h>
+
+int main()
+{
+    long lidia_precision=40;
+    bigfloat::precision(lidia_precision);
+
+    // First a test of quartics...
+    quartic q(-1,0,54,-256,487);
+    cout << q << endl;
+    cout << "Testing " << endl;
+    cout << "2 : " << q.qp_soluble(2) << endl;
+    cout << "3 : " << q.qp_soluble(3) << endl;
+    cout << "11 : " << q.qp_soluble(11) << endl;
+    cout << "941 : " << q.qp_soluble(941) << endl;
+
+    q.assign(1,2,-9,-42,-43);
+    cout << q << endl;
+    cout << "Testing " << endl;
+    cout << "2 : " << q.qp_soluble(2) << endl;
+    cout << "3 : " << q.qp_soluble(3) << endl;
+    cout << "11 : " << q.qp_soluble(11) << endl;
+    cout << "941 : " << q.qp_soluble(941) << endl;
+
+   return 0;
+}
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+John Cremona, Nigel Smart.

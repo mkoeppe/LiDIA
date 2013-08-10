@@ -1,0 +1,262 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  fft_prime.tex   LiDIA documentation
+%%
+%%  This file contains the documentation of the class bitreversetable
+%%
+%%  Copyright (c) 1997 by the LiDIA Group
+%%
+%%  Authors: Thomas Pfahler, Thorsten Rottschaefer, and Victor Shoup
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\code{fft_prime} \dotfill fast fourier transformation modulo a prime
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{fft_prime} is a class that provides routines for computing discrete fourier
+transformations in finite prime fields with single precision characteristic.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+An object of type \code{fft_prime} stores information which are necessary to multiply single
+precision polynomials over a finite prime field using the Discrete Fourier Transformation (DFT).
+
+To initialize an \code{fft_prime} object, the user must set the characteristic of the prime
+field using the member function \code{set_prime}.  Then one of the functions for multiplying
+polynomials using DFT can be used.
+
+For further information on the DFT algorithm, we refer to \cite{Cormen/Leiserson/Rivest:1990}.
+
+\begin{techdoc}
+  An object of type \code{fft_prime} consists of a prime $p$ that represents the finite prime
+  field $\bbfF_{p}$, three tables which hold the necessary information for the DFT routines and
+  a variable \code{current_degree} that indicates the maximal convolution size the tables have been
+  built for.
+  
+  All the tables are arrays of size $\code{current_degree} + 1$.
+  
+  The \code{RootTable} stores $\code{RootTable}[i] = w^{2^{\code{current_degree}-i}}$ for $0
+  \leq i \leq \code{current_degree}$, where $w$ is a primitive $2^{\code{current_degree}}$-th
+  root of unity in $\bbfF_{p}$.
+  
+  The \code{RootInvTable} holds $\code{RootInvTable}[i] = RootTable[i]^{-1} \bmod p$.
+  
+  The \code{TwoInvTable} contains $\code{TwoInvTable}[i] = 1/{2^i} \bmod p$ for $0 \leq i \leq
+  \code{current_degree}$.
+  
+  The static variable \code{rev_table} of type \code{bit_reverse_table} is used in the function
+  \code{FFT}.
+  
+  The static arrays \code{A (B, C)} store intermediate results in different functions and have
+  been introduced to avoid unnecessary memory allocation operations for temporary variables.
+  Each of the arrays consists of \code{size_A} (\code{size_B, size_C}) elements.
+  
+  $2^{\code{current_degree}}$ is the largest possible convolution size for the currently
+  computed tables.  $2^{\code{max_degree}}$ is the largest possible convolution size for $p$.
+\end{techdoc}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{fft_prime}{}
+  Initializes the characteristic of the field with zero.
+  \begin{techdoc}
+    Initializes all pointers with \code{NULL} and all member variables with zero.
+  \end{techdoc}
+\end{fcode}
+
+\begin{fcode}{ct}{fft_prime}{const fft_prime & $a$}
+  Initializes a copy of $a$.
+  \begin{techdoc}
+    Copies all tables.
+  \end{techdoc}
+\end{fcode}
+
+\begin{fcode}{dt}{~fft_prime}{}
+  deletes all tables
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $a$ be of type \code{fft_prime}.  The operator \code{=} is overloaded.  For efficiency
+reasons, the following function is also implemented:
+
+\begin{fcode}{void}{$a$.assign}{const fft_prime & $b$}
+  $a \assign b$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+Let $a$ be of type \code{fft_prime}.
+
+\begin{fcode}{void}{$a$.set_prime}{udigit $q$}
+  Sets $p \assign q$, where $p$ is the characteristic of the finite prime field stored in the
+  class.  The parameter $q$ must be a prime number larger than $2$.  The primality of $q$ is not
+  verified, but the behaviour is undefined, if $q$ is not a prime number larger than $2$.  All
+  further computations are done modulo $q$.
+
+  \begin{techdoc}
+    If $q$ is not equal to the current characteristic, all tables which have been precomputed
+    for the previous prime field are deleted and \code{current_degree} is set to $0$; the
+    maximum possible convolution size for $q$ is computed and stored in \code{max_degree}.
+    Otherwise, the tables remain unchanged.
+  \end{techdoc}
+\end{fcode}
+
+\begin{cfcode}{udigit}{$a$.get_prime}{}
+  Returns the prime number which was set by the last call of \code{set_prime}.
+\end{cfcode}
+
+\begin{cfcode}{lidia_size_t}{$a$.get_max_degree}{}
+  Returns $m$, where $2^m$ is the largest possible convolution size for the current prime field.
+  If the characteristic is zero, e.g. it has not been initialized, the \LEH is called.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+\begin{fcode}{bool}{multiply_fft}{void* $x$, int $\mathit{type}$,
+    const void* const $\mathit{pa}$, lidia_size_t $\mathit{da}$,
+    const void* const $\mathit{pb}$, lidia_size_t $\mathit{db}$, fft_prime & $q$}%
+  $\mathit{pa}$ and $\mathit{pb}$ must represent polynomials of degree $\mathit{da}$ and
+  $\mathit{db}$ modulo $p$, respectively, where $p = \code{$q$.get_prime()}$.  The coefficients
+  must be represented by the least non-negative element in the equivalence class modulo $p$.
+  The constant term of the polynomials $\mathit{pa}$ and $\mathit{pb}$ must be stored in
+  $\mathit{pa}[0]$ and $\mathit{pb}[0]$, respectively.
+  
+  The product $\mathit{pa} \cdot \mathit{pb}$ is assigned to $x$.  Adequate space for $x$ must
+  be allocated by the caller.  The minimum size for $x$ is the $\mathit{da} + \mathit{db} + 1$.
+  
+  The parameters $x$, $\mathit{pa}$, and $\mathit{pb}$ can be either of type \code{udigit} or
+  \code{udigit_mod}.  In the first case the parameter $\mathit{type}$ has to be $0$, in second
+  case $1$.
+  
+  Squarings are detected automatically.  Input may alias output.
+  
+  If $\mathit{da}$ ($\mathit{db}$) is less than or equal to zero, the \LEH is called.
+  
+  The function returns false, if the next power of two larger than $\mathit{da} + \mathit{db}$
+  does not divide $p-1$.  In that case a DFT transformation is not possible.  Otherwise, it
+  returns true.
+\end{fcode}
+
+\begin{Tfcode}{bool}{build_tables}{lidia_size_t $l$}
+  Tries to compute a $2^l$-th primitive root of unity $w$.  If $w$ does not exist, the function
+  returns false.  Otherwise \code{RootTable}, \code{RootInvTable}, and \code{TwoInvTable} are
+  computed using $w$ and the function returns true.  In this case the tables can be used for a
+  convolution size less or equal to $2^l$
+\end{Tfcode}
+
+\begin{Tfcode}{void}{FFT}{udigit* $A$, const udigit* $a$, lidia_size_t $k$, udigit $q$,
+    const udigit* $\mathit{root}$}%
+  Performs a $2^k$-point convolution modulo $q$.  Assumes, that a has size $2^k$ and
+  $\mathit{root}[i]$ is a primitive $2^i$-th root of unity.
+\end{Tfcode}
+
+\begin{Tfcode}{bool}{evaluate}{udigit* $A$, int $\mathit{type}$, const void* $a$,
+    lidia_size_t $d$, lidia_size_t $k$}%
+  Performs a $2^k$ point-value representation modulo $p$.  Assuming,that $a$ represents the
+  coefficients of a degree $d$ polynomial the result is computed in $A$.  If the tables, which
+  are nessesary for evaluating the polynomial $a$ could be computed by the function
+  \code{build_tables} for a convolution size $2^k$, the function returns true, otherwise it
+  returns false.
+  
+  The parameter $a$ can be either of type \code{udigit} or \code{udigit_mod}.  In the first case
+  the parameter $\mathit{type}$ has to be $0$, in second case $1$.
+\end{Tfcode}
+
+\begin{Tfcode}{bool}{interpolate}{udigit* $A$, const udigit* $a$, lidia_size_t $k$}
+  Performs a $2^k$ coefficient representation modulo $p$.  Assuming, that $a$ represents a $2^k$
+  point-value representation modulo $p$ the coefficients are computed into $A$.  This function
+  assumes, that the user exactly knows what he is doing; e.g., he must not change the tables of
+  the \code{fft_prime} by evaluating another polynomial with a larger \code{max_degree} (other
+  root of unity), before calling the interpolate routine for the first polynomial.
+\end{Tfcode}
+
+\begin{Tfcode}{void}{pointwise_multiply}{udigit* $x$, const udigit* $a$, const udigit* $b$,
+    lidia_size_t $k$}%
+  This function computes for each index the product of $a$ and $b$ into $x$: $x[i] \assign a[i]
+  \cdot b[i]$.  The function assumes, that the size of $a$ and $b$ is $2^k$.
+\end{Tfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{udigit}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+The code of the example can be found in:
+\path{LiDIA/src/simple_classes/fft_prime/fft_prime_appl.cc}.
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/udigit.h>
+#include <LiDIA/fft_prime.h>
+
+int main()
+{
+    lidia_size_t i, da ,db;
+    fft_prime fft;
+    fft.set_prime(17);
+
+    fft_prime_t x[9], a[4], b[4];
+    // pa =    1  + 2x^1  + 3x^2  + 4x^3
+    a[0]=1; a[1]=2; a[2]=3; a[3]=4; da = 3;
+
+    // pb =    1  + 2x^1  + 3x^2  + 4x^3
+    b[0]=1; b[1]=2; b[2]=3; b[3]=4; db = 3; // a and b have degree 3 !!
+
+    multiply_fft(x, a, da, b, db, fft);
+
+    // output
+    cout << "\n  pa:   ";
+    for (i = 0; i <= da; i++){
+        cout << a[i] << " ";
+    }
+
+    cout << "\n  pb:   ";
+    for (i = 0; i <= db; i++) {
+        cout << b[i] << " ";
+    }
+
+    cout << "\nproduct:";
+    for (i = 0; i <= da + db + 1; i++) {
+        cout << x[i] << " ";
+    }
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Thomas Pfahler, Thorsten Rottschaefer, and Victor Shoup

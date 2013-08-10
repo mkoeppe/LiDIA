@@ -1,0 +1,36 @@
+// -*- C++ -*-
+//==============================================================================================
+//
+//	This file is part of LiDIA --- a library for computational number theory
+//
+//	Copyright (c) 1994--2001 the LiDIA Group.  All rights reserved.
+//
+//	See http://www.informatik.tu-darmstadt.de/TI/LiDIA/
+//
+//----------------------------------------------------------------------------------------------
+//
+//	$Id: bigmod.special,v 2.0 2001/05/02 16:39:25 lidiaadm Exp $
+//
+//	Author	:
+//	Changes	: See CVS log
+//
+//==============================================================================================
+
+
+#if 0
+#ifdef LIDIA_CLASS_MATRIX
+
+# ifndef __LIDIA_BIGMOD_MATRIX_H
+#  include	<LiDIA/bigmod_matrix.h>
+# endif
+
+#endif
+#endif
+
+#ifdef LIDIA_CLASS_DENSE_POWER_SERIES
+
+# ifndef __LIDIA_DENSE_POWER_SERIES_BIGMOD_H
+#  include	<LiDIA/finite_fields/dense_power_series_bigmod.h>
+# endif
+
+#endif

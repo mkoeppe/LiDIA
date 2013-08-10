@@ -1,0 +1,369 @@
+##	==============================================================
+##
+##	Automake definitions for the LiDIA ECO package's library stuff
+##
+##	==============================================================
+
+AUTOMAKE_OPTIONS = 1.5 nostdinc
+
+ETAGS_ARGS = -C -l c++
+
+include $(top_srcdir)/Paths.def
+
+
+##	-------------
+##	INCLUDE PATHS
+##	-------------
+
+AM_CPPFLAGS = \
+	-I$(LIDIA_CONFIG_INCLUDEDIR) \
+	-I$(LIDIA_BASE_INCLUDEDIR) -I$(srcdir)/$(LIDIA_BASE_INCLUDEDIR) \
+	-I$(LIDIA_FF_INCLUDEDIR) -I$(srcdir)/$(LIDIA_FF_INCLUDEDIR) \
+	-I$(LIDIA_LA_INCLUDEDIR) -I$(srcdir)/$(LIDIA_LA_INCLUDEDIR) \
+	-I$(LIDIA_EC_INCLUDEDIR) -I$(srcdir)/$(LIDIA_EC_INCLUDEDIR) \
+	-I$(LIDIA_ECO_INCLUDEDIR) -I$(srcdir)/$(LIDIA_ECO_INCLUDEDIR)
+
+
+##	---------
+##	LIBRARIES
+##	---------
+
+noinst_LTLIBRARIES = libLiDIA-ECO.la
+
+# We don't want to have $(LIBS) in the convenience library.
+# FIXME: This is not safe against command-line overrides.
+LIBS =
+
+
+##	---------------
+##	LIBRARY SOURCES
+##	---------------
+
+libLiDIA_ECO_la_SOURCES = \
+	$(LIDIA_ECO_SRCDIR)/eco_gf2n/eco_gf2n/eco_gf2n.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gf2n/elkies/BG_algorithms_eco2.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gf2n/elkies/Ytop_eco2.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gf2n/elkies/compute_list_eco2.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gf2n/elkies/compute_psi_eco2.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gf2n/elkies/find_eigenvalue_eco2.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gf2n/elkies/powers_of_l_eco2.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gf2n/elkies/schoof_algorithm_eco2.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gf2n/elkies/schoofpart_eco2.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gf2n/elkies/two_power_eco2.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gf2n/lercier/lercier_functions.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gf2n/lercier/lercier_isogeny.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gf2n/lercier/prime_square.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gf2n/mv_pol/mv_poly.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gf2n/mv_pol/mv_term.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gf2n/weco2_rat_function/weco2_rat_function.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gfp/eco_gfp/EC_domain_parameters_P1363.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gfp/eco_gfp/eco_prime.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gfp/eco_gfp/examine_prime.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gfp/eco_gfp/meq_prime.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gfp/eco_gfp/trace_list.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gfp/eco_gfp/trace_mod.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gfp/elkies/BG_algorithms.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gfp/elkies/compute_lists.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gfp/elkies/compute_psi.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gfp/elkies/compute_sign.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gfp/elkies/div_of_divpol.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gfp/elkies/find_eigenvalue.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gfp/elkies/schoof_algorithm.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gfp/elkies/schoofpart.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gfp/elkies/tildeE.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gfp/ffx/ff1.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gfp/ffx/ff2.cc \
+	$(LIDIA_ECO_SRCDIR)/eco_gfp/wep_rat_function/wep_rat_function.cc \
+	$(LIDIA_ECO_SRCDIR)/instantiate/bv_ff1.cc \
+	$(LIDIA_ECO_SRCDIR)/instantiate/bv_ff2.cc \
+	$(LIDIA_ECO_SRCDIR)/instantiate/bv_trace_mod.cc \
+	$(LIDIA_ECO_SRCDIR)/instantiate/bv_udigit.cc \
+	$(LIDIA_ECO_SRCDIR)/instantiate/pt_gf2n.cc \
+	$(LIDIA_ECO_SRCDIR)/instantiate/sv_trace_mod.cc \
+	$(LIDIA_ECO_SRCDIR)/instantiate/sv_udigit.cc
+
+
+##	-------
+##	HEADERS
+##	-------
+
+pkginclude_HEADERS = \
+	$(LIDIA_ECO_PKGINCLUDEDIR)/EC_domain_parameters_P1363.h \
+	$(LIDIA_ECO_PKGINCLUDEDIR)/eco_gf2n.h \
+	$(LIDIA_ECO_PKGINCLUDEDIR)/eco_prime.h \
+	$(LIDIA_ECO_PKGINCLUDEDIR)/ff1.h \
+	$(LIDIA_ECO_PKGINCLUDEDIR)/ff2.h \
+	$(LIDIA_ECO_PKGINCLUDEDIR)/meq_prime.h \
+	$(LIDIA_ECO_PKGINCLUDEDIR)/mv_fract.h \
+	$(LIDIA_ECO_PKGINCLUDEDIR)/mv_poly.h \
+	$(LIDIA_ECO_PKGINCLUDEDIR)/mv_term.h \
+	$(LIDIA_ECO_PKGINCLUDEDIR)/trace_list.h \
+	$(LIDIA_ECO_PKGINCLUDEDIR)/trace_mod.h \
+	$(LIDIA_ECO_PKGINCLUDEDIR)/power_table.cc \
+	$(LIDIA_ECO_PKGINCLUDEDIR)/power_table.h \
+	$(LIDIA_ECO_PKGINCLUDEDIR)/weco2_rat_function.h \
+	$(LIDIA_ECO_PKGINCLUDEDIR)/wep_rat_function.h
+
+
+##	----
+##	DATA
+##	----
+
+modeqdir = $(pkgdatadir)/MOD_EQ
+modeq2dir = $(pkgdatadir)/MOD_EQ_2
+
+dist_modeq_DATA = \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq3 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq5 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq7 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq11 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq13 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq17 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq19 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq23 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq29 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq31 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq37 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq41 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq43 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq47 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq53_II \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq59 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq61 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq67 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq71_II \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq73 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq79 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq83 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq89 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq97 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq101 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq103_II \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq107 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq109 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq113 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq127 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq131 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq137_II \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq139 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq149 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq151 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq157 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq163 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq167_II \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq173 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq179_II \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq181 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq191_II \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq193 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq197 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq199 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq211 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq223 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq227_II \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq229 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq233 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq239_II \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq241 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq251_II \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq257_II \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq263_II \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq269_II \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq271 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq277 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq281_II \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq283 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ/meq293_II
+
+dist_modeq2_DATA = \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_3 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_5 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_7 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_11 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_13 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_17 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_19 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_23 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_29 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_31 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_37 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_41 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_43 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_47 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_53 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_59 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_61 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_67 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_71 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_73 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_79 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_83 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_89 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_97 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_101 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_103 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_107 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_109 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_113 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_127 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_131 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_137 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_139 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_149 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_151 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_157 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_163 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_167 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_173 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_179 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_181 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_191 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_193 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_197 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_199 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_211 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_223 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_227 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_229 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_233 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_239 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_241 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_251 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_257 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_263 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_269 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_271 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_277 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_281 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_283 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_293 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_307 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_311 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_313 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_317 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_331 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_337 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_347 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_349 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_353 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_359 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_367 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_373 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_379 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_383 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_389 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_397 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_401 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_409 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_419 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_421 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_431 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_433 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_439 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_443 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_449 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_457 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_461 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_463 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_467 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_479 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_487 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_491 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_499 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_503 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_509 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_521 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_523 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_541 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_547 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_557 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_563 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_569 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_571 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_577 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_587 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_593 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_599 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_601 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_607 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_613 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_617 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_619 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_631 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_641 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_643 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_647 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_653 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_659 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_661 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_673 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_677 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_683 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_691 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_701 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_709 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_719 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_727 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_733 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_739 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_743 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_751 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_757 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_761 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_769 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_773 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_787 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_797 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_809 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_811 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_821 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_823 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_827 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_829 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_839 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_853 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_857 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_859 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_863 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_877 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_881 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_883 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_887 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_907 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_911 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_919 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_929 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_937 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_941 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_947 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_953 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_967 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_971 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_977 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_983 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_991 \
+	$(LIDIA_PKGDATADIR)/MOD_EQ_2/meq_2_997
+
+
+##	----------------
+##	ADDITIONAL STUFF
+##	----------------
+
+EXTRA_DIST =
+
+
+##	-------------
+##	SPECIAL RULES
+##	-------------
+
+# Remove installation subdirectories after uninstalling, unless left non-empty.
+uninstall-hook:
+	rmdir	$(DESTDIR)$(pkgincludedir) \
+		$(DESTDIR)$(modeqdir) \
+		$(DESTDIR)$(modeq2dir) \
+		$(DESTDIR)$(pkgdatadir) \
+		2>/dev/null; :
+
+# Delete half-made targets when their commands fail
+.DELETE_ON_ERROR:
+

@@ -1,0 +1,452 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  point.tex   Documentation
+%%
+%%  This file contains the documentation of the class point
+%%
+%%  Copyright   (c)   1998   by  LiDIA group
+%%
+%%  Authors: Nigel Smart, Volker Mueller, John Cremona
+%%
+
+\def\ecp{point< T >}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\code{point< T >} \dotfill class for holding a point on an elliptic
+curve over a field \code{T}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+The class \code{point< T >} is used to store points on elliptic
+curves.  A point on an elliptic curve over a field is held either in
+affine representation as $P = (x, y)$ or in projective representation
+as $P = (x, y, z)$.  The representation depends on the model of the
+elliptic curve, the point is associated with.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+The class \code{point< T >} holds points on elliptic curves in either
+affine or projective representation.  Therefore an instance of
+\code{point< T >} consists of two variables holding the $x$ and $y$
+coordinate of this point, or of three variables holding the
+coordinates $x$, $y$, and $z$.  In the projective model, the
+coordinates $(x: y: z)$ represent the equivalence class $(k^{2} x,
+k^{3} y, k z)$ for $k$ of type T.
+
+Moreover it contains a boolean value which is \TRUE if and only if the
+point is the point at infinity, the zero of the corresponding group of
+points.  Any point holds also a reference to the elliptic curve it
+sits on.  It ``knows'' about the type of curve, i.e. whether the curve
+is in short or long Weierstrass form or a curve defined over $GF(2^n)$
+and about the model of the curve, i.e., affine or projective.
+Relevant addition routines are then optimized for working with such
+curves.
+
+In addition to functions for points defined over arbitrary fields the
+class offers special functions only for points defined over finite
+fields.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+
+\begin{fcode}{ct}{point< T >}{}
+  constructs an invalid point.
+\end{fcode}
+
+\begin{fcode}{ct}{point< T >}{const T & $x$, const T & $y$, 
+const elliptic_curve< T > & $E$} constructs the point $P = (x, y), (x
+  : y : z)$ on the curve $E$, depending on the model of $E$. The
+  internal elliptic curve pointer for $P$ is set to $E$. If $(x, y),
+  (x : y : z)$, resp., does not satisfy the equation of $E$, the \LEH
+  is invoked.
+\end{fcode}
+
+\begin{fcode}{ct}{point< T >}{const T & $x$, const T & $y$, 
+const T & $z$, const elliptic_curve< T > & $E$} constructs the point
+  $P = (x: y: z)$ on the curve $E$.  The internal elliptic curve
+  pointer for $P$ is set to $E$. If $(x: y: z)$ does not satisfy the
+  equation of $E$ or the model of the curve is affine, the \LEH is
+  invoked.
+\end{fcode}
+
+\begin{fcode}{ct }{point< T >}{const point< T > & $P$}
+  constructs a new point and copies $P$ to this new instance.
+\end{fcode}
+
+\begin{fcode}{ct }{point< T >}{const elliptic_curve< T > & $E$}
+  constructs the zero-point on the elliptic curve $E$.
+\end{fcode}
+
+\begin{fcode}{dt}{~point< T >}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+The operator \code{=} is overloaded.  However for efficiency reasons
+the following functions are also defined.  Let $P$ be of type
+\code{point< T >}.
+
+\begin{fcode}{void}{$P$.assign_zero}{const elliptic_curve< T > & $E$}
+  assigns to $P$ the point at infinity on the elliptic curve $E$.
+\end{fcode}
+
+\begin{fcode}{void}{$P$.assign}{const point< T > & $Q$}
+  assigns to $P$ the point $Q$.
+\end{fcode}
+
+\begin{fcode}{void}{$P$.assign}{const T & $x$, const T & $y$, 
+                    const elliptic_curve< T > & $E$} assigns to $P$
+the point $(x, y), (x : y : 1),$ resp., on the curve $E$, depending on
+the model of $E$. The internal elliptic curve pointer for $P$ is set
+to $E$. If $(x, y), (x:y:z)$ does not satisfy the equation of $E$, the
+\LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$P$.assign}{const T & $x$, const T & $y$, const T
+& $z$, const elliptic_curve< T > & $E$} assigns to $P$ the point
+  $(x:y:z)$ on the curve $E$. The internal elliptic curve pointer for
+  $P$ is set to $E$. If $(x:y:z)$ does not satisfy the equation of $E$
+  or the model of the curve is affine, the \LEH is invoked.
+\end{fcode}
+
+If $P$ is a point defined on a given curve, the following assignments
+exist which do not change the internal information about the curve.
+They should for this reason be used with care.
+
+\begin{fcode}{void}{$P$.assign_zero}{}
+\end{fcode}
+
+\begin{fcode}{void}{$P$.assign}{const T & $x$, const T & $y$}
+  If $(x, y), (x : y : 1)$, resp., does not satisfy the equation of
+  the curve $P$ was previously defined on, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$P$.assign}{const T & $x$, const T & $y$, const T & $z$}
+  If $(x:y:z)$ does not satisfy the equation of the curve $P$ was
+  previously defined on or the model of the curve is affine, the \LEH
+  is invoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+The binary operators \code{==}, \code{!=} are overloaded.  In the
+affine model, two points are considered equal if they lie on the same
+curve and their coordinates are equal.  For the projective model, two
+points are considered equal if the lie on the same curve and their
+equivalence classes represented by the coordinates are equal.  Let $P$
+be of type \code{point< T >}.
+
+\begin{cfcode}{bool}{$P$.on_curve}{}
+  returns \TRUE if and only if $P$ is actually on its corresponding curve.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$P$.is_zero}{}
+  returns \TRUE if and only if $P$ is the zero-point.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$P$.is_negative_of}{const point< T > & $Q$}
+  returns \TRUE if and only if $P$ is equal to $-Q$.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$P$.is_affine_point}{}
+  returns \TRUE if and only if $P$ is a point in affine representation.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$P$.is_projective_point}{}
+  returns \TRUE if and only if $P$ is a point in projective representation.
+\end{cfcode}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $P$ be of type \code{point< T >}.
+
+\begin{cfcode}{T}{$P$.get_x}{}
+  returns the $x$-coordinate of $P$.  The function will invoke the \LEH, if the model is affine
+  and $P$ is the point at infinity.
+\end{cfcode}
+
+\begin{cfcode}{T}{$P$.get_y}{}
+  returns the $y$-coordinate of $P$.  The function will invoke the \LEH if the model is affine
+  and $P$ is the point at infinity.
+\end{cfcode}
+
+\begin{cfcode}{T}{$P$.get_z}{}
+  returns the $z$-coordinate of $P$.  The function will invoke the \LEH, if the model is affine.
+\end{cfcode}
+
+\begin{cfcode}{const elliptic_curve< T > *}{$P$.get_curve}{}
+  OBSOLETE.  Use the function below.
+\end{cfcode}
+
+\begin{cfcode}{elliptic_curve< T >}{$P$.get_curve}{}
+  returns the curve on which the point $P$ sits.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+The following operators are overloaded and can be used in exactly the same way as for machine
+types in C++ (e.g.~\code{int}):
+\begin{center}
+  \code{(unary) -} \\
+  \code{(binary) +, -} \\
+  \code{(binary with assignment) +=,  -= }
+\end {center}
+The \code{*} operator is overloaded as
+
+\begin{fcode}{point< T >}{operator *}{const bigint & $n$, const point< T > & $P$}
+  returns $n \cdot P$.
+\end{fcode}
+
+For efficiency we also have implemented the following functions
+
+\begin{fcode}{void}{negate}{point< T > & $P$, const point< T > & $Q$}
+  $P \assign -Q$.
+\end{fcode}
+
+\begin{fcode}{void}{add}{point< T > & $R$, const point< T > & $P$, const point< T > & $Q$}
+  $R \assign P + Q$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{point< T > & $R$, const point< T > & $P$, const point< T > & $Q$}
+  $R \assign P - Q$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply_by_2}{point< T > & $P$, const point< T > & $Q$}
+  $P \assign 2 \cdot Q$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply_by_4}{point< T > & $P$, const point< T > & $Q$}
+  $P \assign 4 \cdot Q$.
+\end{fcode}
+
+\begin{cfcode}{point< T >}{$P$.twice}{}
+  returns $2 \cdot P$.
+\end{cfcode}
+
+\begin{fcode}{void}{multiply}{point< T > & $P$, const bigint & $n$, const point< T > & $Q$}
+  $P \assign n \cdot Q$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+\begin{fcode}{void}{$P$.set_verbose}{int $a$}
+  sets the internal info variable to $a$.  If the info variable is not zero, then some
+  information is printed during computation.  The default value of this info variable is zero.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+If the template type \code{T} represents a finite field, i.e. \code{gf_element}, then the
+following additional functions are available.  Let $P$ be an instance of type \code{point< T >}.
+
+\begin{fcode}{bool}{$P$.set_x_coordinate}{const T & $xx$}
+  tries to find a point with $x$-coordinate $xx$.  If there exists such a point, it is assigned
+  to $P$ and \TRUE is returned.  Otherwise $P$ is set to the zero-point and \FALSE is returned.
+\end{fcode}
+
+\begin{fcode}{point< T >}{$P$.frobenius}{unsigned int $d$ = 1}
+  evaluate the $d$-th power of the Frobenius endomorphism on the point $P$.  Note that the
+  Frobenius endomorphism is defined by the field of definition of the elliptic curve the point
+  $P$ is sitting on.
+\end{fcode}
+
+\begin{fcode}{point< T >}{frobenius}{const point< T > & $P$, unsigned int $d$ = 1}
+  evaluate the $d$-th power of the Frobenius endomorphism on the point $P$ and return the
+  result.  Note that the Frobenius endomorphism is defined by the field of definition of the
+  elliptic curve the point $P$ is sitting on.
+\end{fcode}
+
+\begin{fcode}{bigint}{order_point}{const point< T > & $P$}
+  returns the order of the point $P$.
+\end{fcode}
+
+\begin{fcode}{bigint}{order_point}{const point< T > & $P$, rational_factorization & $f$}
+  returns the order of the point $P$ assuming that the integer represented by $f$ is a multiple
+  of the order of $P$.  If $f$ does not satisfy this condition, the \LEH is invoked.  If
+  necessary, the factorization $f$ is refined during the order computation.
+\end{fcode}
+
+\begin{fcode}{rational_factorization}{rf_order_point}{const point< T > & $P$}
+  returns the order of the point $P$ as \code{rational_factorization}.
+\end{fcode}
+
+\begin{fcode}{rational_factorization}{rf_order_point}{const point< T > & $P$,
+    rational_factorization & $f$}%
+  returns the order of the point $P$ as \code{rational_factorization} assuming that the integer
+  represented by $f$ is a multiple of the order of $P$.  If $f$ does not satisfy this condition,
+  the \LEH is invoked.  If necessary, the factorization $f$ is refined during the order
+  computation.
+\end{fcode}
+
+\begin{fcode}{bigint}{bg_algorithm}{const point< T > & $P$, const point< T > & $Q$,
+    const bigint & $l$, const bigint & $u$}%
+  tries to find an integer $l \leq x \leq u$ such that $x \cdot P = Q$ with a Babystep Giantstep
+  Algorithm.  If such an integer does not exist, -1 is returned.  If $l$ is negative or $u < l$
+  or $P$ and $Q$ sit on different curves, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{bigint}{discrete_logarithm}{const point< T > & $P$, const point< T > & $Q$,
+    bool $\mathit{info}$ = false}%
+  uses the Pohlig-Hellman algorithm to find the discrete logarithm of the point $Q$ to base $P$,
+  i.e. an integer $0\leq x < \ord(P)$ such that $x \cdot P = Q$.  If the discrete logarithm does
+  not exist, $-1$ is returned.  If $\mathit{info}$ is \TRUE then the intermediate results are
+  printed; otherwise no output is done.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+Input and output is only implemented for the affine model.
+
+The \code{ostream} and \code{istream} operators \code{<<} and \code{>>} have been overloaded.
+The operator \code{<<} outputs points in the form $(x,y)$ or $O$ for the point at infinity.
+
+The operator \code{>>} allows input in one of three forms $[x,y] \text{ or } (x,y) \text{ or }
+x~~y$.  At present it is not possible to input the point at infinity.  Note that the elliptic
+curve is not part of the input; it has to be set before a point can be read.
+
+\begin{fcode}{void}{$P$.input}{istream & in}
+  input a point $P$ from istream \code{in}.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+The following program reads in an elliptic curves over \code{gf_element}'s plus a point and then
+tests the arithmetic routines on such a curve.
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/galoes_field.h>
+#include <LiDIA/gf_element.h>
+#include <LiDIA/elliptic_curve.h>
+#include <LiDIA/point.h>
+
+int main ()
+{
+    bigint p;
+    int tests, i;
+
+    cout << "\n ELLIPTIC CURVES OVER FINITE PRIME FIELD\n\n";
+
+    cout << "\n\n Input  modulus : "; cin >> p;
+    p = next_prime(p-1);
+    cout << "\n Choosing next prime = "<<p<<"\n\n";
+
+    char model;
+    do {
+        cout << "Affine or projective model ? Enter 'a' or 'p' : ";
+        cin >> model;
+    } while (model != 'a' && model != 'p');
+
+    galois_field F(p);
+    gf_element a1, a2, a3, a4, a6;
+
+    a1.assign_zero(F);
+    a2.assign_zero(F);
+    a3.assign_zero(F);
+    a4.assign_zero(F);
+    a6.assign_zero(F);
+
+    elliptic_curve< gf_element > e;
+
+    if (model == 'a') {
+        cout << "\n Input a1 : "; cin >> a1;
+        cout << "\n Input a2 : "; cin >> a2;
+        cout << "\n Input a3 : "; cin >> a3;
+        cout << "\n Input a4 : "; cin >> a4;
+        cout << "\n Input a6 : "; cin >> a6;
+        cout << "\n # Tests : "; cin >> tests;
+
+        cout << "Initialization ... " << flush;
+
+        e.set_coefficients(a1, a2, a3, a4, a6);
+    }
+    else {
+        cout << "\n Input a4 : "; cin >> a4;
+        cout << "\n Input a6 : "; cin >> a6;
+        cout << "\n # Tests : "; cin >> tests;
+
+        cout << "Initialization ... " << flush;
+
+        e.set_coefficients(a4, a6, elliptic_curve_flags::PROJECTIVE);
+    }
+
+    point< gf_element > P(e);
+    point< gf_element > Q(e), H(e);
+
+    cout << "done." << endl;
+    cout << "Starting tests " << flush;
+
+    for (i = 1; i <= tests; i++) {
+        P = e.random_point();
+        Q = e.random_point();
+        H = e.random_point();
+
+        assert(P.on_curve());
+        assert(Q.on_curve());
+        assert(H.on_curve());
+
+        identitytest(P, Q, H);
+        utiltest(P);
+        cout << "*" << flush;
+    }
+    cout << "\n\n";
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{elliptic_curve< T >},
+\SEE{elliptic_curve_flags}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+John Cremona, Birgit Henhapl, Markus Maurer, Volker M\"uller, Nigel Smart.

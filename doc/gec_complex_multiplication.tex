@@ -1,0 +1,284 @@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  gec_complex_multiplication.tex       Documentation
+%%
+%%  This file contains the documentation of the class 
+%%  gec_complex_multiplication of the gec-package.
+%%
+%%  Copyright   (c)   2002   by  LiDIA Group
+%%
+%%  Author: Harald Baier
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\code{gec_complex_multiplication}\dotfill
+class for generating elliptic curves for use in cryptography by
+the complex multiplication method
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+The class \code{gec_complex_multiplication}
+generates elliptic curves over finite fields suitable for use
+in cryptography. It uses the theory of complex multiplication.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+\code{gec_complex_multiplication} is a class for
+generating elliptic curves over finite fields suitable for use
+in cryptography. The class implements
+algorithms which use the theory of complex multiplication.
+Currently, curves over finite prime fields
+and curves over Optimal Extension Fields may be generated using
+this package.
+
+A central term in the theory of complex multiplication
+is an \emph{imaginary quadratic discriminant}.
+We denote such a discriminant by $\Delta.$
+An imaginary quadratic discriminant is
+simply a negative integer congruent 0 or 1
+modulo 4. Associated to $\Delta$ is
+a class number, which we denote by $h(\Delta).$
+In addition, for each imaginary quadratic discriminant
+$\Delta$ there exists a fundamental discriminant $\Delta_K;$
+$\Delta_K$ is the largest imaginary quadratic discriminant
+dividing $\Delta.$
+
+Let $p$ be a prime, and let $m$ be either $1$ or
+a prime. We set $q=p^m.$
+Let $E=(a_4,a_6)$ be an elliptic curve defined
+over $\bbfF_q.$
+$E$ is suitable for
+cryptographic purposes, if it respects the following
+conditions (\cite{BSI01}):
+
+\begin{enumerate} 
+\item\label{cond_sq_gec} We have $|E(\bbfF_{p^m})| =r\cdot k$ with a prime 
+$r> 2^{159}$ and a positive integer $k\leq 4.$
+\item\label{cond_smart_gec} The primes $r$ and $p$ are different.
+\item\label{cond_mov_gec} The order of $q$ in $\bbfF_r^\times$
+is at least $B:=10^4.$
+\item\label{cond_bsi_gec} The class number of the maximal order which
+contains $\End(E)$ is at least $h_0:=200.$
+\end{enumerate}
+
+However, the choices $B$ and $h_0$ may be set
+differently be setting the boolean \code{according_to_bsi}
+to \code{false}. If \code{according_to_bsi=false},
+the last requirement is not taken into account. In addition,
+$B$ has to be at least $B_0$ in this case, where $B_0$ is minimal with
+$r^{B_0}>2^{1999}.$
+
+If another security level is required, the user
+may invoke \code{set_lower_bound_bitlength_r}
+or \code{set_upper_bound_k} to set different bounds
+for $r$ and $k,$ respectively.
+For example, if $r$ has to be of bitlength at least
+$180,$ that is $r>2^{179},$ one has to
+invoke \code{set_lower_bound_bitlength_r} with $180$ as
+argument.
+
+During the computation the algorithm computes
+a class polynomial, that is a polynomial with coefficients
+in $\bbfZ$ generating the ring class field of
+the imaginary quadratic order of discriminant $\Delta$
+over $\bbfQ(\sqrt{\Delta}).$
+If $3\nmid \Delta,$ we make use of a polynomial $G$
+due to Atkin/Morain to generate the ring class field.
+If in addition $\Delta\equiv 1\bmod 8,$ the algorithm
+uses a polynomial $W$ due to Yui/Zagier. If $3\nmid\Delta,$
+the class member \code{generation_mode} is set to $3.$
+If in addition $\Delta\equiv 1\bmod 8,$
+\code{generation_mode} is set to $4.$ Furthermore,
+if $\code{generation_mode}=1,$ then the ring class polynomial
+$H$ is used. The user may use the method \code{set_generation_mode}
+to change the attribute \code{generation_mode}. However, he has to
+ensure $\code{generation_mode}\in\{1,3,4\}.$ Otherwise,
+it is set to $1.$
+
+In order to use the Fixed Field Approach, the user
+has to define the environment variable \code{LIDIA_DISCRIMINANTS}.
+It has to point to the directory, where the discriminants
+reside. For instance, if \textsf{LiDIA} is installed in /usr/local/LiDIA
+on a UNIX-like machine, the user has to set
+\code{LIDIA_DISCRIMINANTS}=/usr/local/LiDIA/share/LiDIA/Discriminants.
+
+The boolean VERBOSE may be set to \code{true}
+to get a lot of information during the computation.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{gec_complex_multiplication}{}
+  initializes an empty instance.
+\end{fcode}
+
+\begin{fcode}{ct}{gec_complex_multiplication}{const bigint & $D$}
+  initializes an instance and sets $\Delta=D.$
+\end{fcode}
+
+\begin{fcode}{ct}{gec_complex_multiplication}{lidia_size_t $d$}
+  initializes an instance and sets the extension degree of the
+  finite field $\bbfF_q$ over $\bbfF_p$ to $d.$
+\end{fcode}
+
+\begin{fcode}{ct}{gec_complex_multiplication}{ostream & out}
+  initializes an empty instance and writes some timings during
+  the generation to the output stream out.
+\end{fcode}
+
+\begin{fcode}{dt}{~gec_complex_multiplication}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $I$ be an instance of \code{gec_complex_multiplication}. We point
+to the methods of the base class \code{gec}.
+
+\begin{fcode}{void}{$I$.set_delta}{const bigint & $D$}
+  sets $\Delta=D.$ If $D$ is positive or not $\equiv$ $0$ or
+  $1$ modulo $4,$ the \code{lidia_error_handler} is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$I$.set_generation_mode}{unsigned int $i$}
+  sets $\code{generation_mode}=i.$ The user is responsible
+  that $i$ and $\Delta$ fit together.
+\end{fcode}
+
+\begin{fcode}{void}{$I$.set_complex_precision}{long $i$}
+  sets the floating point precision to compute the class polynomial
+  corresponding to \code{generation_mode} to $i.$
+  The user is responsible that the precision is sufficient
+  to get a correct polynomial.
+\end{fcode}
+
+\begin{fcode}{void}{$I$.set_lower_bound_class_number}{const long $i$}
+  only relevant in case of the Fixed Field Approach or if an OEF is used.
+  Sets the lower bound of the class number interval of available
+  discriminants to $i.$ The default value is 200. If $i<200$
+  or $i\geq u,$ where $u$ denotes the current upper bound of the interval,
+  the \code{lidia_error_handler} is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$I$.set_upper_bound_class_number}{const long $u$}
+  only relevant in case of the Fixed Field Approach or if an OEF is used.
+  Sets the upper bound of the class number interval of available
+  discriminants to $u.$ The default value is 1000. If $u>1000$
+  or $i\geq u,$ where $i$ denotes the current lower bound of the interval,
+  the \code{lidia_error_handler} is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$I$.set_class_polynomial}{const polynomial<bigint> & $g$}
+  sets the class polynomial to $g.$ The user is responsible, that
+  $g$ actually is a class polynomial for the order of discriminant $\Delta$
+  and that the chosen \code{generation_mode} fit.
+\end{fcode}
+
+\begin{fcode}{void}{$I$.set_class_polynomial}{const bigint & $D$,
+const lidia_size_t $h$, char * input_file}
+  sets $\Delta=D$ and the class number to $h.$ The user is responsible
+  that $h(\Delta) = h.$ Let $C=\sum_{k=0}^h c_kX^k$ denote
+  a class polynomial corresponding to $\Delta.$ The coefficients
+  are read from the file h\_<$h$>/<$D$> in the directory <input\_file>,
+  beginning with $c_h.$
+\end{fcode}
+
+\begin{fcode}{void}{$I$.assign}{const gec_complex_multiplication & J}
+  initializes $I$ with $J.$
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Accessors which are specific to \code{gec_complex_multiplication}. 
+For further accessors we refer to the base class \code{gec}.
+
+\begin{cfcode}{const bigint &}{$I$.get_delta}{}
+  returns $\Delta.$
+\end{cfcode}
+
+\begin{cfcode}{lidia_size_t}{$I$.get_h}{}
+  returns $h(\Delta).$
+\end{cfcode}
+
+\begin{cfcode}{unsigned int}{$I$.get_generation_mode}{}
+  returns the generation mode.
+\end{cfcode}
+
+\begin{cfcode}{long}{$I$.get_complex_precision}{}
+  returns the floating point precision to compute the class polynomial
+  corresponding to \code{generation_mode}.
+\end{cfcode}
+
+\begin{cfcode}{const polynomial<bigint>}{$I$.get_class_polynomial}{}
+  returns the class polynomial.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+Let $I$ be an instance of \code{gec_complex_multiplication}.
+
+\begin{fcode}{void}{$I$.generate}{}
+  generates the field (if not already set) and the elliptic curve
+  corresponding to the security level in use.
+\end{fcode}
+
+\begin{fcode}{void}{$I$.generate_oef}{lidia_size_t $n$, lidia_size_t $m$, lidia_size_t $h_0$}
+  generates a prime $p$ of bitlength $n$ such that $p^m$ is
+  cardinality of an Optimal Extension Field. The user has to ensure
+  that $m$ is prime. In addition, the function returns
+  an elliptic curve of prime order $r$ over this field. (Hence
+  \code{upper_bound_k} is set to 1) In order
+  to be applicable, the user has to take care that the lower bound
+  of the bitlength of $r$ is at most $nm.$
+\end{fcode}
+
+\begin{fcode}{void}{$I$.compute_class_polynomial}{}
+  computes the class polynomial corresponding to the chosen
+  discriminant $\Delta$ and generation mode. The computation
+  uses an efficient arithmetic basing on ideas of Karatsuba.
+\end{fcode}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+Input/Output of instances of \code{gec_complex_multiplication}
+is currently not possible.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{gec}, \SEE{gec_point_counting_mod_p}, \SEE{gec_point_counting_mod_2n}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Harald Baier

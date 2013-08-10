@@ -1,0 +1,488 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  use.tex       LiDIA documentation
+%%
+%%  This file contains comments on the design of LiDIA
+%%
+%%  Copyright   (c)   1994   by   Lehrstuhl Prof. Dr. J. Buchmann
+%%
+%%  Authors: Thomas Papanikolaou
+%%           VM, changed the example program.
+%%           TPf, package redesign
+%%
+
+\chapter{How to use the \LiDIA library}
+This chapter describes how to build the \LiDIA library and executables that
+use \LiDIA.
+
+
+\section{Building and installing \LiDIA}
+Obtain the latest sources from
+\url{ftp://ftp.informatik.tu-darmstadt.de/TI/systems/LiDIA} or any mirror
+thereof.
+
+\attentionIII Releases of \LiDIA prior to version 2.1 had the
+multi-precision arithmetic library rolled into the \LiDIA library.  The
+neccessary sources (e.g. for libI, cln, or GNU MP) has been part of each
+\LiDIA distribution.  This has changed.  \textbf{Beginning with release
+version 2.1, the multi-precision arithmetic library is no longer part of
+\LiDIA.  In order to use \LiDIA, a suitable multi-precision arithmetic
+library has to be installed on your system, and the user must explicitely
+link that library to his applications!}
+
+\attentionI To build \LiDIA, your C++ compiler must be ISO C++ compliant to
+some extent.  That is, your C++ compiler must provide the type \code{bool},
+support inlining (implicit and explicit via the keyword \code{inline}),
+support \code{mutable} class members, support ISO C++ style casts
+(\code{const_cast<\dots>} and \code{static_cast<\dots>}), support
+\code{explicit} contructors, and support explicit template instantiation by
+ISO C++.  Old C++ constructions that conflict with ISO C++ are not
+supported.  Moreover, it is assumed that some basic classes of the standard
+C++ library such as \code{iostream}, \code{fstream}, and \code{string} are
+present and work as described in the ISO C++ standard.  However, \LiDIA
+makes currently no use of run time type information.
+(However, this may change in the future).  If your C++ compiler doesn't
+satisfy these requirements, you should upgrade.  Sorry for the
+inconvenience, but this is what a standard is for.
+
+\attentionI Very few parts of \LiDIA require that your system supports the
+POSIX standard.  If your system doesn't support POSIX, these parts will not
+be built (that is, they will do nothing, e.g. the timer class).  All other
+parts of \LiDIA will not be affected.  Before configuring/building \LiDIA,
+please check whether you have to set special defines (such as
+\code{_POSIX_SOURCE}) for the preprocessor or whether you have to link
+special libraries (such as \file{libposix}) to an executable in order to
+get the POSIX facilities.
+
+
+\subsection{Building with \texttt{configure}}
+\LiDIA has an Autoconf/\file{configure}-based configuration system.
+On Unix-like systems just type
+\begin{quote}
+\begin{verbatim}
+./configure
+make
+\end{verbatim}
+\end{quote}
+Additionally, say
+\begin{quote}
+\begin{verbatim}
+make examples
+\end{verbatim}
+\end{quote}
+if you want to build all examples.
+
+Install the library and the headers with
+\begin{quote}
+\begin{verbatim}
+make install
+\end{verbatim}
+\end{quote}
+The default installation directory is \path{/usr/local}, but this may be
+altered by giving the \code{-{}-prefix} option to \file{configure}.
+
+\attentionI Previous releases of \LiDIA installed the library in the
+directory \code{\textit{libdir}/LiDIA/\textit{system}/\textit{compiler}/},
+where \code{\textit{system}} denotes the operating system and
+\code{\textit{compiler}} denotes the compiler used.  This release and all
+future releases install the library plainly in \code{\textit{libdir}/}.  To
+obtain the old behavior, use the \code{-{}-libdir} option of
+\file{configure}.
+
+\attentionI If your compiler needs special flags or defines in order to
+enable the POSIX facilities, pass them to \file{configure} by setting the
+\code{CPPFLAGS} variable; likewise, if special libraries have to be linked
+to executables in order to get the POSIX facilities, pass them to
+\file{configure} by setting the \code{LIBS} variable.  Example:
+\begin{quote}
+\begin{verbatim}
+CPPFLAGS=-D_POSIX_SOURCE LIBS=-lposix ./configure
+\end{verbatim}
+\end{quote}
+
+
+\subsubsection{Configuration options}
+All usual \file{configure} options are available (type \code{configure
+-{}-help} to see them all), plus the following ones:
+\begin{description}
+\item[\textcode{-{}-enable-inline}]
+  If set to `yes', the multi-precision arithmetic routines from the
+  underlying kernel are inlined, otherwise seperate function calls
+  are generated.  The default is `yes'.
+\item[\textcode{-{}-enable-exceptions}] 
+  If set to `yes', then LiDIA is built with support for
+  exceptions and errors are reported by exceptions. 
+  If set to `no', then LiDIA is built without support for
+  exceptions. (g++ compiler switch `-fno-exceptions'.) 
+  Consult the description of class LiDIA::BasicError for details.
+  The default is 'yes'.
+\item[\textcode{-{}-enable-namespaces}]
+  If set to `yes', then all of \LiDIA's symbols will be defined in the name
+  space \code{LiDIA} (your C++ compiler must support name spaces).  The
+  default is `yes'.
+\item[\textcode{-{}-enable-assert}]
+  If set to `yes', the assert macros will be activated by not defining
+  \code{NDEBUG}.  The default is `no'.
+\item[\textcode{-{}-enable-ff}]
+  If set to `yes', the finite-fields package will be built.  The default is
+  `yes'.
+\item[\textcode{-{}-enable-la}]
+  If set to `yes', the linear-algebra package will be built.  Since this
+  package depends on the finite-fields package, the linear-algebra package
+  will be built only if the finite-fields package is built.  The default is
+  `yes'.
+\item[\textcode{-{}-enable-lt}]
+  If set to `yes', the lattice package will be built.  Since this package
+  depends on the linear-algebra package, the lattice package will be built
+  only if the linear-algebra package is built.  The default is `yes'.
+\item[\textcode{-{}-enable-nf}]
+  If set to `yes', the number fields package will be built.  Since this
+  package depends on the lattice package, the number fields package will be
+  built only if the lattice package is built.  The default is `yes'.
+\item[\textcode{-{}-enable-ec}]
+  If set to `yes', the elliptic curves package will be built.  Since this
+  package depends on the lattice package, the elliptic curves package will
+  be built only if the lattice package is built.  The default is `yes'.
+\item[\textcode{-{}-enable-eco}]
+  If set to `yes', the elliptic curve order package will be built.  Since
+  this package depends on the elliptic curves package, the elliptic curve
+  order package will be built only if the elliptic curves package is built.
+  The default is `yes'.
+\item[\textcode{-{}-enable-gec}]
+  If set to `yes', the elliptic curve generation package will be built.
+  Since this package depends on the elliptic curve order package, the
+  elliptic curve generation package will be built only if the elliptic curve
+  order package is built.  The default is `yes'.
+\item[\textcode{-{}-with-arithmetic}]
+  Determines the multi-precision kernel for \LiDIA.  Valid values are
+  `gmp', `cln', `piologie', and `libI'.  \textbf{Your system must provide
+  the library of your choice before configuring \LiDIA!}
+
+  \textbf{Note for Piologie users on Unix-like systems:} For some reason
+  the Piologie library is called \file{piologie.a} instead of
+  \file{libpiologie.a}.  Rename \file{piologie.a} to \file{libpiologie.a},
+  or create a link \textbf{before} calling \file{configure}, otherwise the
+  \file{configure} script will not find the Piologie library.
+
+\item[\textcode{-{}-with-extra-includes}]
+  If the headers of the multi-precision library reside in a directory that
+  is not searched by your C++ compiler, then add the path with this option.
+  \item[\textcode{-{}-with-extra-libs}] If the multi-precision library
+  resides in a directory that is not searched by your linker, then add the
+  path with this option.
+\end{description}
+
+\attentionIII If you build \LiDIA with a C++ library for multi-precision
+arithmetic (e.g.\ CLN or Piologie), you \textbf{must} use the same C++
+compiler to build \LiDIA that you used to build the multi-precision
+arithmetic library, otherwise you will not be able to build executables.
+At least, if you use different C++ compilers, they must have compatible
+mangling conventions.  For example, GNU g++ 2.x and GNU g++ 3.x are
+incompatible.  Actually, \file{configure} will detect this indirectly,
+because the test for the multi-precision library will fail.  However, there
+will be no apparent reason for the failure to unaware users.  Thus, before
+reporting a bug, check this first.
+
+LiDIA's build procedure uses GNU Libtool, which adds the following 
+options to \file{configure}:
+
+\begin{description}
+\item[\textcode{-{}-enable-shared}, \textcode{-{}-enable-static}]
+  These options determine whether shared and/or static library versions
+  shall be built.  Both options default to `yes', thus requiring two object
+  files per source file to be made.
+
+\item[\textcode{-{}-with-pic}, \textcode{-{}-without-pic}]
+  Normally, shared libraries use position-independent code, and static
+  libraries use direct jump instructions which need to be edited by the
+  linker.  The \code{-{}-with-pic} option enforces position-independent code
+  even for static libraries, whereas \code{-{}-without-pic} does not demand
+  position-independent code even when building shared libraries.  Using one
+  of these options can halven compilation time and reduce disk space usage
+  because they save the source files from being compiled twice.  Note that
+  only position-independent code can be shared in main memory among
+  applications; using position-dependent code for dynamically linked
+  libraries just defers the linking step to program load time and then
+  requires private memory for the relocated library code.
+
+\item[\textcode{-{}-enable-fast-install}]
+  LiDIA comes with some example applications, which you may want to run in
+  the build tree without having installed the shared library.  To make this
+  work, Libtool creates wrapper scripts for the actual binaries.  With
+  \code{-{}-enable-fast-install=yes}, the (hidden) binaries are prepared for
+  installation and must be run from the (visible) wrapper scripts until the
+  shared library is installed.  With \code{-{}-enable-fast-install=no}, the
+  binaries are linked with the uninstalled library, thus necessitating a
+  relinking step when installing them.  As long as you do not run the hidden
+  binaries directly and use the provided \file{make} targets for installing,
+  you need not care about these details.  However, note that installing the
+  example applications without having installed the shared library in the
+  configured \code{\textit{libdir}} will work only with the setting
+  \code{-{}-enable-fast-install=yes}, which is the default.  This can be
+  important when preparing binary installation images.
+\end{description}
+
+
+\subsubsection{Selecting compiler flags}
+\LiDIA's \file{configure} script does not make any attempts to find out the
+best compiler flags for building the library.  This may change in the
+future.  Instead, please look into the manual of your C++ compiler and set
+the \code{CXXFLAGS} environment variable accordingly (see below).
+
+Many compilers offer a \code{-fast} flag (SUNpro CC, HP aCC) or
+\code{-Ofast} flag (MIPSpro CC) that lets the compiler select the best code
+optimization for the current architecture.  If you use GNU g++, you should
+provide the appropriate \code{-m} option, see Sect.~\textit{GCC Command
+Options, Hardware Models and Configurations} in the g++ manual (see
+\url{http://gcc.gnu.org/onlinedocs/}).
+
+Provide any desired compiler flag by setting the environment variable
+\code{CXXFLAGS} before calling the \file{configure} script, i.e.\ on the
+command line type
+\begin{quote}
+\begin{verbatim}
+CXXFLAGS="<your desired flags>" ./configure
+\end{verbatim}
+\end{quote}
+
+The \file{configure} script presets the environment variables \code{CFLAGS}
+and \code{CXXFLAGS} with \code{-O2}, if these are empty or unset.  Moreover,
+if you build \LiDIA with GNU g++, the \file{configure} script will append
+\code{-fno-implicit-templates} to \code{CXXFLAGS} unless this is already
+specified therein.  Additionally, if you select the traditional
+\code{lidia_error_handler} scheme by choosing \code{-{}-disable-exceptions},
+\file{configure} will also supplement the \code{CXXFLAGS} with
+\code{-fno-exceptions}.
+
+\attentionI If you are not building with GNU g++, you must provide the
+appropriate compiler flags yourself.  In particular, it is important to
+specify options that inhibit implicit template instantiation (see
+Sect.~\ref{template_instantiation} below).
+
+Besides not using C++'s exception handling when asked to avoid it, \LiDIA
+does not make use of run time type information yet (this may change in
+future releases).  You are free to specify compiler options in the
+\code{CXXFLAGS} that disable code generation for these C++ features, to the
+extent supported by the compiler.
+
+\section{Building an executable}
+
+Once \LiDIA has been installed properly, its library is used as any other
+C++ library.  We illustrate the use of the \LiDIA library by an example.
+The following little C++ program reads a number from the standard input and
+prints its factorization on the standard output.
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/rational_factorization.h>
+
+using namespace LiDIA;
+
+int main()
+{
+    rational_factorization f;
+    bigint n;
+
+    cout << "\n Please enter a number: ";
+    cin >> n;
+
+    f.assign(n);
+    f.factor();
+
+    if (f.is_prime_factorization())
+        cout<<"\n Prime Factorization: " << f << endl;
+    else
+        cout<<"\n Factorization: "<< f << endl;
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+It uses the \LiDIA factorization class (compare the description of
+\code{rational_factorization}).  This is done by including
+\path{<LiDIA/rational_factorization.h>}.  In general, the \LiDIA include
+file for the data type \code{xxx} is \path{<LiDIA/xxx.h>}.
+
+\attentionIII All data types and algorithms of \LiDIA reside in
+\file{libLiDIA.a} \textbf{except those for the multi-precision arithmetic}.
+Thus, unlike with previous releases of \LiDIA, you must explicitely link
+the multi-precision arithmetic library to your executables (see below for
+examples).
+
+\attentionIII To compile and build your executable, you \textbf{must} use
+the same C++ compiler that you used to build \LiDIA, otherwise building
+your executable will fail.  At least, if you use different C++ compilers,
+they must have compatible mangling conventions.  For example, GNU g++ 2.x
+and GNU g++ 3.x are incompatible.  If the linker emits error messages about
+missing symbols that should be actually present, this is a good indication
+that you've used different incompatible C++ compilers.  The reason for the
+failure will not be apparent to unaware users.  Thus, before reporting a
+bug, check this first.
+
+The program \path{fact.cc} can be compiled and linked using the following
+command (we assume that you have installed \LiDIA and GNU MP in
+\path{/usr/local/} and that you have compiled \LiDIA on a Solaris machine
+using GNU g++):
+
+\begin{quote}
+\begin{verbatim}
+g++ -O fact.cc -I/usr/local/include -L/usr/local/lib -o fact -lLiDIA -lgmp -lm
+\end{verbatim}
+\end{quote}
+
+Here is a sample running session:
+\begin{quote}
+\code{host\$ fact <RET>}\\[2ex]
+\code{Please enter an integer   18446744073709551617 <RET>}\\[2ex]
+\code{Prime Factorization:   [(274177,1)(67280421310721,1)]}
+\end{quote}
+
+Some programs need information which is stored in the files
+\begin{quote}
+  \file{LIDIA_PRIMES} and \file{GF2n.database}.
+\end{quote}
+
+The built-in directory, where programs are looking for those files is
+\begin{quote}
+  \path{LiDIA_install_dir/share/LiDIA},
+\end{quote}
+which is the correct path, if you have installed the library via "make
+install".  If you have not installed the library, you must set the
+environment variables.
+\index{LIDIA_PRIMES_NAME}
+\index{LIDIA_GF2N}
+
+
+
+\section{Template instantiation}
+\label{template_introduction}
+\label{template_introduction2}
+\label{template_instantiation}
+
+We describe the method that is used for instantiating templates in LiDIA.
+All template classes that are used by \LiDIA itself are explicitely
+instantiated.  Moreover, some template classes that we expect to be used
+frequently are also instatiated when \LiDIA is built.  The advantage of
+this instantiation method is that it is fool proof and is supported by
+every C++ compiler.
+
+\attentionI If you're \emph{not} using GNU g++, then check the compiler
+manual for the option that inhibits automatic/implicit template
+instantiation and pass that option to \file{configure} by adding it to the
+environment variable \code{CXXFLAGS}.
+
+For example, if you are using the SUN WorkShop C++ compiler you should type
+something like
+\begin{quote}
+\begin{verbatim}
+CXXFLAGS="-instances=explicit <other flags>" ./configure
+\end{verbatim}
+\end{quote}
+while a HP aCC user should type something like
+\begin{quote}
+\begin{verbatim}
+CXXFLAGS="+inst_none <other flags>" ./configure
+\end{verbatim}
+\end{quote}
+and a MIPS CC user shoult type something like
+\begin{quote}
+\begin{verbatim}
+CXXFLAGS="-ptnone <other flags>" ./configure
+\end{verbatim}
+\end{quote}
+Note: no guarantee is given that the above flags are the correct ones (this
+is the reason why we refrained from letting \file{configure} set these
+options).  In any case, confer your C++ user's manual.
+
+If you want to use the same instantiation mechanism that \LiDIA uses, then
+do the following:
+\begin{enumerate}
+\item Include all files that are necessary to define the type(s) you want
+to instantiate with.
+\item Define \code{TYPE} (or, in some cases, \code{TYPE1} and \code{TYPE2})
+appropriately.
+\item Some instantiations must be controlled by defining some symbol(s).
+Look at the particular instantiation source file in
+\path{include/LiDIA/instantiate/}.
+\item Include the appropriate source file from
+\path{include/LiDIA/instantiate/}.
+\end{enumerate}
+We demonstrate this with an example.  Sparse matrices over the ring of
+integers are instantiated in
+\path{src/linear_algebra/instantiate/rm_bigint_sparse.cc}.  The code is as
+follows:
+\begin{quote}
+\begin{verbatim}
+#include        <LiDIA/bigint.h>
+
+
+#define TYPE bigint
+
+#define RING_MATRIX
+#define SPARSE
+
+
+#include        <LiDIA/instantiate/matrix.cc>
+\end{verbatim}
+\end{quote}
+Note that if you instantiate a template class that is derived from other
+template classes, you must instantiate these as well.  For example, an
+instantiation of ring matrices requires the instantiation of base matrices
+with the same type; likewise, an instantiation of field matrices requires
+the instantiation of ring matrices with the same type.
+
+
+\section{\LiDIA and other libraries}
+
+You may use any other library together with \LiDIA without taking any
+further actions.
+
+
+\section{Trouble shooting}
+Building the library may fail if your C++ compiler is not ISO C++
+compliant, doesn't have some required ISO C++ headers (such as
+\path{<cstddef>}, \path{<cctype>}, \path{<cstdio>}, or \path{<cstdlib>},
+for instance), or doesn't have some required POSIX headers (such as
+\path{<unistd.h>}, for instance).  Since all major vendors support ISO C++
+to some extent, as well as POSIX, this shouldn't happen.  Otherwise, you
+must upgrade your C++ compiler in order to build \LiDIA.  (Note to HP/UX
+users: There are two HP C++ compilers, the old, non-ISO C++ compliant CC
+and the new, ISO C++ compliant aCC.  CC will definitively fail to compile
+\LiDIA.  However, \file{configure} will \emph{not} detect aCC, so you must
+tell \file{configure} to use aCC by setting the environment variable
+\code{CXX} to aCC before you run \file{configure}.)
+
+If you have problems to compile \LiDIA, and you didn't configure \LiDIA
+with the Autoconf \file{configure} script, then check whether your build
+environment is sane, i.e. try to compile a small programm that doesn't use
+\LiDIA.
+
+If you have problems to build \LiDIA due to memory exhaustion, it will
+probably help to limit inlining (some packages contain quite large inlined
+methods and functions).  If you are using GNU g++, the appropriate option
+to limit inlining is \code{-finline-limit-$N$} (GCC-2.x) resp.
+\code{-finline-limit=$N$} (GCC-3.x), where $N$ should be chosen to be
+between 300 and 1000 (GCC's default is 10000).  This will also result in
+faster compilation times and smaller object files for some source files.
+
+Likewise, the GNU g++ compiler flag \code{-Wreturn-type} might drastically
+increase memory consumption (see the GCC FAQ, e.g.\
+\url{http://gcc.gnu.org/faq/}).  Note that \code{-Wall} implies
+\code{-Wreturn-type}.
+
+If your linker fails on building an executable, then check that
+\begin{enumerate}
+\item you didn't forget to instantiate all necessary templates that hadn't
+been already instantiated;
+\item you didn't forget to link the multi-precision arithmetik library;
+\item you didn't mix up C++ object files and C++ libraries that have been
+built by different C++ compilers (they are usually not compatible, even
+different versions of the same C++ compiler may be incompatible).
+\end{enumerate}
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "LiDIA"
+%%% End: 

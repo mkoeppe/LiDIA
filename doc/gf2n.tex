@@ -1,0 +1,495 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%   gf2n.tex           LiDIA documentation
+%%
+%%   This file contains the documentation of the class gf2n
+%%
+%%   Copyright  (c)   1997  LiDIA-Group
+%%
+%%   Authors: Patric Kirsch, Franz-Dieter Berger
+%%            Volker Mueller, 8/5/96
+%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{gf2n} \dotfill $\GF(2^n)$ arithmetic
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{gf2n} is a class for doing arithmetic in $\GF(2^n)$, the finite field with $2^n$
+elements.  It supports for example arithmetic operations, comparisons, I/O of
+$\GF(2^n)$-elements and basic operations like computing a generator of the multiplicative group.
+We use a polynomial representation for $\GF(2^n)$ with a precomputed sparse modulus.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+We use the polynomial representation for elements in the finite field $\GF(2^n)$.  A \code{gf2n}
+element is represented by an array of \code{unsigned long}s and a global modulus.  This modulus
+must be set by the procedure \code{gf2n_init}, before any variable of type \code{gf2n} can be
+declared.  The modulus can be chosen from a given database or you can select it yourself.  For a
+detailed description of the different inputs of this initialization procedure, see section
+initialization.
+
+Each equivalence class modulo the global modulus is represented by a polynomial over $\GF(2)$,
+whose degree is smaller than the degree of the modulus.  This polynomial is internally stored in
+the bit field given by the array of \code{unsigned long}s.
+
+The format of the input/output of \code{gf2n} elements is handled with a special class
+\code{gf2nIO}.  Available choices are described in section Input/Output.
+
+\begin{techdoc}
+  The internal representation of a \code{gf2n} is stored in an array of \code{udigit}.  All
+  internal functions which work on array of \code{udigit} do \emph{not} allocate memory but
+  assume that used arrays are big enough.  The array size of elements for fixed extension degree
+  $n$ is stored in the static variable \code{gf2n::anzBI}.  Therefore all used arrays have
+  either size \code{gf2n::anzBI} or $2 \cdot \code{gf2n::anzBI}$ (for results of
+  multiplication).  The allocation of memory is usually done in the constructor function.
+  Static internal arrays used for storing intermediate results (see \path{LiDIA/gf2n.h}) are
+  allocated in the \code{gf2n_init} routines.
+  
+  Most algorithms are standard versions and can be found in any good text book for arithmetic in
+  finite fields.  We have several internal multiplication algorithms for fixed length arrays,
+  the correct one is chosen by a function pointer, indexed by the static variable
+  \code{gf2n::mulsel}.  The correct function is also chosen during initialization of
+  \code{gf2n}.  Inversion is done with an extended binary gcd algorithm described in
+  \cite{Spatscheck/OMalley/Orman/Schroeppel:1995}.  We have combined several steps of
+  Schroeppels algorithm in our implementation.  Therefore we use several inline functions for a
+  parallel shift/add operation for given array length.  Note that the implementation is rather
+  tricky.
+  
+  Reduction and inversion algorithms exist in three different versions: the first one is used
+  for trinomial moduli where the distance between the middle exponent and the upper/lower
+  exponent is bigger than 32 (in this situation the middle exponent is stored in the static
+  variable \code{gf2n::exp1}).  The second version is used for moduli with 5 non zero exponents
+  $e_5 = n > e_4 > e_3 > e_2 > e_1 = 0$ if $e_5-e_4 > 32$ and $e_2 - e_1 > 32$.  In this case
+  the middle exponents are stored in internal static variables \code{gf2n::exp1} (for $e_4$),
+  \code{gf2n::exp2} (for $e_3$), and \code{gf2n::exp3} (for $e_2$).  In all other cases the non
+  trivial exponents of the modulus are stored in an internal static array of exponents (in
+  descending order), together with the number of exponents.  Choosing the correct function is
+  again done with a function pointer and the internal variable \code{gf2n::invsel}.
+  
+  In the reduction procedure we distinguish two steps: in phase 1 the polynomial (represented by
+  an array of \code{udigit} is partially reduced.  In phase 1 all udigits with index bigger than
+  the highest array entry (which has index $\code{gf2n::anzBI}-1$) are reduced to zero.  It
+  might however be that the udigit entry with index $\code{gf2n::anzBI}-1$ is \emph{not}
+  reduced.  For speed reasons arithmetic operations do in general not completely reduce but
+  perform only a partial reduction (phase 1).  If however we need an element to be completely
+  reduced, the phase 2 algorithms have to be called.  These functions reduce the udigit with
+  index $\code{gf2n::anzBI}-1$, under the assumption that phase 1 has already be done.
+  
+  For faster generator and order computations the factorization of the order of the
+  multiplicative is stored in the static variable \code{gf2n::ord} once it has been computed.
+\end{techdoc}
+
+\begin{Tcfcode}{bool}{$a$.is_reduced}{}
+  return \TRUE if and only if the partially reduced $a$ is also completely reduced.
+\end{Tcfcode}
+
+\begin{Tfcode}{void}{karatsuba_mul}{udigit * $c$, udigit * $a$, udigit * $b$}
+  determine $c \assign a \cdot b$ with Karatsuba multiplication. 
+\end{Tfcode}
+
+\begin{Tfcode}{void}{square}{udigit * $c$, udigit * $a$}
+  determine $c \assign a \cdot a$.
+\end{Tfcode}
+
+\begin{Tfcode}{void}{generate_mul_table}{}
+  precompute a table for multiplication, called only in initialization routine.
+\end{Tfcode}
+
+\begin{Tfcode}{void}{generate_square_table}{}
+  precompute a table for squaring, called only in initialization routine.
+\end{Tfcode}
+
+\begin{Tfcode}{void}{tri_partial_reduce1}{udigit * $a$}
+  phase 1 reduction on $a$ for trinomial moduli.
+\end{Tfcode}
+
+\begin{Tfcode}{void}{pent_partial_reduce1}{udigit * $a$}
+  phase 1 reduction on $a$ for pentonomial moduli.
+\end{Tfcode}
+
+\begin{Tfcode}{void}{general_partial_reduce1}{udigit * $a$}
+  phase 1 reduction on $a$ for general moduli.
+\end{Tfcode}
+
+\begin{Tfcode}{void}{tri_partial_reduce2}{udigit * $a$}
+  phase 2 reduction on $a$ for trinomial moduli.
+\end{Tfcode}
+
+\begin{Tfcode}{void}{pent_partial_reduce2}{udigit * $a$}
+  phase 2 reduction on $a$ for pentonomial moduli.
+\end{Tfcode}
+
+\begin{Tfcode}{void}{general_partial_reduce2}{udigit * $a$}
+  phase 2 reduction on $a$ for general moduli.
+\end{Tfcode}
+
+\begin{Tfcode}{void}{tri_partial_invert}{udigit * $a$}
+  inversion on $a$ for trinomial moduli.
+\end{Tfcode}
+
+\begin{Tfcode}{void}{pent_partial_invert}{udigit * $a$}
+  inversion on $a$ for pentonomial moduli.
+\end{Tfcode}
+
+\begin{Tfcode}{void}{general_partial_invert}{udigit * $a$}
+  inversion on $a$ for general moduli.
+\end{Tfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{gf2n}{}
+  initialize variable with 0.
+\end{fcode}
+
+\begin{fcode}{ct}{gf2n}{const gf2n & $x$}
+  initialize variable with $x$.
+\end{fcode}
+
+\begin{fcode}{ct}{gf2n}{unsigned long $ui$}
+  initialize variable with the binary representation of $ui$, i.e.~if $ui = \sum_{i=0}^k
+  b_i\,2^i$ with $b_i\in\{ 0, 1 \}$, then initialize the variable with the equivalence class
+  represented by the polynomial $\sum_{i=0}^k b_i x^i$.  If $ui$ is greater or equal than the
+  number of elements in $\GF(2^n)$, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{ct}{gf2n}{const bigint & $b$}
+  initializes the declared variable with the binary representation of $b$, i.e.~if $b =
+  \sum_{i=0}^k b_i 2^i$ with $b_i \in \{ 0, 1 \}$, then initialize the variable with the
+  equivalence class represented by the polynomial $\sum_{i=0}^k b_i x^i$.  If $b$ is greater or
+  equal than the number of elements in $\GF(2^n)$, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{dt}{~gf2n}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\INIT
+
+One of the two following initialization routines must be called before any object of type
+\code{gf2n} can be declared.  Note that because of this fact it is not possible to use static or
+global variables of type \code{gf2n}.  It is however possible to call a initializing routine for
+\code{gf2n} several times in a program.  After each such call, existing variables of type
+\code{gf2n} have to be reinitialized before further usage.
+
+\begin{fcode}{void}{gf2n_init}{unsigned int $d$, gf2nIO::base base = gf2nIO::Dec}
+  the function selects a sparse irreducible polynomial of degree $d$ over $\GF(2)$ in a
+  precomputed database and initializes the global modulus with this polynomial.  Per default the
+  database is read from the file \path{LIDIA_INSTALL_DIR/lib/LiDIA/GF2n.database}, where
+  \path{LIDIA_INSTALL_DIR} denotes the directory where \LiDIA was installed by the installation
+  procedure.  If you want to use another location for the database, you can set the environment
+  variable \code{LIDIA_GF2N} to point to this location.  Furthermore the initialization function
+  sets the output base of \code{gf2nIO} to \code{base}, for a detailed description of
+  \code{gf2nIO} see the section on Input/Output.
+\end{fcode}
+
+\begin{fcode}{void}{gf2n_init}{char * m, gf2nIO::base base = gf2nIO::Dec}
+  the global modulus of \code{gf2n} is initialized with the polynomial, which is described in
+  the string \code{m}.  This string must contain the exponents of 1-coefficients of the
+  polynomial, separated by a blank (example: the string "123 45 0" represents the polynomial
+  $x^{123}+x^{45}+x^{0}$).  Note that the irreducibility of the modulus is not checked.  The
+  output base of \code{gf2nIO} is set to \code{base}, for a detailed description of
+  \code{gf2nIO} see the section on Input/Output.
+\end{fcode}
+
+\begin{fcode}{void}{$x$.re_initialize}{}
+  if the variable $x$ was declared before the latest call to one of the previous initialization
+  routines, then $x$ has to be reinitialized before further usage.  This function discards the
+  old value of $x$, changes the internal size appropriately and initializes $x$ with $0$.
+\end{fcode}
+
+\begin{Tfcode}{static char *}{read_modulus_from_database}{unsigned int $d$}
+  search database for precomputed modulus for degree $d$, return this polynomial as a string in
+  the representation described above.
+\end{Tfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+The assignment operator \code{=} is overloaded.  Furthermore there exist the following
+assignment functions:
+
+\begin{fcode}{void}{$x$.assign_zero}{}
+  $x \assign 0$.
+\end{fcode}
+
+\begin{fcode}{void}{$x$.assign_one}{}
+  $x \assign 1$.
+\end{fcode}
+
+\begin{fcode}{void}{ $x$.assign}{const gf2n & $a$}
+  $x \assign a$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+The following operators are overloaded and can be used in exactly the same way as in C++ (note
+that addition and subtraction are the same in fields of characteristic 2, but nevertheless we
+support both operators).
+
+\begin{center}
+  \code{(binary) +, -, *, /} \\
+  \code{(binary with assignment) +=, -=, *=, /=}
+\end{center}
+
+To avoid copying, all operators also exist as functions:
+
+\begin{fcode}{void}{add}{gf2n & $x$, const gf2n & $y$, const gf2n & $z$}
+  $x \assign y + z$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{gf2n & $x$, const gf2n & $y$, const gf2n & $z$}
+  $x \assign y - z$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{gf2n & $x$, const gf2n & $y$, const gf2n & $z$}
+  $x \assign y \cdot z$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{gf2n & $x$, const gf2n & $y$, const gf2n & $z$}
+  $x \assign y / z$.  If $z = 0$, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{square}{gf2n & $x$, const gf2n & $y$}
+  $x \assign y^2$.
+\end{fcode}
+
+\begin{fcode}{void}{sqrt}{gf2n & $x$, const gf2n & $y$}
+  compute $x$ with $x^2 = y$.
+\end{fcode}
+
+\begin{fcode}{gf2n}{sqrt}{const gf2n & $y$}
+  return $x$ such that $x^2 = y$.
+\end{fcode}
+
+\begin{fcode}{void}{$x$.invert}{}
+  set $x \assign x^{-1}$.  If $x = 0$, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{invert}{gf2n & $x$, const gf2n & $y$}
+  set $x \assign y^{-1}$.  If $y = 0$, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{gf2n}{inverse}{const gf2n & $y$}
+  return $y^{-1}$.  If $y = 0$,the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{power}{gf2n & $x$, const gf2n & $y$, const & bigint $i$}
+  $x \assign y^i$.  If $y = 0$ and $i < 0$, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{power}{gf2n & $x$, const gf2n & $y$, long $l$}
+  $x \assign y^l$.  If $y = 0$ and $l < 0$, the \LEH is invoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+\code{gf2n} supports the binary operators \code{==} and \code{!=}.  Let $a$ be an instance of type
+\code{gf2n}.
+
+\begin{cfcode}{bool}{$a$.is_zero}{}
+  returns \TRUE if $a = 0$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$a$.is_one}{}
+  returns \TRUE if $a = 1$, \FALSE otherwise.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+Let $x$ be of type \code{gf2n}.
+
+\begin{fcode}{static unsigned int}{get_absolute_degree}{}
+  return the extension degree $n$ of the current field $\GF(2^n)$ over the prime field $\GF(2)$.
+\end{fcode}
+
+\begin{fcode}{unsigned int}{$x$.relative_degree}{}
+  return the minimal extension degree $k$ of the field $\GF(2^k)$ over the prime field $\GF(2)$
+  where $x$ is an element of $\GF(2^k)$.
+\end{fcode}
+
+\begin{fcode}{void}{swap}{gf2n & $a$, gf2n & $b$}
+  exchange the values of $a$ and $b$.
+\end{fcode}
+
+\begin{fcode}{udigit}{hash}{const gf2n & $a$}
+  return a hash value for $a$.
+\end{fcode}
+
+\begin{fcode}{void}{$x$.randomize}{unsigned int $d$ = $n$}
+  set $x$ to a random element in $\GF(2^d)$.  If $\GF(2^d)$ is no subfield of $\GF(2^n)$ (i.e.
+  $d$ is no divisor of $n$), then the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{gf2n}{randomize}{const gf2n & $a$, unsigned int $d$ = $n$}
+  return a random element in $\GF(2^d)$.  If $\GF(2^d)$ is no subfield of $\GF(2^n)$ (i.e. $d$
+  is no divisor of $n$), then the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{int}{$x$.trace}{}
+  return the trace of $x$ as \code{int}.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+\begin{fcode}{bigint}{compute_order}{const gf2n & $a$}
+  compute the order of $a$.  Note that computing the order of an element might imply factoring
+  the order of the multiplicative group of $\GF(2^n)$ which can take a while for extension
+  degrees bigger than 150.
+\end{fcode}
+
+\begin{fcode}{gf2n}{get_generator}{unsigned int $d$ = $n$}
+  return a generator of the multiplicative group of $\GF(2^d)$.  If $d$ does not divide $n$,
+  then the \LEH is invoked.  Note that computing a generator might imply factoring the order of
+  the multiplicative group of $\GF(2^n)$ which can take a while for extension degrees bigger
+  than 150.
+\end{fcode}
+
+\begin{fcode}{bool}{solve_quadratic}{gf2n & $r$, const gf2n & $a_1$, const gf2n & $a_0$}
+  The function tries to determine a root of the quadratic polynomial $Y^2 + a_1 Y + a_0$.  If
+  this polynomial splits, the function sets $r$ to one of the roots and returns \TRUE, otherwise
+  the function returns \FALSE and does not change $r$.
+\end{fcode}
+
+In addition to this general function, there exists a moer optimized function which uses
+precomputed tables.  This function is much faster, but the table precomputation takes some time,
+such that it's usage is only recommended for many simultaneous root computations.  Note that the
+precomputation routine must be called by the user.  Releasing the tables after usage is also the
+responsibility of the user.  Moreover after each call reinitialization of a \code{gf2n}, the
+tables are also automatically deleted and must be recomputed.
+
+
+\begin{fcode}{static void}{initialize_table_for_solve_quadratic}{}
+  initialize internal tables for fast solving of qudratic equations.  This function must be
+  called before the improved algorithm can be used.  Tables must be released manually after
+  usage by calling the following function.
+\end{fcode}
+
+\begin{fcode}{static void}{delete_table_for_solve_quadratic}{}
+  delete internal tables used for fast solving of qudratic equations.
+\end{fcode}
+
+\begin{fcode}{bool}{solve_quadratic_with_table}{ gf2n & $c$, const gf2n & $a_1$, const gf2n & $a_0$,
+    bool certainly_factors = false}%
+  The function tries to determine a root of the quadratic polynomial $Y^2 + a_1 Y + a_0$ with the
+  help of precomputed tables.  Note that these tables must be initialized beforehand with the
+  initialization function described above.  If the polynomial splits, the function sets $r$ to
+  one of the roots and returns \TRUE, otherwise the function returns \FALSE and does not change
+  $r$.  If \code{certainly_factors} is \TRUE, then the reducibility of the polynomial is not
+  checked but assumed.  The behavior of the function is undefined if not used properly.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+The \code{istream} operator \code{>>} and the \code{ostream} operator \code{<<} are implemented.
+The format of the I/O of \code{gf2n} elements can be chosen with the help of the class
+\code{gf2nIO}.  Note that the I/O-format stored in \code{gf2nIO} is valid for all variables of
+type \code{gf2n}.
+
+Input of \code{gf2n} elements is per default expected as decimal number.  Moreover one of the
+two prefixes \code{dec:}, \code{hex:} can be used to denote decimal, hexadecimal interpretation
+of the input, respectively.  Example: you can input the ``polynomial'' $x^4+x+1$ as either
+\code{19}, \code{dec:19} or \code{hex:a4}.
+
+At the moment, the class \code{gf2nIO} allows you to choose a base for Output and an output
+prefix.  Available bases are given as \code{enum base \{ Dec, Hex \}}.  Output of an \code{gf2n}
+variable is then done as decimal, hexadecimal number with the chosen prefix, respectively.  This
+Output format can be chosen during initialization with the functions \code{gf2n_init} or it can
+be changed at any time with the help of the following functions.
+
+\begin{fcode}{gf2nIO::void}{setbase}{gf2nIO::base $b$}
+  set \code{gf2nIO::base} to base $b$.  If $b$ is no valid base, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{gf2nIO::base}{showbase}{}
+  return \code{gf2nIO::base}.
+\end{fcode}
+
+\begin{fcode}{gf2nIO::void}{setprefix}{gf2nIO::base b}
+  set the output-prefix to the standard prefix for base $b$.
+\end{fcode}
+
+\begin{fcode}{gf2nIO::void}{setprefix}{char * p}
+  set the output prefix to \code{p}.
+\end{fcode}
+
+\begin{fcode}{gf2nIO::void}{noprefix}{}
+  set the output prefix to the empty string.
+\end{fcode}
+
+\begin{fcode}{char *}{showprefix}{}
+  returns the actual output prefix.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+The following program computes a generator of a given field $\GF(2^n)$.
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/gf2n.h>
+
+int main()
+{
+    unsigned int degree;
+
+    cout << "Degree: ";  cin >> degree;
+    gf2n_init(degree);
+    gf2n a;
+    a = get_generator();
+    cout << "Generator of GF(2^"<< degree <<") = " << a;
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+The classes \code{gf2n} and \code{gf2nIO} are not yet complete.  In future we will add more
+different input/output formats and make the I/O of \code{gf2n} elements easier.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Franz-Dieter Berger, Patric Kirsch, Volker M\"uller

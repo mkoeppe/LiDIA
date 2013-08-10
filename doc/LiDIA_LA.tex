@@ -1,0 +1,27 @@
+%===========================================================================
+%
+%       ${srcdir}/doc/LiDIA_LA.tex
+%
+%---------------------------------------------------------------------------
+%
+%       $Id: LiDIA_LA.tex,v 1.1.1.1 2001/05/02 16:27:07 lidiaadm Exp $
+%
+%===========================================================================
+
+\part*{The \LiDIA LA package}\label{LiDIA-LA}
+\addcontentsline{toc}{part}{\LiDIA LA package}
+
+The \LiDIA LA package contains the classes which deal with linear algebra over the ring of
+rational integers and over $\ZmZ$. It requires the \LiDIA base package and the \LiDIA FF
+package.  The description of the general matrix template classes can be found in the section
+``\LiDIA base package'' (see page \pageref{LiDIA-base:matrices}).
+
+\chapter{Matrices}
+
+\begin{class}{bigint_matrix}
+  \input{bigint_matrix}
+\end{class}
+
+\begin{class}{bigmod_matrix}
+  \input{bigmod_matrix}
+\end{class}

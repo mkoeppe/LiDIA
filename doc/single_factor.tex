@@ -1,0 +1,259 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  single_factor.tex
+%
+%  This file contains the documentation of the class single_factor
+%
+%  Copyright (c) 1996 by LiDIA-Group
+%
+%  Author:  Oliver Braun, Stefan Neis, Thomas Pfahler
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\base}{\mathit{base}}
+\newcommand{\state}{\mathit{state}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{single_factor< T >} \dotfill parameterized class for factoring elements of
+type \code{T}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+Including \code{LiDIA/single_factor.h} in an application allows the use of the C++ type
+\begin{quote}
+  \code{single_factor< T >}
+\end{quote}
+for some data type \code{T} which is allowed to be either a built-in type or a class.
+
+\code{single_factor< T >} is a class for factoring elements of type \code{T} and for storing
+factors of a \code{factorization< T >}.  It offers elementary arithmetical operations and
+information concerning the primality of the represented element.  This class is used in the
+class \code{factorization< T >}.
+
+In \LiDIA, factorization algorithms are implemented for the following types:
+\begin{itemize}
+%\item \code{single_factor< bigint >}
+%  (factorization of integers)
+%\item \code{single_factor< ideal >}
+%  (factorization of ideals)
+\item \code{single_factor< Fp_polynomial >} (factorization of polynomials over finite prime
+  fields)
+\item \code{single_factor< polynomial< gf_p_element > >} (factorization of polynomials over
+  finite fields).
+\end{itemize}
+In the next release we plan to offer factorization algorithms for the following additional
+types:
+\begin{itemize}
+\item \code{single_factor< bigint >} (factorization of integers, replacing
+  \code{rational_factorization})
+\item \code{single_factor< ideal >} (factorization of ideals).
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+A \code{single_factor< T >} is internally represented by a variable of type \code{T} named
+$\base$ and a variable named $\state$ containing information about the primality or compositeness
+of $\base$.
+
+$\state$ can hold '\code{prime}', '\code{not_prime}' or '\code{unknown}'; the latter indicating
+that nothing is known about primality or compositeness of $\base$ so far.
+
+A test for primality or compositeness is implemented in the function \code{is_prime_factor()}.
+Note that these tests may be based on tests with limited capabilities.  For example in the case
+of \code{bigint}s the Miller-Rabin-test is used which can prove compositeness, however, if an
+integer is claimed to be prime, this might actually be wrong --- although this is highly
+improbable.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{single_factor< T >}{}
+  initializes the \code{single_factor< T >} with the identity element (``$1$'') of the
+  multiplication for elements of type \code{T}.
+\end{fcode}
+
+\begin{fcode}{ct}{single_factor< T >}{const T & $a$}
+  initializes the \code{single_factor< T >} with an element $a$ of type \code{T}.  The $\state$
+  is set to ``unknown''.
+\end{fcode}
+
+\begin{fcode}{ct}{single_factor< T >}{const single_factor< T > & $a$}
+  initializes the \code{single_factor< T >} with the \code{single_factor< T > a}.
+\end{fcode}
+
+\begin{fcode}{dt}{~single_factor< T >}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+The operator \code{=} is overloaded and moreover the following assignment functions exist.  (Let
+$a$ be an instance of type \code{single_factor< T >}.)
+
+\begin{fcode}{void}{$a$.assign}{const single_factor< T > & $b$}
+  $a \assign b$.
+\end{fcode}
+
+\begin{fcode}{void}{$a$.assign}{const T & $b$}
+  $\base$ of $a$ is set to $b$; $\state$ of $a$ is set to \code{unknown}.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+The binary operators \code{==}, \code{!=}, \code{<}, \code{<=}, \code{>=}, \code{>} are
+overloaded.  Note that although these operators may do a meaningful comparision of the elements
+represented by a \code{single_factor< T >} (e.g.~for \code{bigint}s), the operators may as well
+implement a completely artifical ordering relation (e.g.~a lexical ordering), since this
+relation is only needed for sorting vectors of type \code{single_factor< T >}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+The operators \code{(binary) *, /} are overloaded, however using operator \code{/} is only a
+well-defined operation, if the divisor really divides the first operand.  Multiplication and
+division can also be performed by the functions \code{multiply} and \code{divide}, which avoid
+copying and therfore are faster than the operators.
+
+\begin{fcode}{void}{multiply}{single_factor< T > & $c$, const single_factor< T > & $a$, const single_factor< T > & $b$}
+  $c \assign a \cdot b$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{single_factor< T > & $c$, const single_factor< T > & $a$, const single_factor< T > & $b$}
+  $c \assign a / b$.  Note that the behaviour of this function is undefined if $b$ is not a divisor of
+  $a$.
+\end{fcode}
+
+\begin{fcode}{void}{gcd}{single_factor< T > & $c$, const single_factor< T > & $a$, const single_factor< T > & $b$}
+  $c \assign \gcd(a,b)$.
+\end{fcode}
+
+\begin{fcode}{lidia_size_t}{ord_divide}{const single_factor< T > & $a$, single_factor< T > & $b$}
+  returns the largest non-negative integer $e$ such that $a^e$ divides $b$.  $b$ is divided by
+  $a^e$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $a$ be an instance of type \code{single_factor< T >}.
+
+\begin{fcode}{T &}{$a$.base}{}
+  returns a reference to the element of type \code{T} represented by $a$.
+\end{fcode}
+
+\begin{cfcode}{const T &}{$a$.base}{}
+  returns a reference to the element of type \code{T} represented by $a$.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+Let $a$ be an instance of type \code{single_factor< T >}.
+
+
+\STITLE{Queries}
+
+\begin{fcode}{bool}{$a$.is_prime_factor}{int $\mathit{test}$ = 0}
+  returns \TRUE, if $f$ is a prime factorization according to a test in class
+  \code{single_factor< T >}.  This test either can be a \emph{compositeness test}, which decides
+  whether $f$ is composite or probably prime or a \emph{primality test} which proofs that $f$ is
+  prime.  If $\mathit{test} \neq 0$, an explicit test is done if we do not yet know, whether or
+  not $a$ is prime, otherwise only $\state$ is checked.
+\end{fcode}
+
+
+%    For type \code{single_factor< bigint >}, this primality test is done
+%    by the function \code{is_prime} (see the description of the class \code{bigint}).
+%    For type \code{single_factor< Fp_polynomial >}, this primality test is done
+%    by the function \code{is_irreducible} (see the description of the class
+%    \code{Fp_polynomial}).
+%    For type \code{single_factor< ideal >}, this primality test is done
+%    by the function \code{is_prime_ideal} (see the description of the class
+%    \code{ideal}).}
+
+
+\STITLE{Modifying Operations}
+
+\begin{fcode}{void}{swap}{single_factor< T > $a$, single_factor< T > $b$}
+  swaps the values of $a$ and $b$.
+\end{fcode}
+
+\begin{fcode}{T}{$a$.extract_unit}{}
+  sets $a$ to a fixed representant of the equivalence class $a$U where U is the group of units
+  of type \code{T}.  The unit $\epsilon$ by which we have to multiply the new value of $a$ to
+  obtain the old one is returned.
+\end{fcode}
+
+\begin{fcode}{factorization< T >}{$a$.factor}{}
+  returns a factorization of the element of type \code{T} represented by the
+  \code{single_factor< T >} $a$, if a suitable routine for \code{single_factor< T >} is defined.
+  Otherwise, you only get a message saying that no factorization routine has been implemented
+  for that type.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+The \code{istream} operator \code{>>} and the \code{ostream} operator\code{<<} are
+overloaded.  By now, the I/O-format is identical to that of elements of type \code{T}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+The type \code{T} has to offer the following functions:
+\begin{itemize}
+\item the assignment operator \code{=}
+\item the operator \code{=} (\code{int}), if you don't specialize the constructors
+\item a swap function \code{void swap(T&, T&)}
+\item the friend-functions \code{multiply}, \code{divide}, \code{gcd}
+\item the input-operator \code{>>} and
+\item the output-operator \code{<<}
+\item the comparison-operators \code{<}, \code{<=}, \code{==}, \code{!=}
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{factorization< T >},
+\SEE{bigint}, \SEE{Fp_polynomial},
+\SEE{polynomial< gf_p_element >},
+\SEE{module}, \SEE{alg_ideal}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+%Franz-Dieter Berger,
+Oliver Braun, Thomas F.~Denny,
+%Andreas M\"uller, Volker M\"uller,
+Stefan Neis, Thomas Pfahler
+%Thomas Sosnowski

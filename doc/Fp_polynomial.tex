@@ -1,0 +1,602 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  Fp_polynomial.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the class Fp_polynomial
+%%
+%%  Copyright   (c)   1996   by  LiDIA-Group
+%%
+%%  Authors: Thomas Pfahler
+%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{Fp_polynomial} \dotfill polynomials over finite prime fields
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{Fp_polynomial} is a class for doing very fast polynomial computation modulo a prime $p >
+2$.  A variable of type \code{Fp_polynomial} can hold polynomials of arbitrary length.  Each
+polynomial has its own modulus p, which is of type \code{bigint}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+A variable $f$ of type \code{Fp_polynomial} is internally represented as a coefficient array
+with entries of type \code{bigint}.  The zero polynomial is a zero length array; otherwise,
+$f[0]$ is the constant-term, and $f[\deg(f)]$ is the leading coefficient, which is always
+non-zero (except for $f = 0$).  Furthermore, every \code{Fp_polynomial} carries a pointer to its
+modulus, thus allowing to use polynomials over different prime fields at the same time.  This
+modulus
+%is initialized with zero and (therefore)
+must be set explicitely if $f$ is not the result of an arithmetical operation.
+
+For multiplication and division, we have implemented a very efficient FFT-arithmetic.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{Fp_polynomial}{}
+  initializes a zero polynomial.
+\end{fcode}
+
+\begin{fcode}{ct}{Fp_polynomial}{const Fp_polynomial & $f$}
+  initializes with a copy of the polynomial $f$.
+\end{fcode}
+
+\begin{fcode}{ct}{Fp_polynomial}{const polynomial< bigint > & $f$, const bigint & $p$}
+  initializes with $f \bmod p$.
+\end{fcode}
+
+\begin{fcode}{dt}{~Fp_polynomial}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $f$ be of type \code{Fp_polynomial}.
+
+The operator \code{=} is overloaded.  For efficiency reasons, the following functions are also
+implemented:
+
+\begin{fcode}{void}{$f$.assign_zero}{}
+  sets $f$ to the zero polynomial.  If $\code{$f$.modulus()} = 0$, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign_zero}{const bigint & $p$}
+  sets $f$ to the zero polynomial modulo $p$.  If $p < 2$, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign_one}{}
+  sets $f$ to the polynomial $1 \cdot x^0$.  If $\code{$f$.modulus()} = 0$, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign_one}{const bigint & $p$}
+  sets $f$ to the polynomial $1 \cdot x^0$ modulo $p$.  If $p < 2$, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign_x}{}
+  sets $f$ to the polynomial $1 \cdot x^1+0 \cdot x^0$.  If $\code{$f$.modulus()} = 0$, the \LEH
+  is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign_x}{const bigint & $p$}
+  sets $f$ to the polynomial $1 \cdot x^1+0 \cdot x^0$ modulo $p$.  If $p < 2$, the \LEH is
+  invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign}{const Fp_polynomial & $g$}
+  $f \assign g$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign}{const bigint & $a$}
+  $f \assign a \cdot x^0$.  If $\code{$f$.modulus()} = 0$, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign}{const base_vector< bigint > & $v$, const bigint & $p$}
+  $f \assign \sum_{i=0}^{\code{v.size()}-1} v[i] \cdot x^i \bmod p$.  $p$ must be prime;
+  otherwise, the behaviour of this class is undefined.  If $p < 2$, the \LEH is invoked.
+  Leading zeros will be automatically removed.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+Let $f$ be of type \code{Fp_polynomial}.
+
+\begin{fcode}{void}{$f$.set_modulus}{const bigint & $p$}
+%sets $f$ to zero polynomial modulo $p$.
+  sets the modulus for the polynomial $f$ to $p$.  $p$ must be $\geq$ 2 and prime.  The
+  primality of $p$ is not tested, but be aware that the behavior of this class is not defined if
+  $p$ is not a prime.  $f$ is set to zero.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.set_modulus}{const Fp_polynomial & $g$}
+  sets the modulus for $f$ to \code{$g$.modulus()}.  $f$ is assigned the zero polynomial.
+\end{fcode}
+
+\begin{cfcode}{const bigint &}{$f$.modulus}{}
+  returns the modulus of $f$.  If $f$ has not been assigned a modulus yet (explicitely by
+  \code{$f$.set_modulus()} or implicitely by an operation), the value zero is returned.
+\end{cfcode}
+
+\begin{fcode}{void}{$f$.set_max_degree}{lidia_size_t $n$}
+  pre-allocates space for coefficients up to degree $n$.  This has no effect if $n < \deg(f)$ or
+  if sufficient space was already allocated.  The value of $f$ is always unchanged.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.remove_leading_zeros}{}
+  removes leading zeros.  Afterwards, if $f$ is not the zero polynomial,
+  $\code{$f$.lead_coeff()} \neq 0$.  If $\code{$f$.modulus()} = 0$, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.make_monic}{}
+  divides $f$ by its leading coefficient; afterwards, $\code{$f$.lead_coeff} = 1$.  If $f = 0$
+  or $\code{$f$.modulus()} = 0$, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.kill}{}
+  deallocates the polynomial's coefficients and sets $f$ to zero.  \code{$f$.modulus()} is set
+  to zero.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $f$ be of type \code{Fp_polynomial}.  All returned coefficients lie in the interval $[
+0,\dots, \code{$f$.modulus()}-1 ]$.
+
+\begin{cfcode}{lidia_size_t}{$f$.degree}{}
+  returns the degree of $f$.  The zero polynomial has degree $-1$.
+\end{cfcode}
+
+\begin{fcode}{bigint &}{$f$.operator[]}{lidia_size_t $i$}
+  returns a reference to the coefficient of $x^i$ of $f$.  $i$ must be non-negative.
+  
+  IMPORTANT NOTE: Assignments to coefficients via this operator are only possible by the
+  following functions: 
+  \begin{itemize}
+  \item \code{operator=(const bigint &)}
+  \item \code{bigint::assign_zero()}
+  \item \code{bigint::assign_one()}
+  \item \code{bigint::assign(const bigint &)}
+  \end{itemize}
+  Any other assignment (e.g. \code{square(f[0], a)}) will only cause compiler warnings, but your
+  program will not run correctly.  The degree of $f$ is adapted automatically after any
+  assignment.  Read access is always possible.
+\end{fcode}
+
+%       WARNING: If you assign a value to a coefficient via this function,
+%    you have to guarantee that the value of the coefficient lies in the
+%       interval $[ 0,\dots,|$f$.modulus()|-1 ]$.  Otherwise, the behaviour of
+%       the polynomial $f$ may not be defined.
+%       Use the function $f$.remove_leading_zeros() to get rid of leading zeros.}
+
+\begin{cfcode}{const bigint &}{$f$.operator[]}{lidia_size_t $i$}
+  returns a constant reference to the coefficient of $x^i$ of $f$.  $i$ must be non-negative.  If
+  $i$ exceeds the degree of $f$, a reference to a bigint of value zero is returned.
+\end{cfcode}
+
+\begin{cfcode}{bigint &}{$f$.lead_coeff}{}
+  returns $f[\deg(f)]$, i.e. the leading coefficient of $f$; returns zero if $f$ is the zero
+  polynomial.
+\end{cfcode}
+
+\begin{cfcode}{bigint &}{$f$.const_term}{}
+  returns $f[0]$, i.e. the constant term of $f$; returns zero if $f$ is zero polynomial.
+\end{cfcode}
+
+To avoid copying, coefficient access can also be performed by the following functions:
+
+\begin{cfcode}{void}{$f$.get_coefficient}{bigint & $a$, int $i$}
+  $a \assign c_i$, where $f = \sum_{k=0}^{\deg(f)} c_k \cdot x^k$.  $a \assign 0$, if $i >
+  \deg(f)$.  The \LEH is invoked if $i < 0$.
+\end{cfcode}
+
+\begin{fcode}{void}{$f$.set_coefficient}{const bigint & $a$, lidia_size_t $i$}
+  sets coefficient of $x^i$ to $a \bmod \code{$f$.modulus()}$; if $i > \deg(f)$, all
+  coefficients $c_j$ of $x^j$ with $j = \deg(f)+1, \dots, i-1$ are set to zero; the degree of
+  $f$ is adapted automatically.  The \LEH is invoked if $i < 0$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.set_coefficient}{lidia_size_t $i$}
+  This is equivalent to \code{$f$.set_coefficient(1,i)}.  Sets coefficient of $x^i$ to $1$; if
+  $i > \deg(f)$, all coefficients $c_j$ of $x^j$ with $j = \deg(f)+1, \dots, i-1$ are set to
+  zero; the degree of $f$ is adapted automatically.  The \LEH is invoked if $i < 0$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+All arithmetical operations are done modulo the modulus assigned to each polynomial.  Input
+variables of type \code{bigint} are automatically reduced.  In principal, the \LEH is invoked if
+the moduli of the \code{const} arguments are not the same.  The ``resulting'' polynomial
+receives the modulus of the ``input'' polynomials.
+
+The following operators are overloaded and can be used in exactly the same way as for machine
+types in C++ (e.g.~\code{int}) :
+
+\begin{center}
+  \code{(unary) -}\\
+  \code{(binary) +, -, *, /, \%}\\
+  \code{(binary with assignment) +=,  -=,  *=,  /=, \%=}
+\end{center}
+
+Let $f$ be of type \code{Fp_polynomial}.  To avoid copying, these operations can also be
+performed by the following functions:
+
+\begin{fcode}{void}{$f$.negate}{}
+  $f \assign -f$.
+\end{fcode}
+
+\begin{fcode}{void}{negate}{Fp_polynomial & $g$, const Fp_polynomial & $f$}
+  $g \assign -f$.
+\end{fcode}
+
+\begin{fcode}{void}{add}{Fp_polynomial & $f$, const Fp_polynomial & $g$, const Fp_polynomial & $h$}
+  $f \assign g + h$.
+\end{fcode}
+
+\begin{fcode}{void}{add}{Fp_polynomial & $f$, const Fp_polynomial & $g$, const bigint & $a$}
+  $f \assign g + a \bmod p$, where $p = \code{$g$.modulus()}$.
+\end{fcode}
+
+\begin{fcode}{void}{add}{Fp_polynomial & $f$, const bigint & $a$, const Fp_polynomial & $g$}
+  $f \assign g + a \bmod p$, where $p = \code{$g$.modulus()}$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{Fp_polynomial & $f$, const Fp_polynomial & $g$, const Fp_polynomial & $h$}
+  $f \assign g - h$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{Fp_polynomial & $f$, const Fp_polynomial & $g$, const bigint & $a$}
+  $f \assign g - a \bmod p$, where $p = \code{$g$.modulus()}$.
+\end{fcode}
+
+\begin{fcode}{void}{subtract}{Fp_polynomial & $f$, const bigint & $a$, const Fp_polynomial & $g$}
+  $f \assign a - g \bmod p$, where $p = \code{$g$.modulus()}$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{Fp_polynomial & $f$, const Fp_polynomial & $g$, const Fp_polynomial & $h$}
+  $f \assign g \cdot h$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{Fp_polynomial & $f$, const Fp_polynomial & $g$, const bigint & $a$}
+  $f \assign g \cdot a \bmod p$, where $p = \code{$g$.modulus()}$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{Fp_polynomial & $f$, const bigint & $a$, const Fp_polynomial & $g$}
+  $f \assign g \cdot a \bmod p$, where $p = \code{$g$.modulus()}$.
+\end{fcode}
+
+\begin{fcode}{void}{square}{Fp_polynomial & $f$, const Fp_polynomial & $g$}
+  $f \assign g^2$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{Fp_polynomial & $q$, const Fp_polynomial & $f$, const Fp_polynomial & $g$}
+  $q \assign f/g$.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{Fp_polynomial & $q$, const Fp_polynomial & $f$, const bigint & $a$}
+  $q \assign f/a \bmod p$, where $p = \code{$f$.modulus()}$.
+\end{fcode}
+
+\begin{fcode}{void}{remainder}{Fp_polynomial & $r$, const Fp_polynomial & $f$, const Fp_polynomial & $g$}
+  $r \assign f \bmod g$.
+\end{fcode}
+
+\begin{fcode}{void}{div_rem}{Fp_polynomial & $q$, const Fp_polynomial & $r$,
+    const Fp_polynomial & $f$, const Fp_polynomial & $g$}%
+  $f \assign q \cdot g + r$, where $0 \leq \deg(r) < \deg(g)$.
+\end{fcode}
+
+\begin{fcode}{void}{invert}{Fp_polynomial & $f$, const Fp_polynomial & $g$, lidia_size_t $m$}
+  $f \assign g^{-1} \bmod x^m$.  The constant term of $g$ must be non-zero, otherwise the \LEH
+  is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{power}{Fp_polynomial & $x$, const Fp_polynomial & $g$, lidia_size_t $e$}
+  $f \assign g^e$.
+\end{fcode}
+
+
+\STITLE{Greatest Common Divisor}
+
+\begin{fcode}{void}{gcd}{Fp_polynomial & $d$, const Fp_polynomial & $f$, const Fp_polynomial & $g$}
+  $d \assign \gcd(f, g)$.
+\end{fcode}
+
+\begin{fcode}{Fp_polynomial}{gcd}{const Fp_polynomial & $f$, const Fp_polynomial & $g$}
+  returns $\gcd(f, g)$.
+\end{fcode}
+
+\begin{fcode}{void}{xgcd}{Fp_polynomial & $d$, Fp_polynomial & $s$, Fp_polynomial & $t$,
+    const Fp_polynomial & $f$, const Fp_polynomial & $g$}%
+  $d \assign \gcd(f, g) = s \cdot f + t \cdot g$.
+\end{fcode}
+
+
+\STITLE{Modular Arithmetic without pre-conditioning}
+
+\begin{fcode}{void}{multiply_mod}{Fp_polynomial & $g$, const Fp_polynomial & $a$,
+    const Fp_polynomial & $b$, const Fp_polynomial & $f$}%
+  $g \assign a \cdot b \bmod f$.
+\end{fcode}
+
+\begin{fcode}{void}{square_mod}{Fp_polynomial & $g$, const Fp_polynomial & $a$, const Fp_polynomial & $f$}
+  $g \assign a^2 \bmod f$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply_by_x_mod}{Fp_polynomial & $g$, const Fp_polynomial & $a$, const Fp_polynomial & $f$}
+  $g \assign a \cdot x \bmod f$.
+\end{fcode}
+
+\begin{fcode}{void}{invert_mod}{Fp_polynomial & $g$, const Fp_polynomial & $a$, const Fp_polynomial & $f$}
+  $g \assign a^{-1} \bmod f$.  The \LEH is invoked if $a$ is not invertible.
+\end{fcode}
+
+\begin{fcode}{bool}{invert_mod_status}{Fp_polynomial & $g$, const Fp_polynomial & $a$, const Fp_polynomial & $f$}
+  returns \TRUE and sets $g \assign a^{-1} \bmod f$, if $\gcd(a, f) = 1$; otherwise returns
+  \FALSE and sets $g \assign \gcd(a, f)$.
+\end{fcode}
+
+\begin{fcode}{void}{power_mod}{Fp_polynomial & $g$, const Fp_polynomial & $a$,
+    const bigint & $e$, const Fp_polynomial & $f$}%
+  $g \assign a^e \bmod f$.
+\end{fcode}
+
+\begin{fcode}{void}{power_x_mod}{Fp_polynomial & $g$, const bigint & $e$, const Fp_polynomial & $f$}
+  $g \assign x^e \bmod f$.
+\end{fcode}
+
+\begin{fcode}{void}{power_x_plus_a_mod}{Fp_polynomial & $g$, const bigint & $a$,
+    const bigint & $e$, const Fp_polynomial & $f$}%
+  $g \assign (x + a)^e \bmod f$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+The binary operators \code{==}, \code{!=} are overloaded and can be used in exactly the same way
+as for machine types in C++ (e.g.~\code{int}).
+
+Let $f$ be an instance of type \code{Fp_polynomial}.
+
+\begin{cfcode}{bool}{$f$.is_zero}{}
+  returns \TRUE if $f$ is the zero polynomial; \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$f$.is_one}{}
+  returns \TRUE if $f$ is a constant polynomial and the constant coefficient equals $1$; \FALSE
+  otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$f$.is_x}{}
+  returns \TRUE if $f$ is a polynomial of degree $1$, the leading coefficient equals $1$ and the
+  constant coefficient i equals $0$; \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$f$.is_monic}{}
+  returns \TRUE if $f$ is a monic polynomial, i.e. if $f$ is not the zero polynomial and
+  $\code{$f$.lead_coeff()} = 1$.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+Let $f$ be an instance of type \code{Fp_polynomial}.
+
+\begin{fcode}{void}{shift_left}{Fp_polynomial & $f$, const Fp_polynomial & $g$, lidia_size_t $n$}
+  $f \assign g \cdot x^n$.
+\end{fcode}
+
+\begin{fcode}{void}{shift_right}{Fp_polynomial & $f$, const Fp_polynomial & $g$, lidia_size_t $n$}
+  $f \assign g / x^n$.
+\end{fcode}
+
+\begin{fcode}{void}{trunc}{Fp_polynomial & $f$, const Fp_polynomial & $g$, lidia_size_t $n$}
+  $f \assign g \pmod{x^n}$.
+\end{fcode}
+
+\begin{fcode}{void}{derivative}{Fp_polynomial & $f$, const Fp_polynomial & $g$}
+  $f \assign g'$ , i.e. the derivative of $g$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.randomize}{lidia_size_t n}
+  $f$ is assigned a random polynomial of degree $n$ modulo \code{$f$.modulus()}.  If
+  $\code{$f$.modulus()} = 0$, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{randomize}{Fp_polynomial & $f$, const bigint & $p$, lidia_size_t $n$}
+  $f$ is assigned a random polynomial modulo $p$ of degree $n$.
+\end{fcode}
+
+\begin{cfcode}{bigint}{$f$.operator()}{const bigint & $a$}
+  returns $\sum_{i=0}^{\deg(f)} c_i \cdot a^i \bmod p$, where $f = \sum_{i=0}^{\deg(f)} c_i
+  \cdot x^i$ and $p = \code{$f$.modulus()}$.  If $\code{$f$.modulus()} = 0$, the \LEH is
+  invoked.
+\end{cfcode}
+
+\begin{fcode}{void}{build_from_roots}{const base_vector< bigint > & $v$}
+  computes the polynomial $\prod_{i=0}^{\code{$v$.size()}-1} (x - a[i]) \bmod
+  \code{$f$.modulus()}$.  The \LEH is invoked if $\code{$f$.modulus()} = 0$.
+\end{fcode}
+
+\begin{fcode}{void}{cyclic_reduce}{Fp_polynomial & $f$, const Fp_polynomial & $g$, lidia_size_t $m$}
+  $f \assign g \bmod x^m-1$.
+\end{fcode}
+
+\begin{fcode}{void}{add_multiple}{Fp_polynomial & $f$, const Fp_polynomial & $g$,
+    const bigint & $s$, lidia_size_t $n$, const Fp_polynomial & $h$}%
+  $f \assign g + s \cdot x^n \cdot h \bmod p$, where $p = \code{$g$.modulus()}$.
+\end{fcode}
+
+\begin{fcode}{bool}{prob_irred_test}{const Fp_polynomial & $f$, lidia_size_t $\mathit{iter}$ = 1}
+  performs a fast, probabilistic irreducibility test.  The test can err only if $f$ is reducible
+  modulo \code{$f$.modulus()}, and the error probability is bounded by
+  $\code{$f$.modulus()}^{-\mathit{iter}}$.
+\end{fcode}
+
+\begin{fcode}{bool}{det_irred_test}{const Fp_polynomial & $f$}
+  performs a recursive deterministic irreducibility test.
+\end{fcode}
+
+\begin{fcode}{void}{build_irred}{Fp_polynomial & $f$, cnost bigint & $p$, lidia_size_t $n$}
+  $f \assign$ a monic irreducible polynomial modulo $p$ of degree $n$.
+\end{fcode}
+
+\begin{fcode}{void}{build_random_irred}{Fp_polynomial & $f$, const Fp_polynomial & $g$}
+  constructs a random monic irreducible polynomial $f$ of degree $\deg(g)$ over $\ZpZ$, where $p
+  = \code{$g$.modulus()}$.  Assumes $g$ to be a monic irreducible polynomial (otherwise, the
+  behaviour of this function is undefined).
+\end{fcode}
+
+\begin{fcode}{base_vector< bigint >}{find_roots}{const Fp_polynomial & $f$,
+    int $\mathit{flag}$ = 0}%
+  returns the list of roots of $f$ (without multiplicities).  If $\mathit{flag} \neq 0$, $f$
+  must be monic and the product of $\deg(f)$ distinct roots; otherwise no assumptions on $f$ are
+  made.
+\end{fcode}
+
+\begin{fcode}{bigint}{find_root}{const Fp_polynomial & $f$}
+  returns a single root of $f$.  Assumes that $f$ is monic and splits into distinct linear
+  factors.
+\end{fcode}
+
+\begin{fcode}{void}{swap}{Fp_polynomial & $f$, Fp_polynomial & $g$}
+  swaps the values of $f$ and $g$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+The \code{istream} operator \code{>>} and the \code{ostream} operator \code{<<} are overloaded.
+Let $f = \sum_{i=0}^{n} c_{i} \cdot x^{i} \bmod p$ where $n$ denotes the degree and $p$ the
+modulus of the polynomial $f$.
+
+We support two different I/O-formats:
+\begin{itemize}
+\item
+  The more simple format is
+%       $[ c_{0} c_{1} \dots c_{n-1} ] {\rm mod} p$''
+\begin{verbatim} [ c_0 c_1 ... c_n ] mod p \end{verbatim}
+with integers $c_i$, $p$.  All numbers will be reduced modulo $p$ at input; leading zeros will
+be removed.
+
+\item
+  The more comfortable format (especially for sparse polynomials) is
+%       ``$c_n{\rm *x^n + \dots + }c_2{\rm *x^2 + }c_1{\rm *x + }c_0 {\rm mod} p$''
+\begin{verbatim} c_n * x^n + ... + c_2 * x^2 + c_1 * x + c_0 mod p
+\end{verbatim}
+At output, zero coefficients are omitted, as well as you may omit them at input.
+Even \begin{verbatim} -x -x^2 +3*x^2 -17 +2 mod 5 \end{verbatim}
+will be accepted.
+\end{itemize}
+
+Both formats may be used as input --- they are distiguished automatically by the first character
+of the input, being `[' or not `['.  The \code{ostream} operator \code{<<} always uses the first
+format.  The second output format can be obtained using the member function
+
+\begin{cfcode}{void}{$f$.pretty_print}{ostream & os}
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{bigint}{bigint}, \SEE{polynomial< T >}{polynomial}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+If you want to do many computations modulo some fixed \code{Fp_polynomial} $f$, use class
+\code{Fp_poly_modulus}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\WARNINGS
+
+Assignments to coefficients of polynomials via \code{operator[](lidia_size_t)} (without
+\code{const}) are only possible by the following functions:
+\begin{itemize}
+\item \code{operator=(const bigint &)}
+\item \code{bigint::assign_zero()}
+\item \code{bigint::assign_one()}
+\item \code{bigint::assign(const bigint &)}
+\end{itemize}
+Any other assignment (e.g. \code{square(f[0], a)}) will only cause compiler warnings, but your
+program will not run correctly.
+
+Read access is always possible.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/Fp_polynomial.h>
+
+int main()
+{
+    Fp_polynomial f, g, h;
+
+    cout << "Please enter f : "; cin >> f;
+    cout << "Please enter g : "; cin >> g;
+
+    h = f * g;
+
+    cout << "f * g  =  ";
+    h.pretty_print();
+    cout << endl;
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+Input example:
+\begin{quote}
+\begin{verbatim}
+Please enter f : 14*x^4 - 43*x^3 + 1  mod 97
+Please enter g : -x^3 + x - 2  mod 97
+
+f * g  =  83*x^7 + 43*x^6 + 14*x^5 + 26*x^4 + 85*x^3 + x + 95 mod 97
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Victor Shoup (original author), Thomas Pfahler

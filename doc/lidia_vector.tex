@@ -1,0 +1,72 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  lidia_vector.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the vector classes
+%%
+%%  Copyright   (c)   1995   by  LiDIA-Group
+%%
+%%  Authors: Frank Lehmann, Markus Maurer
+%%           Patrick Theobald, Stefan Neis
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{lidia_vector< T >} \dotfill parameterized vector-class
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+The class \code{lidia_vector< T >} is a combination of the classes \code{math_vector},
+\code{sort_vector}, and \code{file_vector}.  That means that it puts at disposal all functions
+of its base classes.  Obviously, this derived class requires the same functions for type
+\code{T} as the corresponding base classes do.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{base_vector}, \SEE{file_vector},
+\SEE{math_vector}, \SEE{sort_vector}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/lidia_vector.h>
+
+int main()
+{
+    lidia_vector < int > u;
+
+    cout << " u = " ;
+    cin >> u ;
+
+    u.sort();
+    cout << "u = " << u << flush;
+
+    u -= (u*(int)100);
+    cout << "u = " << u << flush;
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+For further examples please refer to \path{LiDIA/src/templates/vector/vector_appl.cc}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Frank Lehmann, Markus Maurer, Stefan Neis, Thomas Papanikolaou, Patrick Theobald
+

@@ -1,0 +1,81 @@
+%===========================================================================
+%
+%       ${srcdir}/doc/LiDIA_FF.tex
+%
+%---------------------------------------------------------------------------
+%
+%       $Id$
+%
+%===========================================================================
+
+\part*{The \LiDIA FF package}\label{LiDIA-FF}
+\addcontentsline{toc}{part}{\LiDIA FF package}
+
+%The \LiDIA FF package contains the classes which deal with finite fields. It
+%requires only the \LiDIA base package.
+
+\chapter{Arithmetics over $\GF(2^n)$, $\GF(p^n)$}
+
+\begin{class}{gf2n}
+  \input{gf2n}
+\end{class}
+
+\begin{class}{galois_field}
+  \input{galois_field}
+\end{class}
+
+\begin{class}{gf_element}
+  \input{gf_element}
+\end{class}
+
+\begin{class}{galois_field_iterator}
+  \input{galois_field_iterator}
+\end{class}
+
+
+\chapter{Polynomials, Rational Functions, and Power Series}
+
+\begin{class}{polynomial over gf_element}
+  \input{gf_polynomial.tex}
+\end{class}
+
+\begin{class}{Fp_polynomial}
+  \input{Fp_polynomial}
+\end{class}
+
+\begin{class}{Fp_poly_modulus}
+  \input{Fp_poly_modulus}
+\end{class}
+
+\begin{class}{gf_poly_modulus}
+  \input{gf_poly_modulus}
+\end{class}
+
+\begin{class}{Fp_rational_function}
+  \input{Fp_rational_function}
+\end{class}
+
+\begin{class}{power_series}
+  \input{power_series}
+\end{class}
+
+
+\chapter{Factorization}
+
+The description of the general factorization template class can be found in the section ``LiDIA
+base package'' (see page \pageref{LiDIA-base:factorization}).
+
+\begin{class}{single_factor< Fp_polynomial >}
+  \input{sf_Fp_polynomial}
+\end{class}
+
+\begin{class}{single_factor< gf_polynomial >}
+  \input{sf_gf_polynomial}
+\end{class}
+
+
+\chapter{Miscellaneous}
+
+\begin{class}{fft_prime}
+  \input{fft_prime}
+\end{class}

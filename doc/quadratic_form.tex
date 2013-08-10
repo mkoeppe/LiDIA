@@ -1,0 +1,615 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  quadratic_form.tex        LiDIA documentation
+%%
+%%  This file contains the documentation of the class
+%%  quadratic_form
+%%
+%%  Copyright (c) 1995 by the LiDIA Group
+%%
+%%  Authors: Friedrich Eisenbrand, Michael J. Jacobson, Jr.,
+%%               Thomas Papanikolaou
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{quadratic_form} \dotfill binary quadratic forms
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{quadratic_form} is a class which represents binary quadratic forms, i.e., polynomials of
+the form $f(X, Y) = a X^2 + b X Y + c Y^2 ~ \in ~ \bbfZ [X, Y]$.  It supports many algorithms
+which evolve in the study of binary quadratic forms, including equivalence testing, composition,
+etc.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+A \code{quadratic_form} consists of an ordered triple $(a, b, c)$ which represents the form
+$f(X, Y) = a X^2 + b X Y + c Y^2$.  The variables $a$, $b$, and $c$ are all of type
+\code{bigint}.  In addition to $a$, $b$, and $c$, a pointer to a \code{quadratic_order} is
+stored with each instance of \code{quadratic_form}.  If $\D = b^2 - 4ac$, the discriminant of
+$f$, is not a perfect square, the pointer points to a \code{quadratic_order} of discriminant
+$\D$.  If $\D$ is a perfect square (i.e., $f$ is irregular), it points to a
+\code{quadratic_order} of discriminant $0$.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{quadratic_form}{}
+\end{fcode}
+
+\begin{fcode}{ct}{quadratic_form}{const bigint & $a$, const bigint & $b$, bigint & $c$}
+  initializes with the quadratic form $(a,b,c)$.
+\end{fcode}
+
+\begin{fcode}{ct}{quadratic_form}{const long $a$, const long $b$, const long $c$}
+  initializes with the quadratic form $(a,b,c)$.
+\end{fcode}
+
+\begin{fcode}{ct}{quadratic_form}{const qi_class & $A$}
+  initializes with the quadratic form associated with the reduced ideal $A$.
+\end{fcode}
+
+\begin{fcode}{ct}{quadratic_form}{const qi_class_real & $A$}
+  initializes with the quadratic form associated with the reduced ideal $A$.
+\end{fcode}
+
+\begin{fcode}{ct}{quadratic_form}{const quadratic_ideal & $A$}
+  initializes with the quadratic form associated with the ideal $A$.  If $A$ has a fractional
+  multiplier, it is simply ignored.
+\end{fcode}
+
+\begin{fcode}{ct}{quadratic_form}{const quadratic_form & $f$}
+  initializes a copy of $f$.
+\end{fcode}
+
+\begin{fcode}{dt}{~quadratic_form}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\INIT
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $f$ be of type \code{quadratic_form}.  The operator \code{=} is overloaded.  For efficiency
+reasons, the following functions are also implemented:
+
+\begin{fcode}{void}{$f$.assign_zero}{}
+  $f \assign (0,0,0)$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign_one}{}
+  $f$ is set to the unit form (first coefficient is $1$) with the same discriminant as $f$.  If
+  the discriminant of $f$ is $0$, then the discriminant of the most recently referenced
+  \code{quadratic_order} is used.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign_one}{const bigint & $\D$}
+  if $\D$ is a quadratic discriminant, $f$ is set to the unit form (first coefficient is $1$) of
+  discriminant $\D$, otherwise the \LEH will be evoked.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign}{const bigint & $a$, const bigint & $b$, const bigint & $c$}
+  sets $f$ to the form $(a,b,c)$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign}{const long $a$, const long $b$, const bigint & $c$}
+  sets $f$ to the form $(a,b,c)$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign}{const qi_class & $A$}
+  sets $f$ to the quadratic form associated with the reduced ideal $A$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign}{const qi_class_real & $A$}
+  sets $f$ to the quadratic form associated with the reduced ideal $A$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign}{const quadratic_ideal & $A$}
+  sets $f$ to the quadratic form associated with the ideal $A$.  If $A$ has a fractional
+  multiplier, it is simply ignored.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.assign}{const quadratic_form & $g$}
+  $f \assign g$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $f$ be of type \code{quadratic_form}.
+
+\begin{cfcode}{bigint}{$f$.get_a}{}
+  returns the value of $a$.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$f$.get_b}{}
+  returns the value of $b$.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$f$.get_c}{}
+  returns the value of $c$.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$f$.discriminant}{}
+  returns the discriminant of $f$.
+\end{cfcode}
+
+\begin{cfcode}{quadratic_order &}{$f$.which_order}{}
+  returns a reference to the \code{quadratic_order} of the same discriminant as $f$, or the
+  empty \code{quadratic_order} (discriminant $0$) if $f$ is irregular.
+\end{cfcode}
+
+\begin{fcode}{quadratic_order &}{which_order}{const quadratic_form & $f$}
+  returns a reference to the \code{quadratic_order} of the same discriminant as $f$, or the
+  empty \code{quadratic_order} (discriminant $0$) if $f$ is irregular.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+Let $f$ be of type \code{quadratic_form}.  The following operators are overloaded and can be
+used in exactly the same way as in the programming language C++.
+\begin{center}
+  \code{(unary) -}\\
+  \code{(binary) *, /}\\
+  \code{(binary with assignment) *=,  /=}\\
+\end{center}
+\textbf{Note:} By $-f$ and $f^{-1}$ we denote the conjugate of $f$, by $f \cdot g$ we denote the
+composition of $f$ and $g$, and by $f / g$ we denote $f \cdot g^{-1}$.
+
+To avoid copying, these operations can also be performed by the following functions:
+
+\begin{fcode}{void}{compose}{quadratic_form & $f$, const quadratic_form & $g_1$,
+    const quadratic_form & $g_2$}%
+  $f \assign g_1 \cdot g_2$.  If $g_1$ and $g_2$ do not have the same discriminant, the \LEH
+  will be evoked.
+\end{fcode}
+
+\begin{fcode}{void}{compose_reduce}{quadratic_form & $f$, const quadratic_form & $g_1$,
+    const quadratic_form & $g_2$}%
+  $f$ is set to a reduced form equivalent to $g_1 \cdot g_2$.  If $g_1$ and $g_2$ do not have
+  the same discriminant, the \LEH will be evoked.
+\end{fcode}
+
+\begin{fcode}{void}{nucomp}{quadratic_form & $f$, const quadratic_form & $g_1$,
+    const quadratic_form & $g_1$}%
+  $f$ is set to a reduced form equivalent to $g_1 \cdot g_2$ using the NUCOMP algorithm of
+  Shanks \cite{Cohen:1995}.  Both $g_1$ and $g_2$ must be positive of negative definite,
+  otherwise the \LEH will be evoked.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.conjugate}{}
+  the coefficient $b$ of $f$ is negated.
+\end{fcode}
+
+\begin{fcode}{void}{get_conjugate}{quadratic_form & $f$, const quadratic_form & $g$}
+  $f$ is set to $g$ with the $b$ coefficient negated.
+\end{fcode}
+
+\begin{fcode}{quadratic_form}{get_conjugate}{quadratic_form & $f$}
+  $f$ is returned with its $b$ coefficient negated.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{quadratic_form & $f$, const quadratic_form & $g_1$,
+    const quadratic_form & $g_2$}%
+  $f \assign g_1 \cdot g_2^{-1}$.  If $g_1$ and $g_2$ are not of the same quadratic order or if
+  $g_2 = (0,0,0)$, the \LEH will be evoked.
+\end{fcode}
+
+\begin{fcode}{void}{divide_reduce}{quadratic_form & $f$, const quadratic_form & $g_1$,
+    const quadratic_form & $g_2$}%
+  $f$ is set to a reduced form equivalent to $g_1 \cdot g_2^{-1}$.  If $g_1$ and $g_2$ are not
+  of the same quadratic order or if $g_2 = (0,0,0)$, the \LEH will be evoked.
+\end{fcode}
+
+\begin{fcode}{void}{square}{quadratic_form & $f$, const quadratic_form & $g$}
+  $f \assign g^2$.
+\end{fcode}
+
+\begin{fcode}{void}{square_reduce}{quadratic_form & $f$, const quadratic_form & $g$}
+  $f$ is set to a reduced form equivalent to $g^2$.
+\end{fcode}
+
+\begin{fcode}{void}{nudupl}{quadratic_form & $f$, const quadratic_form & $g$}
+  $f$ is set to a reduced form equivalent to $g^2$ using the NUDUPL algorithm of Shanks
+  \cite{Cohen:1995}.  The form $g$ must be positive of negative definite, otherwise the \LEH
+  will be evoked.
+\end{fcode}
+
+\begin{fcode}{void}{power}{quadratic_form & $f$, const quadratic_form & $g$, const bigint & $i$}
+  $f \assign g^i$.  If $i < 0$, $h^i$ is computed where $h$ is equal to the conjugate of $g$.
+\end{fcode}
+
+\begin{fcode}{void}{power_reduce}{quadratic_form & $f$, const quadratic_form & $g$, const bigint & $i$}
+  $f$ is set to a reduced form equivalent to $g^i$.  If $i < 0$, $h^i$ is computed where $h$ is
+  equal to the conjugate of $g$.
+\end{fcode}
+
+\begin{fcode}{void}{nupower}{quadratic_form & $f$, const quadratic_form & $g$, const bigint & $i$}
+  $f$ is set to a reduced form equivalent to $g^i$ using the NUCOMP and NUDUPL algorithms of
+  Shanks \cite{Cohen:1995} to compute the intermediate products.  If $i < 0$, $h^i$ is computed
+  where $h$ is equal to the conjugate of $g$.  The form $g$ must be positive of negative
+  definite, otherwise the \LEH will be evoked.
+\end{fcode}
+
+\begin{fcode}{void}{power}{quadratic_form & $f$, const quadratic_form & $g$, const long $i$}
+\end{fcode}
+
+\begin{fcode}{void}{power_reduce}{quadratic_form & $f$, const quadratic_form & $g$, const long $i$}
+\end{fcode}
+
+\begin{fcode}{void}{nupower}{quadratic_form & $f$, const quadratic_form & $g$, const long $i$}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+The binary operators \code{<=}, \code{==}, \code{>=}, \code{!=}, \code{<}, \code{>} are
+overloaded and mean the usual lexicographic ordering of the triples $(a,b,c)$.  The unary
+operator \code{!} (comparison with $(0,0,0)$) is also overloaded.
+
+Let $f$ be an instance of type \code{quadratic_form}.
+
+\begin{cfcode}{bool}{$f$.is_zero}{}
+  returns \TRUE if $f = (0,0,0)$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$f$.is_one}{}
+  returns \TRUE if the $a$ coefficient of $f$ is $1$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$f$.is_equal}{const quadratic_form & $g$}
+  returns \TRUE if $f$ and $g$ are equal, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{int}{$f$.compare}{const quadratic_form & $g$}
+  returns $-1$ if $f < g$, $0$ if $f = g$, and $1$ if $f > g$.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$f$.abs_compare}{const quadratic_form & $g$}
+  returns $-1$ if $f < g$, $0$ if $f = g$, and $1$ if $f > g$, where the coefficients are taken
+  to be the absolute values of the actual coefficients.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+\begin{cfcode}{operator}{qi_class}{}
+  cast operator which implicitly converts a \code{quadratic_form} to a \code{qi_class}.  The
+  current order of \code{qi_class} will be set to the order corresponding to the form.
+\end{cfcode}
+
+\begin{cfcode}{operator}{qi_class_real}{}
+  cast operator which implicitly converts a \code{quadratic_form} to a \code{qi_class}.  The
+  current order of \code{qi_class} and \code{qi_class_real} will be set to the order
+  corresponding to the form.
+\end{cfcode}
+
+\begin{cfcode}{operator}{quadratic_ideal}{}
+  cast operator which implicitly converts a \code{quadratic_form} to a \code{quadratic_ideal}.
+\end{cfcode}
+
+\begin{fcode}{void}{swap}{quadratic_form & $f$, quadratic_form & $g$}
+  exchanges the values of $f$ and $g$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+Let $f$ be of type \code{quadratic_form}.  The operator \code{()} is overloaded, and can be used
+in place of the function \code{eval}.
+
+\begin{cfcode}{int}{$f$.definiteness}{}
+  returns $1$ if $f$ is positive definite, $-1$ if it is negative definite, $0$ if it is
+  indefinite, and $2$ if it is irregular.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$f$.is_pos_definite}{}
+  returns \TRUE if $f$ is positive definite, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$f$.is_pos_semidefinite}{}
+  returns \TRUE if $f$ is positive semidefinite, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$f$.is_indefinite}{}
+  returns \TRUE if $f$ is indefinite and regular, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$f$.is_neg_definite}{}
+  returns \TRUE if $f$ is negative definite, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$f$.is_neg_semidefinite}{}
+  returns \TRUE if $f$ is negative semidefinite, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$f$.is_regular}{}
+  returns \TRUE if $f$ is regular, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$f$.content}{}
+  returns the content of $f$, the gcd of its coefficients.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$f$.is_primitive}{}
+  returns \TRUE if $f$ is primitive (content is one), \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$f$.eval}{const bigint & $x$, const bigint & $y$}
+  returns $f(x, y)$.
+\end{cfcode}
+
+\begin{fcode}{void}{$f$.transform}{const matrix_GL2Z & $U$}
+  $f \assign fU$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.transform}{const bigint_matrix & $U$}
+  $f \assign fU$ ($U$ is cast to a \code{matrix_GL2Z}).
+\end{fcode}
+
+\begin{fcode}{bool}{generate_prime_form}{quadratic_form & $f$, const bigint & $p$,
+    const bigint & $\D$}%
+  attempts to set $f$ to the prime form corresponding to $p$ of discriminant $\D$ (first
+  coefficient is $p$).  If successful (the Kronecker symbol $\kronecker{\D}{p} \neq -1$), \TRUE
+  is returned, otherwise \FALSE is returned.  If $\D$ is not a quadratic discriminant, the \LEH
+  will be evoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SSTITLE{Normalization and Reduction}
+
+\begin{fcode}{bool}{$f$.is_normal}{}
+  returns \TRUE if $f$ is normal, \FALSE otherwise.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.normalize}{}
+  $f$ is set to its normalization.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.normalize}{matrix_GL2Z & $U$}
+  $f$ is set to its normalization.  $U$ is set to the matrix product of $U$ and $T$, where $T$
+  is the transformation matrix which was used to effect the normalization.
+\end{fcode}
+
+\begin{fcode}{bool}{$f$.is_reduced}{}
+  returns \TRUE if $f$ is reduced, \FALSE otherwise.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.reduce}{}
+  If $f$ is regular, then $f$ is set to the first reduced form which is reached by successively
+  applying the reduction operator $\rho$, unless $f$ itself is already reduced.  If $f$ is
+  irregular, then $f$ is set to the reduced form in its proper equivalence class.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.reduce}{matrix_GL2Z & $U$}
+  If $f$ is regular, then $f$ is set to the first reduced form which is reached by successively
+  applying the reduction operator $\rho$, unless $f$ itself is already reduced.  If $f$ is
+  irregular, then $f$ is set to the reduced form in its proper equivalence class.  $U$ is
+  multiplied by the transformation matrix used to effect the reduction.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.rho}{}
+  $f$ is set to the result of applying the reduction operator $\rho$ to $f$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.rho}{matrix_GL2Z & $U$}
+  $f$ is set to the result of applying the reduction operator $\rho$ to $f$.  $U$ is multiplied
+  by the transformation matrix used to effect the operation.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.inverse_rho}{}
+  $f$ is set to the result of applying the inverse reduction operator to $f$.
+\end{fcode}
+
+\begin{fcode}{void}{$f$.inverse_rho}{matrix_GL2Z & $U$}
+  $f$ is set to the result of applying the inverse reduction operator to $f$.  $U$ is multiplied
+  by the transformation matrix used to effect the operation.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SSTITLE{Equivalence and principality testing}
+
+The parameter $U$ is optional in all equivalence and principality functions.
+
+\begin{cfcode}{bool}{$f$.is_equivalent}{const quadratic_form & $g$, matrix_GL2Z & $U$}
+  returns \TRUE if $f$ and $g$ are equivalent, \FALSE otherwise.  $U$ is multiplied by the
+  transformation matrix which transforms $g$ to $f$ if $f$ and $g$ are equivalent otherwise $U$
+  remains unchanged.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$f$.is_prop_equivalent}{const  quadratic_form & $g$, matrix_GL2Z & $U$}
+  returns \TRUE if $f$ and $g$ are properly equivalent, \FALSE otherwise.  $U$ is multiplied by
+  the transformation matrix which transforms $f$ to $g$ if $f$ and $g$ are properly equivalent,
+  otherwise $U$ remains unchanged.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$f$.is_principal}{matrix_GL2Z & $U$}
+  returns \TRUE if $f$ is principal, \FALSE otherwise.  $U$ is multiplied by the transformation
+  matrix which transforms the unit form to $f$ if $f$ is principal, otherwise $U$ remains
+  unchanged.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SSTITLE{Orders, discrete logarithms, and subgroup structures}
+
+\begin{fcode}{bigint}{$f$.order_in_CL}{}
+  returns the order of $f$ in the class group of forms of the same discriminant, i.e., the least
+  positive integer $x$ such that $f^x$ is equivalent to the unit form.  If $f$ is not primitive,
+  $0$ is returned.
+\end{fcode}
+
+\begin{cfcode}{bool}{$f$.DL}{const quadratic_form & $g$, bigint & $x$}
+  returns \TRUE if $f$ belongs to the cyclic subgroup generated by $g$, \FALSE otherwise.  If
+  so, $x$ is set to the discrete logarithm of $f$ to the base $g$, i.e., the least non-negative
+  integer $x$ such that $g^x$ is equivalent to $f$.  If not, $x$ is set to the order of $g$.  If
+  either $f$ or $g$ is not primitive, \FALSE is returned and $x$ is set to $0$.
+\end{cfcode}
+
+\begin{fcode}{base_vector< bigint >}{subgroup}{base_vector< quadratic_form > & $G$}
+  returns the vector of elementary divisors representing the structure of the subgroup generated
+  by the classes corresponding to the primitive forms contained in $G$.
+\end{fcode}
+
+\begin{fcode}{bigfloat}{$f$.regulator}{}
+  returns an approximation of the regulator of the quadratic order of the same discriminant as
+  $f$.  If $f$ is not indefinite, $1$ is returned.
+\end{fcode}
+
+\begin{fcode}{bigint}{$f$.class_number}{}
+  returns the number of equivalence classes of forms with the same discriminant as $f$.
+\end{fcode}
+
+\begin{fcode}{base_vector< bigint >}{$f$.class_group}{}
+  returns the vector of elementary divisors representing the structure of the class group of
+  forms with the same discriminant as $f$.
+\end{fcode}
+
+\begin{fcode}{base_vector< quadratic_form >}{compute_class_group}{const bigint & $\D$}
+  returns the vector of all reduced representatives of the class group of discriminant $\D$.
+\end{fcode}
+
+\begin{fcode}{matrix_GL2Z}{$f$.fundamental_automorphism}{}
+  returns the fundamental automorphism of the quadratic order of the same discriminant as $f$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SSTITLE{Representations}
+
+\begin{fcode}{bool}{$f$.representations}{sort_vector < pair < bigint, bigint > > & $\mathit{Reps}$,
+    const bigint & $N$}%
+  returns \TRUE if there exists at least one representation of the integer $N$ by the form $f$,
+  \FALSE otherwise.  If exactly $r$ representations exist, $\mathit{Reps}$ contains $r$ ordered
+  pairs corresponding to these representations.  If infinitely many representations exist,
+  $\mathit{Reps}$ will contain the smallest inequivalent representations.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+The operators \code{<<} and \code{>>} are overloaded.  Input is as follows:
+\begin{verbatim}
+     (a b c)
+\end{verbatim}
+and corresponds to the form $f = (a,b,c)$.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{matrix_GL2Z},
+\SEE{quadratic_order},
+\SEE{qi_class},
+\SEE{qi_class_real},
+\SEE{quadratic_ideal}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+The order, discrete logarithm, subgroup, regulator, class number, and class group algorithms are
+not yet implemented for irregular forms.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/quadratic_order.h>
+
+int main()
+{
+    // This program reads a quadratic form f and transforms
+    // it to an equivalent reduced form.  It keeps track of
+    // the transformation in a matrix U of GL(2, Z) and
+    // transforms the reduced form with the inverse of
+    // this matrix.
+
+    quadratic_form f,g;
+
+    matrix_GL2Z U;
+
+    cout << "Please enter a form! Example (9 5 3):  ";
+
+    cin >> f;
+    g = f;
+
+    f.reduce(U);
+
+    cout << "An equivalent reduced form is:  " << f << endl;
+
+    U.invert();
+    f.transform(U);
+
+    cout << "Transforming f with the inverse transformation yields:  " << f
+         << endl
+
+    if (f == g)
+        cout << "The result is correct!" << endl;
+    else
+        cout << "The result is incorrect" << endl;
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+Example:
+\begin{quote}
+\begin{verbatim}
+Please enter a form! Example (9, 5, 3):  (243, -371, 145)
+An equivalent reduced form is:  (17, -13, 51)
+Transforming f with the inverse transformation yields:  (243, -371, 145)
+The result is correct!
+\end{verbatim}
+\end{quote}
+
+For further examples please refer to
+\path{LiDIA/src/packages/quadratic_order/quadratic_form_appl.cc}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Friedrich Eisenbrand, Michael J.~Jacobson, Jr., Thomas Papanikolaou

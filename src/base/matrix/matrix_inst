@@ -1,0 +1,35 @@
+######################################################################
+#
+#  Name .................................... matrix instantiation file 
+#
+#  Architecture : sparc7, sparc8, os2, ...
+#  Compiler     : gcc, g++ 
+#  Flags        : -g -O2
+#  Program Flags: -DDEBUG, -DMEMORY, -DERRIGN 
+#  Author       : Thomas Papanikolaou, Patrick Theobald
+#  Release      : 1.0 
+#  Last Change  : Mon Jan 15 18:03:23 MET DST 1996
+#  Copyright    : by the University of Saarland, 1994
+#
+ 
+BEGININST
+Lm_int.o         -DTYPE=int         -DBASE_MATRIX -DMATH_MATRIX
+Lm_long.o        -DTYPE=long        -DBASE_MATRIX -DMATH_MATRIX
+Lm_double.o	 -DTYPE=double      -DBASE_MATRIX -DMATH_MATRIX
+Lm_xdouble.o	 -DTYPE=xdouble     -DBASE_MATRIX -DMATH_MATRIX
+Lm_bigint.o      -DTYPE=bigint      -DBASE_MATRIX -DMATH_MATRIX
+Lm_bigrational.o -DTYPE=bigrational -DBASE_MATRIX -DMATH_MATRIX
+Lm_bigmod.o      -DTYPE=bigmod      -DBASE_MATRIX -DMATH_MATRIX
+Lm_bigfloat.o    -DTYPE=bigfloat    -DBASE_MATRIX -DMATH_MATRIX
+ENDINST
+
+
+
+
+
+
+
+
+
+
+

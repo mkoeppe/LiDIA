@@ -1,0 +1,261 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  polymodulus.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the class Fp_poly_modulus
+%%
+%%  Copyright   (c)   1996   by  LiDIA-Group
+%%
+%%  Authors: Thomas Pfahler
+%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{Fp_poly_modulus} \dotfill class for efficient computations modulo
+polynomials over finite prime fields
+\CLASS{Fp_poly_multiplier} \dotfill class for efficient multiplications modulo
+polynomials over finite prime fields
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+If you need to do a lot of arithmetic modulo a fixed \code{Fp_polynomial} $f$, build a
+\code{Fp_poly_modulus} $F$ for $f$.  This pre-computes information about $f$ that speeds up the
+computation a great deal, especially for large polynomials.
+
+If you need to compute the product $a \cdot b \bmod f$ for a fixed \code{Fp_polynomial} $b$,
+but for many \code{Fp_polynomial}s $a$ (for example, when computing powers of $b$ modulo $f$),
+it is much more efficient to first build a \code{Fp_poly_multiplier} $B$ for $b$, and then use
+the multiplication routine below.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+The pre-computations for variables of type \code{Fp_poly_modulus} as well as for variables of
+type \code{Fp_poly_multiplier} consist of evaluating FFT-representations.  For further
+description, see \cite{Shoup:1995}.  However, if the degree of the polynomials involved is
+small, pre-computations are not necessary.  In this case, arithmetic with \code{Fp_poly_modulus}
+or \code{Fp_poly_multiplier} is not faster than modular arithmetic without pre-conditioning.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{Fp_poly_modulus}{}
+  no initialization is done; you must call the member-function \code{build} (see below) before
+  using this \code{Fp_poly_modulus} in one of the arithmetical functions.
+\end{fcode}
+
+\begin{fcode}{ct}{Fp_poly_modulus}{const Fp_polynomial & $f$}
+  initializes for computations modulo $f$.
+\end{fcode}
+
+\begin{fcode}{dt}{~Fp_poly_modulus}{}
+\end{fcode}
+
+\begin{fcode}{ct}{Fp_poly_multiplier}{}
+  no initialization is done.  The member-function \code{build} (see below) must be called before
+  this instance can be used for multiplications.
+\end{fcode}
+
+\begin{fcode}{ct}{Fp_poly_multiplier}{const Fp_polynomial & $b$, const Fp_poly_modulus & $F$}
+  initializes for multiplications with $b$ modulo \code{$F$.modulus()}.
+\end{fcode}
+
+\begin{fcode}{dt}{~Fp_poly_multiplier}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+Let $F$ be of type \code{Fp_poly_modulus}.  Let $B$ be of type \code{Fp_poly_multiplier}.
+
+\begin{fcode}{void}{$F$.build}{const Fp_polynomial & $f$}
+  initializes for computations modulo $f$.
+\end{fcode}
+
+\begin{fcode}{void}{$B$.build}{const Fp_polynomial & $b$, const Fp_poly_modulus & $F$}
+  initializes for multiplications with $b$ modulo \code{$F$.modulus()}.  If $\deg(b) \geq
+  \deg(\code{$F$.modulus()})$, the \LEH is invoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $F$ be of type \code{Fp_poly_modulus}.  Let $B$ be of type \code{Fp_poly_multiplier}.
+
+\begin{cfcode}{const Fp_polynomial &}{$F$.modulus}{}
+  returns a constant reference to the polynomial for which $F$ was build.
+\end{cfcode}
+
+\begin{cfcode}{const Fp_polynomial &}{$B$.multiplier}{}
+  returns a constant reference to the polynomial for which $B$ was build.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+As described in the section \code{Fp_polynomial}, each polynomial has its own modulus $p$ of
+type \code{bigint}.  The same is true for \code{Fp_poly_modulus} and \code{Fp_poly_multiplier}
+for they are only additional representations of polynomials over finite prime fields.
+Therefore, if the moduli of the \code{const} arguments are not the same, the \LEH is invoked.
+The ``resulting'' polynomial receives the modulus of the ``input'' polynomials.
+
+\begin{fcode}{void}{remainder}{Fp_polynomial & $g$,
+    const Fp_polynomial & $a$, const Fp_poly_modulus & $F$}%
+  $g \assign a \bmod \code{$F$.modulus()}$.  No restrictions on $\deg(a)$.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{Fp_polynomial & $g$,
+    const Fp_polynomial & $a$, const Fp_polynomial & $b$,const Fp_poly_modulus & $F$}%
+  $g \assign a \cdot b \bmod \code{$F$.modulus()}$.  If $\deg(a)$ or $\deg(b) \geq
+  \deg(\code{$F$.modulus()})$, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{multiply}{Fp_polynomial & $g$, const Fp_polynomial & $a$,
+    const Fp_poly_multiplier & $B$, const Fp_poly_modulus & $F$} $g \assign a \cdot
+  \code{$B$.multiplier()} \bmod \code{$F$.modulus()}$.  If $B$ is not initialized with $F$ or
+  $\deg(a) \geq \deg(\code{$F$.modulus()})$, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{square}{Fp_polynomial & $g$, const Fp_polynomial & $a$, const Fp_poly_modulus & $F$}
+  $g \assign a^2 \bmod \code{$F$.modulus()}$.  If $\deg(a) \geq \deg(\code{$F$.modulus()})$, the
+  \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{power}{Fp_polynomial & $g$, const Fp_polynomial & $a$,
+    const bigint & $e$, const Fp_poly_modulus & $F$}%
+  $g \assign a^e \bmod \code{$F$.modulus()}$.  If $e < 0$, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{power_x}{Fp_polynomial & $g$, const bigint & $e$, const Fp_poly_modulus & $F$}
+  $g \assign x^e \bmod \code{$F$.modulus()}$.  If $e < 0$, the \LEH is invoked.
+\end{fcode}
+
+\begin{fcode}{void}{power_x_plus_a}{Fp_polynomial & $g$, const bigint & $a$,
+    const bigint & $e$, const Fp_poly_modulus & $F$}%
+  $g \assign (x + a)^e \bmod \code{$F$.modulus()}$.  If $e < 0$, the \LEH is invoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+\begin{fcode}{void}{prob_min_poly}{Fp_polynomial & $h$, const Fp_polynomial & $g$,
+    lidia_size_t $m$, const Fp_poly_modulus & $F$}%
+  computes the monic minimal polynomial $h$ of $g \bmod \code{$F$.modulus()}$.  $m$ is an upper
+  bound on the degree of the minimal polynomial.  The algorithm is probabilistic, always returns
+  a divisor of the minimal polynomial, and returns a proper divisor with probability at most $m
+  / \code{$g$.modulus()}$.
+\end{fcode}
+
+\begin{fcode}{void}{min_poly}{Fp_polynomial & $h$, const Fp_polynomial & $g$, lidia_size_t $m$,
+    const Fp_poly_modulus & $F$}%
+  same as \code{prob_min_poly}, but guarantees that result is correct.
+\end{fcode}
+
+\begin{fcode}{void}{irred_poly}{Fp_polynomial & $h$, const Fp_polynomial & $g$,
+    lidia_size_t $m$, const Fp_poly_modulus & $F$} same as \code{prob_min_poly}, but assumes
+  that \code{$F$.modulus()} is irreducible (or at least that the minimal polynomial of $g$ is
+  itself irreducible).  The algorithm is deterministic (and hence is always correct).
+\end{fcode}
+
+\begin{fcode}{void}{compose}{Fp_polynomial & $c$, const Fp_polynomial & $g$,
+    const Fp_polynomial & $h$, const Fp_poly_modulus & $F$}%
+  $c \assign g(h) \bmod \code{$F$.modulus()}$.
+\end{fcode}
+
+\begin{fcode}{void}{trace_map}{Fp_polynomial & $w$, const Fp_polynomial & $a$,
+    lidia_size_t $d$, const Fp_poly_modulus & $F$, const Fp_polynomial & $b$}%
+  $w \assign \sum_{i=0}^{d-1} a^{q^i} \bmod \code{$F$.modulus()}$.  It is assumed that $d \geq
+  0$, $q$ is a power of \code{$F$.modulus().modulus()}, and $b \equiv x^q
+  \lpmod\code{$F$.modulus()}\rpmod$, otherwise the behaviour of this function is undefined.
+\end{fcode}
+
+
+\begin{fcode}{void}{power_compose}{Fp_polynomial & $w$, const Fp_polynomial & $b$,
+    lidia_size_t $d$, const Fp_poly_modulus & $F$} $w \assign x^{q^d} \bmod
+  \code{$F$.modulus()}$.  It is assumed that $d \geq 0$, $q$ is a power of
+  \code{$F$.modulus().modulus()}, and $b \equiv x^q \lpmod\code{$F$.modulus()}\rpmod$, otherwise
+  the behaviour of this function is undefined.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{Fp_polynomial}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/Fp_polynomial.h>
+#include <LiDIA/Fp_poly_modulus.h>
+#include <LiDIA/Fp_poly_multiplier.h>
+
+int main()
+{
+    Fp_polynomial a, b, f, x, y, z;
+    Fp_poly_modulus F;
+    Fp_poly_multiplier B;
+
+    cout << "Please enter a : "; cin >> a;
+    cout << "Please enter b : "; cin >> b;
+    cout << "Please enter f : "; cin >> f;
+
+    multiply_mod(x, a, b, f);
+
+    F.build(f);
+    multiply(y, a, b, F);
+
+    B.build(b, F);
+    multiply(z, a, B, F);
+
+    //now, x == y == z
+
+    cout << "a * b  mod  f  =  ";
+    x.pretty_print(cout);
+    cout << endl;
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+Example:
+\begin{quote}
+\begin{verbatim}
+Please enter a : x^4 + 2 mod 97
+Please enter b : x^3 + 1 mod 97
+Please enter f : x^5 - 1 mod 97
+
+a * b  mod  f  = x^4 + 2*x^3 + x^2 + 2 mod 97
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Victor Shoup (original author), Thomas Pfahler

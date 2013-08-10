@@ -1,0 +1,59 @@
+Enter a curve: Input curve E0 = [0,337,0,20736,0]
+Minimal model E1 = [1,0,0,-1070,7812]
+Isomorphism E0->E1: [u,r,s,t] = [2,-112,1,0]
+Unimodular?...no
+Identity?...no
+Long output:
+[1,0,0,-1070,7812]
+b2 = 1; b4 = -2140; b6 = 31248; b8 = -1137088
+c4 = 51361; c6 = -6826609
+disc = 51438240000; bad primes = [ 2 3 5 7 ]; # real components = 2
+Conductor = 210
+
+Reduction type at bad primes:
+p	ord(d)	ord(N)	ord(denom(j))	Kodaira	c_p
+2	8	1	8		I8	8
+3	8	1	8		I8	8
+5	4	1	4		I4	4
+7	2	1	2		I2	2
+Product of c_p = 512
+
+
+Torsion points on the minimal model: 
+Torsion order = 16
+Torsion points:
+	0 ) [0 : 1 : 0], 	order 1
+	1 ) [244 : -3902 : 1], 	order 8
+	2 ) [64 : -482 : 1], 	order 4
+	3 ) [34 : -122 : 1], 	order 8
+	4 ) [28 : -14 : 1], 	order 2
+	5 ) [34 : 88 : 1], 	order 8
+	6 ) [64 : 418 : 1], 	order 4
+	7 ) [244 : 3658 : 1], 	order 8
+	8 ) [-288 : 144 : 8], 	order 2
+	9 ) [-26 : 148 : 1], 	order 8
+	10 ) [-8 : 130 : 1], 	order 4
+	11 ) [4 : 58 : 1], 	order 8
+	12 ) [62 : -31 : 8], 	order 2
+	13 ) [4 : -62 : 1], 	order 8
+	14 ) [-8 : -122 : 1], 	order 4
+	15 ) [-26 : -122 : 1], 	order 8
+Non-cyclic: C2 x C8, generators [-288 : 144 : 8], [244 : -3902 : 1]
+
+Torsion points on the input model: 
+O
+(864 , -30240)
+(144 , -3600)
+(24 , -840)
+(0 , 0)
+(24 , 840)
+(144 , 3600)
+(864 , 30240)
+(-256 , 0)
+(-216 , 1080)
+(-144 , 1008)
+(-96 , 480)
+(-81 , 0)
+(-96 , -480)
+(-144 , -1008)
+(-216 , -1080)

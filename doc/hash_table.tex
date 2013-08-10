@@ -1,0 +1,252 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  hash_table.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the hash table class
+%%
+%%  Copyright   (c)   1996   by  LiDIA-Group
+%%
+%%  Author:  Michael J. Jacobson, Jr.
+%%
+
+\newcommand{\HT}{\mathit{HT}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{hash_table< T >} \dotfill parameterized hash table class
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+The class \code{hash_table< T >} represents a hash table consisting of elements which are of
+some data type \code{T}.  This base type is allowed to be either a built-in type or a class, and
+its only requirements are that the assignment operator \code{=}, equality operator \code{==},
+and input/output operators \code{>>} and \code{<<} are defined.  A function returning a key
+value for an instance of type \code{T} must be defined by the user.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+An instance of \code{hash_table< T >} consists of an array of $n$ linked lists whose elements
+each contain a pointer to an instance of type \code{T}.  The collision resolution scheme is
+bucketing, i.e., elements which hash to the same location are simply appended to the appropriate
+linked list (bucket).
+
+Before inserting elements into the hash table, it must be initialized with the member function
+\code{initialize}.  The number of buckets in the table, $n$, will be set to the smallest prime
+number greater than or equal to the parameter passed to \code{initialize}.
+
+The elements are ordered according to some key function which is defined by the user.  This key
+function must have a prototype like
+\begin{quote}
+  \code{bigint get_key (const T & $G$)}.
+\end{quote}
+The value returned by this function is reduced modulo $n$ to give a valid hash value between $0$
+and $n-1$, where $n$ is the number of buckets.  The key function must be set with the member
+function \code{set_key_function}, and should not be changed after elements have been inserted
+into the table.  Note that equality of elements is determined using the \code{==} operator
+corresponding to type \code{T}, and that it is not necessary for equality of key values to imply
+equality of elements.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{hash_table< T >}{}
+\end{fcode}
+
+\begin{fcode}{dt}{~hash_table< T >}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\INIT
+
+Let $\HT$ be of type \code{hash_table< T >}.  A \code{hash_table< T >} must be initialized
+before use.
+
+\begin{fcode}{void}{$\HT$.initialize}{const lidia_size_t $\mathit{table\_size}$}
+  initializes a \code{hash_table< T >} with $n$ buckets, where $n$ is the smallest prime number
+  $\geq \mathit{table\_size}$.  Any subsequent calls to this function will cause the elements in
+  $\HT$ to be deleted, and the number of buckets to be reset.
+\end{fcode}
+
+\begin{fcode}{void}{$\HT$.set_key_function}{bigint (*get_key) (const T & $G$)}
+  sets the key function.  The parameter must be a pointer to a function which accepts one
+  parameter of type \code{T} and returns a \code{bigint}.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $HT$ be of type \code{hash_table< T >}.  The operator \code{=} is overloaded.  For
+efficiency, the following function is also implemented:
+
+\begin{fcode}{void}{$\HT$.assign}{const hash_table< T > & $\HT'$}
+  $\HT$ is assigned a copy of $\HT'$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $HT$ be of type \code{hash_table< T >}.
+
+\begin{cfcode}{lidia_size_t}{$\HT$.no_of_elements}{}
+  returns the number of elements currently contained in $\HT$.
+\end{cfcode}
+
+\begin{cfcode}{lidia_size_t}{$\HT$.no_of_buckets}{}
+  returns the number of buckets of $\HT$.
+\end{cfcode}
+
+\begin{fcode}{void}{$\HT$.remove}{const T & $G$}
+  if $G$ is in the table, it is removed.
+\end{fcode}
+
+\begin{fcode}{void}{$\HT$.empty}{}
+  deallocates all elements in $\HT$.  The number of buckets remains the same; to change this,
+  reinitialize using \code{initialize}.
+\end{fcode}
+
+\begin{cfcode}{const T &}{$\HT$.last_entry}{}
+  returns a constant reference to the last item added to the table.  If the table is empty, the
+  \LEH will be evoked.
+\end{cfcode}
+
+\begin{fcode}{void}{$\HT$.hash}{const T & $G$}
+  adds the item $G$ to the hash table.
+\end{fcode}
+
+\begin{cfcode}{T *}{$\HT$.search}{const T & $G$}
+  returns a pointer to the first occurrence of an element in $\HT$ that is equal to $G$
+  according to the \code{==} operator corresponding to type \code{T}.  If no such element
+  exists, the \code{NULL} pointer is returned.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+Let $HT$ be of type \code{hash_table< T >}.  The \code{istream} operator \code{>>} and the
+\code{ostream} operator \code{<<} are overloaded.  The input of a \code{hash_table< T >}
+consists of $n$, a \code{lidia_size_t} representing the number of buckets, $m$, a second
+\code{lidia_size_t} (on a separate line) representing the number of elements in the table, and
+exactly $m$ values of type \code{T}, one per line.  The output consists of each non-empty bucket
+being displayed element by element, one bucket per line.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{indexed_hash_table}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\BUGS
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTES
+
+\begin{itemize}
+\item The base type $T$ must have at least the following capabilities:
+\begin{itemize}
+\item the assignment-operator \code{=},
+\item the equality-operator \code{==},
+\item the input-operator \code{>>}, and
+\item the output-operator \code{<<}.
+\end{itemize}
+\item The enumeration of the buckets in a \code{hash_table} starts with zero (like C++)
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/hash_table.h>
+
+bigint
+ikey(const int & G) { return bigint(G); }
+
+int main()
+{
+    hash_table < int > HT;
+    int i, x, *y;
+
+    HT.initialize(100);
+    HT.set_key_function(&ikey);
+
+    cout << "#buckets = " << HT.no_of_buckets() << endl;
+    cout << "current size = " << HT.no_of_elements() << "\n\n";
+
+    for (i = 0; i < 4; ++i) {
+        cout << "Enter an integer: ";
+        cin >> x;
+        HT.hash(x);
+    }
+
+    cout << "\ncurrent size = " << HT.no_of_elements() << endl;
+    x = HT.last_entry();
+    cout << "last entry = " << x << endl;
+    y = HT.search(x);
+    if (y)
+        cout << "search succeeded!  Last entry is in the table.\n";
+    else
+        cout << "search failed!  Please report this bug!\n";
+    cout << "Contents of HT:\n";
+    cout << HT << endl;
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+Example:
+\begin{quote}
+\begin{verbatim}
+#buckets = 101
+current size = 0
+
+Enter an integer: 5
+Enter an integer: 12345
+Enter an integer: -999
+Enter an integer: 207
+
+current size = 4
+last entry = 207
+search succeeded!  Last entry is in the table.
+Contents of HT:
+[5] : 5 : 207
+[11] : -999
+[23] : 12345
+\end{verbatim}
+\end{quote}
+
+For further examples please refer to \path{LiDIA/src/templates/hash_table/hash_table_appl.cc}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Michael J.~Jacobson, Jr.

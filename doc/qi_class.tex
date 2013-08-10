@@ -1,0 +1,641 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  qi_class.tex       LiDIA documentation
+%%
+%%  This file contains the documentation of the class qi_class
+%%
+%%  Copyright   (c)   1996   by  LiDIA-Group
+%%
+%%  Author:  Michael J. Jacobson, Jr.
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NAME
+
+\CLASS{qi_class} \dotfill ideal equivalence classes of quadratic orders
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ABSTRACT
+
+\code{qi_class} is a class for representing and computing with the ideal equivalence classes of
+quadratic orders.  It supports basic operations like multiplication as well as more complex
+operations such as computing the order of an equivalence class in the class group.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DESCRIPTION
+
+A \code{qi_class} is represented by a reduced, invertible quadratic ideal given in standard
+representation, i.e., an ordered pair of \code{bigint}s $(a,b)$ representing the $\bbfZ$-module
+$[a\bbfZ + (b + \sqrt{\D}) / 2\,\bbfZ ]$, where $\D$ is the discriminant of a quadratic order.
+If the quadratic order is imaginary, then this ideal is the unique representative of its
+equivalence class.  If not, then it is one of a finite set of reduced representatives.
+
+This class was designed to be used for computations in the ideal equivalence class group of
+quadratic orders; the class \code{quadratic_ideal} describes general fractional quadratic
+ideals, and can be used for more general applications.
+
+The main difference between this class and \code{quadratic_ideal} is that a pointer to a
+\code{quadratic_order} is not stored with every instance of the class.  Instead, there is a
+global quadratic order to which every current \code{qi_class} belongs.  This strategy is similar
+to that used for the global modulus of the \code{bigmod} class and is logical here, since most
+computations using this class will be related to only one quadratic order at a time.  Of course,
+if the global order is changed, all the existing instances of \code{qi_class} are invalidated.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CONS
+
+\begin{fcode}{ct}{qi_class}{}
+\end{fcode}
+
+\begin{fcode}{ct}{qi_class}{const bigint & $a_2$, const bigint & $b_2$}
+  if $[a_2\bbfZ + (b_2 + \sqrt{\D})/2 \, \bbfZ ]$ is an ideal of the current quadratic order,
+  $A$ is set to a reduced representative of its equivalence class.  If not, or if the resulting
+  reduced representative is not invertible, the ideal will be set to the zero ideal.
+\end{fcode}
+
+\begin{fcode}{ct}{qi_class}{const long & $a_2$, const long & $b_2$}
+  if $[a_2\bbfZ + (b_2 + \sqrt{\D})/2 \, \bbfZ ]$ is an ideal of the current quadratic order,
+  $A$ is set to a reduced representative of its equivalence class, If not, or if the resulting
+  reduced representative is not invertible, the ideal will be set to the zero ideal.
+\end{fcode}
+
+\begin{fcode}{ct}{qi_class}{const quadratic_form & $f$}
+  if $f$ is regular and primitive, initializes with a reduced representative of the equivalence
+  class to which the positively oriented ideal corresponding to $f$ belongs, otherwise the
+  \code{qi_class} will be initialized to zero.  Note that the current order will be set to
+  \code{$f$.which_order()}.
+\end{fcode}
+
+\begin{fcode}{ct}{qi_class}{const quadratic_ideal & $A$}
+  if $A$ is invertible, initializes with a reduced representative of the equivalence class of
+  $A$, otherwise the \code{qi_class} will be initialized to zero.  Note that the current order
+  will be set to \code{$A$.which_order()}.
+\end{fcode}
+
+\begin{fcode}{ct}{qi_class}{const qi_class_real & $A$}
+  initializes a copy of $A$
+\end{fcode}
+
+\begin{fcode}{ct}{qi_class}{const qi_class & $A$}
+  initializes a copy of $A$
+\end{fcode}
+
+\begin{fcode}{dt}{~qi_class}{}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\INIT
+
+Before any arithmetic is done with a \code{qi_class}, the current quadratic order must be
+initialized.  If this order is real, it is also valid for all instances of \code{qi_class_real}.
+
+\begin{fcode}{static void}{qi_class::set_current_order}{quadratic_order & $\Or$}
+  sets the current quadratic order to $\Or$.
+\end{fcode}
+
+\begin{fcode}{static void}{qi_class::verbose}{int $\mathit{state}$}
+  sets the amount of information which is printed during computations.  If $\mathit{state} = 1$,
+  then the elapsed CPU time of some computations is printed.  If $\mathit{state} = 2$, then
+  extra information will be output during verifications.  If $\mathit{state} = 0$, no extra
+  information is printed.  The default is $\mathit{state} = 0$.
+\end{fcode}
+
+\begin{fcode}{static void}{qi_class::verification}{int $\mathit{level}$}
+  sets the $\mathit{level}$ of post-computation verification performed.  If $\mathit{level} = 0$
+  no extra verification is performed.  If $\mathit{level} = 1$, then verification of the order
+  and discrete logarithm computations will be performed.  The success of the verification will
+  be output only if the verbose mode is set to a non-zero value, but any failures are always
+  output.  The default is $\mathit{level} = 0$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ASGN
+
+Let $A$ be of type \code{qi_class}.  The operator \code{=} is overloaded.  For efficiency
+reasons, the following functions are also implemented:
+
+\begin{fcode}{void}{$A$.assign_zero}{}
+  $A \assign (0)$, the zero ideal.
+\end{fcode}
+
+\begin{fcode}{void}{$A$.assign_one}{}
+  $A \assign (1)$, the whole order.  If no current order has been defined, the \LEH will be
+  evoked.
+\end{fcode}
+
+\begin{fcode}{void}{$A$.assign_principal}{const bigint & $x$, const bigint & $y$}
+  sets $A$ to a reduced representative of the principal ideal generated by $x + y (\D +
+  \sqrt{\D}) / 2$, where $\D$ is the discriminant of the current quadratic order.  If no current
+  order has been defined, the \LEH will be evoked.
+\end{fcode}
+
+\begin{fcode}{bool}{$A$.assign}{const bigint & $a_2$, const bigint & $b_2$}
+  if $[a_2\bbfZ + (b_2 + \sqrt{\D})/2 \, \bbfZ ]$ is an ideal of the current quadratic order,
+  $A$ is set to a reduced representative of its equivalence class and \TRUE is returned.  If
+  not, or if the resulting reduced representative is not invertible, the ideal is set to zero
+  ans \FALSE is returned.  If no current order has been defined, the \LEH will be evoked.
+\end{fcode}
+
+\begin{fcode}{bool}{$A$.assign}{const long $a_2$, const long $b_2$}
+  if $[a_2\bbfZ + (b_2 + \sqrt{\D})/2 \, \bbfZ ]$ is an ideal of the current quadratic order,
+  $A$ is set to a reduced representative of its equivalence class and \TRUE is returned.  If
+  not, or if the resulting reduced representative is not invertible, the ideal is set to zero
+  ans \FALSE is returned.  If no current order has been defined, the \LEH will be evoked.
+\end{fcode}
+
+\begin{fcode}{void}{$A$.assign}{const quadratic_form & $f$}
+  if $f$ is regular and primitive, sets $A$ to a reduced representative of the equivalence class
+  to which the positively oriented ideal corresponding to $f$ belongs, otherwise the \LEH will
+  be evoked.  Note that the current order will be set to \code{$f$.which_order()}.
+\end{fcode}
+
+\begin{fcode}{void}{$A$.assign}{const quadratic_ideal & $B$}
+  if $B$ is invertible, sets $A$ to a reduced representative of the equivalence class of $B$,
+  otherwise the \LEH will be evoked.  Note that the current order will be set to
+  \code{B.which_order()}.
+\end{fcode}
+
+\begin{fcode}{void}{$A$.assign}{const qi_class_real & $B$}
+  $A \assign B$.
+\end{fcode}
+
+\begin{fcode}{void}{$A$.assign}{const qi_class & $B$}
+  $A \assign B$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ACCS
+
+Let $A$ be of type \code{qi_class}.
+
+\begin{cfcode}{bigint}{$A$.get_a}{}
+  returns the coefficient $a$ in the representation $A = [a \bbfZ + (b + \sqrt{\D})/2\,\bbfZ ]$,
+  where $\D$ is the discriminant of the current quadratic order.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$A$.get_b}{}
+  returns the coefficient $b$ in the representation $A = [a \bbfZ + (b + \sqrt{\D})/2\, \bbfZ
+  ]$, where $\D$ is the discriminant of the current quadratic order.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$A$.get_c}{}
+  returns the value $c = (b^2 - \D) / (4a)$ corresponding to the representation $A = [a \bbfZ +
+  (b + \sqrt{\D})/2 \, \bbfZ ]$, where $\D$ is the discriminant of the current quadratic order.
+\end{cfcode}
+
+\begin{cfcode}{static bigint}{$A$.discriminant}{}
+  returns the discriminant of the current quadratic order.
+\end{cfcode}
+
+\begin{cfcode}{static quadratic_order &}{$A$.get_current_order}{}
+  returns a reference to the current quadratic order.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ARTH
+
+Let $A$ be of type \code{qi_class}.  The following operators are overloaded and can be used in
+exactly the same way as in the programming language C++.
+\begin{center}
+  \code{(unary) -}\\
+  \code{(binary) *, /}\\
+  \code{(binary with assignment) *=,  /=}\\
+\end{center}
+\textbf{Note:} By $-A$ and $A^{-1}$ we denote the inverse of $A$ and by $A / B$ we denote $A
+\cdot B^{-1}$.
+
+To avoid copying, these operations can also be performed by the following functions:
+
+\begin{fcode}{void}{multiply}{qi_class & $C$, const qi_class & $A$, const qi_class & $B$}
+  $C$ is set to a reduced representative of $A \cdot B$.  The appropriate function
+  \code{multiply_imag} or \code{multiply_real} is used, depending on whether the current order
+  is imaginary or real.
+\end{fcode}
+
+\begin{fcode}{void}{multiply_imag}{qi_class & $C$, const qi_class & $A$, const qi_class & $B$}
+  $C$ is set to a reduced representative of $A \cdot B$.  In the interest of efficiency, no
+  checking is done to ensure that the current order is actually imaginary.
+\end{fcode}
+
+\begin{fcode}{void}{nucomp}{qi_class & $C$, const qi_class & $A$, const qi_class & $B$}
+  $C$ is set to a reduced representative of $A \cdot B$ using the NUCOMP algorithm of Shanks
+  \cite{Cohen:1995}.  In the interest of efficiency, no checking is done to ensure that the
+  current order is actually imaginary.
+\end{fcode}
+
+\begin{fcode}{void}{multiply_real}{qi_class & $C$, const qi_class & $A$, const qi_class & $B$}
+  $C$ is set to a reduced representative of $A \cdot B$.  In the interest of efficiency, no
+  checking is done to ensure that the current order is actually real.
+\end{fcode}
+
+\begin{fcode}{void}{$A$.invert}{}
+  $A \assign A^{-1}$.
+\end{fcode}
+
+\begin{fcode}{void}{inverse}{qi_class & $A$, const qi_class & $B$}
+  $A \assign B^{-1}$.
+\end{fcode}
+
+\begin{fcode}{qi_class}{inverse}{qi_class & $A$}
+  $A^{-1}$ is returned.
+\end{fcode}
+
+\begin{fcode}{void}{divide}{qi_class & $C$, const qi_class & $A$, const qi_class & $B$}
+  $C$ is set to a reduced representative of $A \cdot B^{-1}$ unless $B = (0)$, in which case the
+  \LEH will be evoked.
+\end{fcode}
+
+\begin{fcode}{void}{square}{qi_class & $C$, const qi_class & $A$}
+  $C$ is set to a reduced representative of $A^2$.  The appropriate function \code{square_imag}
+  or \code{square_real} is used, depending on whether the current order is imaginary or real.
+\end{fcode}
+
+\begin{fcode}{void}{square_imag}{qi_class & $C$, const qi_class & $A$}
+  $C$ is set to a reduced representative of $A^2$.  In the interest of efficiency, no checking
+  is done to ensure that the current order is actually imaginary.
+\end{fcode}
+
+\begin{fcode}{void}{nudupl}{qi_class & $C$, const qi_class & $A$}
+  $C$ is set to a reduced representative of $A^2$ using the NUDUPL algorithm of Shanks
+  \cite{Cohen:1995}.  In the interest of efficiency, no checking is done to ensure that the
+  current order is actually imaginary.
+\end{fcode}
+
+\begin{fcode}{void}{square_real}{qi_class & $C$, const qi_class & $A$}
+  $C$ is set to a reduced representative of $A^2$.  In the interest of efficiency, no checking
+  is done to ensure that the current order is actually real.
+\end{fcode}
+
+\begin{fcode}{void}{power}{qi_class & $C$, const qi_class & $A$, const bigint & $i$}
+  $C$ is set to a reduced representative of $A^i$.  If $i < 0$, $B^i$ is computed where $B =
+  A^{-1}$.  The appropriate function \code{power_imag} of \code{power_real} is used, depending
+  on whether the current order is imaginary or real.
+\end{fcode}
+
+\begin{fcode}{void}{power}{qi_class & $C$, const qi_class & $A$, const long $i$}
+\end{fcode}
+
+\begin{fcode}{void}{power_imag}{qi_class & $C$, const qi_class & $A$, const bigint & $i$}
+  $C$ is set to a reduced representative of $A^i$.  If $i < 0$, $B^i$ is computed where $B =
+  A^{-1}$.  in the interest of efficiency, no checking is done to ensure that the current order
+  is actually imaginary.
+\end{fcode}
+
+\begin{fcode}{void}{power_imag}{qi_class & $C$, const qi_class & $A$, const long $i$}
+\end{fcode}
+
+\begin{fcode}{void}{power_real}{qi_class & $C$, const qi_class & $A$, const bigint & $i$}
+  $C$ is set to a reduced representative of $A^i$.  If $i < 0$, $B^i$ is computed where $B =
+  A^{-1}$.  In the interest of efficiency, no checking is done to ensure that the current order
+  is actually real.
+\end{fcode}
+
+\begin{fcode}{void}{power_real}{qi_class & $C$, const qi_class & $A$, const long $i$}
+\end{fcode}
+
+\begin{fcode}{void}{nupower}{qi_class & $C$, const qi_class & $A$, const bigint & $i$}
+  $C$ is set to a reduced representative of $A^i$ using the NUCOMP and NUDUPL algorithms of
+  Shanks \cite{Cohen:1995}.  If $i < 0$, $B^i$ is computed where $B = A^{-1}$.  In the interest
+  of efficiency, no checking is done to ensure that the current order is actually imaginary.
+\end{fcode}
+
+\begin{fcode}{void}{nupower}{qi_class & $C$, const qi_class & $A$, const long $i$}
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMP
+
+The binary operators \code{==}, \code{!=}, and the unary operator \code{!} (comparison with
+$(0)$) are overloaded and can be used in exactly the same way as in the programming language C++.
+%       However, note that \code{==} denotes equivalence (equality of the
+%       equivalence classes).  Use the function \code{is_equal} to test for
+%       equality of the reduced representatives.
+Let $A$ be an instance of type \code{qi_class}.
+
+\begin{cfcode}{bool}{$A$.is_zero}{}
+  returns \TRUE if $A = (0)$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$A$.is_one}{}
+  returns \TRUE if $A = (1)$, \FALSE otherwise.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$A$.is_equal}{const qi_class & $B$}
+  returns \TRUE if $A$ and $B$ are equal, \FALSE otherwise.  Note that this function tests
+  whether the representative ideals of the equivalence classes $A$ and $B$ are equal.  Use
+  \code{is_equivalent} for equivalence testing.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\BASIC
+
+\begin{cfcode}{operator}{qi_class_real}{}
+  cast operator which implicitly converts a \code{qi_class} to a \code{qi_class_real}.
+\end{cfcode}
+
+\begin{cfcode}{operator}{quadratic_ideal}{}
+  cast operator which implicitly converts a \code{qi_class} to a \code{quadratic_ideal}.
+\end{cfcode}
+
+\begin{cfcode}{operator}{quadratic_form}{}
+  cast operator which implicitly converts a \code{qi_class} to a \code{quadratic_form}.
+\end{cfcode}
+
+\begin{fcode}{void}{swap}{qi_class & $A$, qi_class & $B$}
+  exchanges the values of $A$ and $B$.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\HIGH
+
+Let $A$ be of type \code{qi_class}.
+
+\begin{fcode}{bool}{generate_prime_ideal}{qi_class & $A$, const bigint & $p$}
+  attempts to set $A$ to a reduced representative of the prime ideal lying over the prime $p$.
+  If successful, i.e., the Kronecker symbol $(\D/p) \neq -1$, and the prime ideal is invertible,
+  \TRUE is returned, \FALSE otherwise.  If no current order has been defined, the \LEH will be
+  evoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SSTITLE{Reduction operator}
+
+\begin{fcode}{void}{$A$.rho}{}
+  applies the reduction operator $\rho$ once to $A$, resulting in another reduced representative
+  of the same equivalence class.  If the current quadratic order is not real, the \LEH will be
+  evoked.
+\end{fcode}
+
+\begin{fcode}{void}{apply_rho}{qi_class & $C$, const qi_class & $A$}
+  sets $C$ to the result of the reduction operator $\rho$ being applied once to $A$.  If the
+  current quadratic order is not real, the \LEH will be evoked.
+\end{fcode}
+
+\begin{fcode}{qi_class}{apply_rho}{qi_class & $A$}
+  returns a \code{qi_class} corresponding to the result of the reduction operator $\rho$ being
+  applied once to $A$.  If the current quadratic order is not real, the \LEH will be evoked.
+\end{fcode}
+
+\begin{fcode}{void}{$A$.inverse_rho}{}
+  applies the inverse reduction operator $\rho^{-1}$ once to $A$, resulting in another reduced
+  representative of the same equivalence class.  If the current quadratic order is not real, the
+  \LEH will be evoked.
+\end{fcode}
+
+\begin{fcode}{void}{apply_inverse_rho}{qi_class & $C$, const qi_class & $A$}
+  sets $C$ to the result of the inverse reduction operator $\rho^{-1}$ being applied once to $A$.
+  If the current quadratic order is not real, the \LEH will be evoked.
+\end{fcode}
+
+\begin{fcode}{qi_class}{apply_inverse_rho}{qi_class & $A$}
+  returns a \code{qi_class} corresponding to the result of the inverse reduction operator
+  $\rho^{-1}$ being applied once to $A$.  If the current quadratic order is not real, the \LEH
+  will be evoked.
+\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SSTITLE{Equivalence and principality testing}
+
+\begin{cfcode}{bool}{$A$.is_equivalent}{const qi_class & $B$}
+  returns \TRUE if $A$ and $B$ are in the same ideal equivalence class, \FALSE otherwise.  If
+  the current quadratic order is imaginary, this is simply an equality test.  If the current
+  order is real, the \code{qi_class_real} function of the same name is used.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$A$.is_principal}{}
+  returns \TRUE if $A$ is principal, \FALSE otherwise.  If the current quadratic order is
+  imaginary, this is simply an equality test with $(1)$.  If the current order is real, the
+  \code{qi_class_real} function of the same name is used.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SSTITLE{Orders of elements in the class group}
+
+In the following functions, if no current order has been defined, the \LEH will be evoked.
+
+\begin{cfcode}{bigint}{$A$.order_in_CL}{}
+  returns the order of $A$ in the ideal class group of the current quadratic order, i.e., the
+  least positive integer $x$ such that $A^x$ is equivalent to $(1)$.  It uses one of the
+  following order functions depending on whether the class number is known and the size of the
+  discriminant.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$A$.order_BJT}{long $v$}
+  computes the order of $A$ using the unconditional method of
+  \cite{Buchmann/Jabobson/Teske:1997} for imaginary orders and an unpublished variation for real
+  orders, assuming that the class number is not known.  The parameter $v$ is the size of the
+  initial step-width.  This parameter is ignored if the corresponding quadratic order is real.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$A$.order_h}{}
+  computes the order of $A$ using the method of \cite{Shanks:1971} where the class number is
+  known.  The class number of the current quadratic order is computed if it has not been
+  already.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$A$.order_mult}{bigint & $h$, rational_factorization & $\mathit{hfact}$}
+  computes the order of $A$ using the method of \cite{Shanks:1971} where $h$ is a multiple of
+  the order and $\mathit{hfact}$ is a \code{rational_factorization} of $h$.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$A$.order_shanks}{}
+  computes the order of $A$ using the baby-step giant-step method of \cite{Shanks:1971} of
+  complexity $\Omikron(|\D|^(1/5))$.  The result is correct, but the complexity is conditional
+  on the ERH.
+\end{cfcode}
+
+\begin{cfcode}{bigint}{$A$.order_subexp}{}
+  computes the order of $A$ using a sub-exponential method whose complexity is conditional on
+  the ERH.  The algorithms for both real and imaginary orders simply compute the class number
+  with a sub-exponential algorithm and then use \code{order_h}.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$A$.verify_order}{const bigint & $x$}
+  returns true if $x$ is the order of $A$ in the class group.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SSTITLE{Discrete logarithms in the class group}
+
+In the following functions, if no current order has been defined, the \LEH will be evoked.
+
+\begin{cfcode}{bool}{$A$.DL}{const qi_class & $G$, bigint & $x$}
+  returns \TRUE if $A$ belongs to the cyclic subgroup generated by $G$, \FALSE otherwise.  If
+  so, $x$ is set to the discrete logarithm of $A$ to the base $G$, i.e., the least non-negative
+  integer $x$ such that $G^x$ is equivalent to $A$.  If not, $x$ is set to the order of $G$.  At
+  the moment, \code{DL_BJT} is the only algorithm that is implemented, and this function simply
+  calls it.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$A$.DL_BJT}{const qi_class & $G$, bigint & $x$, long $v$}
+  computes the discrete logarithm of $A$ to the base $G$ using the unconditional method of
+  \cite{Buchmann/Jabobson/Teske:1997} for imaginary orders and an unpublished variation for real
+  orders, assuming that the class number is not known.
+\end{cfcode}
+
+%\begin{cfcode}{bool}{$A$.DL_h}{const qi_class & $G$, bigint & $x$}
+%       computes the discrete logarithm of $A$ to the base $G$ using
+%       the method of \cite{BJTordgiven} where the class number is known.
+%\end{cfcode}
+
+\begin{cfcode}{bool}{$A$.DL_subexp}{const qi_class & $G$, bigint & $x$}
+  computes the discrete logarithm of $A$ to the base $G$ using the sub-exponential method of
+  \cite{Jacobson_Thesis:1999}, whose complexity is conditional on the ERH.
+\end{cfcode}
+
+\begin{cfcode}{bool}{$A$.verify_DL}{const qi_class & $G$, const bigint & $x$, const bool is_DL}
+  if $is_DL$ is \TRUE tests whether $G^x$ is equivalent to $A$.  Otherwise, tests whether $x$ is
+  the order of $G$.
+\end{cfcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SSTITLE{Structure of a subgroup of the class group}
+
+In the following functions, if no current order has been defined, the \LEH will be evoked.
+
+\begin{fcode}{base_vector< bigint >}{subgroup}{base_vector< qi_class > & $G$}
+  returns the vector of elementary divisors representing the structure of the subgroup generated
+  by the classes contained in $G$.  At the moment, \code{subgroup_BJT} is the only algorithm
+  that is implemented, and this function simply calls it.
+\end{fcode}
+
+\begin{fcode}{base_vector< bigint >}{subgroup_BJT}{base_vector< qi_class > & $G$,
+    base_vector< long > & $v$}%
+  computes the structure of the subgroup generated by $G$ using the unconditional methods of
+  \cite{Buchmann/Jabobson/Teske:1997} for imaginary orders and an unpublished variation for real
+  orders, assuming that the class number is not known.
+\end{fcode}
+
+%\begin{fcode}{base_vector< bigint >}{subgroup_h}{base_vector< qi_class > & $G$}
+%       computes the structure of the subgroup generated by $G$ using
+%       the method of \cite{BJTordgiven} where the class number is known.
+%\end{fcode}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IO
+
+Let $A$ be of type \code{qi_class}.  The \code{istream} operator \code{>>} and the
+\code{ostream} operator \code{<<} are overloaded.  The input of a \code{qi_class} consists of
+\code{(a b)}, where $a$ and $b$ are integers corresponding to the representation $A = [a \bbfZ +
+(b + \sqrt{\D})/2 \, \bbfZ ]$.  The output has the format $(a,b)$.  For input, the current
+quadratic order must be set first, otherwise the \LEH will be evoked.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SEEALSO
+
+\SEE{qi_class_real},
+\SEE{quadratic_order},
+\SEE{quadratic_ideal},
+\SEE{quadratic_form}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\NOTES
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\EXAMPLES
+
+\begin{quote}
+\begin{verbatim}
+#include <LiDIA/quadratic_order.h>
+
+int main()
+{
+    quadratic_order QO;
+    qi_class A, B, C;
+    bigint D, p, x;
+
+    do {
+        cout << "Please enter a quadratic discriminant: "; cin >> QO ;
+    } while (!QO.assign(D));
+    cout << endl;
+
+    qi_class::set_current_order(QO);
+
+    /* compute 2 prime ideals */
+    p = 3;
+    while (!generate_prime_ideal(A, p))
+        p = next_prime(p);
+    p = next_prime(p);
+    while (!generate_prime_ideal(B, p))
+        p = next_prime(p);
+
+    cout << "A = " << A << endl;
+    cout << "B = " << B << endl;
+
+    power(C, B, 3);
+    C *= -A;
+    square(C, C);
+    cout << "C = (A^-1*B^3)^2 = " << C << endl;
+
+    cout << "|<C>| = " << C.order_in_CL() << endl;
+
+    if (A.DL(B, x))
+        cout << "log_B A = " << x << endl;
+    else
+        cout << "no discrete log:  |<B>| = " << x << endl;
+
+    return 0;
+}
+\end{verbatim}
+\end{quote}
+
+Example:
+\begin{quote}
+\begin{verbatim}
+Please enter a quadratic discriminant: -82636319
+
+A = (3, 1)
+B = (5, 1)
+C = (A^-1*B^3)^2 = (2856, -271)
+|<C>| = 20299
+log_B A = 17219
+\end{verbatim}
+\end{quote}
+
+For further examples please refer to \path{LiDIA/src/packages/quadratic_order/qi_class_appl.cc}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AUTHOR
+
+Michael J.~Jacobson, Jr.
