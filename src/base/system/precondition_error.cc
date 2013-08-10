@@ -1,4 +1,4 @@
-// -*- C++ -*-
+// -*- C++ -*- 
 //=============================================================================
 //
 //	This file is part of LiDIA --- a library for computational number theory
@@ -43,7 +43,7 @@ namespace LiDIA {
   }
 
   precondition_error::
-  precondition_error(const precondition_error::precondition_error& pce)
+  precondition_error(const precondition_error& pce)
 	: basic_error(pce), std::logic_error(pce),
       params_(0), prototype_(pce.prototype_), location_(pce.location_) {
 	// Create auxiliary container
@@ -61,8 +61,8 @@ namespace LiDIA {
 	swap(params_, tmpContainer);
   }
 
-  precondition_error::precondition_error& precondition_error::
-  operator=(const precondition_error::precondition_error& pce) {
+  precondition_error& precondition_error::
+  operator=(const precondition_error& pce) {
 	precondition_error tmp(pce);
 
 	// Hopefully, none of the remaining statements will throw.
