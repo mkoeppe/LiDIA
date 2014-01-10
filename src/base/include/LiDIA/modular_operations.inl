@@ -46,7 +46,7 @@ pos_div_rem(bigint & q, bigint & r, const bigint & a, const bigint & b)
 
 	div_rem(q, r, a, b);
 
-	if (r.is_lt_zero())
+	if (r.is_lt_zero()) {
 		if (b.is_lt_zero()) {
 			subtract(r, r, b);
 			inc(q);
@@ -55,6 +55,7 @@ pos_div_rem(bigint & q, bigint & r, const bigint & a, const bigint & b)
 			add(r, r, b);
 			dec(q);
 		}
+	}
 }
 
 
@@ -67,7 +68,7 @@ pos_div_rem(long & q, long & r, long a, long b)
 	q = a / b;
 	r = a - q * b;
 
-	if (r < 0)
+	if (r < 0) {
 		if (b < 0) {
 			r -= b;
 			q++;
@@ -76,6 +77,7 @@ pos_div_rem(long & q, long & r, long a, long b)
 			r += b;
 			q--;
 		}
+	}
 }
 
 
@@ -88,7 +90,7 @@ pos_div_rem(short int & q, short int & r, short int a, short int b)
 	q = a / b;
 	r = a - q * b;
 
-	if (r < 0)
+	if (r < 0) {
 		if (b < 0) {
 			r -= b;
 			q++;
@@ -97,6 +99,7 @@ pos_div_rem(short int & q, short int & r, short int a, short int b)
 			r += b;
 			q--;
 		}
+	}
 }
 
 

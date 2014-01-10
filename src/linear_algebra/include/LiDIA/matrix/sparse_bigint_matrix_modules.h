@@ -37,6 +37,8 @@ namespace LiDIA {
 
 class bigint;
 class bigfloat;
+
+template <>
 class matrix< bigint >;
 
 
