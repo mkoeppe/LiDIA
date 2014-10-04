@@ -1,3 +1,9 @@
+Changes in release 2.3.0+latte-patches-2014-10-04:
+
+ * Fix compile errors with Apple LLVM version 6.0 (clang-600.0.51)
+   (based on LLVM 3.5svn): friend declaration specifying a default
+   argument must be a definition; and some excessive style warnings.
+
 Changes in release 2.3.0+latte-patches-2014-01-05:
 
  * Fix for build error with XCode 5.0.2, Apple LLVM version 5.0 (clang-500.2.79)
