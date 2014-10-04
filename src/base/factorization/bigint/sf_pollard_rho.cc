@@ -139,6 +139,15 @@ factorization< bigint > PollardRho (const bigint & x, int size)
 	return f;
 }
 
+factorization< bigint > PollardRho (const bigint & x)
+{
+	factorization< bigint > f;
+	single_factor< bigint > a(x);
+	f = a.PollardRho();
+	f.append(a);
+	return f;
+}
+
 
 
 #ifdef LIDIA_NAMESPACE

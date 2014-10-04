@@ -274,6 +274,16 @@ factorization< bigint > WilliamsPplus1(const bigint & x, int size)
 	return f;
 }
 
+factorization< bigint > WilliamsPplus1(const bigint & x)
+{
+	single_factor< bigint > a(x);
+	factorization< bigint > f;
+
+	f = a.WilliamsPplus1();
+	if (!a.is_one())
+		f.append(a);
+	return f;
+}
 
 
 #ifdef LIDIA_NAMESPACE

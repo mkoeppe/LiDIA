@@ -347,6 +347,42 @@ factorization< bigint > ECM(const bigint & x,
 	return f;
 }
 
+factorization< bigint > ECM(const bigint & x,
+			    int upper_bound,
+			    int lower_bound)
+{
+	single_factor< bigint > a(x);
+	factorization< bigint > f;
+	f = a.ECM(upper_bound, lower_bound);
+
+	if (!a.is_one())
+		f.append(a);
+	return f;
+}
+
+factorization< bigint > ECM(const bigint & x,
+			    int upper_bound)
+{
+	single_factor< bigint > a(x);
+	factorization< bigint > f;
+	f = a.ECM(upper_bound);
+
+	if (!a.is_one())
+		f.append(a);
+	return f;
+}
+
+factorization< bigint > ECM(const bigint & x)
+{
+	single_factor< bigint > a(x);
+	factorization< bigint > f;
+	f = a.ECM();
+
+	if (!a.is_one())
+		f.append(a);
+	return f;
+}
+
 
 
 #ifdef LIDIA_NAMESPACE

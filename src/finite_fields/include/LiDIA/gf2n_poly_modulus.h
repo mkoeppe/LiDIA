@@ -123,8 +123,13 @@ public:
 	// deg(a) < f.degree()
 
 
-	friend void shift_left(gf2n_polynomial &, const gf2n_polynomial &,
-			       gf2n_poly_modulus &, unsigned int d = 1);
+	friend void shift_left(gf2n_polynomial &erg, const gf2n_polynomial &a,
+			       gf2n_poly_modulus &F, unsigned int d);
+	friend void shift_left(gf2n_polynomial &erg, const gf2n_polynomial &a,
+			       gf2n_poly_modulus &F)
+	{
+		shift_left(erg, a, F, 1);
+	}
 
 
 	// compute a^i mod F.mod for i = 0, ..., d-1, return table

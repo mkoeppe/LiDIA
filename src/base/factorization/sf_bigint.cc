@@ -230,6 +230,11 @@ factorization< bigint > sf_factor(const bigint & N, int size)
 	return f.factor(size);
 }
 
+factorization< bigint > sf_factor(const bigint & N)
+{
+	single_factor< bigint > f(N);
+	return f.factor();
+}
 
 
 factorization< bigint > single_factor< bigint >::

@@ -250,6 +250,18 @@ PollardPminus1(const bigint & x, int size)
 	return f;
 }
 
+factorization< bigint >
+PollardPminus1(const bigint & x)
+{
+	factorization< bigint > f;
+	single_factor< bigint > a(x);
+
+	f = a.PollardPminus1();
+	if (!a.is_one())
+		f.append(a);
+	return f;
+}
+
 
 
 #ifdef LIDIA_NAMESPACE

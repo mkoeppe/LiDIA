@@ -471,16 +471,30 @@ public:
 	// g = f * X^d
 	friend void shift_left(gf2n_polynomial & g,
 			       const gf2n_polynomial & f,
-			       unsigned int d = 1);
+			       unsigned int d);
+	friend void shift_left(gf2n_polynomial & g,
+			       const gf2n_polynomial & f)
+	{
+	        shift_left(g, f, 1);
+	}
 
 	// g = f / X^d
 	friend void shift_right(gf2n_polynomial & g,
 				const gf2n_polynomial & f,
-				unsigned int d = 1);
+				unsigned int d);
+	friend void shift_right(gf2n_polynomial & g,
+				const gf2n_polynomial & f)
+	{
+		shift_right(g, f, 1);
+	}
 
 	// g = floor(f / X^d)
 	friend void floor(gf2n_polynomial & g, const gf2n_polynomial & f,
-			  unsigned int d = 1);
+			  unsigned int d);
+	friend void floor(gf2n_polynomial & g, const gf2n_polynomial & f)
+	{
+		floor(g, f, 1);
+	}
 
 	friend void swap(gf2n_polynomial &, gf2n_polynomial &);
 
@@ -586,16 +600,27 @@ public:
 	//********** functions for factoring polynomials ******************
 
 
-	friend void find_all_roots (base_vector< gf2n > &, const gf2n_polynomial &,
-				    unsigned int d = gf2n::extension_degree());
+	friend void find_all_roots (base_vector< gf2n > &v, const gf2n_polynomial &f,
+				    unsigned int d);
+	friend void find_all_roots (base_vector< gf2n > &v, const gf2n_polynomial &f)
+	{
+		find_all_roots(v, f, gf2n::extension_degree());
+	}
 
-	friend gf2n find_root (const gf2n_polynomial &,
-			       unsigned int d = gf2n::extension_degree());
+	friend gf2n find_root (const gf2n_polynomial &f,
+			       unsigned int d);
+	friend gf2n find_root (const gf2n_polynomial &f)
+	{
+		return find_root(f, gf2n::extension_degree());
+	}
 
 	void inner_product(gf2n & x, const base_vector< gf2n > & a,
-			   const gf2n_polynomial &b, lidia_size_t offset = 0);
-
-
+			   const gf2n_polynomial &b, lidia_size_t offset);
+	void inner_product(gf2n & x, const base_vector< gf2n > & a,
+			   const gf2n_polynomial &b)
+	{
+		inner_product(x, a, b, 0);
+	}
 
 	//************* input / output *********************************************
 
@@ -619,8 +644,12 @@ public:
 	friend void square(class gf2n_polynomial &, const class gf2n_polynomial &,
 			   class gf2n_poly_modulus &);
 
-	friend void Xq(class gf2n_polynomial &, class gf2n_poly_modulus &,
-		       unsigned int field_degree = gf2n::extension_degree());
+	friend void Xq(class gf2n_polynomial &erg, class gf2n_poly_modulus &F,
+		       unsigned int field_degree);
+	friend void Xq(class gf2n_polynomial &erg, class gf2n_poly_modulus &F)
+	{
+		Xq(erg, F, gf2n::extension_degree());
+	}
 
 	friend void compose(class gf2n_polynomial &, const class gf2n_polynomial &,
 			    const class gf2n_polynomial &,

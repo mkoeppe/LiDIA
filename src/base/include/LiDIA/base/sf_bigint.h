@@ -128,17 +128,23 @@ public:
 	factorization< bigint > TrialDiv(unsigned int upper_bound = 1000000,
 					 unsigned int lower_bound = 1);
 	friend factorization< bigint > TrialDiv(const bigint & N,
-						const unsigned int upper_bound = 1000000,
-						const unsigned int lower_bound = 1);
+						const unsigned int upper_bound,
+						const unsigned int lower_bound);
+	friend factorization< bigint > TrialDiv(const bigint & N,
+						const unsigned int upper_bound);
+	friend factorization< bigint > TrialDiv(const bigint & N);
 
 	factorization< bigint > PollardRho(int size = 7);
-	friend factorization< bigint > PollardRho(const bigint& x, int size = 7);
+	friend factorization< bigint > PollardRho(const bigint& x, int size);
+	friend factorization< bigint > PollardRho(const bigint& x);
 
 	factorization< bigint > PollardPminus1(int size = 9);
-	friend factorization< bigint > PollardPminus1(const bigint& x, int size = 9);
+	friend factorization< bigint > PollardPminus1(const bigint& x, int size);
+	friend factorization< bigint > PollardPminus1(const bigint& x);
 
 	factorization< bigint > WilliamsPplus1(int size = 9);
-	friend factorization< bigint > WilliamsPplus1(const bigint& x, int size = 9);
+	friend factorization< bigint > WilliamsPplus1(const bigint& x, int size);
+	friend factorization< bigint > WilliamsPplus1(const bigint& x);
 
 	factorization< bigint > Fermat();
 	friend factorization< bigint > Fermat(const bigint& x);
@@ -146,17 +152,25 @@ public:
 	factorization< bigint > ECM(int upper_bound = 34, int lower_bound = 6,
 				    int step = 3, bool jump_to_QS = false);
 	friend factorization< bigint > ECM(const bigint & x,
-					   int upper_bound = 34,
-					   int lower_bound = 6,
-					   int step = 3);
+					   int upper_bound,
+					   int lower_bound,
+					   int step);
+	friend factorization< bigint > ECM(const bigint & x,
+					   int upper_bound,
+					   int lower_bound);
+	friend factorization< bigint > ECM(const bigint & x,
+					   int upper_bound);
+	friend factorization< bigint > ECM(const bigint & x);
 
 	factorization< bigint > MPQS();
 	friend factorization< bigint > MPQS(const bigint & x);
 
 	factorization< bigint > factor(int size = 34) const;
 	friend factorization< bigint > sf_factor(const bigint & x,
-						 int size = 34);
-	factorization< bigint > completely_factor() const;
+						 int size);
+	friend factorization< bigint > sf_factor(const bigint & x);
+
+        factorization< bigint > completely_factor() const;
 	friend factorization< bigint > completely_factor(const bigint & x);
 
 
@@ -243,12 +257,18 @@ swap(single_factor< bigint > & a, single_factor< bigint > & b)
 factorization< bigint > TrialDiv(const bigint & N,
 				 const unsigned int upper_bound,
 				 const unsigned int lower_bound);
+factorization< bigint > TrialDiv(const bigint & N,
+				 const unsigned int upper_bound);
+factorization< bigint > TrialDiv(const bigint & N);
 
 factorization< bigint > PollardRho(const bigint& x, int size);
+factorization< bigint > PollardRho(const bigint& x);
 
 factorization< bigint > PollardPminus1(const bigint& x, int size);
+factorization< bigint > PollardPminus1(const bigint& x);
 
 factorization< bigint > WilliamsPplus1(const bigint& x, int size);
+factorization< bigint > WilliamsPplus1(const bigint& x);
 
 factorization< bigint > Fermat(const bigint& x);
 
@@ -256,11 +276,18 @@ factorization< bigint > ECM(const bigint & x,
 			    int upper_bound,
 			    int lower_bound,
 			    int step);
+factorization< bigint > ECM(const bigint & x,
+			    int upper_bound,
+			    int lower_bound);
+factorization< bigint > ECM(const bigint & x,
+			    int upper_bound);
+factorization< bigint > ECM(const bigint & x);
 
 factorization< bigint > MPQS(const bigint & x);
 
 factorization< bigint > sf_factor(const bigint & x,
 				  int size);
+factorization< bigint > sf_factor(const bigint & x);
 
 factorization< bigint > completely_factor(const bigint & x);
 

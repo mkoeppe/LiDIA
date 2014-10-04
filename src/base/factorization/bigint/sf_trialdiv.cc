@@ -202,6 +202,31 @@ TrialDiv(const bigint & x,
 	return(f);
 }
 
+factorization< bigint >
+TrialDiv(const bigint & x,
+	 const unsigned int upper_bound)
+{
+	factorization< bigint > f;
+	single_factor< bigint > a(x);
+
+	f = a.TrialDiv(upper_bound);
+	if (!a.rep.is_one())
+		f.append(a);
+	return(f);
+}
+
+factorization< bigint >
+TrialDiv(const bigint & x)
+{
+	factorization< bigint > f;
+	single_factor< bigint > a(x);
+
+	f = a.TrialDiv();
+	if (!a.rep.is_one())
+		f.append(a);
+	return(f);
+}
+
 
 
 #ifdef LIDIA_NAMESPACE
