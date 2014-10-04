@@ -202,7 +202,7 @@ template< class T1, class T2 >
 inline bool
 ppair< T1, T2 >::operator == (const ppair< T1, T2 > &p) const
 {
-	return ((&p == this) || (*l == *p.l) && (r == p.r));
+  return ((&p == this) || ((*l == *p.l) && (r == p.r)));
 }
 
 

@@ -552,7 +552,7 @@ ec_point_W::is_negative(const ec_point_W & wp) const
 
 	add(h, h, y);
 
-	if ((is_0 == wp.is_0) && (is_0 || (x == wp.x) && h.is_zero()))
+	if ((is_0 == wp.is_0) && (is_0 || ((x == wp.x) && h.is_zero())))
 		i = true;
 	else
 		i = false;
