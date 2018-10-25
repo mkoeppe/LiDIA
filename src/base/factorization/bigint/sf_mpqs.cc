@@ -507,7 +507,7 @@ namespace LiDIA {
                   }
                 }
                       
-                if(faktor[0] == (char) NULL) {
+                if(faktor[0] == (char)(size_t) NULL) {
                   continue;
                 }
               }

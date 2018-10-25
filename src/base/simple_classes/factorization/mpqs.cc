@@ -515,7 +515,7 @@ static void zusam (unsigned int size_exp, int * FB, const bigint & kN)
 			    }
 			}
 		      
-		      if (faktor[0] == (char) NULL)
+		      if (faktor[0] == (char)(size_t) NULL)
 			continue;
 		    }
 		  
