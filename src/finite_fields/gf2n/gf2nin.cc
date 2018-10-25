@@ -80,7 +80,7 @@ std::istream & operator >> (std::istream & in_strm, gf2n & a)
 	}
 	else {
 		str = line+i+1;
-		line[i] = (char) NULL;
+		line[i] = (char)(size_t) NULL;
 
 		if (strcmp(line, "HEX") == 0) {
 			hexin(a, str);
