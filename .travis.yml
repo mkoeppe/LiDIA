@@ -54,14 +54,6 @@ matrix:
        - brew cask install mactex-no-gui
        - brew install texinfo
        - export PATH="/Library/TeX/texbin:$PATH"
-    ## Test on Mac OS X 10.10
-    - os: osx
-      osx_image: xcode6.4
-      before_script:
-       - brew update
-       - brew cask install mactex-no-gui
-       - brew install texinfo
-       - export PATH="/Library/TeX/texbin:$PATH"
     ## Test on 32 bit
     - services:
       - docker
