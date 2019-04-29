@@ -1,6 +1,6 @@
 #! /bin/bash
 set -e
-autoreconf -fi
+#autoreconf -fi
 case x$DOCKER in
     x)
 	mkdir -p build
