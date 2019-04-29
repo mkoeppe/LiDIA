@@ -80,8 +80,8 @@ installcheck-subdirs:
 .PHONY uninstall-recursive: uninstall-subdirs
 uninstall-subdirs:
 	cd doc      && $(MAKE) $(AM_MAKEFLAGS) uninstall	# just in case
-	cd examples && $(MAKE) $(AM_MAKEFLAGS) uninstall
 	cd library  && $(MAKE) $(AM_MAKEFLAGS) uninstall
+##      cd examples && $(MAKE) $(AM_MAKEFLAGS) uninstall
 
 .PHONY clean-recursive: clean-subdirs
 clean-subdirs:
