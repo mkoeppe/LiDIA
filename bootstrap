@@ -2,5 +2,5 @@
 
 aclocal \
 && autoconf \
-&& (libtoolize --force || glibtoolize --force) \
+&& (libtoolize --force --copy || glibtoolize --force --copy) \
 && automake --gnu --add-missing --copy
