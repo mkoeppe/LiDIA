@@ -1,0 +1,12 @@
+*.o
+*.lo
+*.la
+.libs
+/include/stamp*
+/compile
+Makefile.in
+/aclocal.m4
+/configure
+/depcomp
+/missing
+/ltmain.sh
