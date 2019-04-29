@@ -58,5 +58,7 @@ addons:
       - autoconf
       - automake
       - libtool
+      - texlive
+      - texinfo
 
 script: ./.travis-build.sh
