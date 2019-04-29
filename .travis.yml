@@ -10,11 +10,40 @@ matrix:
     - os: linux
       env:
       compiler: clang
+    ## Test on Mac OS X 10.14
     - os: osx
-      env:
-       -
+      osx_image: xcode10.2
       before_script:
        - brew update
+    ## Test on Mac OS X 10.13
+    - os: osx
+      osx_image: xcode9.4
+      before_script:
+       - brew update
+    ## Test on Mac OS X 10.12
+    - os: osx
+      osx_image: xcode9.2
+      before_script:
+       - brew update
+    ## Test on Mac OS X 10.11
+    - os: osx
+      osx_image: xcode8
+      before_script:
+       - brew update
+    ## Test on Mac OS X 10.10
+    - os: osx
+      osx_image: xcode6.4
+      before_script:
+       - brew update
+    ## With homebrew gcc
+    - os: osx
+      compiler: clang
+      before_install:
+       - brew update
+       - brew install llvm || brew outdated llvm || brew upgrade llvm
+       - export PATH="`brew --prefix`/opt/llvm/bin/:$PATH"
+       - export LDFLAGS="-L`brew --prefix`/opt/llvm/lib -Wl,-rpath,`brew --prefix`/opt/llvm/lib"
+      env: COMPILER_OVERRIDE=homebrew-llvm
     - services:
       - docker
       env:
