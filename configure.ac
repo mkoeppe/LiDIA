@@ -27,7 +27,7 @@ AC_INIT([LiDIA],[2.3.0+latte-patches-2014-10-04],[lidia@cdc.informatik.tu-darmst
 AC_REVISION($Id$)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(.LIDIA_SOURCE_DIR)
-AM_INIT_AUTOMAKE([tar-ustar])
+AM_INIT_AUTOMAKE([tar-ustar subdir-objects])
 
 # Update version info in some files for later distribution
 AC_CONFIG_FILES([LiDIA.spec])
