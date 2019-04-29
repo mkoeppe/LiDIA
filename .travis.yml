@@ -1,0 +1,30 @@
+language: cpp
+
+sudo: false
+
+matrix:
+  include:
+    - os: linux
+      env:
+       -
+    - os: linux
+      env:
+      compiler: clang
+    - os: osx
+      env:
+       -
+      before_script:
+       - brew update
+    - services:
+      - docker
+      env:
+       - DOCKER=i386/ubuntu
+
+addons:
+  apt_packages:
+      - libgmp-dev
+      - autoconf
+      - automake
+      - libtool
+
+script: ./.travis-build.sh
