@@ -1,6 +1,7 @@
 #! /bin/bash
 set -e
-#autoreconf -fi
+#autoreconf -fi    ## Cannot use because we cannot use autoheader
+./bootstrap
 case x$DOCKER in
     x)
 	mkdir -p build
