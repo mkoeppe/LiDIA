@@ -106,7 +106,7 @@ EXTRA_DIST = \
 check_PROGRAMS = test_meq_prime
 AM_DEFAULT_SOURCE_EXT = .cc
 TESTS = test_meq_prime
-AM_TESTS_ENVIRONMENT = LIDIA_ECO=$(LIDIA_PKGDATADIR)/MOD_EQ LIDIA_ECO2=$(LIDIA_PKGDATADIR)/MOD_EQ_2
+AM_TESTS_ENVIRONMENT = LIDIA_ECO=$(top_srcdir)/share/LiDIA/MOD_EQ LIDIA_ECO2=$(top_srcdir)/share/LiDIA/MOD_EQ_2
 
 installcheck-local: test_meq_prime$(EXEEXT)
 	./test_meq_prime$(EXEEXT) > /dev/null || echo "installcheck: test_meq_prime failed"
