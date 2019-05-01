@@ -216,7 +216,7 @@ template<int size>
 struct size_match {
   template<typename T>
   struct apply {
-    typedef typename is_zero::apply<sizeof(T) - size>::type type;
+    typedef typename is_zero::apply<int(sizeof(T)) - size>::type type;
   };
 };
 
