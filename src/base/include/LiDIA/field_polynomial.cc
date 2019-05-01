@@ -60,7 +60,7 @@ field_polynomial< T >::divide (const base_polynomial< T > & a, const T &b)
 	T b_inv;
 	invert(b_inv, b);
 
-	register lidia_size_t i = deg_a + 1;
+	lidia_size_t i = deg_a + 1;
 	for (ap = ((field_polynomial< T > *)(&a))->coeff, cp = this->coeff;
 	     i; i--, ap++, cp++)
 		LiDIA::multiply(*cp, *ap, b_inv);
@@ -175,7 +175,7 @@ field_polynomial< T >::integral (const base_polynomial< T > & a)
 
 	T temp;
 
-	for (register lidia_size_t i = 0; i <= d; i++, cp++, ap++) {
+	for (lidia_size_t i = 0; i <= d; i++, cp++, ap++) {
 		temp = i + 1; // necessary, since bigcomplex does not
                                 // support automatic cast !!
 		LiDIA::divide(*cp, *ap, temp);

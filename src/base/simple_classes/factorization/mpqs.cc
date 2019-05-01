@@ -647,12 +647,12 @@ qs_sieve_interval (int *FB, SIEBTYP * LOGP, int *START1,
 		   int *START2, SIEBTYP * sieb, SIEBTYP * ende,
 		   unsigned int M, int *CANDIDATE, unsigned int smallstart)
 {
-  register int p, l, *fbp, *lsieb = (int *) sieb; // FIXME: SIEBTYP and int are incompatible types
-  register SIEBTYP logp;
-  register SIEBTYP *begin;
+  int p, l, *fbp, *lsieb = (int *) sieb; // FIXME: SIEBTYP and int are incompatible types
+  SIEBTYP logp;
+  SIEBTYP *begin;
   
-  register int x, counter = 0, M_2 = M << 1;
-  register int oldstart1;
+  int x, counter = 0, M_2 = M << 1;
+  int oldstart1;
   
   memset (sieb, 0, (M_2) * sizeof (SIEBTYP));
   
@@ -734,8 +734,8 @@ compute_multiplier (const bigint & N, int bis, ecm_primes & prim)
   int cand[5] = {1, 3, 5, 7, 11};
   
   bigint kN;
-  register unsigned long plauf;
-  register int p, j, i, k = 1, nmod4;
+  unsigned long plauf;
+  int p, j, i, k = 1, nmod4;
   double wert, bestwert = 1, plus;
   
   nmod4 = static_cast < int >(N.least_significant_digit ()) & 0x3;
@@ -795,8 +795,8 @@ int rational_factorization::
 create_FB (unsigned int size, const bigint & kN, int **FB,
 	   ecm_primes & prim)
 {
-  register unsigned int osize, p;
-  register int *fbb;
+  unsigned int osize, p;
+  int *fbb;
   
   if (!(*FB = new int[size + 3])) 
     lidia_error_handler_n ("rational_factorization",
@@ -865,7 +865,7 @@ compute_coeff (bigint & A, bigint & B, const bigint & kN, int *FB,
 	       int start_fb, int *a_inv, bigint & A4_inverse,
 	       unsigned int &bin_index)
 {
-  register int p, size_FB;
+  int p, size_FB;
   int SIEBS, tmp, tmp1, tmp2;
   lidia_size_t j, nu_2, i;
   bigint reserve, TMP;
@@ -1102,7 +1102,7 @@ compute_coeff (bigint & A, bigint & B, const bigint & kN, int *FB,
 
 inline char *insert_at (char *p, unsigned long n)
 {
-  register int c, i, j, e;
+  int c, i, j, e;
   
   i = 0;
   do {

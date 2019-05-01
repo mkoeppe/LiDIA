@@ -61,7 +61,7 @@ gf2n_polynomial::gf2n_polynomial()                 // = 0
 
 gf2n_polynomial::gf2n_polynomial(unsigned int d)   // = 1 * X^d
 {
-	register int i;
+	int i;
 	refc++;
 	deg = d;
 	if (d >= static_cast<unsigned int>(default_size))
@@ -91,7 +91,7 @@ gf2n_polynomial::gf2n_polynomial(const gf2n & f)   // = f * X^0
 gf2n_polynomial::gf2n_polynomial(const gf2n_polynomial & p)  // = p
 {
 	gf2n *ap, *cp;
-	register int i;
+	int i;
 
 	refc++;
 	deg = p.deg;
@@ -114,7 +114,7 @@ bool operator == (const gf2n_polynomial &a,
 		  const gf2n_polynomial &b)
 {
 	gf2n *ap, *bp;
-	register int i, da = a.deg, db = b.deg;
+	int i, da = a.deg, db = b.deg;
 
 	if (da != db)
 		return false;
@@ -136,7 +136,7 @@ void gf2n_polynomial::make_monic()
 		return;
 
 	gf2n s = inverse(coeff[deg]);
-	for (register int i = 0; i < deg; i++)
+	for (int i = 0; i < deg; i++)
 		multiply(coeff[i], s, coeff[i]);
 	coeff[deg].assign_one();
 }
@@ -174,7 +174,7 @@ bool gf2n_polynomial::is_square() const
 
 void gf2n_polynomial::assign(const gf2n_polynomial & f)
 {
-	register int i;
+	int i;
 	gf2n * fp, *gp;
 
 	if (static_cast<int>(size) < f.deg+1)
@@ -270,7 +270,7 @@ void multiply_by_scalar(gf2n_polynomial & g, const gf2n & b,
 			const gf2n_polynomial & a)
 {
 	gf2n *ap, *cp;
-	register int i;
+	int i;
 
 	if (b.is_zero()) {
 		g.deg = -1;
@@ -282,7 +282,7 @@ void multiply_by_scalar(gf2n_polynomial & g, const gf2n & b,
 		return;
 	}
 
-	register int deg_a = a.deg;
+	int deg_a = a.deg;
 
 	if (deg_a >= static_cast<int>(g.size))
 		g.set_size (deg_a + 1 > static_cast<int>(gf2n_polynomial::default_size) ?
@@ -369,7 +369,7 @@ void shift_left (gf2n_polynomial & g, const gf2n_polynomial & f,
 		return;
 	}
 
-	register int dg = f.deg + d, i, fd = f.deg;
+	int dg = f.deg + d, i, fd = f.deg;
 
 	if (dg >= g.size) {
 		g.size = dg+1;
@@ -404,7 +404,7 @@ void shift_right (gf2n_polynomial & g, const gf2n_polynomial & f,
 		  unsigned int d)
 
 {
-	register int i, fd = f.deg;
+	int i, fd = f.deg;
 	gf2n *ap, *bp;
 
 	if (d == 0 || f.is_zero()) {
@@ -445,7 +445,7 @@ void multiply_by_linear(gf2n_polynomial & g, const gf2n_polynomial & f,
 		return;
 	}
 
-	register int dg = f.deg+1, i, fd = f.deg;
+	int dg = f.deg+1, i, fd = f.deg;
 
 	if (dg >= static_cast<int>(g.size)) {
 		g.size = dg+1;
@@ -483,8 +483,8 @@ void multiply_by_linear(gf2n_polynomial & g, const gf2n_polynomial & f,
 void add(gf2n_polynomial &c, const gf2n_polynomial & a,
 	 const gf2n_polynomial & b)
 {
-	register int deg_a = a.deg, deg_b = b.deg;
-	register int i, min_deg_ab, max_deg_ab;
+	int deg_a = a.deg, deg_b = b.deg;
+	int i, min_deg_ab, max_deg_ab;
 	gf2n *ap, *bp, *cp, *cpp, t;
 
 	if (deg_a < 0) {
@@ -557,8 +557,8 @@ void add(gf2n_polynomial &c, const gf2n_polynomial & a,
 void plain_mul(gf2n_polynomial & c, const gf2n_polynomial & a,
 	       const gf2n_polynomial & b)
 {
-	register int deg_a = a.deg, deg_b = b.deg;
-	register int i, j, deg_ab = deg_a + deg_b;
+	int deg_a = a.deg, deg_b = b.deg;
+	int i, j, deg_ab = deg_a + deg_b;
 	gf2n *ap, *bp, t, *cp, *cpp;
 
 	if (deg_a < 0 || deg_b < 0) {
@@ -605,7 +605,7 @@ void plain_mul(gf2n_polynomial & c, const gf2n_polynomial & a,
 
 void square (gf2n_polynomial & c, const gf2n_polynomial & a)
 {
-	register int i, dg = a.deg, dgg = (a.deg << 1);
+	int i, dg = a.deg, dgg = (a.deg << 1);
 	gf2n * cp, *cpp, *ap;
 
 	if (dg < 0) {
@@ -664,7 +664,7 @@ std::ostream & operator << (std::ostream & s, const gf2n_polynomial  & a)
 					s << "X^" << d;
 				else
 					s << a.coeff[d] << " * X^" << d;
-				for (register int i = d - 1; i > 1; i--)
+				for (int i = d - 1; i > 1; i--)
 					if (a.coeff[i].is_one())
 						s << " + X^" << i;
 					else if (!a.coeff[i].is_zero())

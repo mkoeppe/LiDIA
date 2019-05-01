@@ -73,7 +73,7 @@ void nf_base::compute_conjugates()
 	conjugates.set_no_of_columns(degree());
 	conjugates.set_no_of_rows(degree());
 
-	register lidia_size_t i = 0;
+	lidia_size_t i = 0;
 	for (; i < real_roots; i++)
 		conjugates.sto(i, 0, 1.0);
 	for (; i < degree(); i++) {
@@ -109,7 +109,7 @@ void nf_base::compute_conjugates()
 	for (i = 0; i < real_roots; i++) {
 		tmp_bf.assign(conjugates(i, 1));
 		multiplier_bf.assign(tmp_bf);
-		for (register lidia_size_t j = 2; j < degree(); j++) {
+		for (lidia_size_t j = 2; j < degree(); j++) {
 			multiply(tmp_bf, tmp_bf, multiplier_bf);
 			conjugates.sto(i, j, tmp_bf);
 		}
@@ -118,7 +118,7 @@ void nf_base::compute_conjugates()
 	for (; i < degree(); i += 2) {
 		tmp_bc.assign(bigcomplex(conjugates(i, 1), conjugates(i+1, 1)));
 		multiplier_bc.assign(tmp_bc);
-		for (register lidia_size_t j = 2; j < degree(); j++) {
+		for (lidia_size_t j = 2; j < degree(); j++) {
 			multiply(tmp_bc, tmp_bc, multiplier_bc);
 			conjugates.sto(i, j, tmp_bc.real());
 			conjugates.sto(i+1, j, tmp_bc.imag());
@@ -128,7 +128,7 @@ void nf_base::compute_conjugates()
 	if (base_computed()) {
 		math_matrix< bigfloat > TRAFO(degree(), degree());
 		for (i = 0; i < degree(); i++)
-			for (register lidia_size_t j = 0; j < degree(); j++)
+			for (lidia_size_t j = 0; j < degree(); j++)
 				TRAFO.sto(i, j, bigfloat(base.member(i, j)));
 		multiply(conjugates, conjugates, TRAFO);
 		divide(conjugates, conjugates, bigfloat(den));
@@ -143,7 +143,7 @@ void nf_base::compute_table() const
 	debug_handler_c("", "", 0,
 			std::cout << "Computing table for nf_base at" << this << std::endl);
 
-	register lidia_size_t i, j, k = 0;
+	lidia_size_t i, j, k = 0;
 	polynomial< bigint > p1, p2;
 	bigint * tmp;
 
@@ -160,7 +160,7 @@ void nf_base::compute_table() const
 				debug_handler_c("nf_base", "compute_table", 0,
 						std::cout << "computing x^" << j+i << ": " << (p1*p2) << f);
 				polynomial< bigint > g = (p1*p2)%f;
-				register lidia_size_t l = 0;
+				lidia_size_t l = 0;
 				for (; l <= g.degree(); l++)
 					table.sto(k, l, g[l]);
 				for (; l < degree(); l++)
@@ -229,7 +229,7 @@ void nf_base::compute_base() const
 	debug_handler_l("nf_base", "compute_base()::initialized", 0);
 	while (rho_pol.degree() < degree()) {
 		mu++;
-		for (register lidia_size_t i = 0; i < degree() &&
+		for (lidia_size_t i = 0; i < degree() &&
 			     rho_pol.degree() < degree(); i++) {
 			tmp2.assign(tmp[i]);
 			tmp[i].assign(mu);
@@ -284,7 +284,7 @@ void nf_base::compute_base() const
 	bigint_matrix T(degree(), degree());
 	T.sto_column_vector(get_one(), degree(), 0);
 	alg_number temp(rho);
-	for (register lidia_size_t i = 1; i < degree()-1; i++) {
+	for (lidia_size_t i = 1; i < degree()-1; i++) {
 		T.sto_column_vector(temp.coeff_vector(), degree(), i);
 		multiply(temp, temp, rho);
 	}
@@ -302,8 +302,8 @@ void nf_base::compute_base() const
 	T.det(tmp2);
 	den.assign(tmp2);
 
-	for (register lidia_size_t k = 0; (k < degree()) && (!tmp2.is_one()); k++)
-		for (register lidia_size_t j = 0; j < degree() && (!tmp2.is_one()); j++)
+	for (lidia_size_t k = 0; (k < degree()) && (!tmp2.is_one()); k++)
+		for (lidia_size_t j = 0; j < degree() && (!tmp2.is_one()); j++)
 			tmp2.assign(gcd (base.member(k, j), tmp2));
 	if (!tmp2.is_one()) {
 		den /= tmp2;
@@ -318,7 +318,7 @@ void nf_base::compute_base() const
 const math_vector< bigint > & nf_base::get_one() const
 {
 	debug_handler("nf_base", "in member - function get_one()");
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	if (One.size() > 0) {
 		debug_handler_l("nf_base", "exit from get_one()", 4);
@@ -902,8 +902,8 @@ const bigint & disc(const order & O)
 	if (!O.base->table_computed()) {
 		O.base->compute_table();
 	}
-	for (register lidia_size_t i = 0; i < O.degree(); i++) {
-		for (register lidia_size_t j = 0; j < i; j++) {
+	for (lidia_size_t i = 0; i < O.degree(); i++) {
+		for (lidia_size_t j = 0; j < i; j++) {
 			tmp = O.base->table.get_row(static_cast<lidia_size_t>((static_cast<double>(i)/2.0)*(i+1))+j);
 			Tr = trace(alg_number(tmp, 1, O.base));
 			if (!Tr.denominator().is_one()) {
@@ -945,7 +945,7 @@ const bigint & disc(const order & O)
 
 const bigint & order::MT(lidia_size_t i, lidia_size_t j, lidia_size_t k)
 {
-	register lidia_size_t n = degree();
+	lidia_size_t n = degree();
 	if (!base->table_computed()) {
 		if (base->f.is_zero()) {
 			lidia_error_handler("order", "MT::applied on non-initialized order");
@@ -1152,7 +1152,7 @@ bool order::dedekind(const bigint & p, polynomial< bigint > & h2) const
 	if (base->f.is_zero()) return true;
 	//Attention: h not initialized
 
-	register lidia_size_t j;
+	lidia_size_t j;
 	Fp_polynomial f(base->f, p);
 	factorization< Fp_polynomial > fa;
 
@@ -1201,7 +1201,7 @@ bool order::dedekind(const bigint & p, polynomial< bigint > & h2) const
 	Fp_polynomial h2_mod, h1_mod (h1, p), f1_mod(f1, p);
 	gcd(h2_mod, h1_mod, f1_mod);
 
-	register lidia_size_t i = h2_mod.degree();
+	lidia_size_t i = h2_mod.degree();
 	h2.set_degree(i);
 	for (; i >= 0; i--)
 		h2[i] = h2_mod[i];
@@ -1230,7 +1230,7 @@ module order::pseudo_radical(const bigint & p) const
 {
 	debug_handler("order", "in member - function "
 		      "pseudo_radical(const bigint &, bigint &)");
-	register lidia_size_t j, k, n = degree();
+	lidia_size_t j, k, n = degree();
 	alg_number e(base), im_e(base);
 	//initialised with zero!
 	bigint q = p;
@@ -1353,7 +1353,7 @@ order order::maximize() const
 	a.factor(); // find all factors (and smaller)
 	debug_handler_c("order", "in member - function maximize()", 4,
 			std::cout << "Factorization of Diskriminant is " << a << std::endl);
-	for (register lidia_size_t i = 0; i < a.no_of_comp(); i++)
+	for (lidia_size_t i = 0; i < a.no_of_comp(); i++)
 		if (a.exponent(i) > 1) {
 			if (a.is_prime_factor(i)) {
 				debug_handler_c("order", "maximize()", 3,
@@ -1424,7 +1424,7 @@ order order::maximize2() const
 	a.factor(); // find factors
 	debug_handler_c("order", "in member - function maximize()", 4,
 			std::cout << "Factorization of Diskriminant is " << a << std::endl);
-	for (register lidia_size_t i = 0; i < a.no_of_comp(); i++)
+	for (lidia_size_t i = 0; i < a.no_of_comp(); i++)
 		if (a.exponent(i) > 1) {
 			if (a.is_prime_factor(i)) {
 				debug_handler_c("order", "maximize()", 3,

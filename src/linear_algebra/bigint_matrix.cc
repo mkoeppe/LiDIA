@@ -96,9 +96,9 @@ matrix(const base_matrix< long > &M)
 				       "Error in memory allocation (value)");
 		}
 
-		register bigint *Atmp;
-		register long *Mtmp;
-		for (register lidia_size_t i = 0; i < rows; i++) {
+		bigint *Atmp;
+		long *Mtmp;
+		for (lidia_size_t i = 0; i < rows; i++) {
 			Atmp = new bigint[columns];
 			Mtmp = M.value[i];
 			memory_handler(Atmp, DMESSAGE,
@@ -106,7 +106,7 @@ matrix(const base_matrix< long > &M)
 				       "const MR< T > &) :: "
 				       "Error in memory allocation (Atmp)");
 
-			for (register lidia_size_t j = 0; j < columns; j++)
+			for (lidia_size_t j = 0; j < columns; j++)
 				Atmp[j] = bigint(Mtmp[j]);
 			value[i] = Atmp;
 		}
@@ -138,8 +138,8 @@ matrix(const base_matrix< long > &M)
 			       "constructor((MR< T > &, const MR< T > &) ::"
 			       "Error in memory allocation (allocated)");
 
-		for (register lidia_size_t i = 0; i < rows; i++) {
-			register lidia_size_t size = M.allocated[i];
+		for (lidia_size_t i = 0; i < rows; i++) {
+			lidia_size_t size = M.allocated[i];
 			if (size) {
 				index[i] = new lidia_size_t[size];
 				memory_handler(index[i], DMESSAGE,
@@ -151,7 +151,7 @@ matrix(const base_matrix< long > &M)
 					       "Error in memory allocation (value[i])");
 				value_counter[i] = M.value_counter[i];
 				allocated[i] = size;
-				for (register lidia_size_t p = 0; p < value_counter[i]; p++) {
+				for (lidia_size_t p = 0; p < value_counter[i]; p++) {
 					value[i][p] = bigint(M.value[i][p]);
 					index[i][p] = M.index[i][p];
 				}
@@ -861,7 +861,7 @@ lininr1(base_vector< lidia_size_t > &RES) const
 	if (RES.size() != tmp[0])
 		RES.set_size(tmp[0]);
 
-	for (register lidia_size_t i = 0; i <= tmp[0]; i++)
+	for (lidia_size_t i = 0; i <= tmp[0]; i++)
 		RES[i] = tmp[i];
 
 	delete[] tmp;
@@ -971,7 +971,7 @@ lininr2(base_vector< lidia_size_t > &RES) const
 	if (RES.size() != tmp[0])
 		RES.set_size(tmp[0]);
 
-	for (register lidia_size_t i = 0; i <= tmp[0]; i++)
+	for (lidia_size_t i = 0; i <= tmp[0]; i++)
 		RES[i] = tmp[i];
 
 	delete[] tmp;
@@ -1086,7 +1086,7 @@ lininc1(base_vector< lidia_size_t > &RES) const
 	if (RES.size() != tmp[0])
 		RES.set_size(tmp[0]);
 
-	for (register lidia_size_t i = 0; i <= tmp[0]; i++)
+	for (lidia_size_t i = 0; i <= tmp[0]; i++)
 		RES[i] = tmp[i];
 
 	delete[] tmp;
@@ -1197,7 +1197,7 @@ lininc2(base_vector< lidia_size_t > &RES) const
 	if (RES.size() != tmp[0])
 		RES.set_size(tmp[0]);
 
-	for (register lidia_size_t i = 0; i <= tmp[0]; i++)
+	for (lidia_size_t i = 0; i <= tmp[0]; i++)
 		RES[i] = tmp[i];
 
 	delete[] tmp;
@@ -4742,7 +4742,7 @@ mgcd1(const bigint * aconst, lidia_size_t n)
 
 	debug_handler("multiple_gcd", "mgcd1(const bigint *, lidia_size_t)");
 
-	register lidia_size_t i, j, index, bound;
+	lidia_size_t i, j, index, bound;
 
 	bigint MIN, TMP, q, r, *Ttmp1, *Ttmp2 = NULL;
 
@@ -4829,7 +4829,7 @@ mgcd2(const bigint * aconst, lidia_size_t n)
 
 	debug_handler("multiple_gcd", "mgcd2(const bigint *, lidia_size_t)");
 
-	register lidia_size_t i, j, index, bound, SW;
+	lidia_size_t i, j, index, bound, SW;
 	bigint MIN, TMP, q, r, *Ttmp1, *Ttmp2 = NULL;
 
 	if (columns != n)

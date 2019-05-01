@@ -79,7 +79,7 @@ sparse_fp_matrix_algorithms< T, MATRIX_TYPE >::multiply_special(const math_vecto
 								const T &mod) const
 {
 	T TMP, RES = 0;
-	for (register lidia_size_t i = 0; i < v.size(); i++) {
+	for (lidia_size_t i = 0; i < v.size(); i++) {
 		mult_mod(TMP, v[i], w[i], mod);
 		add_mod(RES, RES, TMP, mod);
 	}
@@ -817,7 +817,7 @@ sparse_fp_matrix_algorithms< T, MATRIX_TYPE >::conjugate_gradient (const ring_ma
 	math_vector< T > u(n, n), p(n, n), r(n, n);
 	long TMPlong;
 	random_generator gen;
-	for (register lidia_size_t i = 0; i < n; i++) {
+	for (lidia_size_t i = 0; i < n; i++) {
 		gen >> TMPlong;
 		u[i] = TMPlong % mod;
 	}

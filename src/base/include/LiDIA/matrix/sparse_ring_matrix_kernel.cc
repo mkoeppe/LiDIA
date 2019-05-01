@@ -69,7 +69,7 @@ template< class T >
 void
 sparse_ring_matrix_kernel< T >::add (MR< T > &RES, const MR< T > &M, const MR< T > &N) const
 {
-	register lidia_size_t i, j, l1, l2, l3, l;
+	lidia_size_t i, j, l1, l2, l3, l;
 
 	T TMP;
 	T *Mtmp, *Ntmp, *REStmp;
@@ -150,7 +150,7 @@ template< class T >
 void
 sparse_ring_matrix_kernel< T >::add (MR< T > &RES, const MR< T > &M, const T &a) const
 {
-	register lidia_size_t i, j, l1, l3, l;
+	lidia_size_t i, j, l1, l3, l;
 
 	T TMP;
 	T *Mtmp, *REStmp;
@@ -221,7 +221,7 @@ void
 sparse_ring_matrix_kernel< T >::add (MR< T > &RES, const T &a, const MR< T > &M) const
 {
 
-	register lidia_size_t i, j, l1, l3, l;
+	lidia_size_t i, j, l1, l3, l;
 
 	T TMP;
 	T *Mtmp, *REStmp;
@@ -295,7 +295,7 @@ template< class T >
 void
 sparse_ring_matrix_kernel< T >::subtract (MR< T > &RES, const MR< T > &M, const MR< T > &N) const
 {
-	register lidia_size_t i, j, l1, l2, l3, l;
+	lidia_size_t i, j, l1, l2, l3, l;
 
 	T TMP;
 	T *Mtmp, *Ntmp, *REStmp;
@@ -376,7 +376,7 @@ template< class T >
 void
 sparse_ring_matrix_kernel< T >::subtract (MR< T > &RES, const MR< T > &M, const T &a) const
 {
-	register lidia_size_t i, j, l1, l3, l;
+	lidia_size_t i, j, l1, l3, l;
 
 	T TMP;
 	T *Mtmp, *REStmp;
@@ -447,7 +447,7 @@ template< class T >
 void
 sparse_ring_matrix_kernel< T >::subtract (MR< T > &RES, const T &a, const MR< T > &M) const
 {
-	register lidia_size_t i, j, l1, l3, l;
+	lidia_size_t i, j, l1, l3, l;
 
 	T TMP;
 	T *Mtmp, *REStmp;

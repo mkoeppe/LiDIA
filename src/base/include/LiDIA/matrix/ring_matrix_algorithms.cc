@@ -59,7 +59,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 add(MR< T > &RES, const MR< T > &M, const MR< T > &N) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	T TMP;
 
 	for (i = 0; i < N.rows; i++) {
@@ -76,7 +76,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 add(MR< T > &RES, const MR< T > &M, const T &a) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	T TMP;
 
 	for (i = 0; i < RES.rows; i++) {
@@ -93,7 +93,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 add(MR< T > &RES, const T &a, const MR< T > &M) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	T TMP;
 
 	for (i = 0; i < RES.rows; i++) {
@@ -114,7 +114,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 subtract(MR< T > &RES, const MR< T > &M, const MR< T > &N) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	T TMP;
 
 	for (i = 0; i < RES.rows; i++) {
@@ -131,7 +131,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 subtract(MR< T > &RES, const MR< T > &M, const T &a) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	T TMP;
 
 	for (i = 0; i < RES.rows; i++) {
@@ -148,7 +148,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 subtract(MR< T > &RES, const T &a, const MR< T > &M) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	T TMP;
 
 	for (i = 0; i < RES.rows; i++) {
@@ -169,7 +169,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 multiply(MR< T > &RES, const MR< T > &A, const MR< T > &B) const
 {
-	register lidia_size_t j, i, z;
+	lidia_size_t j, i, z;
 	T TMP, TMP1;
 
 	for (j = 0; j < A.rows; j++) {
@@ -190,7 +190,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 multiply(MR< T > &RES, const MR< T > &A, const T &k) const
 {
-	register lidia_size_t j, i;
+	lidia_size_t j, i;
 	T TMP;
 
 	for (j = 0; j < A.rows; j++) {
@@ -207,7 +207,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 multiply(MR< T > &RES, const T &k, const MR< T > &A) const
 {
-	register lidia_size_t j, i;
+	lidia_size_t j, i;
 	T TMP;
 	for (j = 0; j < A.rows; j++) {
 		for (i = 0; i < A.columns; i++) {
@@ -223,7 +223,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 compwise_multiply(MR< T > &RES, const MR< T > &A, const MR< T > &B) const
 {
-	register lidia_size_t j, i;
+	lidia_size_t j, i;
 	T TMP;
 
 	for (j = 0; j < RES.rows; j++) {
@@ -240,7 +240,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 void ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 multiply_right(const MR< T > &RES, math_vector< T > &res, const math_vector< T > &v) const
 {
-	register lidia_size_t i, j, l = res.size();
+	lidia_size_t i, j, l = res.size();
 	T TMP, TMP1;
 
 	T *tmp1 = res.get_data_address(), *tmp2 = v.get_data_address();
@@ -285,7 +285,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 multiply_right(const MR< T > &RES, T *&c, const T *v) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	T TMP, TMP1;
 
 	if (c == v || c == NULL) {
@@ -310,7 +310,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 void ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 multiply_left(const MR< T > &RES, math_vector< T > &res, const math_vector< T > &v) const
 {
-	register lidia_size_t i, j, l = res.size();
+	lidia_size_t i, j, l = res.size();
 	T TMP, TMP1;
 
 	T *tmp1 = res.get_data_address(), *tmp2 = v.get_data_address();
@@ -354,7 +354,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 multiply_left(const MR< T > &RES, T *&c, const T *v) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	T TMP, TMP1;
 
 	if (c == v || c == NULL) {
@@ -383,7 +383,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 negate(MR< T > &RES, const MR< T > &B) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	T TMP;
 
@@ -409,7 +409,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline bool ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 equal(const MR< T > &RES, const MR< T > &N) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	if (RES.rows != N.rows || RES.columns != N.columns)
 		return false;
 
@@ -431,7 +431,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 trace(const MR< T > &RES, T &tr) const
 {
-	register lidia_size_t i;
+	lidia_size_t i;
 	tr = modul1.member(RES, 0, 0);
 	for (i = 1; i < RES.rows; i++)
 		LiDIA::add(tr, tr, modul1.member(RES, i, i));
@@ -500,7 +500,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void modular_ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 add(MR< T > &RES, const MR< T > &M, const MR< T > &N, const T &mod) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	T TMP;
 
 	for (i = 0; i < N.rows; i++) {
@@ -517,7 +517,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void modular_ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 add(MR< T > &RES, const MR< T > &M, const T &a, const T &mod) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	T TMP;
 
 	for (i = 0; i < RES.rows; i++) {
@@ -534,7 +534,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void modular_ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 add(MR< T > &RES, const T &a, const MR< T > &M, const T &mod) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	T TMP;
 
 	for (i = 0; i < RES.rows; i++) {
@@ -555,7 +555,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void modular_ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 subtract(MR< T > &RES, const MR< T > &M, const MR< T > &N, const T &mod) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	T TMP;
 
 	for (i = 0; i < RES.rows; i++) {
@@ -572,7 +572,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void modular_ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 subtract(MR< T > &RES, const MR< T > &M, const T &a, const T &mod) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	T TMP;
 
 	for (i = 0; i < RES.rows; i++) {
@@ -589,7 +589,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void modular_ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 subtract(MR< T > &RES, const T &a, const MR< T > &M, const T &mod) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	T TMP;
 
 	for (i = 0; i < RES.rows; i++) {
@@ -610,7 +610,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void modular_ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 multiply(MR< T > &RES, const MR< T > &A, const MR< T > &B, const T &mod) const
 {
-	register lidia_size_t j, i, z;
+	lidia_size_t j, i, z;
 	T TMP, TMP1;
 
 	for (j = 0; j < A.rows; j++) {
@@ -631,7 +631,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void modular_ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 multiply(MR< T > &RES, const MR< T > &A, const T &k, const T &mod) const
 {
-	register lidia_size_t j, i;
+	lidia_size_t j, i;
 	T TMP;
 
 	for (j = 0; j < A.rows; j++) {
@@ -648,7 +648,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void modular_ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 multiply(MR< T > &RES, const T &k, const MR< T > &A, const T &mod) const
 {
-	register lidia_size_t j, i;
+	lidia_size_t j, i;
 	T TMP;
 	for (j = 0; j < A.rows; j++) {
 		for (i = 0; i < A.columns; i++) {
@@ -664,7 +664,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void modular_ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 compwise_multiply(MR< T > &RES, const MR< T > &A, const MR< T > &B, const T &mod) const
 {
-	register lidia_size_t j, i;
+	lidia_size_t j, i;
 	T TMP;
 
 	for (j = 0; j < RES.rows; j++) {
@@ -681,7 +681,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 void modular_ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 multiply_right(const MR< T > &RES, math_vector< T > &res, const math_vector< T > &v, const T &mod) const
 {
-	register lidia_size_t i, j, l = res.size();
+	lidia_size_t i, j, l = res.size();
 	T TMP, TMP1;
 
 	T *tmp1 = res.get_data_address(), *tmp2 = v.get_data_address();
@@ -726,7 +726,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void modular_ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 multiply_right(const MR< T > &RES, T *&c, const T *v, const T &mod) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	T TMP, TMP1;
 
 	if (c == v || c == NULL) {
@@ -751,7 +751,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 void modular_ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 multiply_left(const MR< T > &RES, math_vector< T > &res, const math_vector< T > &v, const T &mod) const
 {
-	register lidia_size_t i, j, l = res.size();
+	lidia_size_t i, j, l = res.size();
 	T TMP, TMP1;
 
 	T *tmp1 = res.get_data_address(), *tmp2 = v.get_data_address();
@@ -795,7 +795,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void modular_ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 multiply_left(const MR< T > &RES, T *&c, const T *v, const T &mod) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	T TMP, TMP1;
 
 	if (c == v || c == NULL) {
@@ -824,7 +824,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void modular_ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 negate(MR< T > &RES, const MR< T > &B, const T &mod) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	T TMP;
 
@@ -850,7 +850,7 @@ template< class T, class ARG1, class ARG2, class ARG3 >
 inline void modular_ring_matrix_algorithms< T, ARG1, ARG2, ARG3 >::
 trace(const MR< T > &RES, T &tr, const T &mod) const
 {
-	register lidia_size_t i;
+	lidia_size_t i;
 	tr = modul1.member(RES, 0, 0);
 	for (i = 1; i < RES.rows; i++)
 		LiDIA::add_mod(tr, tr, modul1.member(RES, i, i));

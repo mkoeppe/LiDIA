@@ -66,7 +66,7 @@ template< class T >
 inline T *
 allocate_memory_and_copy_data(const T *&w, lidia_size_t len)
 {
-	register T *v = new T[len];
+	T *v = new T[len];
 	copy_data(v, w, len);
 	return v;
 }
@@ -77,7 +77,7 @@ template< class T >
 inline T **
 allocate_memory_and_copy_data2(const T **W, lidia_size_t len1, lidia_size_t len2)
 {
-	register T **V = new T *[len1];
+	T **V = new T *[len1];
 	for (--len1; len1 >= 0; len1--)
 		V[len1] = allocate_memory_and_copy_data(W[len1], len2);
 	return V;
@@ -117,7 +117,7 @@ template< class T >
 inline T *
 allocate_memory_and_swap_data(T *w, lidia_size_t len)
 {
-	register T *v = new T[len];
+	T *v = new T[len];
 	for (--len; len >= 0; len--)
 		swap(v[len], w[len]);
 	return v;
@@ -129,7 +129,7 @@ template< class T >
 inline T **
 allocate_memory_and_swap_data2(T **W, lidia_size_t len1, lidia_size_t len2)
 {
-	register T **V = new T *[len1];
+	T **V = new T *[len1];
 
 	for (--len1; len1 >= 0; len1--)
 		V[len1] = allocate_memory_and_swap_data(W[len1], len2);

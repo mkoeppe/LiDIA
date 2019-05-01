@@ -356,7 +356,7 @@ multiply(gf2n & c, const gf2n & a, const gf2n & b)
 {
 	void square(gf2n_word*, gf2n_word*);
 
-	register unsigned int i;
+	unsigned int i;
 
 	for (i = 0; i < 2*gf2n::anzBI; i++)
 		gf2n::B[i] = (gf2n_word) 0;
@@ -384,7 +384,7 @@ square(gf2n & c, const gf2n & a)
 
 	square(gf2n::B, a.element);
 	partial_reduce1[gf2n::invsel](gf2n::B);
-	for (register unsigned i = 0; i < gf2n::anzBI; i++)
+	for (unsigned i = 0; i < gf2n::anzBI; i++)
 		c.element[i] = gf2n::B[i];
 }
 
@@ -427,8 +427,8 @@ divide(gf2n & c, const gf2n & a, const gf2n & b)
 inline void
 add(gf2n & c, const gf2n & a, const gf2n & b)
 {
-	register unsigned int i;
-	register gf2n_word *cp, *ap, *bp;
+	unsigned int i;
+	gf2n_word *cp, *ap, *bp;
 
 	for (i = 0, ap = a.element, bp = b.element, cp = c.element;
 	     i < gf2n::anzBI; i++, cp++, ap++, bp++)

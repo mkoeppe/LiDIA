@@ -45,7 +45,7 @@ mgcd(const bigint * a, lidia_size_t n)
 			"mgcd(const bigint *, lidia_size_t)", LDBL_MATRIX);
 
 	bigint *RES = NULL;
-	register lidia_size_t i;
+	lidia_size_t i;
 
 	if (n <= 0)
 		lidia_error_handler("multiple_gcd", "mgcd :: Error in parameter !!");
@@ -149,7 +149,7 @@ mgcd_new(const bigint * a, lidia_size_t n)
 			"mgcd(const bigint *, lidia_size_t)", LDBL_MATRIX);
 
 	bigint *RES = new bigint[n+1];
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	if (n <= 0)
 		lidia_error_handler("multiple_gcd", "mgcd :: Error in parameter !!");
@@ -216,7 +216,7 @@ mgcd_new2(const bigint * a, lidia_size_t n)
 			"mgcd(const bigint *, lidia_size_t)", LDBL_MATRIX);
 
 	bigint *RES = new bigint[n+1];
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	if (n <= 0)
 		lidia_error_handler("multiple_gcd", "mgcd :: Error in parameter !!");
@@ -300,7 +300,7 @@ mgcd_new3(const bigint * b, lidia_size_t n)
 		a[h] = b[h];
 
 	bigint *RES = new bigint[n+1];
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	if (n <= 0)
 		lidia_error_handler("multiple_gcd", "mgcd :: Error in parameter !!");
@@ -424,7 +424,7 @@ mgcd2(bigint & RES, const bigint * aconst, lidia_size_t n)
 	debug_handler("multiple_gcd", "in member - function "
 		      "mgcd2(bigint &, const bigint *, lidia_size_t)");
 
-	register lidia_size_t i, index, SW, bound;
+	lidia_size_t i, index, SW, bound;
 	bigint MIN, TMP, q, r;
 
 	bigint *a = new bigint[n + 1];
@@ -490,7 +490,7 @@ mgcd2(const bigint * aconst, lidia_size_t n)
 	debug_handler("multiple_gcd", "in function "
 		      "mgcd2(const bigint *, lidia_size_t)");
 
-	register lidia_size_t i, j, index, SW, bound;
+	lidia_size_t i, j, index, SW, bound;
 	bigint MIN, TMP, q, r, *Ttmp1, *Ttmp2 = NULL;
 
 	matrix< bigint > T(n, n);
@@ -577,7 +577,7 @@ mgcd2(const bigint * aconst, lidia_size_t n)
 	debug_handler("multiple_gcd", "in member - function "
 		      "mgcd2(const bigint *, lidia_size_t)");
 
-	register lidia_size_t i, j, index, bound, SW;
+	lidia_size_t i, j, index, bound, SW;
 	bigint MIN, TMP, q, r, *Ttmp1, *Ttmp2 = NULL;
 
 	if (columns != n)
@@ -674,7 +674,7 @@ mgcd3(const bigint * aconst, lidia_size_t n)
 	debug_handler("multiple_gcd", "in member - function "
 		      "mgcd3(const bigint *, lidia_size_t)");
 
-	register lidia_size_t i, j, index, bound, SW;
+	lidia_size_t i, j, index, bound, SW;
 	bigint MIN, TMP, q, r, *Ttmp2 = NULL, *Ttmp1;
 
 	if (columns != n)
@@ -766,7 +766,7 @@ mgcd4(const bigint * aconst, lidia_size_t n)
 	debug_handler("multiple_gcd", "in member - function "
 		      "mgcd4(const bigint *, lidia_size_t)");
 
-	register lidia_size_t i, j, index, bound, SW;
+	lidia_size_t i, j, index, bound, SW;
 	bigint MIN, TMP, q, r, *Ttmp1, *Ttmp2 = NULL;
 
 	if (columns != n)

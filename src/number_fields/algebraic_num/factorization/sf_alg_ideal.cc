@@ -401,7 +401,7 @@ void factor(factorization< alg_ideal > &fact, const alg_ideal & a,
 void decompose_prime(prime_ideal * &factor, lidia_size_t & num,
 		     const bigint & p, const order & O)
 {
-	register lidia_size_t j;
+	lidia_size_t j;
 
 	if (!(O.base_denominator() % p).is_zero()) {
 		if (single_factor< alg_ideal >::verbose_flag) {
@@ -518,7 +518,7 @@ single_factor< alg_ideal >::finish(factorization< alg_ideal > &fact,
 
 //  alg_ideal divisor(O);
 
-	register lidia_size_t j;
+	lidia_size_t j;
 
 	fact.reset();
 	timer T1;

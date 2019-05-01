@@ -59,8 +59,8 @@ static inline
 long mul_mod_sp(long a, long b, long p, double pinv)
 {
 	double ab = static_cast<double>(a) * static_cast<double>(b);
-	register long q = static_cast<long>(ab * pinv);
-	register long res = static_cast<long>(ab - (static_cast<double>(q) * static_cast<double>(p)));
+	long q = static_cast<long>(ab * pinv);
+	long res = static_cast<long>(ab - (static_cast<double>(q) * static_cast<double>(p)));
 //    res += (res >> ((SIZEOF_LONG*8)-1)) & p;
 //    res -= p;
 //    res += (res >> ((SIZEOF_LONG*8)-1)) & p;
@@ -79,8 +79,8 @@ static inline
 long mul_mod_sp2(long a, long b, long p, double bpinv)
 {
 	double ab = static_cast<double>(a) * static_cast<double>(b);
-	register long q = static_cast<long>(a* bpinv);
-	register long res = static_cast<long>(ab - (static_cast<double>(q) * static_cast<double>(p)));
+	long q = static_cast<long>(a* bpinv);
+	long res = static_cast<long>(ab - (static_cast<double>(q) * static_cast<double>(p)));
 //    res += (res >> ((SIZEOF_LONG*8)-1)) & p;
 //    res -= p;
 //    res += (res >> ((SIZEOF_LONG*8)-1)) & p;

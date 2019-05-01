@@ -449,8 +449,8 @@ void gf2n_p_mult(gf2n *r, const gf2n * a, const gf2n * b, int ad, int bd)
 void multiply(gf2n_polynomial & c, const gf2n_polynomial & a,
 	      const gf2n_polynomial & b)
 {
-	register int deg_a = a.deg, deg_b = b.deg;
-	register int deg_ab = deg_a + deg_b;
+	int deg_a = a.deg, deg_b = b.deg;
+	int deg_ab = deg_a + deg_b;
 	int s = c.size;
 	gf2n * cpp;
 

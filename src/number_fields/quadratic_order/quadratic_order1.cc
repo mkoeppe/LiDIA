@@ -1723,7 +1723,7 @@ quadratic_order::estimate_L1(const long nQ)
 	int kron;
 	long Q2, m8, P, QQ;
 	double E, C, wt, s;
-	register long i;
+	long i;
 	bigfloat nFI;
 
 	// set last-used quadratic_order
@@ -2103,7 +2103,7 @@ quadratic_order::Cfunction()
 	int kron;
 	long Q2, m8, P, num, QQ;
 	double E, E2, E3, C, wt, dP, dP2, s;
-	register long i;
+	long i;
 	long oprec = bigfloat::get_precision();
 
 	bigfloat::set_precision(prec);
@@ -2334,7 +2334,7 @@ quadratic_order::Cfunction_bigfloat(int pmult)
 	int kron;
 	long Q2, m8, P, num, QQ;
 	bigfloat_int E, E2, E3, C, wt, dP, dP2, s;
-	register long i;
+	long i;
 	long oprec = bigfloat::get_precision();
 
 	bigfloat::set_precision(prec*pmult);

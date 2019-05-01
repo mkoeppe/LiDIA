@@ -44,7 +44,7 @@ gf2n_bit16 mul8bit (gf2n_bit16 a, gf2n_bit16 b)
 {
 	gf2n_bit16 h = 0;
 
-	for (register int i = 1; i <= 8; i++) {
+	for (int i = 1; i <= 8; i++) {
 		if (!a)
 			return (h);
 		if (a&1) h ^= b;
@@ -82,7 +82,7 @@ gf2n_word mul16bit(gf2n_bit16 a, gf2n_bit16 b)
 
 void gf2n::generate_mul_table()
 {
-	register unsigned int i, j;
+	unsigned int i, j;
 
 	for (i = 0; i < dim_mul; i++)
 		tabmul[i][i] = mul8bit(i, i);
@@ -100,7 +100,7 @@ void gf2n::generate_mul_table()
 
 void gf2n::generate_square_table()
 {
-	register unsigned int i;
+	unsigned int i;
 
 	for (i = 0; i < dim_square; i++)
 		tabsquare[i] = mul16bit(i, i);
@@ -521,7 +521,7 @@ void (*gf2nmul[]) (gf2n_word*, gf2n_word*, gf2n_word*) =
 #if GF2N_WORDSIZE == 64
 void square (gf2n_word *c, gf2n_word *a)
 {
-	for (register int i = gf2n::anzBI-1, j = 2*gf2n::anzBI-1; i >= 0; i--) {
+	for (int i = gf2n::anzBI-1, j = 2*gf2n::anzBI-1; i >= 0; i--) {
 		c[j--] = tabsquare[ gf2n_bit16(a[i] >> 48) ] << 32 |
 			tabsquare[ gf2n_bit16(a[i] >> 32) ];
 		c[j--] = tabsquare[ gf2n_bit16(a[i] >> 16) ] << 32 |
@@ -531,7 +531,7 @@ void square (gf2n_word *c, gf2n_word *a)
 #else // we are running on a 32bit architecture
 void square (gf2n_word *c, gf2n_word *a)
 {
-	for (register int i = gf2n::anzBI-1, j = 2*gf2n::anzBI-1; i >= 0; i--) {
+	for (int i = gf2n::anzBI-1, j = 2*gf2n::anzBI-1; i >= 0; i--) {
 		c[j--] = tabsquare[ gf2n_bit16(a[i] >> 16) ];
 		c[j--] = tabsquare[ gf2n_bit16(a[i]) ];
 	}

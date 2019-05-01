@@ -193,7 +193,7 @@ void srandom(x)
 
 	unsigned x;
 {
-	register int i, j;
+	int i, j;
 	long random();
 
 	if (rand_type == TYPE_0)
@@ -240,7 +240,7 @@ initstate(seed, arg_state, n)
 	char *arg_state; /* pointer to state array */
 	size_t n; /* # bytes of state info */
 {
-	register char *ostate = (char *) (&state[-1]);
+	char *ostate = (char *) (&state[-1]);
 
 	if (rand_type == TYPE_0)
 		state[-1] = rand_type;
@@ -319,9 +319,9 @@ setstate(arg_state)
 
 	const char *arg_state;
 {
-	register long *new_state = (long *) arg_state;
-	register int type = new_state[0] % MAX_TYPES;
-	register int rear = new_state[0] / MAX_TYPES;
+	long *new_state = (long *) arg_state;
+	int type = new_state[0] % MAX_TYPES;
+	int rear = new_state[0] / MAX_TYPES;
 	char *ostate = (char *) (&state[-1]);
 
 	if (rand_type == TYPE_0)

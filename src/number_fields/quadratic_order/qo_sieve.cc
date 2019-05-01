@@ -824,12 +824,12 @@ qo_sieve::qo_sieve_interval()
 {
 	debug_handler("qo_sieve", "qo_sieve_interval");
 
-	register int p, l, *fbp, *lsieb = (int *)sieb;	// FIXME: SIEBTYP and int are incompatible types
-	register SIEBTYP logp;
-	register SIEBTYP *begin;
-	register int x, counter = 0, M_2 = M << 1;
-	register int oldstart1;
-	register int *ST1, *ST2;
+	int p, l, *fbp, *lsieb = (int *)sieb;	// FIXME: SIEBTYP and int are incompatible types
+	SIEBTYP logp;
+	SIEBTYP *begin;
+	int x, counter = 0, M_2 = M << 1;
+	int oldstart1;
+	int *ST1, *ST2;
 
 	if (next_is_si) {
 		ST1 = START1;
@@ -1278,7 +1278,7 @@ qo_sieve::init(bigint & Delta_in,
 	       long lpbound_in) {
 	debug_handler("qo_sieve", "init");
 
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	int p, oldFB;
 	bigfloat temp;
 	bool use_old = false;
@@ -1542,7 +1542,7 @@ void
 qo_sieve::init_self_initialization() {
 	debug_handler("qo_sieve", "init_self_initialization");
 
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	int p;
 	lidia_size_t i1, i2;
 
@@ -1633,7 +1633,7 @@ void
 qo_sieve::reset() {
 	debug_handler("qo_sieve", "reset");
 
-	register lidia_size_t i;
+	lidia_size_t i;
 
 	if (is_init) {
 		// reset sieving arrays
@@ -1710,7 +1710,7 @@ void
 qo_sieve::restart() {
 	debug_handler("qo_sieve", "restart");
 
-	register lidia_size_t i;
+	lidia_size_t i;
 
 	relation_array.reset();
 	relation_array.set_no_of_rows(size_FB);

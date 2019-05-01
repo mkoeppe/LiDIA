@@ -47,8 +47,8 @@ row_oriented_dense_matrix_modules< T >::max_abs (const MR< T > &RES, T &MAX) con
 {
 	MAX.assign(abs(RES.value[0][0]));
 
-	register lidia_size_t i, j;
-	register bigint *tmp;
+	lidia_size_t i, j;
+	bigint *tmp;
 
 	for (i = 0; i < RES.rows; i++) {
 		tmp = RES.value[i];
@@ -72,7 +72,7 @@ row_oriented_dense_matrix_modules< T >::subtract_multiple_of_column (MR< T > &A,
 								     lidia_size_t l2,
 								     lidia_size_t l) const
 {
-	for (register lidia_size_t i = 0; i <= l; i++)
+	for (lidia_size_t i = 0; i <= l; i++)
 		LiDIA::subtract(A.value[i][l1], A.value[i][l1], q*A.value[i][l2]);
 }
 
@@ -88,7 +88,7 @@ row_oriented_dense_matrix_modules< T >::subtract_multiple_of_column_mod (MR< T >
 									 const T &mod) const
 {
 	T TMP;
-	for (register lidia_size_t i = 0; i <= l; i++) {
+	for (lidia_size_t i = 0; i <= l; i++) {
 		LiDIA::mult_mod(TMP, q, A.value[i][l2], mod);
 		LiDIA::sub_mod(A.value[i][l1], A.value[i][l1], TMP, mod);
 	}
@@ -106,7 +106,7 @@ row_oriented_dense_matrix_modules< T >::normalize_column_mod (MR< T > &A,
 							      const T &mod) const
 {
 	T TMP;
-	for (register lidia_size_t i = 0; i <= l; i++) {
+	for (lidia_size_t i = 0; i <= l; i++) {
 		LiDIA::mult_mod(TMP, q, A.value[i][l2], mod);
 		LiDIA::sub_mod(A.value[i][l1], A.value[i][l1], TMP, mod);
 		if (A.value[i][l1] < A.Zero)
@@ -122,7 +122,7 @@ row_oriented_dense_matrix_modules< T >::negate_column (MR< T > &A,
 						       lidia_size_t index,
 						       lidia_size_t l) const
 {
-	for (register lidia_size_t i = 0; i <= l; i++)
+	for (lidia_size_t i = 0; i <= l; i++)
 		A.value[i][index] = -A.value[i][index];
 }
 
@@ -135,7 +135,7 @@ row_oriented_dense_matrix_modules< T >::negate_column_mod (MR< T > &A,
 							   lidia_size_t l,
 							   const T &mod) const
 {
-	for (register lidia_size_t i = 0; i <= l; i++) {
+	for (lidia_size_t i = 0; i <= l; i++) {
 		A.value[i][index] = -A.value[i][index];
 		LiDIA::best_remainder(A.value[i][index], A.value[i][index], mod);
 	}
@@ -151,9 +151,9 @@ row_oriented_dense_matrix_modules< T >::init_max_array (const MR< T > &A) const
 	memory_handler(max_array, DMESSAGE, "init :: "
 		       "Error in memory allocation (max_array)");
 	T *tmp;
-	for (register lidia_size_t i = 0; i < A.rows; i++) {
+	for (lidia_size_t i = 0; i < A.rows; i++) {
 		tmp = A.value[i];
-		for (register lidia_size_t j = 0; j < A.columns; j++)
+		for (lidia_size_t j = 0; j < A.columns; j++)
 			if (max_array[j] < abs(tmp[j]))
 				max_array[j] = abs(tmp[j]);
 	}
@@ -168,7 +168,7 @@ row_oriented_dense_matrix_modules< T >::update_max_array (const MR< T > &A,
 							  lidia_size_t i,
 							  T *max_array) const
 {
-	for (register lidia_size_t j = 0; j < A.rows; j++)
+	for (lidia_size_t j = 0; j < A.rows; j++)
 		if (max_array[i] < abs(A.value[j][i]))
 			max_array[i] = abs(A.value[j][i]);
 }
@@ -892,7 +892,7 @@ row_oriented_dense_matrix_modules< T >::kennwerte (MR< T > &RES,
 						   lidia_size_t &no_of_elements,
 						   T &Durch) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	bool SW = false;
 	no_of_elements = 0;
 	Durch = 0;
@@ -921,7 +921,7 @@ template< class T >
 inline void
 row_oriented_dense_matrix_modules< T >::max (MR< T > &RES, T &MAX) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	bool SW = false;
 
 	for (i = 0; i < RES.rows; i++)
@@ -1108,7 +1108,7 @@ row_oriented_dense_matrix_modules< T >::mgcd_bradley (MR< T > &A,
 						      lidia_size_t len) const
 {
 	lidia_size_t n = startc + 1;
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 
 	matrix< bigint > Tr(A.columns, A.columns);
@@ -1203,7 +1203,7 @@ row_oriented_dense_matrix_modules< T >::mgcd_bradley (MR< T > &A,
 						      lidia_size_t len) const
 {
 	lidia_size_t n = startc + 1;
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 
 	matrix< bigint > Tr(A.columns, A.columns);
@@ -1301,7 +1301,7 @@ row_oriented_dense_matrix_modules< T >::mgcd_ilio (MR< T > &A,
 
 	bigint *a = A.value[startr];
 
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	if (n <= 0)
 		lidia_error_handler("multiple_gcd", "mgcd :: Error in parameter !!");
@@ -1356,7 +1356,7 @@ row_oriented_dense_matrix_modules< T >::mgcd_ilio (MR< T > &A,
 
 	bigint *a = A.value[startr];
 
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	if (n <= 0)
 		lidia_error_handler("multiple_gcd", "mgcd :: Error in parameter !!");
@@ -1537,7 +1537,7 @@ row_oriented_dense_matrix_modules< T >::mgcd_storjohann (MR< T > &A,
 	T A3, A2, A1, A0, x, y;
 	T TMP1, TMP2, TMP3;
 
-	register lidia_size_t i, j, l;
+	lidia_size_t i, j, l;
 	lidia_size_t index;
 
 	//
@@ -1635,7 +1635,7 @@ row_oriented_dense_matrix_modules< T >::mgcd_storjohann (MR< T > &A,
 	T A3, A2, A1, A0, x, y;
 	T TMP1, TMP2, TMP3;
 
-	register lidia_size_t i, j, l;
+	lidia_size_t i, j, l;
 	lidia_size_t index;
 
 	//
@@ -2043,7 +2043,7 @@ column_oriented_dense_matrix_modules< T >::subtract_multiple_of_column (MR< T > 
 									lidia_size_t l2,
 									lidia_size_t l) const
 {
-	for (register lidia_size_t i = 0; i <= l; i++)
+	for (lidia_size_t i = 0; i <= l; i++)
 		LiDIA::subtract(A.value[l1][i], A.value[l1][i], q*A.value[l2][i]);
 }
 
@@ -2059,7 +2059,7 @@ column_oriented_dense_matrix_modules< T >::subtract_multiple_of_column_mod (MR< 
 									    const T &mod) const
 {
 	T TMP;
-	for (register lidia_size_t i = 0; i <= l; i++) {
+	for (lidia_size_t i = 0; i <= l; i++) {
 		LiDIA::mult_mod(TMP, q, A.value[l2][i], mod);
 		LiDIA::sub_mod(A.value[l1][i], A.value[l1][i], TMP, mod);
 	}
@@ -2077,7 +2077,7 @@ column_oriented_dense_matrix_modules< T >::normalize_column_mod (MR< T > &A,
 								 const T &mod) const
 {
 	T TMP;
-	for (register lidia_size_t i = 0; i <= l; i++) {
+	for (lidia_size_t i = 0; i <= l; i++) {
 		LiDIA::mult_mod(TMP, q, A.value[l2][i], mod);
 		LiDIA::sub_mod(A.value[l1][i], A.value[l1][i], TMP, mod);
 		if (A.value[l1][i] < A.Zero)
@@ -2093,7 +2093,7 @@ column_oriented_dense_matrix_modules< T >::negate_column (MR< T > &A,
 							  lidia_size_t index,
 							  lidia_size_t l) const
 {
-	for (register lidia_size_t i = 0; i <= l; i++)
+	for (lidia_size_t i = 0; i <= l; i++)
 		A.value[index][i] = -A.value[index][i];
 }
 
@@ -2106,7 +2106,7 @@ column_oriented_dense_matrix_modules< T >::negate_column_mod (MR< T > &A,
 							      lidia_size_t l,
 							      const T &mod) const
 {
-	for (register lidia_size_t i = 0; i <= l; i++) {
+	for (lidia_size_t i = 0; i <= l; i++) {
 		A.value[index][i] = -A.value[index][i];
 		LiDIA::best_remainder(A.value[index][i], A.value[index][i], mod);
 	}
@@ -2122,9 +2122,9 @@ column_oriented_dense_matrix_modules< T >::init_max_array (const MR< T > &A) con
 	memory_handler(max_array, DMESSAGE, "init :: "
 		       "Error in memory allocation (max_array)");
 	T *tmp;
-	for (register lidia_size_t i = 0; i < A.columns; i++) {
+	for (lidia_size_t i = 0; i < A.columns; i++) {
 		tmp = A.value[i];
-		for (register lidia_size_t j = 0; j < A.rows; j++)
+		for (lidia_size_t j = 0; j < A.rows; j++)
 			if (max_array[j] < abs(tmp[j]))
 				max_array[j] = abs(tmp[j]);
 	}
@@ -2139,7 +2139,7 @@ column_oriented_dense_matrix_modules< T >::update_max_array (const MR< T > &A,
 							     lidia_size_t i,
 							     T *max_array) const
 {
-	for (register lidia_size_t j = 0; j < A.rows; j++)
+	for (lidia_size_t j = 0; j < A.rows; j++)
 		if (max_array[i] < abs(A.value[i][j]))
 			max_array[i] = abs(A.value[i][j]);
 }
@@ -2576,7 +2576,7 @@ column_oriented_dense_matrix_modules< T >::kennwerte (MR< T > &RES,
 						      lidia_size_t &no_of_elements,
 						      T &Durch) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	bool SW = false;
 	no_of_elements = 0;
 	Durch = 0;
@@ -2605,7 +2605,7 @@ template< class T >
 inline void
 column_oriented_dense_matrix_modules< T >::max (MR< T > &RES, T &MAX) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	bool SW = false;
 
 	for (i = 0; i < RES.columns; i++)

@@ -147,7 +147,7 @@ void multiply(alg_ideal & c, const alg_ideal & a, const alg_ideal & b)
 	bigmod_matrix tmp1(a.degree(), (a.base.get_no_of_columns()+1)
 			   * (b.base.get_no_of_columns()+1) - 1, d);
 
-	register lidia_size_t i, col_no = 0;
+	lidia_size_t i, col_no = 0;
 
 	debug_handler_c("alg_ideal", "multiply(...)", 1,
 			std::cout << a << " and " << b;
@@ -161,7 +161,7 @@ void multiply(alg_ideal & c, const alg_ideal & a, const alg_ideal & b)
 	for (i = 0; i < a.base.get_no_of_columns(); i++) {
 		a.base.get_column_vector(tmp_vec, i);
 		alg_number n1(tmp_vec, 1, a.which_base());
-		for (register lidia_size_t j = 0; j < b.base.get_no_of_columns(); j++) {
+		for (lidia_size_t j = 0; j < b.base.get_no_of_columns(); j++) {
 			b.base.get_column_vector(tmp_vec, j);
 			alg_number n2(tmp_vec, 1, b.which_base());
 			debug_handler_c("alg_ideal", "multiply::multiply elements", 1,
@@ -232,7 +232,7 @@ void square(alg_ideal & c, const alg_ideal & a)
 
 	tmp1.set_no_of_rows(a.degree());
 
-	register lidia_size_t i, col_no = 0;
+	lidia_size_t i, col_no = 0;
 
 	debug_handler_c("alg_ideal", "square(...)", 1,
 			std::cout << a << "represented by" << a.base);
@@ -309,7 +309,7 @@ void multiply(alg_ideal &c, const alg_ideal &a, const alg_number & b)
 				columns += n;
 			c.base.set_no_of_columns(columns);
 			c.base.set_modulus(d*N);
-			for (register lidia_size_t i = rows; i; i--)
+			for (lidia_size_t i = rows; i; i--)
 				c.base.sto(rows - i, columns-i, d);
 		}
 		else
@@ -361,7 +361,7 @@ void multiply(alg_ideal &c, const alg_number & b, const alg_ideal &a)
 				columns += n;
 			c.base.set_no_of_columns(columns);
 			c.base.set_modulus(d*N);
-			for (register lidia_size_t i = rows; i; i--)
+			for (lidia_size_t i = rows; i; i--)
 				c.base.sto(rows - i, columns-i, d);
 		}
 		else
@@ -416,7 +416,7 @@ void divide(alg_ideal &c, const alg_ideal &a, const alg_number & b)
 	results = new alg_number[c.base.get_no_of_columns()];
 	alg_number tmp(bigint(1), c.O);
 
-	register lidia_size_t i;
+	lidia_size_t i;
 	for (i = 0; i < abase.get_no_of_columns(); i++) {
 		abase.get_column_vector(tmp.coeff, i);
 		divide(results[i], tmp, divisor);
@@ -493,7 +493,7 @@ void divide(alg_ideal & c, const alg_ideal & a, const module & bb)
 	alg_number x, y, z;
 	bigint_matrix LGS(n, n*n);
 
-	register lidia_size_t i;
+	lidia_size_t i;
 
 	bigmod_matrix tmp(a.base);
 	tmp.lift(0);
@@ -504,7 +504,7 @@ void divide(alg_ideal & c, const alg_ideal & a, const module & bb)
 		// compute the images of the basis of A
 		tmp.get_column_vector(tmp_vec, i);
 		x = alg_number(tmp_vec, 1, a.O);
-		for (register lidia_size_t j = 0; j < n; j++) {
+		for (lidia_size_t j = 0; j < n; j++) {
 			// compute the images of the basis of B
 			// under the MULT-with-x-homomorphism
 			b.base.get_column_vector(tmp_vec, j);
@@ -530,7 +530,7 @@ void divide(alg_ideal & c, const alg_ideal & a, const module & bb)
 	// Put the columns of LGS into Map.
 	bigmod_matrix Map(n*n, n, N); // set ideal to 'N'.
 	for (i = 0; i < n * n; i++) {
-		for (register lidia_size_t j = 0; j < n; j++) {
+		for (lidia_size_t j = 0; j < n; j++) {
 			Map.sto(j + (i % n)*n, i / n, LGS.member(j, i));
 		}
 	}
@@ -584,7 +584,7 @@ void remainder(alg_ideal &c, const alg_ideal &a, const bigint &p)
 
 	remainder(garbage, a.base, p);
 	garbage.hnf();
-	register long i=garbage.rank();
+	long i=garbage.rank();
 	if (i==0){
 		c.base.set_no_of_columns(1);
 	}
@@ -607,8 +607,8 @@ order module::ring_of_multipliers(const bigint &p) const
 	// now we have matrices for each (b -> ab).
 
 	debug_handler("module","in member - function ring_of_multipliers(const bigint &, bigint &)");
-	register lidia_size_t i,j,k;
-	register lidia_size_t n=degree();
+	lidia_size_t i,j,k;
+	lidia_size_t n=degree();
 	alg_number a,b,y;
 
 	bigint_matrix init(n,n*n);
@@ -752,7 +752,7 @@ void alg_ideal::reduce(alg_number & divisor)
 	long store = bigfloat::get_precision();
 	bigfloat::set_precision(static_cast<long>((prec-3)*L2B10*bits_per_base_digit+4));
 	for (i = 0; i < n; i++)
-		for (register lidia_size_t j = 0; j < n; j++)
+		for (lidia_size_t j = 0; j < n; j++)
 			lat.sto(i, j, bigfloat(tmp.member(i, j)));
 
 	//   std::cout <<"Zeros are " << ((nf_base *)O)->get_conjugates()<<std::flush;
@@ -822,7 +822,7 @@ void alg_ideal::randomize(const bigint & b)
 	den.assign_one();
 	base.set_no_of_columns(1);
 	base.set_modulus(LiDIA::randomize(b)+1);
-	for (register lidia_size_t j = 0; j < degree(); j++)
+	for (lidia_size_t j = 0; j < degree(); j++)
 		base.sto(j, 0, LiDIA::randomize(b));
 	is_exp = false;
 	multiply(*this, *(static_cast<module *>(this)), alg_ideal_cast(order(O)));

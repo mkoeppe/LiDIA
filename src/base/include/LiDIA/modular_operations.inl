@@ -136,7 +136,7 @@ best_remainder(long & a, const bigint & b, long mod)
 	if (mod == 1 || b.is_zero())
 		a = 0;
 	else {
-		register long mod2 = mod >> 1;
+		long mod2 = mod >> 1;
 		if (b > bigint(-mod2) && b <= bigint(mod2))
 			b.longify(a);
 		else
@@ -178,7 +178,7 @@ add_mod(long & d, long a, long b, long mod)
 	if (mod == 1)
 		d = 0;
 	else {
-		register long mod2 = mod/2;
+		long mod2 = mod/2;
 		double c = static_cast<double>(a) + static_cast<double>(b);
 		if (c <= static_cast<double>(-mod2))
 			c += static_cast<double>(mod);
@@ -218,7 +218,7 @@ sub_mod(long & d, long a, long b, long mod)
 	if (mod == 1)
 		d = 0;
 	else {
-		register long mod2 = mod/2;
+		long mod2 = mod/2;
 		double c = static_cast<double>(a) - static_cast<double>(b);
 		if (c <= static_cast<double>(-mod2))
 			c += static_cast<double>(mod);
@@ -253,10 +253,10 @@ mult_mod(long & d, long a, long b, long mod)
 	if (mod == 1)
 		d = 0;
 	else {
-		register long mod2 = mod/2;
+		long mod2 = mod/2;
 		double ab = static_cast<double>(a) * static_cast<double>(b);
-		register long q = static_cast<long>(ab / static_cast<double>(mod));
-		register long res = static_cast<long>(ab - (static_cast<double>(q) * static_cast<double>(mod)));
+		long q = static_cast<long>(ab / static_cast<double>(mod));
+		long res = static_cast<long>(ab - (static_cast<double>(q) * static_cast<double>(mod)));
 		if (res > mod2)
 			res -= mod;
 		if (res <= -mod2)
@@ -288,7 +288,7 @@ div_mod(long & c, long a, long b, long mod)
 	debug_handler_l("modular_operations", "in inline div_mod()", LDBL_MATRIX);
 
 	long u, v;
-	register long d = xgcd(u, v, b, mod);
+	long d = xgcd(u, v, b, mod);
 	if (d != 1)
 		lidia_error_handler("modular_operations", "div_mod - Version long :: "
 				    "Inverse undefined");
@@ -324,7 +324,7 @@ inv_mod(long & e, long a, long mod)
 	debug_handler_l("modular_operations", "in inline inv_mod()", LDBL_MATRIX);
 
 	long t, mod2 = mod/2;
-	register long d = xgcd(e, t, a, mod);
+	long d = xgcd(e, t, a, mod);
 	if (d != 1)
 		lidia_error_handler("modular_operations", "inv_mod - Version long :: "
 				    "Inverse undefined");

@@ -53,8 +53,8 @@ inline udigit max(udigit a, udigit b)
 static
 inline void shift_left(udigit *F, unsigned int k, unsigned int & Flast)
 {
-	register int i, j, s;
-	register udigit *fp1, *fp2;
+	int i, j, s;
+	udigit *fp1, *fp2;
 
 	s = k % (BITS_PER_LONG);
 	j = k / (BITS_PER_LONG);
@@ -96,8 +96,8 @@ inline void shift_left(udigit *F, unsigned int k, unsigned int & Flast)
 static
 inline void shift_right(udigit *F, unsigned int k, unsigned int & Flast)
 {
-	register unsigned int j, i, s;
-	register udigit *fp1, *fp2;
+	unsigned int j, i, s;
+	udigit *fp1, *fp2;
 
 	s = k % (BITS_PER_LONG);
 	j = k / (BITS_PER_LONG);
@@ -137,9 +137,9 @@ inline void add_shift_right(udigit *F, udigit*G, unsigned int k,
 			    unsigned int & Flast, unsigned int Glast)
 
 {
-	register unsigned int j, i, s, l;
-	register udigit h;
-	register udigit *fp1, *fp2, *gp;
+	unsigned int j, i, s, l;
+	udigit h;
+	udigit *fp1, *fp2, *gp;
 
 	s = k % (BITS_PER_LONG);
 	j = k / (BITS_PER_LONG);
@@ -185,8 +185,8 @@ inline void add_shift_right(udigit *F, udigit*G, unsigned int k,
 
 void info_gf2n::tri_invert(udigit *res, udigit *a) const
 {
-	register udigit h;
-	register udigit *bp, *cp, *fp, *gp, *ap;
+	udigit h;
+	udigit *bp, *cp, *fp, *gp, *ap;
 	unsigned int i, j, w, l;
 	unsigned int xdegree = 0;
 	unsigned int Clast, Blast, Flast, Glast;
@@ -407,8 +407,8 @@ void info_gf2n::tri_invert(udigit *res, udigit *a) const
 
 void info_gf2n::pent_invert(udigit *res, udigit *a) const
 {
-	register udigit h;
-	register udigit *bp, *cp, *fp, *gp, *ap;
+	udigit h;
+	udigit *bp, *cp, *fp, *gp, *ap;
 	unsigned int i, j, w, l;
 	unsigned int xdegree = 0;
 	unsigned int anzBI = info_gf2n::anzBI;
@@ -666,8 +666,8 @@ void info_gf2n::pent_invert(udigit *res, udigit *a) const
 
 void info_gf2n::general_invert(udigit *res, udigit *a) const
 {
-	register udigit h;
-	register udigit *bp, *cp, *fp, *gp, *ap;
+	udigit h;
+	udigit *bp, *cp, *fp, *gp, *ap;
 	unsigned int i, j, w, l, s;
 	unsigned int xdegree = 0;
 	unsigned int anzBI = info_gf2n::anzBI;

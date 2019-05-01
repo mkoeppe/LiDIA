@@ -68,7 +68,7 @@ bool check_debug_list(const char *f, const char *m)
 		class_list = new char[ANZAHL][256];
 		function_list = new char[ANZAHL][256];
 
-		for (register lidia_size_t i = 0; i < ANZAHL; i++) {
+		for (lidia_size_t i = 0; i < ANZAHL; i++) {
 			in >> class_list[i];
 			in >> function_list[i];
 
@@ -77,7 +77,7 @@ bool check_debug_list(const char *f, const char *m)
 		in.close();
 	}
 
-	for (register lidia_size_t i = 0; i < ANZAHL; i++)
+	for (lidia_size_t i = 0; i < ANZAHL; i++)
 		if (strstr(f, class_list[i]) != NULL && (strstr(m, function_list[i]) != NULL || !strcmp("*", function_list[i])))
 			return false;
 	return true;

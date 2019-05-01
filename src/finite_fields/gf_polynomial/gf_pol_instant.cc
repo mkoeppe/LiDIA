@@ -64,10 +64,10 @@ void base_polynomial< gf_element >::set_degree(lidia_size_t d)
 	memory_handler(coeff, "base_polynomial< gf_element >",
 		       "set_degree(lidia_size_t d) :: Error in memory allocation (coeff)");
 
-	register lidia_size_t minimum = (d < deg)? d : deg;
+	lidia_size_t minimum = (d < deg)? d : deg;
 
 	gf_element null(*gf_polynomial::FIELD);
-	register lidia_size_t i;
+	lidia_size_t i;
 	for (i = 0; i <= minimum; i++) {
 		if (is_undefined(tmp[i].get_field()))
 			LiDIA::add(coeff[i], tmp[i], null); // set field
@@ -145,7 +145,7 @@ void integral(field_polynomial< gf_element > &c,
 	c[0].assign_zero(*gf_polynomial::FIELD);
 	//cp++;
 
-	for (register lidia_size_t i = 0; i <= d; i++) {
+	for (lidia_size_t i = 0; i <= d; i++) {
 		LiDIA::divide(c[i + 1], a[i], i + 1);
 	}
 }

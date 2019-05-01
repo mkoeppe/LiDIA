@@ -491,7 +491,7 @@ inline
 void bin_swap_dbl(double*& a, double*& b)
 {
 	debug_handler("bigint_lattice_gensys", "void bin_swap_dbl(a, b)");
-	register double* temp = a;
+	double* temp = a;
 	a = b;
 	b = temp;
 }
@@ -500,7 +500,7 @@ inline
 void bin_swap_bfl(bigfloat*& a, bigfloat*& b)
 {
 	debug_handler("bigint_lattice_gensys", "bin_swap_bfl(a, b)");
-	register bigfloat* temp = a;
+	bigfloat* temp = a;
 	a = b;
 	b = temp;
 }
@@ -509,7 +509,7 @@ inline
 void bin_swap_bin(bigint*& a, bigint*& b)
 {
 	debug_handler("bigint_lattice_gensys", "bin_swap_bin(a, b)");
-	register bigint* temp = a;
+	bigint* temp = a;
 	a = b;
 	b = temp;
 }
@@ -523,7 +523,7 @@ void bin_swap_bin(bigint*& a, bigint*& b)
 inline void
 bin_assign_dbl(double* a, double* b)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "void bin_assign_dbl(a, b)");
 	for (i = bigint_lattice_gensys::vectsize-1; i >= 0; i--)
@@ -535,7 +535,7 @@ bin_assign_dbl(double* a, double* b)
 inline void
 bin_assign_zero_dbl(double* a)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "void bin_assign_zero_dbl(a)");
 	for (i = bigint_lattice_gensys::vectsize-1; i >= 0; i--)
@@ -547,7 +547,7 @@ bin_assign_zero_dbl(double* a)
 inline void
 bin_add_dbl(double* c, double* a, double* b)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "void bin_add_dbl(c, a, b)");
 	for (i = bigint_lattice_gensys::vectsize-1; i >= 0; i--)
@@ -559,7 +559,7 @@ bin_add_dbl(double* c, double* a, double* b)
 inline void
 bin_subtract_dbl(double* c, double* a, double* b)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "void bin_subtract_dbl(c, a, b)");
 	for (i = bigint_lattice_gensys::vectsize-1; i >= 0; i--)
@@ -571,7 +571,7 @@ bin_subtract_dbl(double* c, double* a, double* b)
 inline void
 bin_scalmul_dbl(double* b, const double& d, double* a)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "void bin_scalmul_dbl(b, d, a)");
 	for (i = bigint_lattice_gensys::vectsize-1; i >= 0; i--)
@@ -583,7 +583,7 @@ bin_scalmul_dbl(double* b, const double& d, double* a)
 inline void
 bin_scalprod_dbl(double& res, double* a, double* b)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "void bin_scalprod_dbl(res, a, b)");
 	res = 0;
@@ -596,7 +596,7 @@ bin_scalprod_dbl(double& res, double* a, double* b)
 inline void
 bin_scalquad_dbl(double& res, double* a)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "void bin_scalquad_dbl(res, a, b)");
 	res = 0;
@@ -609,7 +609,7 @@ bin_scalquad_dbl(double& res, double* a)
 inline void
 bin_l2_norm_dbl(double& norm, double* v)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "void bin_l2_norm_dbl(norm, v)");
 	norm = 0; // Initialisation
@@ -623,7 +623,7 @@ bin_l2_norm_dbl(double& norm, double* v)
 inline void
 bin_l1_norm_dbl(double& norm, double* v)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "void bin_l1_norm_dbl(norm, v)");
 	norm = 0; // Initialisation
@@ -638,7 +638,7 @@ bin_l1_norm_dbl(double& norm, double* v)
 inline void
 bin_assign_bfl(bigfloat* a, bigfloat* b)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "bin_assign_bfl(a, b)");
 	for (i = bigint_lattice_gensys::vectsize-1; i >= 0; i--)
@@ -650,7 +650,7 @@ bin_assign_bfl(bigfloat* a, bigfloat* b)
 inline void
 bin_assign_zero_bfl(bigfloat* a)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "bin_assign_zero_bfl(a)");
 	for (i = bigint_lattice_gensys::vectsize-1; i >= 0; i--)
@@ -662,7 +662,7 @@ bin_assign_zero_bfl(bigfloat* a)
 inline void
 bin_add_bfl(bigfloat* c, bigfloat* a, bigfloat* b)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "bin_add_bfl(c, a, b)");
 	for (i = bigint_lattice_gensys::vectsize-1; i >= 0; i--)
@@ -674,7 +674,7 @@ bin_add_bfl(bigfloat* c, bigfloat* a, bigfloat* b)
 inline void
 bin_subtract_bfl(bigfloat* c, bigfloat* a, bigfloat* b)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "bin_subtract_bfl(c, a, b)");
 	for (i = bigint_lattice_gensys::vectsize-1; i >= 0; i--)
@@ -686,7 +686,7 @@ bin_subtract_bfl(bigfloat* c, bigfloat* a, bigfloat* b)
 inline void
 bin_scalmul_bfl(bigfloat* b, const bigfloat& d, bigfloat* a)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "bin_scalmul_bfl(b, d, a)");
 	for (i = bigint_lattice_gensys::vectsize-1; i >= 0; i--)
@@ -698,7 +698,7 @@ bin_scalmul_bfl(bigfloat* b, const bigfloat& d, bigfloat* a)
 inline void
 bin_scalprod_bfl(bigfloat& res, bigfloat* a, bigfloat* b)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "bin_scalprod_bfl(res, a, b)");
 	res.assign_zero();
@@ -713,7 +713,7 @@ bin_scalprod_bfl(bigfloat& res, bigfloat* a, bigfloat* b)
 inline void
 bin_scalquad_bfl(bigfloat& res, bigfloat* a)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "bin_scalquad_bfl(res, a)");
 	res.assign_zero();
@@ -728,7 +728,7 @@ bin_scalquad_bfl(bigfloat& res, bigfloat* a)
 inline void
 bin_l1_norm_bfl(bigfloat& norm, bigfloat* v)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "bin_l1_norm_bfl(norm, v)");
 	norm.assign_zero(); // Initialisation
@@ -743,7 +743,7 @@ bin_l1_norm_bfl(bigfloat& norm, bigfloat* v)
 inline void
 bin_l2_norm_bfl(bigfloat& norm, bigfloat* v)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "bin_l2_norm_bfl(norm, v)");
 	norm.assign_zero(); // Initialisation
@@ -763,7 +763,7 @@ bin_l2_norm_bfl(bigfloat& norm, bigfloat* v)
 inline void
 bin_assign_bin(bigint* a, bigint* b)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "bin_assign_bin(a, b)");
 	for (i = bigint_lattice_gensys::vectsize-1; i >= 0; i--)
@@ -775,7 +775,7 @@ bin_assign_bin(bigint* a, bigint* b)
 inline void
 bin_assign_zero_bin(bigint* a)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "bin_assign_zero_bin(a)");
 	for (i = bigint_lattice_gensys::vectsize-1; i >= 0; i--)
@@ -787,7 +787,7 @@ bin_assign_zero_bin(bigint* a)
 inline void
 bin_add_bin(bigint* c, bigint* a, bigint* b)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "bin_add_bin(c, a, b)");
 	for (i = bigint_lattice_gensys::vectsize-1; i >= 0; i--)
@@ -799,7 +799,7 @@ bin_add_bin(bigint* c, bigint* a, bigint* b)
 inline void
 bin_subtract_bin(bigint* c, bigint* a, bigint* b)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "bin_subtract_bin(c, a, b)");
 	for (i = bigint_lattice_gensys::vectsize-1; i >= 0; i--)
@@ -811,7 +811,7 @@ bin_subtract_bin(bigint* c, bigint* a, bigint* b)
 inline void
 bin_scalmul_bin(bigint* b, const bigint& d, bigint* a)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "bin_scalmul_bin(b, d, a)");
 	for (i = bigint_lattice_gensys::vectsize-1; i >= 0; i--)
@@ -823,7 +823,7 @@ bin_scalmul_bin(bigint* b, const bigint& d, bigint* a)
 inline void
 bin_scalprod_bin(bigint& res, bigint* a, bigint* b)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "bin_scalprod_bin(res, a, b)");
 	res.assign_zero();
@@ -838,7 +838,7 @@ bin_scalprod_bin(bigint& res, bigint* a, bigint* b)
 inline void
 bin_scalquad_bin(bigint& res, bigint* a)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "bin_scalquad_bin(res, a)");
 	res.assign_zero();
@@ -853,7 +853,7 @@ bin_scalquad_bin(bigint& res, bigint* a)
 inline void
 bin_l2_norm_bin(bigint& norm, bigint* v)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "bin_l2_norm_bin(norm, v)");
 	norm.assign_zero(); // Initialisation
@@ -869,7 +869,7 @@ bin_l2_norm_bin(bigint& norm, bigint* v)
 inline void
 bin_l1_norm_bin(bigint& norm, bigint* v)
 {
-	register lidia_size_t	i;
+	lidia_size_t	i;
 
 	debug_handler("bigint_lattice_gensys", "bin_l1_norm_bin(norm, v)");
 	norm.assign_zero(); // Initialisation

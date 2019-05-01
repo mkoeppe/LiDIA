@@ -39,8 +39,8 @@ namespace LiDIA {
 inline
 long mul_mod_sp2(long a, long b, long p, double bpinv)
 {
-	register long q = static_cast<long>(static_cast<double>(a) * bpinv);
-	register long res = a*b - q*p;
+	long q = static_cast<long>(static_cast<double>(a) * bpinv);
+	long res = a*b - q*p;
 
 	res += (res >> ((32) -1)) & p;
 	res -= p;

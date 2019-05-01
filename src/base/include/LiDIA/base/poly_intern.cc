@@ -188,7 +188,7 @@ int base_polynomial< T >::set_data (const T * d, lidia_size_t l)
 
 	this->deg = l-1;
 
-	for (register lidia_size_t i = 0; i < l; i++)
+	for (lidia_size_t i = 0; i < l; i++)
 		this->coeff[i] = d[i];
 	this->remove_leading_zeros();
 	return 0;
@@ -216,7 +216,7 @@ T* base_polynomial< T >::get_data () const
 	memory_handler(d, DM_BP, "get_data () :: "
 		       "Error in memory allocation (d)");
 
-	for (register lidia_size_t i = 0; i <= this->deg; i++)
+	for (lidia_size_t i = 0; i <= this->deg; i++)
 		d[i] = this->coeff[i];
 	return d;
 }
@@ -299,9 +299,9 @@ void base_polynomial< T >::set_degree(lidia_size_t d)
 	memory_handler(this->coeff, DM_BP, "set_degree(lidia_size_t d) :: "
 		       "Error in memory allocation (this->coeff)");
 
-	register lidia_size_t minimum = (d < this->deg)? d : this->deg;
+	lidia_size_t minimum = (d < this->deg)? d : this->deg;
 
-	for (register lidia_size_t i = 0; i <= minimum; i++)
+	for (lidia_size_t i = 0; i <= minimum; i++)
 		this->coeff[i] = tmp[i];
 
 	if (tmp != NULL)
@@ -357,7 +357,7 @@ void base_polynomial< T >::assign(const base_polynomial< T > &a)
 		}
 		else this->coeff = NULL;
 	}
-	for (register lidia_size_t i = 0; i <= this->deg; i++)
+	for (lidia_size_t i = 0; i <= this->deg; i++)
 		this->coeff[i] = a.coeff[i];
 }
 
@@ -467,7 +467,7 @@ void base_polynomial< T >::negate (const base_polynomial< T > &a)
 {
 	debug_handler_l(DM_BP, "in member - function "
 			"negate (const base_polynomial< T > &)", DV_BP + 5);
-	register lidia_size_t d = a.deg;
+	lidia_size_t d = a.deg;
 	this->set_degree(d);
 
 	const T * ap = a.coeff;
@@ -544,7 +544,7 @@ void base_polynomial< T >::add(const base_polynomial< T > & a, const T & b)
 
 	LiDIA::add(*cp , *ap, b);
 	if (a.deg > 0 && this != &a)
-		for (register lidia_size_t i = a.deg; i; i--)
+		for (lidia_size_t i = a.deg; i; i--)
 			*(++cp) = *(++ap);
 	else
 		this->remove_leading_zeros();
@@ -575,7 +575,7 @@ void base_polynomial< T >::add(const T & b,
 
 	LiDIA::add(*cp, *ap, b);
 	if (a.deg > 0 && &a != this)
-		for (register lidia_size_t i = a.deg; i; i--)
+		for (lidia_size_t i = a.deg; i; i--)
 			*(++cp) = *(++ap);
 	else
 		this->remove_leading_zeros();
@@ -648,7 +648,7 @@ void base_polynomial< T >::subtract(const base_polynomial< T > & a,
 
 	LiDIA::subtract(*cp, *ap, b);
 	if (a.deg > 0 && this != &a)
-		for (register lidia_size_t i = a.deg; i; i--)
+		for (lidia_size_t i = a.deg; i; i--)
 			*(++cp) = *(++ap);
 	else
 		this->remove_leading_zeros();
@@ -679,7 +679,7 @@ void base_polynomial< T >::subtract(const T & b,
 
 	LiDIA::subtract(*cp, b, *ap);
 	if (a.deg > 0)
-		for (register lidia_size_t i = a.deg; i; i--)
+		for (lidia_size_t i = a.deg; i; i--)
 			LiDIA::negate(*(++cp), *(++ap));
 	else
 		this->remove_leading_zeros();
@@ -756,7 +756,7 @@ void base_polynomial< T >::multiply(const base_polynomial< T > & a,
 
 	this->set_degree(deg_a);
 
-	register lidia_size_t i = 0;
+	lidia_size_t i = 0;
 	for (ap = a.coeff, cp = this->coeff; i <= deg_a; i++, ap++, cp++)
 		LiDIA::multiply(*cp, *ap, b);
 	this->remove_leading_zeros(); // necessary if characteristic != 0
@@ -781,7 +781,7 @@ void base_polynomial< T >::multiply(const T & b,
 
 	this->set_degree(deg_a);
 
-	register lidia_size_t i = 0;
+	lidia_size_t i = 0;
 	for (ap = a.coeff, cp = this->coeff; i <= deg_a; i++, ap++, cp++)
 		LiDIA::multiply(*cp, b, *ap);
 	this->remove_leading_zeros(); // necessary if characteristic != 0
@@ -896,7 +896,7 @@ void base_polynomial< T >::read_verbose(std::istream & s)
 	debug_handler_l(DM_BP, "in member-function "
 			"void read_verbose(std::istream &)", DV_BP + 6);
 
-	register lidia_size_t n = 0;
+	lidia_size_t n = 0;
 	lidia_size_t sz;
 	char c;
 
@@ -1060,7 +1060,7 @@ void base_polynomial< T >::print_verbose(std::ostream &s, char x) const
 			s << x << "^" << d;
 		else
 			s << this->coeff[d] << " * " << x << "^" << d;
-		for (register lidia_size_t i = d - 1; i > 1; i--)
+		for (lidia_size_t i = d - 1; i > 1; i--)
 			if (this->coeff[i] == 1)
 				s << " + " << x << "^" << i;
 			else if (this->coeff[i] != 0)

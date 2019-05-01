@@ -70,7 +70,7 @@ sparse_field_matrix_kernel< T >::divide (MR< T > &RES,
 	debug_handler_l(DM_MM, "in member - function "
 			"divide(const MR< T > &, const T &)", DV_MM + 2);
 
-	register lidia_size_t j, i;
+	lidia_size_t j, i;
 	T *REStmp, *Atmp;
 
 	for (j = 0; j < A.rows; j++) {
@@ -92,7 +92,7 @@ sparse_field_matrix_kernel< T >::compwise_divide (MR< T > &RES,
 	debug_handler_l(DM_MM, "in member - function "
 			"compwise_divide(const MR< T > &, const MR< T > &)", DV_MM + 3);
 
-	register lidia_size_t j, i;
+	lidia_size_t j, i;
 	T *REStmp, *Atmp, *Btmp;
 
 	for (j = 0; j < RES.rows; j++) {

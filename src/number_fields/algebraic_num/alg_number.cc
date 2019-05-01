@@ -137,7 +137,7 @@ bigfloat alg_number::get_conjugate(lidia_size_t j) const
 	}
 	math_vector< bigfloat > tmp1(degree(), degree()), tmp(degree(), degree());
 	(static_cast<nf_base *>(O))->get_conjugates().get_row_vector(tmp1, --j);
-	for (register lidia_size_t i = 0; i < degree(); i++)
+	for (lidia_size_t i = 0; i < degree(); i++)
 		tmp[i].assign(coeff[i]);
 
 	bigfloat res;
@@ -151,7 +151,7 @@ bigfloat alg_number::get_conjugate(lidia_size_t j) const
 math_vector< bigfloat > alg_number::get_conjugates() const
 {
 	math_vector< bigfloat > tmp(degree(), degree());
-	for (register lidia_size_t i = 0; i < degree(); i++)
+	for (lidia_size_t i = 0; i < degree(); i++)
 		tmp[i].assign(coeff[i]);
 	multiply(tmp, (static_cast<nf_base *>(O))->get_conjugates(), tmp);
 	divide(tmp, tmp, bigfloat(den));
@@ -176,11 +176,11 @@ bigint_matrix rep_matrix(const alg_number & a)
 
 		base_vector< bigint > MT_vec(a.degree() * a.degree(),
 					     a.degree() * a.degree());
-		for (register lidia_size_t k = 0; k < a.degree(); k++) {
+		for (lidia_size_t k = 0; k < a.degree(); k++) {
 			O->table.get_column_vector(MT_vec, k);
 			lidia_size_t l = 0;
-			for (register lidia_size_t i = 0; i < a.degree(); i++) {
-				for (register lidia_size_t j = 0; j < i; j++, l++) {
+			for (lidia_size_t i = 0; i < a.degree(); i++) {
+				for (lidia_size_t j = 0; j < i; j++, l++) {
 					A.sto(k, i, A.member(k, i) + MT_vec[l] * a.coeff.member(j));
 					A.sto(k, j, A.member(k, j) + MT_vec[l] * a.coeff.member(i));
 				}
@@ -199,9 +199,9 @@ bigint_matrix rep_matrix(const alg_number & a)
 
 		polynomial< bigint > p(a.coeff.get_data_address(), a.degree()-1);
 
-		for (register lidia_size_t i = 0; i < a.degree();
+		for (lidia_size_t i = 0; i < a.degree();
 		     i++, p = p*x%(O->f)) {
-			register lidia_size_t l = 0;
+			lidia_size_t l = 0;
 			for (; l <= p.degree(); l++)
 				A.sto(l, i, p[l]);
 			for (; l < a.degree(); l++)
@@ -216,7 +216,7 @@ bigint_matrix rep_matrix(const alg_number & a)
 
 bool alg_number::is_zero() const
 {
-	for (register lidia_size_t i = 0; i < degree(); i++)
+	for (lidia_size_t i = 0; i < degree(); i++)
 		if (!(coeff.member(i).is_zero())) return false;
 	return true;
 }
@@ -235,7 +235,7 @@ bool alg_number::is_one() const
 void alg_number::normalize()
 {
 	bigint d(den);
-	register lidia_size_t i;
+	lidia_size_t i;
 	for (i = 0; i < degree(); i++)
 		d = gcd (coeff.member(i), d);
 	if (den.is_negative()) d.negate();
@@ -288,7 +288,7 @@ void alg_number::invert()
 
 void alg_number::assign_zero()
 {
-	for (register lidia_size_t i = 0; i < degree(); i++)
+	for (lidia_size_t i = 0; i < degree(); i++)
 		coeff[i].assign_zero();
 	den = 1;
 }
@@ -403,14 +403,14 @@ void multiply(alg_number &c, const alg_number &a, const alg_number &b)
 		base_vector< bigint > MT_vec(a.degree() * a.degree(),
 					     a.degree() * a.degree());
 		if ((&c != &a) && (&c != &b))
-			for (register lidia_size_t k = 0; k < a.degree(); k++) {
+			for (lidia_size_t k = 0; k < a.degree(); k++) {
 				c.coeff[k].assign_zero();
 				O->table.get_column_vector(MT_vec, k);
 				lidia_size_t l = 0;
-				for (register lidia_size_t i = 0; i < a.degree(); i++) {
+				for (lidia_size_t i = 0; i < a.degree(); i++) {
 					tmp1.assign_zero();
 					tmp2.assign_zero();
-					for (register lidia_size_t j = 0; j < i; j++, l++) {
+					for (lidia_size_t j = 0; j < i; j++, l++) {
 						// tmp1 += MT_vec[l] * b.coeff.member(j);
 						multiply(tmp3, MT_vec[l], b.coeff.member(j));
 						add(tmp1, tmp1, tmp3);
@@ -439,14 +439,14 @@ void multiply(alg_number &c, const alg_number &a, const alg_number &b)
 					"in function multiply(a_n &, const a_n &, const a_n &):"
 					" use MT and overwrite argument", 0);
 			math_vector< bigint > tmp(a.degree(), a.degree());
-			for (register lidia_size_t k = 0; k < a.degree(); k++) {
+			for (lidia_size_t k = 0; k < a.degree(); k++) {
 				tmp[k].assign_zero();
 				O->table.get_column_vector(MT_vec, k);
 				lidia_size_t l = 0;
-				for (register lidia_size_t i = 0; i < a.degree(); i++) {
+				for (lidia_size_t i = 0; i < a.degree(); i++) {
 					tmp2.assign_zero();
 					tmp1.assign_zero();
-					for (register lidia_size_t j = 0; j < i; j++, l++) {
+					for (lidia_size_t j = 0; j < i; j++, l++) {
 						// tmp1 += MT_vec[l] * b.coeff.member(j);
 						multiply(tmp3, MT_vec[l], b.coeff.member(j));
 						add(tmp1, tmp1, tmp3);
@@ -484,7 +484,7 @@ void multiply(alg_number &c, const alg_number &a, const alg_number &b)
 					a.degree()-1);
 
 		polynomial< bigint > f = pa*pb%(O->f);
-		register lidia_size_t l = 0;
+		lidia_size_t l = 0;
 		for (; l <= f.degree(); l++)
 			c.coeff[l] = f[l];
 		for (; l < a.degree(); l++)
@@ -733,7 +733,7 @@ void power_mod_p(alg_number &c, const alg_number &a, const bigint & b,
 	else {
 		expo.assign(b);
 		multiplier.assign(a);
-		for (register lidia_size_t i = 0; i < multiplier.coeff.size(); i++)
+		for (lidia_size_t i = 0; i < multiplier.coeff.size(); i++)
 			multiplier.coeff[i] %= p;
 		c.assign_one();
 		while (expo.is_gt_zero()) {
@@ -743,14 +743,14 @@ void power_mod_p(alg_number &c, const alg_number &a, const bigint & b,
 						std::cout << "multiply " << c << " by " << multiplier;
 						std::cout << std::endl << std::flush);
 				multiply(c, c, multiplier);
-				for (register lidia_size_t i = 0; i < c.coeff.size(); i++)
+				for (lidia_size_t i = 0; i < c.coeff.size(); i++)
 					c.coeff[i] %= p;
 			}
 			debug_handler_c("alg_number", "in function power"
 					"(a_n &, const a_n &, const bigint &)", 4,
 					std::cout << "square " << multiplier << std::endl << std::flush);
 			square(multiplier, multiplier);
-			for (register lidia_size_t i = 0; i < multiplier.coeff.size(); i++)
+			for (lidia_size_t i = 0; i < multiplier.coeff.size(); i++)
 				multiplier.coeff[i] %= p;
 			expo.divide_by_2();
 			debug_handler_c("alg_number", "in function power"
@@ -811,7 +811,7 @@ polynomial< bigint > charpoly(const alg_number & a)
 	polynomial< bigint > p(tmp, a.degree());
 	delete[] tmp;
 	bigint multiplier = a.den;
-	for (register lidia_size_t i = 1; i <= a.degree(); i++)
+	for (lidia_size_t i = 1; i <= a.degree(); i++)
 		multiply(p[i], p[i], multiplier);
 	multiply(multiplier, multiplier, a.den);
 	return p;
@@ -883,13 +883,13 @@ void square(alg_number & c, const alg_number & a)
 		base_vector< bigint > MT_vec(a.degree() * a.degree(),
 					     a.degree() * a.degree());
 		if (&c != &a)
-			for (register lidia_size_t k = 0; k < a.degree(); k++) {
+			for (lidia_size_t k = 0; k < a.degree(); k++) {
 				c.coeff[k].assign_zero();
 				O->table.get_column_vector(MT_vec, k);
 				lidia_size_t l = 0;
-				for (register lidia_size_t i = 0; i < a.degree(); i++) {
+				for (lidia_size_t i = 0; i < a.degree(); i++) {
 					tmp1.assign_zero();
-					for (register lidia_size_t j = 0; j < i; j++) {
+					for (lidia_size_t j = 0; j < i; j++) {
 						// tmp1 += MT_vec[l] * a.coeff.member(j);
 						multiply(tmp2, MT_vec[l++], a.coeff.member(j));
 						add(tmp1, tmp1, tmp2);
@@ -911,13 +911,13 @@ void square(alg_number & c, const alg_number & a)
 					"in function multiply(a_n &, const a_n &, const a_n &):"
 					" use MT and overwrite argument", 0);
 			math_vector< bigint > tmp(a.degree(), a.degree());
-			for (register lidia_size_t k = 0; k < a.degree(); k++) {
+			for (lidia_size_t k = 0; k < a.degree(); k++) {
 				tmp[k].assign_zero();
 				O->table.get_column_vector(MT_vec, k);
 				lidia_size_t l = 0;
-				for (register lidia_size_t i = 0; i < a.degree(); i++) {
+				for (lidia_size_t i = 0; i < a.degree(); i++) {
 					tmp1.assign_zero();
-					for (register lidia_size_t j = 0; j < i; j++) {
+					for (lidia_size_t j = 0; j < i; j++) {
 						// tmp1 += MT_vec[l] * b.coeff.member(j);
 						multiply(tmp2, MT_vec[l++], a.coeff.member(j));
 						add(tmp1, tmp1, tmp2);
@@ -945,7 +945,7 @@ void square(alg_number & c, const alg_number & a)
 					a.degree()-1);
 
 		polynomial< bigint > f = (pa*pa)%(O->f);
-		register lidia_size_t l = 0;
+		lidia_size_t l = 0;
 		for (; l <= f.degree(); l++)
 			c.coeff[l] = f[l];
 		for (; l < a.degree(); l++)

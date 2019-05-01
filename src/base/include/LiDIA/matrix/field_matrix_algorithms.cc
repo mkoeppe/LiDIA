@@ -62,7 +62,7 @@ field_matrix_algorithms< T, ARG1, ARG2, ARG3 >::divide (MR< T > &RES,
 	debug_handler_l(DMESSAGE, "in member - function "
 			"divide(const MATRIX_TYPE &, const T &)", DVALUE + 2);
 
-	register lidia_size_t j, i;
+	lidia_size_t j, i;
 	T TMP;
 
 	for (j = 0; j < A.rows; j++) {
@@ -84,7 +84,7 @@ field_matrix_algorithms< T, ARG1, ARG2, ARG3 >::compwise_divide(MR< T > &RES,
 	debug_handler_l(DMESSAGE, "in member - function "
 			"compwise_divide(const MATRIX_TYPE &, const MATRIX_TYPE &)", DVALUE + 3);
 
-	register lidia_size_t j, i;
+	lidia_size_t j, i;
 	T TMP;
 
 	for (j = 0; j < RES.rows; j++) {

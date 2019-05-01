@@ -1904,7 +1904,7 @@ power_imag (qi_class & C, const qi_class & A, const long i)
 	debug_handler("qi_class", "power_imag(long)");
 
 	qi_class B;
-	register long j;
+	long j;
 
 	B.assign(A);
 	j = i;
@@ -1972,7 +1972,7 @@ nupower (qi_class & C, const qi_class & A, const long i)
 	debug_handler("qi_class", "nupower(long)");
 
 	qi_class B;
-	register long j;
+	long j;
 
 	B.assign(A);
 	j = i;
@@ -2038,7 +2038,7 @@ power_real (qi_class & C, const qi_class & A, const long i)
 	debug_handler("qi_class", "power_real(long)");
 
 	qi_class B;
-	register long j;
+	long j;
 
 	B.assign(A);
 	j = i;
@@ -4000,8 +4000,8 @@ qi_class::omult_imag (const bigint & h,
 {
 	debug_handler("qi_class", "omult_imag");
 
-	register lidia_size_t i;
-	register int j, ex, num;
+	lidia_size_t i;
+	int j, ex, num;
 	bigint ord, p, pwr;
 	qi_class A;
 
@@ -4047,8 +4047,8 @@ qi_class::omult_real (const bigint & h,
 {
 	debug_handler("qi_class", "omult_real");
 
-	register lidia_size_t i;
-	register int j, ex, num;
+	lidia_size_t i;
+	int j, ex, num;
 	bigint ord, p, pwr;
 	qi_class A;
 
@@ -4095,8 +4095,8 @@ qi_class::omult_real_sub (const bigint & h,
 {
 	debug_handler("qi_class", "omult_real_sub");
 
-	register lidia_size_t i, k;
-	register int j, ex, num;
+	lidia_size_t i, k;
+	int j, ex, num;
 	bigint ord, p, pwr;
 	qi_class A;
 	math_vector< bigint > vec, vecA;

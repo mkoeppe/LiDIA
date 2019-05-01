@@ -57,7 +57,7 @@ template< class T >
 inline void dense_ring_matrix_kernel< T >::
 add(MR< T > &RES, const MR< T > &M, const MR< T > &N) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	T *Mtmp, *Ntmp, *REStmp;
 	for (i = 0; i < RES.rows; i++) {
@@ -75,7 +75,7 @@ template< class T >
 inline void dense_ring_matrix_kernel< T >::
 add(MR< T > &RES, const MR< T > &M, const T &a) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	T *REStmp, *Mtmp;
 
 	for (i = 0; i < RES.rows; i++) {
@@ -92,7 +92,7 @@ template< class T >
 inline void dense_ring_matrix_kernel< T >::
 add(MR< T > &RES, const T &a, const MR< T > &M) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	T *REStmp, *Mtmp;
 
 	for (i = 0; i < RES.rows; i++) {
@@ -113,7 +113,7 @@ template< class T >
 inline void dense_ring_matrix_kernel< T >::
 subtract(MR< T > &RES, const MR< T > &M, const MR< T > &N) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	T *REStmp, *Mtmp, *Ntmp;
 
@@ -132,7 +132,7 @@ template< class T >
 inline void dense_ring_matrix_kernel< T >::
 subtract(MR< T > &RES, const MR< T > &M, const T &a) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	T *REStmp, *Mtmp;
 
 	for (i = 0; i < RES.rows; i++) {
@@ -149,7 +149,7 @@ template< class T >
 inline void dense_ring_matrix_kernel< T >::
 subtract(MR< T > &RES, const T &a, const MR< T > &M) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	T *REStmp, *Mtmp;
 
 	for (i = 0; i < RES.rows; i++) {
@@ -170,7 +170,7 @@ template< class T >
 inline void dense_ring_matrix_kernel< T >::
 multiply(MR< T > &RES, const MR< T > &A, const MR< T > &B) const
 {
-	register lidia_size_t j, i, z;
+	lidia_size_t j, i, z;
 	T TMP, TMP1, *Atmp, *REStmp;
 
 	for (j = 0; j < A.rows; j++) {
@@ -193,7 +193,7 @@ template< class T >
 inline void dense_ring_matrix_kernel< T >::
 multiply(MR< T > &RES, const MR< T > &A, const T &k) const
 {
-	register lidia_size_t j, i;
+	lidia_size_t j, i;
 	T *REStmp, *Atmp;
 
 	for (j = 0; j < A.rows; j++) {
@@ -210,7 +210,7 @@ template< class T >
 inline void dense_ring_matrix_kernel< T >::
 multiply(MR< T > &RES, const T &k, const MR< T > &A) const
 {
-	register lidia_size_t j, i;
+	lidia_size_t j, i;
 	T *REStmp, *Atmp;
 	for (j = 0; j < A.rows; j++) {
 		REStmp = RES.value[j];
@@ -226,7 +226,7 @@ template< class T >
 inline void dense_ring_matrix_kernel< T >::
 compwise_multiply(MR< T > &RES, const MR< T > &A, const MR< T > &B) const
 {
-	register lidia_size_t j, i;
+	lidia_size_t j, i;
 	T *REStmp, *Atmp, *Btmp;
 
 	for (j = 0; j < RES.rows; j++) {
@@ -244,7 +244,7 @@ template< class T >
 inline void dense_ring_matrix_kernel< T >::
 multiply_right(const MR< T > &RES, T *&c, const T *v) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	T TMP, TMP1, *tmp;
 
 	if (c == v || c == NULL) {
@@ -270,7 +270,7 @@ template< class T >
 inline void dense_ring_matrix_kernel< T >::
 multiply_left(const MR< T > &RES, T *&c, const T *v) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	T TMP, TMP1;
 
 	if (c == v || c == NULL) {
@@ -299,7 +299,7 @@ template< class T >
 inline void dense_ring_matrix_kernel< T >::
 negate(MR< T > &RES, const MR< T > &B) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	T *Btmp, *REStmp;
 
@@ -325,7 +325,7 @@ template< class T >
 inline bool dense_ring_matrix_kernel< T >::
 equal(const MR< T > &RES, const MR< T > &N) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	if (RES.rows != N.rows || RES.columns != N.columns)
 		return false;
 
@@ -351,7 +351,7 @@ template< class T >
 inline void dense_ring_matrix_kernel< T >::
 trace(const MR< T > &RES, T &tr) const
 {
-	register lidia_size_t i;
+	lidia_size_t i;
 	tr = RES.value[0][0];
 	for (i = 1; i < RES.rows; i++)
 		LiDIA::add(tr, tr, RES.value[i][i]);

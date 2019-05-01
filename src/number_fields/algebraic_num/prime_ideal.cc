@@ -115,7 +115,7 @@ prime_ideal::compute_valu () const
 
 	bigint *tmp = new bigint[n];
 
-	for (register lidia_size_t i = 0; i < n; tmp[i++] = 0) {
+	for (lidia_size_t i = 0; i < n; tmp[i++] = 0) {
 		tmp[i] = 1; //tmp = e_i;
 		alg_number b (tmp, 1, gen2.which_base()); //b = w_i
 		multiply(b, b, gen2);

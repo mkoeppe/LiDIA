@@ -127,7 +127,7 @@ int main_LiDIA(int argc, char** argv)
 	std::cout << " completed" << std::endl;
 
 	std::cout << "check primes .............................." << std::flush;
-	register lidia_size_t i;
+	lidia_size_t i;
 	for (i = 0; i < p1.get_number_of_primes(); i++) {
 		if (p1.get_prime(i) != p2.get_prime(i) ||
 		    p1.get_prime(i) != p3.get_prime(i) ||

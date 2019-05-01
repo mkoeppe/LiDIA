@@ -84,7 +84,7 @@ indexed_hash_table< T >::assign (const indexed_hash_table< T > & old_table)
 {
 	debug_handler("indexed_hash_table", "assign");
 
-	register lidia_size_t i;
+	lidia_size_t i;
 
 	// initialize new table
 	this->initialize(old_table.size);
@@ -193,7 +193,7 @@ indexed_hash_table< T >::remove (const T & G)
 {
 	debug_handler("indexed_hash_table", "remove");
 
-	register lidia_size_t j;
+	lidia_size_t j;
 	hentry< T > *ptr;
 	T *target, *tptr;
 
@@ -235,7 +235,7 @@ indexed_hash_table< T >::remove_from (const lidia_size_t i)
 
 	hentry< T > *ptr, *pptr, *nptr;
 	T *tptr;
-	register lidia_size_t j;
+	lidia_size_t j;
 
 	if ((i< 0) || (i >= this->curr_size)) {
 		lidia_error_handler("indexed_hash_table", "remove_from - i >= current size or < 0");
@@ -286,7 +286,7 @@ indexed_hash_table< T >::empty ()
 {
 	debug_handler("indexed_hash_table", "empty");
 
-	register lidia_size_t i, end;
+	lidia_size_t i, end;
 
 	end = this->curr_size;
 	for (i = end-1; i >= 0; --i)
@@ -308,7 +308,7 @@ indexed_hash_table< T >::hash (const T & G)
 {
 	debug_handler("indexed_hash_table", "hash");
 
-	register lidia_size_t i;
+	lidia_size_t i;
 	hentry< T > *ptr, *nptr, *newone;
 	T *newT;
 
@@ -400,7 +400,7 @@ indexed_hash_table< T >::read (std::istream & in)
 {
 	debug_handler("indexed_hash_table", "read");
 
-	register lidia_size_t i;
+	lidia_size_t i;
 	lidia_size_t new_size, num;
 	T new_item;
 
@@ -429,7 +429,7 @@ indexed_hash_table< T >::print (std::ostream & out) const
 {
 	debug_handler("indexed_hash_table", "print");
 
-	register lidia_size_t i;
+	lidia_size_t i;
 	hentry< T > *ptr;
 	T *tptr;
 

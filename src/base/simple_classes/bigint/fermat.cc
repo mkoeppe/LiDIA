@@ -33,7 +33,7 @@ bool
 fermat(const bigint & n)
 {
 	bigint tmp_a, tmp_n, res;
-	register int a = 2;
+	int a = 2;
 
 	if (n < 2)
 		return 0;

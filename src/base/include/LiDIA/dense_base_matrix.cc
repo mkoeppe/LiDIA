@@ -600,20 +600,20 @@ dense_base_matrix< T >::get_data () const
 
 	debug_handler_l(DMESSAGE, "get_value()", DVALUE + 2);
 
-	register T **copy = NULL;
+	T **copy = NULL;
 	if (this->rows != 0) {
 		copy = new T *[this->rows];
 		memory_handler(copy, DM_BM, "get_value :: "
 			       "Error in memory allocation (copy)");
 	}
 
-	register T *tmp, *tmp1;
-	for (register lidia_size_t i = 0; i < this->rows; i++) {
+	T *tmp, *tmp1;
+	for (lidia_size_t i = 0; i < this->rows; i++) {
 		tmp1 = this->value[i];
 		tmp = new T[this->columns];
 		memory_handler(tmp, DM_BM, "get_value :: "
 			       "Error in memory allocation (tmp)");
-		for (register lidia_size_t j = 0; j < this->columns; j++)
+		for (lidia_size_t j = 0; j < this->columns; j++)
 			tmp[j] = tmp1[j];
 		copy[i] = tmp;
 	}
@@ -653,8 +653,8 @@ dense_base_matrix< T >::set_data (const T **v, lidia_size_t r, lidia_size_t c)
 	if (c != this->columns)
 		this->D_base_modul.set_no_of_columns(*this, c);
 
-	for (register lidia_size_t len1 = this->rows - 1; len1 >= 0; len1--)
-		for (register lidia_size_t len = this->columns - 1; len >= 0; len--)
+	for (lidia_size_t len1 = this->rows - 1; len1 >= 0; len1--)
+		for (lidia_size_t len = this->columns - 1; len >= 0; len--)
 			this->value[len1][len] = v[len1][len];
 }
 

@@ -88,7 +88,7 @@ sparse_base_matrix_kernel< T >::constructor (MR< T > &A,
 		       "constructor(MR< T > &, lidia_size_t, lidia_size_t) ::"
 		       "Error in memory allocation (allocated)");
 
-	for (register lidia_size_t i = 0; i < r; i++) {
+	for (lidia_size_t i = 0; i < r; i++) {
 		A.value[i] = NULL;
 		A.value_counter[i] = 0;
 		A.allocated[i] = 0;
@@ -130,12 +130,12 @@ sparse_base_matrix_kernel< T >::constructor (MR< T > &A,
 		       "constructor(MR< T > &, lidia_size_t, lidia_size_t, const T **) ::"
 		       "Error in memory allocation (A.allocated)");
 
-	for (register lidia_size_t i = 0; i < r; i++) {
-		register lidia_size_t size = c;
-		for (register lidia_size_t j = 0; j < c; j++)
+	for (lidia_size_t i = 0; i < r; i++) {
+		lidia_size_t size = c;
+		for (lidia_size_t j = 0; j < c; j++)
 			if (B[i][j] == A.Zero)
 				size--;
-		register lidia_size_t p = 0;
+		lidia_size_t p = 0;
 		if (size) {
 			A.index[i] = new lidia_size_t[size];
 			memory_handler(A.index[i], DMESSAGE,
@@ -146,7 +146,7 @@ sparse_base_matrix_kernel< T >::constructor (MR< T > &A,
 				       "constructor(MR< T > &, lidia_size_t, lidia_size_t, const T **) ::"
 				       "Error in memory allocation (A.value[i])");
 			A.value_counter[i] = A.allocated[i] = size;
-			for (register lidia_size_t k = 0; k < c; k++)
+			for (lidia_size_t k = 0; k < c; k++)
 				if (B[i][k] != A.Zero) {
 					A.value[i][p] = B[i][k];
 					A.index[i][p] = k;
@@ -189,8 +189,8 @@ sparse_base_matrix_kernel< T >::constructor (MR< T > &A,
 		       "constructor((MR< T > &, const MR< T > &) ::"
 		       "Error in memory allocation (A.allocated)");
 
-	for (register lidia_size_t i = 0; i < A.rows; i++) {
-		register lidia_size_t size = B.allocated[i];
+	for (lidia_size_t i = 0; i < A.rows; i++) {
+		lidia_size_t size = B.allocated[i];
 		if (size) {
 			A.index[i] = new lidia_size_t[size];
 			memory_handler(A.index[i], DMESSAGE,
@@ -202,7 +202,7 @@ sparse_base_matrix_kernel< T >::constructor (MR< T > &A,
 				       "Error in memory allocation (A.value[i])");
 			A.value_counter[i] = B.value_counter[i];
 			A.allocated[i] = size;
-			for (register lidia_size_t p = 0; p < A.value_counter[i]; p++) {
+			for (lidia_size_t p = 0; p < A.value_counter[i]; p++) {
 				A.value[i][p] = B.value[i][p];
 				A.index[i][p] = B.index[i][p];
 			}
@@ -258,8 +258,8 @@ sparse_base_matrix_kernel< T >::sto_column (MR< T > &A,
 					    lidia_size_t j,
 					    lidia_size_t from) const
 {
-	register lidia_size_t p, f;
-	for (register lidia_size_t r = from; r < from + l; r++) { // for every row
+	lidia_size_t p, f;
+	for (lidia_size_t r = from; r < from + l; r++) { // for every row
 		for (p = A.value_counter[r] - 1; p >= 0; p--)
 			if (A.index[r][p] == j)
 				break;
@@ -284,7 +284,7 @@ sparse_base_matrix_kernel< T >::sto_column (MR< T > &A,
 					       "lidia_size_t, lidia_size_t, lidia_size_t) ::"
 					       "Error in memory allocation (tmp2)");
 
-				for (register lidia_size_t c = 0; c < A.allocated[r]; c++) {
+				for (lidia_size_t c = 0; c < A.allocated[r]; c++) {
 					tmp1[c] = A.value[r][c];
 					tmp2[c] = A.index[r][c];
 				}
@@ -312,7 +312,7 @@ sparse_base_matrix_kernel< T >::sto_column (MR< T > &A,
 			if (p == -1)         // if already 0 do nothing
 				continue;
 			else {
-				for (register lidia_size_t i = p + 1; i < A.value_counter[r]; i++) {
+				for (lidia_size_t i = p + 1; i < A.value_counter[r]; i++) {
 					// close the gap
 					A.value[r][i-1] = A.value[r][i];
 					A.index[r][i-1] = A.index[r][i];
@@ -331,7 +331,7 @@ sparse_base_matrix_kernel< T >::get_column (const MR< T > &A,
 					    T *res,
 					    lidia_size_t i) const
 {
-	for (register lidia_size_t j = 0; j < A.rows; j++) {
+	for (lidia_size_t j = 0; j < A.rows; j++) {
 		lidia_size_t k;
 		for (k = 0; k< A.value_counter[j] && i > A.index[j][k]; k++);
 		if (k < A.value_counter[j] && i == A.index[j][k])
@@ -533,7 +533,7 @@ sparse_base_matrix_kernel< T >::remove_rows (MR< T > &A,
 	lidia_size_t *allocated = new lidia_size_t[A.rows];
 	lidia_size_t *value_counter = new lidia_size_t[A.rows];
 
-	register lidia_size_t i, l = 0, l1 = 1;
+	lidia_size_t i, l = 0, l1 = 1;
 	for (i = 0; i < len; i++) {
 		if (l1 > rem[0] || rem[l1] != i) {
 			new_value[l] = A.value[i];
@@ -667,8 +667,8 @@ sparse_base_matrix_kernel< T >::assign (MR< T > &A,
 		       "constructor((MR< T > &, const MR< T > &) ::"
 		       "Error in memory allocation (A.allocated)");
 
-	for (register lidia_size_t i = 0; i < A.rows; i++) {
-		register lidia_size_t size = B.allocated[i];
+	for (lidia_size_t i = 0; i < A.rows; i++) {
+		lidia_size_t size = B.allocated[i];
 		if (size) {
 			A.index[i] = new lidia_size_t[size];
 			memory_handler(A.index[i], DMESSAGE,
@@ -680,7 +680,7 @@ sparse_base_matrix_kernel< T >::assign (MR< T > &A,
 				       "Error in memory allocation (A.value[i])");
 			A.value_counter[i] = B.value_counter[i];
 			A.allocated[i] = size;
-			for (register lidia_size_t p = 0; p < A.value_counter[i]; p++) {
+			for (lidia_size_t p = 0; p < A.value_counter[i]; p++) {
 				A.value[i][p] = B.value[i][p];
 				A.index[i][p] = B.index[i][p];
 			}
@@ -700,7 +700,7 @@ sparse_base_matrix_kernel< T >::write_to_beauty (const MR< T > &A,
 						 std::ostream &out) const
 {
 	if (A.bitfield.get_orientation() == matrix_flags::row_oriented) {
-		register lidia_size_t i, j, l;
+		lidia_size_t i, j, l;
 		for (i = 0; i < A.rows; i++) {
 			l = 0;
 			out << std::endl << "(";
@@ -716,7 +716,7 @@ sparse_base_matrix_kernel< T >::write_to_beauty (const MR< T > &A,
 		out << std::endl << std::flush;
 	}
 	else {
-		register lidia_size_t i, j;
+		lidia_size_t i, j;
 		lidia_size_t *l = new lidia_size_t[A.columns];
 		for (i = 0; i < A.columns; i++)
 			l[i] = 0;
@@ -747,9 +747,9 @@ sparse_base_matrix_kernel< T >::write_to_stream (const MR< T > &A,
 	out << A.rows << std::endl;
 	out << A.columns << std::endl;
 
-	for (register lidia_size_t i = 0; i < A.rows; i++) {
+	for (lidia_size_t i = 0; i < A.rows; i++) {
 		out << A.value_counter[i] << " ";
-		for (register lidia_size_t j = 0; j < A.value_counter[i]; j++)
+		for (lidia_size_t j = 0; j < A.value_counter[i]; j++)
 			out << A.index[i][j] << " " << A.value[i][j] << " ";
 		out << std::endl;
 	}
@@ -827,7 +827,7 @@ sparse_base_matrix_kernel< T >::read_from_stream (MR< T > &A,
 		       "Error in memory allocation (allocated)");
 
 	lidia_size_t size;
-	for (register lidia_size_t i = 0; i < A.rows; i++) {
+	for (lidia_size_t i = 0; i < A.rows; i++) {
 		in >> std::ws >> size;
 		if(size < 0) {
 		    in.setstate(std::ios::failbit);
@@ -847,7 +847,7 @@ sparse_base_matrix_kernel< T >::read_from_stream (MR< T > &A,
 			       "lidia_size_t *&, lidia_size_t *&, lidia_size_t, lidia_size_t, const T **) ::"
 			       "Error in memory allocation (A.value[i])");
 
-		for (register lidia_size_t j = 0; j < size; j++) {
+		for (lidia_size_t j = 0; j < size; j++) {
 			in >> std::ws >> A.index[i][j]
 			   >> std::ws >> A.value[i][j];
 		}
@@ -867,7 +867,7 @@ sparse_base_matrix_kernel< T >::write_to_mathematica (const MR< T > &A,
 						      std::ostream &out) const
 {
 
-	register lidia_size_t i, j, l = A.columns - 1, k = A.rows - 1, l1;
+	lidia_size_t i, j, l = A.columns - 1, k = A.rows - 1, l1;
 
 	out << "{";
 	for (i = 0; i < A.rows; i++) {
@@ -932,8 +932,8 @@ sparse_base_matrix_kernel< T >::read_from_mathematica (MR< T > &A,
 	if (A.columns != local_columns)
 		set_no_of_columns(A, local_columns);
 
-	for (register lidia_size_t i = 0; i < A.rows; i++) {
-		for (register lidia_size_t j = 0; j < A.columns; j++) {
+	for (lidia_size_t i = 0; i < A.rows; i++) {
+		for (lidia_size_t j = 0; j < A.columns; j++) {
 			sto(A, i, j, buffer[len]);
 			len++;
 		}
@@ -951,7 +951,7 @@ inline void
 sparse_base_matrix_kernel< T >::write_to_maple (const MR< T > &A,
 						std::ostream &out) const
 {
-	register lidia_size_t i, j, l;
+	lidia_size_t i, j, l;
 
 	out << "array(1 .. " << A.rows << ", 1 .. " << A.columns << ", [";
 
@@ -989,7 +989,7 @@ sparse_base_matrix_kernel< T >::read_from_maple (MR< T > &A,
 				    "read_from_maple(std::istream &dz)",
 				    DMESSAGE, EMESSAGE[5]);
 
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	lidia_size_t startr, startc, endr, endc, x, y;
 	T TMP;
 
@@ -1033,7 +1033,7 @@ inline void
 sparse_base_matrix_kernel< T >::write_to_gp (const MR< T > &A,
 					     std::ostream &out) const
 {
-	register lidia_size_t i, j, l = A.columns - 1, k = A.rows - 1, l1;
+	lidia_size_t i, j, l = A.columns - 1, k = A.rows - 1, l1;
 
 	out << "[";
 	for (i = 0; i < A.rows; i++) {
@@ -1094,8 +1094,8 @@ sparse_base_matrix_kernel< T >::read_from_gp (MR< T > &A,
 	if (A.columns != local_columns)
 		set_no_of_columns(A, local_columns);
 
-	for (register lidia_size_t i = 0; i < A.rows; i++) {
-		for (register lidia_size_t j = 0; j < A.columns; j++) {
+	for (lidia_size_t i = 0; i < A.rows; i++) {
+		for (lidia_size_t j = 0; j < A.columns; j++) {
 			sto(A, i, j, buffer[len]);
 			len++;
 		}
@@ -1113,7 +1113,7 @@ inline void
 sparse_base_matrix_kernel< T >::write_to_kash (const MR< T > &A,
 					       std::ostream &out) const
 {
-	register lidia_size_t i, j, l = A.columns - 1, k = A.rows - 1, l1;
+	lidia_size_t i, j, l = A.columns - 1, k = A.rows - 1, l1;
 
 	out << "LIDIA: = Mat(Z, [";
 	for (i = 0; i < A.rows; i++) {
@@ -1183,8 +1183,8 @@ sparse_base_matrix_kernel< T >::read_from_kash (MR< T > &A,
 	if (A.columns != local_columns)
 		set_no_of_columns(A, local_columns);
 
-	for (register lidia_size_t i = 0; i < A.rows; i++) {
-		for (register lidia_size_t j = 0; j < A.columns; j++) {
+	for (lidia_size_t i = 0; i < A.rows; i++) {
+		for (lidia_size_t j = 0; j < A.columns; j++) {
 			sto(A, i, j, buffer[len]);
 			len++;
 		}
@@ -1322,7 +1322,7 @@ sparse_base_matrix_kernel< T >::set_no_of_columns (MR< T > &A,
 						   lidia_size_t c) const
 {
 	if (c < A.columns)
-		for (register lidia_size_t i = 0; i < A.rows; i++)
+		for (lidia_size_t i = 0; i < A.rows; i++)
 			while (A.value_counter[i] > 0 && A.index[i][A.value_counter[i] - 1] >= c)
 				A.value_counter[i]--;
 	A.columns = c;
@@ -1342,7 +1342,7 @@ sparse_base_matrix_kernel< T >::sto (MR< T > &A,
 				     const T &e) const
 {
 	T wert = e;
-	register lidia_size_t p, i;
+	lidia_size_t p, i;
 	if (e != A.Zero) {
 		for (p = A.value_counter[x] - 1; p >= 0 && A.index[x][p] >= y; p--) {
 			if (A.index[x][p] == y) {
@@ -1360,13 +1360,13 @@ sparse_base_matrix_kernel< T >::sto (MR< T > &A,
 			}
 
 			lidia_size_t len = ((A.allocated[x]*DELTA < A.columns) ? A.allocated[x]*DELTA : A.columns);
-			register T *tmp1 = new T[len];
+			T *tmp1 = new T[len];
 			memory_handler(tmp1, DMESSAGE,
 				       "sto(MR< T > &, lidia_size_t, "
 				       "lidia_size_t, const T &) :: "
 				       "Error in memory allocation (tmp1)");
 
-			register lidia_size_t *tmp2 = new lidia_size_t[len];
+			lidia_size_t *tmp2 = new lidia_size_t[len];
 			memory_handler(tmp2, DMESSAGE,
 				       "sto(MR< T > &, lidia_size_t, "
 				       "lidia_size_t, const T &) :: "
@@ -1389,8 +1389,8 @@ sparse_base_matrix_kernel< T >::sto (MR< T > &A,
 
 		}
 
-		register T *tmp1 = A.value[x];
-		register lidia_size_t *tmp2 = A.index[x];
+		T *tmp1 = A.value[x];
+		lidia_size_t *tmp2 = A.index[x];
 
 		for (i = A.value_counter[x]; i - 1 > p; i--) {
 			LiDIA::swap(tmp1[i], tmp1[i - 1]);
@@ -1422,7 +1422,7 @@ inline T & sparse_base_matrix_kernel< T >::member (const MR< T > &A,
 						   lidia_size_t x,
 						   lidia_size_t y) const
 {
-	register lidia_size_t p;
+	lidia_size_t p;
 	for (p = A.value_counter[x]-1; p >= 0; p--)
 		if (A.index[x][p] == y)
 			return A.value[x][p];
@@ -1439,7 +1439,7 @@ template< class T >
 inline bool sparse_base_matrix_kernel< T >::is_column_zero (const MR< T > &RES,
 							    lidia_size_t c) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	for (i = 0; i < RES.rows; i++) {
 		for (j = 0; j < RES.value_counter[i] && RES.index[i][j] < c; j++);
@@ -1455,8 +1455,8 @@ template< class T >
 inline bool sparse_base_matrix_kernel< T >::is_row_zero (const MR< T > &RES,
 							 lidia_size_t r) const
 {
-	register lidia_size_t i;
-	register T *tmp = RES.value[r];
+	lidia_size_t i;
+	T *tmp = RES.value[r];
 
 	for (i = 0; i < RES.value_counter[r]; i++) {
 		if (tmp[i] != RES.Zero)
@@ -1470,8 +1470,8 @@ inline bool sparse_base_matrix_kernel< T >::is_row_zero (const MR< T > &RES,
 template< class T >
 inline bool sparse_base_matrix_kernel< T >::is_matrix_zero (const MR< T > &RES) const
 {
-	register lidia_size_t i, j;
-	register T *tmp;
+	lidia_size_t i, j;
+	T *tmp;
 
 	for (i = 0; i < RES.rows; i++) {
 		tmp = RES.value[i];
@@ -1530,14 +1530,14 @@ sparse_base_matrix_kernel< T >::change_orientation (MR< T > &A,
 			       "change_orientation(MR< T > &, unsigned long) ::"
 			       "Error in memory allocation (allocated)");
 
-		register lidia_size_t j; // MM for HP UX 10.20 CC
+		lidia_size_t j; // MM for HP UX 10.20 CC
 		for (j = 0; j < index1; j++) {
 			A.allocated[j] = 0;
 			A.value_counter[j] = 0;
 		}
 
 		for (j = index2 - 1; j >= 0; j--) {
-			for (register lidia_size_t i = 0; i < oldvalue_counter[j]; i++)
+			for (lidia_size_t i = 0; i < oldvalue_counter[j]; i++)
 				A.value_counter[oldindex[j][i]]++;
 		}
 
@@ -1558,9 +1558,9 @@ sparse_base_matrix_kernel< T >::change_orientation (MR< T > &A,
 				A.index[j] = NULL;
 			}
 		}
-		register lidia_size_t l;
+		lidia_size_t l;
 		for (j = 0; j < index2; j++) {
-			for (register lidia_size_t i = 0; i < oldvalue_counter[j]; i++) {
+			for (lidia_size_t i = 0; i < oldvalue_counter[j]; i++) {
 				l = oldindex[j][i];
 				A.value[l][A.allocated[l]] = oldvalue[j][i];
 				A.index[l][A.allocated[l]] = j;

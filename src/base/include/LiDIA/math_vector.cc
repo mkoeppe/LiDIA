@@ -96,7 +96,7 @@ add(const math_vector< T > &v, const math_vector< T > &w)
 	debug_handler_l(DM_MV, "in member - function "
 			"add(math_vector< T > &, math_vector< T > &)", DV_MV);
 
-	register lidia_size_t i;
+	lidia_size_t i;
 	if (w.length == v.length) {
 		this->set_capacity(w.length);
 		this->length = w.length;
@@ -121,7 +121,7 @@ add(const math_vector< T > &v, const T &t)
 	debug_handler_l(DM_MV, "in member - function "
 			"add(const math_vector< T > &, const T &)", DV_MV);
 
-	register lidia_size_t i;
+	lidia_size_t i;
 
 	this->set_capacity(v.length);
 	this->length = v.length;
@@ -139,7 +139,7 @@ add(const T &t, const math_vector< T > &v)
 	debug_handler_l(DM_MV, "in member - function "
 			"add(const T &, const math_vector< T > &)", DV_MV);
 
-	register lidia_size_t i;
+	lidia_size_t i;
 
 	this->set_capacity(v.length);
 	this->length = v.length;
@@ -161,7 +161,7 @@ subtract(const math_vector< T > &v, const math_vector< T > &w)
 	debug_handler_l(DM_MV, "in member - function "
 			"subtract(const math_vector< T > &, const math_vector< T > &)", DV_MV + 1);
 
-	register lidia_size_t i;
+	lidia_size_t i;
 	if (w.length == v.length) {
 		this->set_capacity(w.length);
 		this->length = w.length;
@@ -187,7 +187,7 @@ subtract(const math_vector< T > &v, const T &t)
 	debug_handler_l(DM_MV, "in member - function "
 			"subtract(const math_vector< T > &, const T &)", DV_MV + 1);
 
-	register lidia_size_t i;
+	lidia_size_t i;
 
 	this->set_capacity(v.length);
 	this->length = v.length;
@@ -205,7 +205,7 @@ subtract(const T &t, const math_vector< T > &v)
 	debug_handler_l(DM_MV, "in member - function "
 			"subtract(const T &, const math_vector< T > &)", DV_MV + 1);
 
-	register lidia_size_t i;
+	lidia_size_t i;
 
 	this->set_capacity(v.length);
 	this->length = v.length;
@@ -227,7 +227,7 @@ compwise_multiply(const math_vector< T > &v, const math_vector< T > &w)
 	debug_handler_l(DM_MV, "in member - function "
 			"compwise_multiply(const math_vector< T > &, const math_vector< T > &)", DV_MV + 2);
 
-	register lidia_size_t i;
+	lidia_size_t i;
 	if (w.length == v.length) {
 		this->set_capacity(w.length);
 		this->length = w.length;
@@ -252,7 +252,7 @@ right_multiply(const math_vector< T > &v, const T &t)
 	debug_handler_l(DM_MV, "in member - function "
 			"multiply(const math_vector< T > &, const T &)" , DV_MV + 2);
 
-	register lidia_size_t i;
+	lidia_size_t i;
 
 	this->set_capacity(v.length);
 	this->length = v.length;
@@ -270,7 +270,7 @@ left_multiply(const T &t, const math_vector< T > &v)
 	debug_handler_l(DM_MV, "in member - function "
 			"multiply(const T &, const math_vector< T > &)", DV_MV + 2);
 
-	register lidia_size_t i;
+	lidia_size_t i;
 
 	this->set_capacity(v.length);
 	this->length = v.length;
@@ -288,7 +288,7 @@ multiply(T &res, const math_vector< T > &w) const
 	debug_handler_l(DM_MV, "in member - function "
 			"multiply(const math_vector< T > &)", DV_MV + 2);
 
-	register lidia_size_t i;
+	lidia_size_t i;
 	T TMP;
 
 	if (this->length == w.length) {
@@ -321,7 +321,7 @@ compwise_divide(const math_vector< T > &v, const math_vector< T > &w)
 	debug_handler_l(DM_MV, "in member - function "
 			"compwise_divide(const math_vector< T > &, const math_vector< T > &)", DV_MV + 3);
 
-	register lidia_size_t i;
+	lidia_size_t i;
 	if (w.length == v.length) {
 		this->set_capacity(w.length);
 		this->length = w.length;
@@ -346,7 +346,7 @@ divide(const math_vector< T > &v, const T &t)
 	debug_handler_l(DM_MV, "in member - function "
 			"divide(const math_vector< T > &, const T &)", DV_MV + 4);
 
-	register lidia_size_t i;
+	lidia_size_t i;
 
 	this->set_capacity(v.length);
 	this->length = v.length;
@@ -365,7 +365,7 @@ divide(const T &t, const math_vector< T > &v)
 			"divide(const T &, const math_vector< T > &)", DV_MV + 4);
 
 	if (0) std::cerr << PRT;
-	register lidia_size_t i;
+	lidia_size_t i;
 
 	this->set_capacity(v.length);
 	this->length = v.length;
@@ -387,7 +387,7 @@ negate(const math_vector< T > &v)
 	debug_handler_l(DM_MV, "in member - function "
 			"negate(const math_vector< T > &)", DV_MV + 4);
 
-	register lidia_size_t i;
+	lidia_size_t i;
 	this->set_capacity(v.length);
 	this->length = v.length;
 
@@ -408,7 +408,7 @@ sum_of_squares () const
 	debug_handler_l(DM_MV, "in member - function "
 			"sum_of_squares()", DV_MV + 6);
 
-	register lidia_size_t i;
+	lidia_size_t i;
 	T res, TMP;
 
 	if (this->length > 0)
@@ -433,7 +433,7 @@ equal(const math_vector< T > &v) const
 	debug_handler_l(DM_MV, "in member - function "
 			"equal(const math_vector< T > &)", DV_MV + 5);
 
-	register lidia_size_t i;
+	lidia_size_t i;
 
 	if (this->length != v.length)
 		return false;

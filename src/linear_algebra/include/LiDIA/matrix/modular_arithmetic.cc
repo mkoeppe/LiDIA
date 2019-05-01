@@ -56,7 +56,7 @@ modular_arithmetic< REP, SINGLE_MODUL, MULTI_MODUL >::chinrest (matrix< bigint >
 								const matrix< bigint > *v,
 								const bigint *prim) const
 {
-	register lidia_size_t i, j, l;
+	lidia_size_t i, j, l;
 
 	long len;
 	prim[0].longify(len);
@@ -64,7 +64,7 @@ modular_arithmetic< REP, SINGLE_MODUL, MULTI_MODUL >::chinrest (matrix< bigint >
 	bigint TMP, TMP0, TMP1, TMP2;
 	bigint dummy;
 
-	register bigint *e = new bigint[len];
+	bigint *e = new bigint[len];
 	memory_handler(e, DMESSAGE, "chinrest :: "
 		       "Error in memory allocation (e)");
 
@@ -77,7 +77,7 @@ modular_arithmetic< REP, SINGLE_MODUL, MULTI_MODUL >::chinrest (matrix< bigint >
 	if (RES.columns != c)
 		this->rep_modul.set_no_of_columns(RES, c);
 
-	register bigint *m = new bigint[len];
+	bigint *m = new bigint[len];
 	memory_handler(m, DMESSAGE, "chinrest :: "
 		       "Error in memory allocation (m)");
 
@@ -164,7 +164,7 @@ modular_arithmetic< REP, SINGLE_MODUL, MULTI_MODUL >::rank (const matrix< bigint
 {
 	// read primelist from file
 	long Number_of_primes;
-	register bigint *PRIM = get_primes(bigint(2) * H, bigint(1));
+	bigint *PRIM = get_primes(bigint(2) * H, bigint(1));
 	PRIM[0].longify(Number_of_primes);
 
 	// Compute the rank for all primes
@@ -214,12 +214,12 @@ lidia_size_t *
 modular_arithmetic< REP, SINGLE_MODUL, MULTI_MODUL >::lininr1 (const matrix< bigint > &M,
 							       const bigint &H) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	bigint Gmod;
 
 	// read primelist from file
 	long Number_of_primes;
-	register bigint *PRIM = get_primes(bigint(2) * H, bigint(1));
+	bigint *PRIM = get_primes(bigint(2) * H, bigint(1));
 	PRIM[0].longify(Number_of_primes);
 
 	// compute the rank and the linear independent rows for all primes
@@ -270,7 +270,7 @@ lidia_size_t *
 modular_arithmetic< REP, SINGLE_MODUL, MULTI_MODUL >::lininr2 (const matrix< bigint > &M,
 							       const bigint &H) const
 {
-	register lidia_size_t i;
+	lidia_size_t i;
 	bigint Gmod;
 
 	// read primelist form file
@@ -330,11 +330,11 @@ modular_arithmetic< REP, SINGLE_MODUL, MULTI_MODUL >::lininc1 (const matrix< big
 {
 	const bigint_matrix_algorithms< REP, REP, REP > modul;
 
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	bigint Gmod;
 
 	// read primlist from file
-	register bigint *PRIM = get_primes(bigint(2) * H, bigint(1));
+	bigint *PRIM = get_primes(bigint(2) * H, bigint(1));
 	long Number_of_primes;
 	PRIM[0].longify(Number_of_primes);
 
@@ -389,11 +389,11 @@ modular_arithmetic< REP, SINGLE_MODUL, MULTI_MODUL >::lininc2 (const matrix< big
 {
 	const bigint_matrix_algorithms< REP, REP, REP > modul;
 
-	register lidia_size_t i;
+	lidia_size_t i;
 	bigint Gmod;
 
 	// read primelist from file
-	register bigint *PRIM = get_primes(bigint(2) * H, bigint(1));
+	bigint *PRIM = get_primes(bigint(2) * H, bigint(1));
 	long Number_of_primes;
 	PRIM[0].longify(Number_of_primes);
 
@@ -449,10 +449,10 @@ modular_arithmetic< REP, SINGLE_MODUL, MULTI_MODUL >::adj1 (matrix< bigint > &RE
 							    const bigint &H,
 							    const bigint &DET) const
 {
-	register lidia_size_t i, z1, z2;
+	lidia_size_t i, z1, z2;
 
 	// read primelist from file
-	register bigint *PRIM = get_primes(bigint(2)*H, DET, true);
+	bigint *PRIM = get_primes(bigint(2)*H, DET, true);
 	long n;
 	PRIM[0].longify(n);
 
@@ -509,11 +509,11 @@ modular_arithmetic< REP, SINGLE_MODUL, MULTI_MODUL >::adj2 (matrix< bigint > &RE
 							    const bigint &H,
 							    const bigint & DET) const
 {
-	register lidia_size_t i, ii, jj, kk, z1, z2;
+	lidia_size_t i, ii, jj, kk, z1, z2;
 	bigint val, val2;
 	bool done;
 
-	register bigint *PRIM = get_primes(bigint(2)*H, abs(DET), true);
+	bigint *PRIM = get_primes(bigint(2)*H, abs(DET), true);
 	long n;
 	PRIM[0].longify(n);
 
@@ -601,10 +601,10 @@ modular_arithmetic< REP, SINGLE_MODUL, MULTI_MODUL >::adj2 (matrix< bigint > &RE
 							    const bigint & DET,
 							    int num_mod) const
 {
-	register lidia_size_t i, z1, z2, ii, kk;
+	lidia_size_t i, z1, z2, ii, kk;
 	bigint val, val2;
 
-	register bigint *PRIM = get_primes(bigint(2)*H, abs(DET), true);
+	bigint *PRIM = get_primes(bigint(2)*H, abs(DET), true);
 	long n;
 	PRIM[0].longify(n);
 
@@ -700,7 +700,7 @@ modular_arithmetic< REP, SINGLE_MODUL, MULTI_MODUL >::latticedet1 (const matrix<
 								   bigint & DET,
 								   const bigint &H) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	//  Step 1
 	lidia_size_t *linuz = lininr1(RES, H);
@@ -740,7 +740,7 @@ modular_arithmetic< REP, SINGLE_MODUL, MULTI_MODUL >::latticedet2 (const matrix<
 								   bigint & DET,
 								   const bigint &H) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	bigint TMP, TMP1;
 
 	// Step 1
@@ -792,7 +792,7 @@ modular_arithmetic< REP, SINGLE_MODUL, MULTI_MODUL >::latticedet2 (const matrix<
 								   bigint &H,
 								   int num_same) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	bigint TMP, TMP1, *tmp, *tmp1, *tmp2;
 
 	// Step 1
@@ -848,8 +848,8 @@ modular_arithmetic< REP, SINGLE_MODUL, MULTI_MODUL >::latticedet3 (const matrix<
 								   bigint & DET,
 								   const bigint &H) const
 {
-	register lidia_size_t i, j;
-	register bigint *tmp, *tmp1;
+	lidia_size_t i, j;
+	bigint *tmp, *tmp1;
 
 	// Step 1
 	lidia_size_t *linuz = lininr1(RES, H);
@@ -890,7 +890,7 @@ modular_arithmetic< REP, SINGLE_MODUL, MULTI_MODUL >::latticedet4 (const matrix<
 								   bigint &H,
 								   int num_same) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	bigint TMP, TMP1, *tmp, *tmp1, *tmp2;
 
 	// Step 1
@@ -948,7 +948,7 @@ modular_arithmetic< REP, SINGLE_MODUL, MULTI_MODUL >::latticedet5 (matrix< bigin
 								   bigint &H,
 								   int num_same) const
 {
-	register lidia_size_t i;
+	lidia_size_t i;
 	bigint TMP, TMP1;
 
 	lidia_size_t *linu1 = lininr1(RES, H);
@@ -1284,7 +1284,7 @@ modular_arithmetic< REP, SINGLE_MODUL, MULTI_MODUL >::charpoly (const matrix< bi
 								bigint *RES,
 								const bigint &H) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	bigint TMP = H, TMP1;
 	long len;
 

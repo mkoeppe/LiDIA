@@ -129,7 +129,7 @@ void
 file_adjoint::touch_files()
 {
 	// touch all temporary files in order to give current date stamps
-	register lidia_size_t i;
+	lidia_size_t i;
 	char command[100];
 
 	for (i = 0; i < num_files; ++i) {
@@ -162,7 +162,7 @@ file_adjoint::add_new_prime(matrix< bigint > & A, bigint & p)
 {
 	debug_handler("file_adjoint", "add_new_prime");
 
-	register lidia_size_t j, k, curr_rows, nrows;
+	lidia_size_t j, k, curr_rows, nrows;
 	lidia_size_t i;
 	FILE *out;
 	char fname[50];
@@ -232,7 +232,7 @@ file_adjoint::test_adjoint(matrix< bigint > & A, const bigint & DET)
 {
 	debug_handler("file_adjoint", "test_adjoint");
 
-	register lidia_size_t i, j, k, l, nrows;
+	lidia_size_t i, j, k, l, nrows;
 	lidia_size_t idx;
 	bigint ajk, val;
 	matrix< bigint > ADJ;
@@ -277,7 +277,7 @@ file_adjoint::test_adjoint_diag(matrix< bigint > & A, const bigint & DET)
 {
 	debug_handler("file_adjoint", "test_adjoint_diag");
 
-	register lidia_size_t i, j, k, l, nrows;
+	lidia_size_t i, j, k, l, nrows;
 	lidia_size_t idx;
 	bigint ajk, val;
 	matrix< bigint > ADJ;
@@ -330,7 +330,7 @@ file_adjoint::multiply(math_vector< bigint > & RES, math_vector< bigint > & x)
 {
 	debug_handler("file_adjoint", "multiply(vector)");
 
-	register lidia_size_t i, j, k, nrows;
+	lidia_size_t i, j, k, nrows;
 	lidia_size_t idx;
 	bigint ajk;
 	matrix< bigint > ADJ;
@@ -372,7 +372,7 @@ file_adjoint::multiply(matrix< bigint > & RES, matrix< bigint > & X)
 {
 	debug_handler("file_adjoint", "multiply(matrix)");
 
-	register lidia_size_t i, j, k, l, nrows;
+	lidia_size_t i, j, k, l, nrows;
 	lidia_size_t idx;
 	bigint ajk, tmp;
 	matrix< bigint > ADJ;
@@ -418,7 +418,7 @@ file_adjoint::combine_rows(matrix< bigint > & RES, lidia_size_t idx)
 {
 	debug_handler("file_adjoint", "combine_rows");
 
-	register lidia_size_t i, j, k;
+	lidia_size_t i, j, k;
 	bigint MODULUS, MOD;
 	long lrows, lcols, val;
 	FILE *in;

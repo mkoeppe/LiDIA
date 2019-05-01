@@ -117,7 +117,7 @@ diag_min(bigint &erg, const math_matrix< bigint > &A)
 		j = columns;
 	}
 
-	for (register long i = 1; i < j; i++) {
+	for (long i = 1; i < j; i++) {
 		if (a[tmp][tmp].compare(a[i][i]) > 0) {
 			tmp = i;
 		}

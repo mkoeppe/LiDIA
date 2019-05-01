@@ -54,7 +54,7 @@ column_oriented_sparse_matrix_modules< T >::member (const MR< T > &A,
 						    lidia_size_t x,
 						    lidia_size_t y) const
 {
-	for (register lidia_size_t i = 0; i < A.value_counter[y]; i++) {
+	for (lidia_size_t i = 0; i < A.value_counter[y]; i++) {
 		if (A.index[y][i] == x)
 			return A.value[y][i];
 	}
@@ -74,7 +74,7 @@ column_oriented_sparse_matrix_modules< T >::sto (MR< T > &A,
 						 lidia_size_t x,
 						 const T &e) const
 {
-	register lidia_size_t p, i;
+	lidia_size_t p, i;
 	if (e != A.Zero) {
 		for (p = A.value_counter[x] - 1; p >= 0 && A.index[x][p] >= y; p--) {
 			if (A.index[x][p] == y) {
@@ -93,13 +93,13 @@ column_oriented_sparse_matrix_modules< T >::sto (MR< T > &A,
 			}
 
 			lidia_size_t len = ((A.allocated[x]*DELTA < A.columns) ? A.allocated[x]*DELTA : A.rows);
-			register T *tmp1 = new T[len];
+			T *tmp1 = new T[len];
 			memory_handler(tmp1, DMESSAGE,
 				       "sto(MR< T > &, lidia_size_t, "
 				       "lidia_size_t, const T &) :: "
 				       "Error in memory allocation (tmp1)");
 
-			register lidia_size_t *tmp2 = new lidia_size_t[len];
+			lidia_size_t *tmp2 = new lidia_size_t[len];
 			memory_handler(tmp2, DMESSAGE,
 				       "sto(MR< T > &, lidia_size_t, "
 				       "lidia_size_t, const T &) :: "
@@ -122,8 +122,8 @@ column_oriented_sparse_matrix_modules< T >::sto (MR< T > &A,
 
 		}
 
-		register T *tmp1 = A.value[x];
-		register lidia_size_t *tmp2 = A.index[x];
+		T *tmp1 = A.value[x];
+		lidia_size_t *tmp2 = A.index[x];
 
 		for (i = A.value_counter[x]; i - 1 > p; i--) {
 			LiDIA::swap(tmp1[i], tmp1[i - 1]);
@@ -183,7 +183,7 @@ inline void
 column_oriented_sparse_matrix_modules< T >::max_abs (const MR< T > &RES,
 						     T &MAX) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	bool SW = false;
 
 	for (i = 0; i < RES.columns; i++) {
@@ -220,7 +220,7 @@ column_oriented_sparse_matrix_modules< T >::subtract_multiple_of_column (MR< T >
 
 	T TMP;
 
-	register lidia_size_t l1, l2, l3;
+	lidia_size_t l1, l2, l3;
 	for (l1 = l2 = l3 = 0; l2 < A.value_counter[index1] && l1 < A.value_counter[index2];) {
 		if (A.index[index2][l1] == A.index[index1][l2]) {
 			LiDIA::multiply(TMP, q, A.value[index2][l1]);
@@ -315,7 +315,7 @@ column_oriented_sparse_matrix_modules< T >::subtract_multiple_of_column_mod (MR<
 	A.allocated[index1] = len;
 	T TMP;
 
-	register lidia_size_t l1, l2, l3;
+	lidia_size_t l1, l2, l3;
 	for (l1 = l2 = l3 = 0; l2 < A.value_counter[index1] && l1 < A.value_counter[index2];) {
 		if (A.index[index2][l1] == A.index[index1][l2]) {
 			LiDIA::mult_mod(TMP, q, A.value[index2][l1], mod);
@@ -404,7 +404,7 @@ column_oriented_sparse_matrix_modules< T >::normalize_column_mod (MR< T > &A,
 	A.allocated[index1] = len;
 	T TMP;
 
-	register lidia_size_t l1, l2, l3;
+	lidia_size_t l1, l2, l3;
 	for (l1 = l2 = l3 = 0; l2 < A.value_counter[index1] && l1 < A.value_counter[index2];) {
 		if (A.index[index2][l1] == A.index[index1][l2]) {
 			LiDIA::mult_mod(TMP, q, A.value[index2][l1], mod);
@@ -494,7 +494,7 @@ column_oriented_sparse_matrix_modules< T >::negate_column (MR< T > &A,
 							   lidia_size_t pos,
 							   lidia_size_t len) const
 {
-	for (register lidia_size_t i = 0; i < A.value_counter[pos] && A.index[pos][i] <= len; i++)
+	for (lidia_size_t i = 0; i < A.value_counter[pos] && A.index[pos][i] <= len; i++)
 		A.value[pos][i] = -A.value[pos][i];
 }
 
@@ -507,7 +507,7 @@ column_oriented_sparse_matrix_modules< T >::negate_column_mod (MR< T > &A,
 							       lidia_size_t len,
 							       const T &mod) const
 {
-	for (register lidia_size_t i = 0; i < A.value_counter[pos] && A.index[pos][i] <= len; i++) {
+	for (lidia_size_t i = 0; i < A.value_counter[pos] && A.index[pos][i] <= len; i++) {
 		A.value[pos][i] = -A.value[pos][i];
 		LiDIA::best_remainder(A.value[pos][i], A.value[pos][i], mod);
 	}
@@ -524,7 +524,7 @@ void
 column_oriented_sparse_matrix_modules< T >::hadamard (const MR< T > &A,
 						      bigint &H) const
 {
-	register lidia_size_t min, i, j;
+	lidia_size_t min, i, j;
 
 	if (A.columns < A.rows) {
 		min = A.columns;
@@ -536,8 +536,8 @@ column_oriented_sparse_matrix_modules< T >::hadamard (const MR< T > &A,
 	bigint TMP;
 
 	// Step 1 - 11
-	register bigint *hcolumns = new bigint[A.columns];
-	register bigint *hrows = new bigint[A.rows];
+	bigint *hcolumns = new bigint[A.columns];
+	bigint *hrows = new bigint[A.rows];
 
 	for (j = 0; j < A.columns; j++) {
 		for (i = 0; i < A.value_counter[j]; i++) {
@@ -598,7 +598,7 @@ column_oriented_sparse_matrix_modules< T >::hadamard (const MR< T > &A,
 	else
 		M.assign(ROWS);
 
-	register lidia_size_t B = M.bit_length() - 1;
+	lidia_size_t B = M.bit_length() - 1;
 	bigint E = (bigint(B) / bigint(2)) + bigint(2);
 	power(H, bigint(2), E);
 	dec(H);
@@ -616,7 +616,7 @@ column_oriented_sparse_matrix_modules< T >::update_max_array (const MR< T > &A,
 							      lidia_size_t i,
 							      T *max_array) const
 {
-	for (register lidia_size_t j = 0; j < A.value_counter[i]; j++)
+	for (lidia_size_t j = 0; j < A.value_counter[i]; j++)
 		if (max_array[i] < abs(A.value[i][j]))
 			max_array[i] = abs(A.value[i][j]);
 }
@@ -633,8 +633,8 @@ column_oriented_sparse_matrix_modules< T >::init_max_array (const MR< T > &A) co
 	for (lidia_size_t i = 0; i < A.columns; i++)
 		max_array[i] = 0;
 
-	for (register lidia_size_t i = 0; i < A.columns; i++)
-		for (register lidia_size_t j = 0; j < A.value_counter[i]; j++)
+	for (lidia_size_t i = 0; i < A.columns; i++)
+		for (lidia_size_t j = 0; j < A.value_counter[i]; j++)
 			if (max_array[i] < abs(A.value[i][j]))
 				max_array[i] = abs(A.value[i][j]);
 
@@ -684,11 +684,11 @@ column_oriented_sparse_matrix_modules< T >::min_abs_of_row (const MR< T > &A,
 							    lidia_size_t &index) const
 {
 	T pivot = 0;
-	register lidia_size_t COUNT = 0;
+	lidia_size_t COUNT = 0;
 	lidia_size_t j;
 
-	for (register lidia_size_t i = startc; i >= 0; i--) {
-		register T *tmp = A.value[i];
+	for (lidia_size_t i = startc; i >= 0; i--) {
+		T *tmp = A.value[i];
 
 
 		// Position
@@ -1361,7 +1361,7 @@ column_oriented_sparse_matrix_modules< T >::kennwerte (MR< T > &RES,
 						       lidia_size_t &no_of_elements,
 						       T &Durch) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	bool SW = false;
 	no_of_elements = 0;
 	Durch = 0;
@@ -1391,7 +1391,7 @@ template< class T >
 inline void
 column_oriented_sparse_matrix_modules< T >::max (MR< T > &RES, T &MAX) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	bool SW = false;
 
 	for (i = 0; i < RES.columns; i++)
@@ -1580,7 +1580,7 @@ column_oriented_sparse_matrix_modules< T >::mgcd_bradley (MR< T > &A,
 							  lidia_size_t len) const
 {
 	lidia_size_t n = startc + 1;
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	matrix< T > Tr;
 	Tr.set_representation(matrix_flags::sparse_representation);
@@ -1681,7 +1681,7 @@ column_oriented_sparse_matrix_modules< T >::mgcd_bradley (MR< T > &A,
 							  lidia_size_t len) const
 {
 	lidia_size_t n = startc + 1;
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 
 	matrix< T > Tr;
@@ -1781,7 +1781,7 @@ column_oriented_sparse_matrix_modules< T >::mgcd_ilio (MR< T > &A,
 {
 	lidia_size_t n = startc + 1;
 
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	if (n <= 0)
 		lidia_error_handler("multiple_gcd", "mgcd :: Error in parameter !!");
@@ -1834,7 +1834,7 @@ column_oriented_sparse_matrix_modules< T >::mgcd_ilio (MR< T > &A,
 {
 	lidia_size_t n = startc + 1;
 
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	if (n <= 0)
 		lidia_error_handler("multiple_gcd", "mgcd :: Error in parameter !!");
@@ -2013,7 +2013,7 @@ bool column_oriented_sparse_matrix_modules< T >::mgcd_storjohann (MR< T > &A,
 	T A3 = 0, A2 = 0, A1 = 0, A0 = 0, x = 0, y = 0;
 	T TMP1, TMP2, TMP3;
 
-	register lidia_size_t i, j, l;
+	lidia_size_t i, j, l;
 	lidia_size_t index;
 
 	//
@@ -2109,7 +2109,7 @@ column_oriented_sparse_matrix_modules< T >::mgcd_storjohann (MR< T > &A,
 	T A3, A2, A1, A0, x, y;
 	T TMP1, TMP2, TMP3;
 
-	register lidia_size_t i, j, l;
+	lidia_size_t i, j, l;
 	lidia_size_t index;
 
 	//

@@ -748,7 +748,7 @@ extern "C" int cmp_mv_term(const void * aa, const void * bb)
 inline
 void heapify(mv_list_entry ** A, int i, int size_A)
 {
-	register int l, r, largest;
+	int l, r, largest;
 	mv_list_entry *p;
 	bool end;
 

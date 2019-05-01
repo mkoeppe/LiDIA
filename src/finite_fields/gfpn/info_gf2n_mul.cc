@@ -53,7 +53,7 @@ static gf2n_bit16 mul8bit (gf2n_bit16 a, gf2n_bit16 b)
 {
 	gf2n_bit16 h = 0;
 
-	for (register int i = 1; i <= 8; i++) {
+	for (int i = 1; i <= 8; i++) {
 		if (!a)
 			return (h);
 		if (a&1) h ^= b;
@@ -496,7 +496,7 @@ void (info_gf2n::*(info_gf2n::gf2nmul)[]) (udigit*, udigit*, udigit*) const =
 
 void info_gf2n::square (udigit *c, udigit *a) const
 {
-	for (register int i = anzBI-1, j = 2*anzBI-1; i >= 0; i--) {
+	for (int i = anzBI-1, j = 2*anzBI-1; i >= 0; i--) {
 		c[j--] = tabsquare[ gf2n_bit16(a[i] >> 16) ];
 		c[j--] = tabsquare[ gf2n_bit16(a[i]) ];
 	}

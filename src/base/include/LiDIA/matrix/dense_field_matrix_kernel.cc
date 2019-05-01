@@ -55,7 +55,7 @@ inline void dense_field_matrix_kernel< T >::divide (MR< T > &RES,
 						    const MR< T > &A,
 						    const T &k) const
 {
-	register lidia_size_t j, i;
+	lidia_size_t j, i;
 	T *REStmp, *Atmp;
 
 	for (j = 0; j < A.rows; j++) {
@@ -74,7 +74,7 @@ dense_field_matrix_kernel< T >::compwise_divide (MR< T > &RES,
 						 const MR< T > &A,
 						 const MR< T > &B) const
 {
-	register lidia_size_t j, i;
+	lidia_size_t j, i;
 	T *REStmp, *Atmp, *Btmp;
 
 	for (j = 0; j < RES.rows; j++) {

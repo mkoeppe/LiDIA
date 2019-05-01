@@ -58,8 +58,8 @@ inline gf2n_word max(gf2n_word a, gf2n_word b)
 
 inline void shift_left(gf2n_word *F, unsigned int k, unsigned int & Flast)
 {
-	register int i, j, s;
-	register gf2n_word *fp1, *fp2;
+	int i, j, s;
+	gf2n_word *fp1, *fp2;
 
 	s = k % (CHAR_BIT*sizeof(gf2n_word));
 	j = k / (CHAR_BIT*sizeof(gf2n_word));
@@ -100,8 +100,8 @@ inline void shift_left(gf2n_word *F, unsigned int k, unsigned int & Flast)
 
 inline void shift_right(gf2n_word *F, unsigned int k, unsigned int & Flast)
 {
-	register unsigned int j, i, s;
-	register gf2n_word *fp1, *fp2;
+	unsigned int j, i, s;
+	gf2n_word *fp1, *fp2;
 
 	s = k % (CHAR_BIT*sizeof(gf2n_word));
 	j = k / (CHAR_BIT*sizeof(gf2n_word));
@@ -141,9 +141,9 @@ inline void add_shift_right(gf2n_word *F, gf2n_word*G, unsigned int k,
 			    unsigned int & Flast, unsigned int Glast)
 
 {
-	register unsigned int j, i, s, l;
-	register gf2n_word h;
-	register gf2n_word *fp1, *fp2, *gp;
+	unsigned int j, i, s, l;
+	gf2n_word h;
+	gf2n_word *fp1, *fp2, *gp;
 
 	s = k % (CHAR_BIT*sizeof(gf2n_word));
 	j = k / (CHAR_BIT*sizeof(gf2n_word));
@@ -189,8 +189,8 @@ inline void add_shift_right(gf2n_word *F, gf2n_word*G, unsigned int k,
 
 void tri_invert(gf2n_word *res, gf2n_word *a)
 {
-	register gf2n_word h;
-	register gf2n_word *bp, *cp, *fp, *gp, *ap;
+	gf2n_word h;
+	gf2n_word *bp, *cp, *fp, *gp, *ap;
 	unsigned int i, j, w, l;
 	unsigned int xdegree = 0;
 	unsigned int anzBI = gf2n::anzBI;
@@ -410,8 +410,8 @@ void tri_invert(gf2n_word *res, gf2n_word *a)
 
 void pent_invert(gf2n_word *res, gf2n_word *a)
 {
-	register gf2n_word h;
-	register gf2n_word *bp, *cp, *fp, *gp, *ap;
+	gf2n_word h;
+	gf2n_word *bp, *cp, *fp, *gp, *ap;
 	unsigned int i, j, w, l;
 	unsigned int xdegree = 0;
 	unsigned int anzBI = gf2n::anzBI;
@@ -670,8 +670,8 @@ void pent_invert(gf2n_word *res, gf2n_word *a)
 
 void general_invert(gf2n_word *res, gf2n_word *a)
 {
-	register gf2n_word h;
-	register gf2n_word *bp, *cp, *fp, *gp, *ap;
+	gf2n_word h;
+	gf2n_word *bp, *cp, *fp, *gp, *ap;
 	unsigned int i, j, w, l, s;
 	unsigned int xdegree = 0;
 	unsigned int anzBI = gf2n::anzBI;

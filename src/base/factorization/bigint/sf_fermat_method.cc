@@ -36,7 +36,7 @@ void single_factor< bigint >:: Fermat(factorization< bigint > & f,
 {
 	bigint N(rep);
 	bigint m, z, df, root;
-	register unsigned int i;
+	unsigned int i;
 
 	//*********** Initialization **************************
 

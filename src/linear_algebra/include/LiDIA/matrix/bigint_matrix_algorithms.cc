@@ -61,7 +61,7 @@ inline void bigint_matrix_algorithms< REP1, REP2, REP3 >::
 divide(matrix< bigint > &RES, const matrix< bigint > &A,
        const bigint &k) const
 {
-	register lidia_size_t j, i;
+	lidia_size_t j, i;
 	bigint TMP;
 
 	for (j = 0; j < A.rows; j++)
@@ -78,7 +78,7 @@ inline void bigint_matrix_algorithms< REP1, REP2, REP3 >::
 compwise_divide(matrix< bigint > &RES, const matrix< bigint > &A,
 		const matrix< bigint > &B) const
 {
-	register lidia_size_t j, i;
+	lidia_size_t j, i;
 	bigint TMP;
 
 	for (j = 0; j < RES.rows; j++)
@@ -275,7 +275,7 @@ kernel1(matrix< bigint > &RES, const matrix< bigint > & A, const bigint &H) cons
 		dense_fp_matrix_kernel< bigint, MR < bigint > > > Dm_bigint_modul;
 
 	bigint *ZBAtmp, *Atmp;
-	register long i, j;
+	long i, j;
 	lidia_size_t c = A.columns;
 
 	// Step 1
@@ -323,7 +323,7 @@ kernel2(matrix< bigint > &RES, const matrix< bigint > & A) const
 	debug_handler_l(DMESSAGE, "in member - function "
 			"kernel2(const matrix< bigint > &)", DVALUE + 8);
 
-	register lidia_size_t i;
+	lidia_size_t i;
 	matrix< bigint > B = A;
 	B.hnf_havas(RES);
 
@@ -358,7 +358,7 @@ reginvimage1(matrix< bigint > &RES, const matrix< bigint > & A,
 	debug_handler_l(DMESSAGE, "reginvimage1(const matrix< bigint > &, const matrix< bigint > &",
 			DVALUE + 8);
 
-	register long i, j;
+	long i, j;
 	bigint TMP, TMP1;
 
 	// Step 1
@@ -420,7 +420,7 @@ reginvimage2(matrix< bigint > &RES, const matrix< bigint > & A,
 	debug_handler_l(DMESSAGE, "in member - function "
 			"reginvimage2(const matrix< bigint > &, const matrix< bigint > &", DVALUE + 8);
 
-	register lidia_size_t i, j, len, oldlen;
+	lidia_size_t i, j, len, oldlen;
 	bigint TMP, TMP1;
 
 	// Step 1
@@ -476,7 +476,7 @@ void modular_bigint_matrix_algorithms< REP, SINGLE_MODUL, MULTI_MODUL >::
 image1(matrix< bigint > &RES, const matrix< bigint > & A, const bigint &H) const
 {
 	bigint *ZBAtmp, *Atmp;
-	register long i, j;
+	long i, j;
 
 	// Step 1
 	const modular_arithmetic< DRMK < bigint >,
@@ -524,7 +524,7 @@ template< class REP, class SINGLE_MODUL, class MULTI_MODUL >
 inline void modular_bigint_matrix_algorithms< REP, SINGLE_MODUL, MULTI_MODUL >::
 image2(matrix< bigint > &RES, const matrix< bigint > & A) const
 {
-	register lidia_size_t i;
+	lidia_size_t i;
 	RES.assign(A);
 	RES.hnf_havas();
 
@@ -559,7 +559,7 @@ invimage(matrix< bigint > &RES, const matrix< bigint > & B, const bigint * b) co
 				    "invimage(const matrix< bigint > & B, const bigint * b)",
 				    DMESSAGE, EMESSAGE[1]);
 
-	register long i;
+	long i;
 	bigint *tmp;
 
 	// Step 1
@@ -610,7 +610,7 @@ invimage(matrix< bigint > &RES, const matrix< bigint > & B, const math_vector< b
 	debug_handler_l(DMESSAGE, "in member - function "
 			"invimage(const matrix< bigint > &, const math_vector< bigint > &)", DVALUE + 8);
 
-	register long i;
+	long i;
 	// Step 1
 	matrix< bigint > A = B;
 	A.set_no_of_columns(B.columns + 1);
@@ -672,10 +672,10 @@ snf_hartley(matrix< bigint > &RES) const
 	debug_handler_l(DMESSAGE, "in member - function "
 			"snf_hartley()", DVALUE + 8);
 
-	register lidia_size_t startr, startc, TEILBARKEIT;
+	lidia_size_t startr, startc, TEILBARKEIT;
 	bigint TMP1, TMP2;
 	bigint *tmp;
-	register lidia_size_t xpivot, ypivot, i, j, z;
+	lidia_size_t xpivot, ypivot, i, j, z;
 
 	for (startc = 0, startr = 0; startr < RES.rows && startc < RES.columns; startr++, startc++) {
 
@@ -779,10 +779,10 @@ snf_hartley(matrix< bigint > &RES, matrix< bigint > & T1, matrix< bigint > & T2)
 	debug_handler_l(DMESSAGE, "in member - function "
 			"snf_hartley(matrix< bigint > &, matrix< bigint > &)", DVALUE + 8);
 
-	register lidia_size_t startr, startc, TEILBARKEIT;
+	lidia_size_t startr, startc, TEILBARKEIT;
 	bigint TMP1, TMP2;
 	lidia_size_t xpivot, ypivot;
-	register lidia_size_t i, j, z;
+	lidia_size_t i, j, z;
 
 	for (startc = 0, startr = 0; startr < RES.rows && startc < RES.columns; startr++, startc++) {
 
@@ -911,7 +911,7 @@ snf_simple(matrix< bigint > &RES) const
 	matrix< bigint > TR2(RES.columns, RES.columns);
 
 	bigint *REM;
-	register lidia_size_t startr, startc, pivot, i, j, z, TEILBARKEIT;
+	lidia_size_t startr, startc, pivot, i, j, z, TEILBARKEIT;
 
 	for (startc = 0, startr = 0; startr < RES.rows && startc < RES.columns; startr++, startc++) {
 
@@ -1002,7 +1002,7 @@ snf_simple(matrix< bigint > &RES, matrix< bigint > & T1, matrix< bigint > & T2) 
 	matrix< bigint > TR1 = T1;
 	matrix< bigint > TR2 = T2;
 	bigint *REM;
-	register lidia_size_t startr, startc, pivot, i, j, z, TEILBARKEIT;
+	lidia_size_t startr, startc, pivot, i, j, z, TEILBARKEIT;
 
 	for (startc = 0, startr = 0; startr < RES.rows && startc < RES.columns; startr++, startc++) {
 
@@ -1099,11 +1099,11 @@ snf_havas(matrix< bigint > &RES) const
 	debug_handler_l(DMESSAGE, "in member - function "
 			"snf_havas()", DVALUE + 8);
 
-	register lidia_size_t i, j, z, index;
+	lidia_size_t i, j, z, index;
 	bigint PIVOT;
 	bigint *tmp = NULL;
 
-	register lidia_size_t startr, startc, xpivot, ypivot, SW, TEILBARKEIT;
+	lidia_size_t startr, startc, xpivot, ypivot, SW, TEILBARKEIT;
 	bigint TMP1, TMP2;
 
 	for (startc = 0, startr = 0; startr < RES.rows && startc < RES.columns; startr++, startc++) {
@@ -1215,11 +1215,11 @@ snf_havas(matrix< bigint > &RES, matrix< bigint > & T1, matrix< bigint > & T2) c
 	debug_handler_l(DMESSAGE, "in member - function "
 			"snf_havas(matrix< bigint > &, matrix< bigint > &)", DVALUE + 8);
 
-	register lidia_size_t i, j, z, index;
+	lidia_size_t i, j, z, index;
 	bigint PIVOT;
 	bigint *tmp = NULL;
 
-	register lidia_size_t startr, startc, xpivot, ypivot, SW, TEILBARKEIT;
+	lidia_size_t startr, startc, xpivot, ypivot, SW, TEILBARKEIT;
 	bigint TMP1, TMP2;
 
 	for (startc = 0, startr = 0; startr < RES.rows && startc < RES.columns; startr++, startc++) {
@@ -1347,11 +1347,11 @@ snf_mult(matrix< bigint > &RES, long art) const
 {
 	debug_handler_l(DMESSAGE, "in member - function "
 			"snf_mult(matrix< bigint > &, matrix< bigint > &)", DVALUE + 8);
-	register lidia_size_t i, j, z, index, SW;
+	lidia_size_t i, j, z, index, SW;
 	bigint TMP1, TMP2;
 	bigint *tmp = NULL;
 
-	register lidia_size_t startr, startc, xpivot, ypivot, TEILBARKEIT;
+	lidia_size_t startr, startc, xpivot, ypivot, TEILBARKEIT;
 	bigint ROW, COLUMN, PIVOT, NORM;
 
 	for (startc = 0, startr = 0; startr < RES.rows && startc < RES.columns; startr++, startc++) {
@@ -1483,11 +1483,11 @@ snf_mult(matrix< bigint > &RES, matrix< bigint > & T1, matrix< bigint > & T2, lo
 	debug_handler_l(DMESSAGE, "in member - function "
 			"snf_mult(matrix< bigint > &, matrix< bigint > &)", DVALUE + 8);
 
-	register lidia_size_t i, j, z, index, SW;
+	lidia_size_t i, j, z, index, SW;
 	bigint TMP1, TMP2;
 	bigint *tmp = NULL;
 
-	register lidia_size_t startr, startc, xpivot, ypivot, TEILBARKEIT;
+	lidia_size_t startr, startc, xpivot, ypivot, TEILBARKEIT;
 	bigint ROW, COLUMN, PIVOT, NORM;
 
 	for (startc = 0, startr = 0; startr < RES.rows && startc < RES.columns; startr++, startc++) {
@@ -1636,11 +1636,11 @@ snf_add(matrix< bigint > &RES, long art) const
 	debug_handler_l(DMESSAGE, "in member - function "
 			"snf_add(long)", DVALUE + 8);
 
-	register lidia_size_t i, j, z, index, SW;
+	lidia_size_t i, j, z, index, SW;
 	bigint TMP1, TMP2;
 	bigint *tmp = NULL;
 
-	register lidia_size_t startr, startc, xpivot, ypivot, TEILBARKEIT;
+	lidia_size_t startr, startc, xpivot, ypivot, TEILBARKEIT;
 	bigint ROW, COLUMN, PIVOT, NORM;
 
 	for (startc = 0, startr = 0; startr < RES.rows && startc < RES.columns; startr++, startc++) {
@@ -1772,11 +1772,11 @@ snf_add(matrix< bigint > &RES, matrix< bigint > & T1, matrix< bigint > & T2, lon
 	debug_handler_l(DMESSAGE, "in member - function "
 			"snf_add(matrix< bigint > &, matrix< bigint > &, long)", DVALUE + 8);
 
-	register lidia_size_t i, j, z, index, SW;
+	lidia_size_t i, j, z, index, SW;
 	bigint TMP1, TMP2;
 	bigint *tmp = NULL;
 
-	register lidia_size_t startr, startc, xpivot, ypivot, TEILBARKEIT;
+	lidia_size_t startr, startc, xpivot, ypivot, TEILBARKEIT;
 	bigint ROW, COLUMN, PIVOT, NORM;
 
 	for (startc = 0, startr = 0; startr < RES.rows && startc < RES.columns; startr++, startc++) {
@@ -1925,11 +1925,11 @@ snf_new(matrix< bigint > &RES, long art) const
 	debug_handler_l(DMESSAGE, "in member - function "
 			"snf_new(long)", DVALUE + 8);
 
-	register lidia_size_t i, j, z, index, SW;
+	lidia_size_t i, j, z, index, SW;
 	bigint TMP1, TMP2;
 	bigint *tmp = NULL;
 
-	register lidia_size_t startr, startc, xpivot, ypivot, TEILBARKEIT;
+	lidia_size_t startr, startc, xpivot, ypivot, TEILBARKEIT;
 	bigint ROW, COLUMN, PIVOT, NORM;
 
 	bigint *RO = new bigint[RES.rows];
@@ -2066,11 +2066,11 @@ snf_new(matrix< bigint > &RES, matrix< bigint > & T1, matrix< bigint > & T2, lon
 {
 	debug_handler_l(DMESSAGE, "in member - function "
 			"snf_new(matrix< bigint > &, matrix< bigint > &, long)", DVALUE + 8);
-	register lidia_size_t i, j, z, index, SW;
+	lidia_size_t i, j, z, index, SW;
 	bigint TMP1, TMP2;
 	bigint *tmp = NULL;
 
-	register lidia_size_t startr, startc, xpivot, ypivot, TEILBARKEIT;
+	lidia_size_t startr, startc, xpivot, ypivot, TEILBARKEIT;
 	bigint ROW, COLUMN, PIVOT, NORM;
 
 	bigint *RO = new bigint[RES.rows];
@@ -2227,7 +2227,7 @@ snfmod_dkt(matrix< bigint > &RES, const bigint &mod) const
 	debug_handler_l(DMESSAGE, "in member - function "
 			"snfmod_dkt(const bigint &)", DVALUE + 8);
 
-	register lidia_size_t diagindex, j, z, l;
+	lidia_size_t diagindex, j, z, l;
 
 	bigint RES0, RES1, RES2, RES3; // 0 = lggT, 1 = rggt, 2 = ggt
 	bigint x, y;
@@ -2329,7 +2329,7 @@ snfmod_cohen(matrix< bigint > &RES, const bigint & mod) const
 	debug_handler_l(DMESSAGE, "in member - function "
 			"snfmod_cohen(const bigint &)", DVALUE + 8);
 
-	register lidia_size_t diagindex, j, z, l;
+	lidia_size_t diagindex, j, z, l;
 
 	bigint RES0, RES1, RES2, RES3; // 0 = lggT, 1 = rggt, 2 = ggt
 	bigint x, y;
@@ -2429,7 +2429,7 @@ gauss(matrix< bigint > &RES) const
 
 	matrix< bigint > TR(RES.columns, RES.columns);
 	bigint *REM = NULL;
-	register lidia_size_t startr = 0, startc = 0, i;
+	lidia_size_t startr = 0, startc = 0, i;
 
 	for (startc = RES.columns - 1, startr = RES.rows - 1; startr >= 0 && startc >= 0; startr--, startc--) {
 
@@ -2567,7 +2567,7 @@ mgcd2(matrix< bigint > &RES, const bigint * aconst, lidia_size_t n) const
 	debug_handler("multiple_gcd", "in member - function "
 		      "mgcd2(const bigint *, lidia_size_t)");
 
-	register lidia_size_t i, j, index, bound, SW;
+	lidia_size_t i, j, index, bound, SW;
 	bigint MIN, TMP, q, r, *Ttmp1, *Ttmp2 = NULL;
 
 	if (RES.columns != n)

@@ -319,7 +319,7 @@ power(unsigned int a, unsigned int b)
 
 int h_mul_mod(int a, int b, int m)
 {
-	register unsigned int n, n1, n2;
+	unsigned int n, n1, n2;
 	double nd, d;
 
 	if (m < SBASIS) {
@@ -391,7 +391,7 @@ int mul_mod(int a, int b, int m)
 
 int mul_mod(int a, int b, int m)
 {
-	register unsigned int n, n1, n2;
+	unsigned int n, n1, n2;
 	double nd, d;
 
 	if (m <= 1)
@@ -451,7 +451,7 @@ int mul_mod(int a, int b, int m)
 
 int power_mod(int bas, int exp, int modul)
 {
-	register int erg, ergz;
+	int erg, ergz;
 
 	if (exp < 0)
 		lidia_error_handler("power_mod", "exponent < 0");
@@ -495,7 +495,7 @@ int legendre(int n, int p)
 
 int invert(int a, int b)
 {
-	register int r, q,
+	int r, q,
 		xs = 0,
 		xss = 1,
 		lb = b;
@@ -600,7 +600,7 @@ int jacobi(int a, int b)
 
 int ressol(int a, int p)
 {
-	register int r, n, c, z, k, t, s;
+	int r, n, c, z, k, t, s;
 
 	if (p == 2)    return(a);
 

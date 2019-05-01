@@ -177,7 +177,7 @@ void mecfind(ec_curve & me, ec_point_M & mp, bigint & factor, unsigned long B, u
 
 void cont(ec_point_W & wp, bigint & factor, unsigned long B, unsigned long D, ecm_primes & prim)
 {
-	register long w, u, v, count;
+	long w, u, v, count;
 
 	unsigned long p;
 

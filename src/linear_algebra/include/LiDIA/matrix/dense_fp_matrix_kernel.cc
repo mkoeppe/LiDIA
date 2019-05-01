@@ -53,14 +53,14 @@ STF(MATRIX_TYPE &A, const T & mod) const
 	// Version: bigint 1.9
 	//
 
-	register lidia_size_t index = 0, i = 0, j = 0, z;
+	lidia_size_t index = 0, i = 0, j = 0, z;
 	lidia_size_t startr = A.rows;
 	lidia_size_t startc = A.columns;
 	T TMP, TMP1, TMP2;
 	T *tmp;
 
 	// Step 1 - 4
-	register int exchange = 1;
+	int exchange = 1;
 
 	// Step 5 - 8
 	for (--startc, --startr; startr >= 0 && startc >= 0; startc--, startr--) {
@@ -123,14 +123,14 @@ GaussJordan(MATRIX_TYPE &A, const T & mod) const
 	// Version: bigint 1.9
 	//
 
-	register lidia_size_t index = 0, i = 0, j = 0, z;
+	lidia_size_t index = 0, i = 0, j = 0, z;
 	lidia_size_t startr = A.rows;
 	lidia_size_t startc = A.columns;
 	T TMP, TMP1, TMP2;
 	T *tmp;
 
 	// Step 1 - 4
-	register int exchange = 1;
+	int exchange = 1;
 
 	// Step 5 - 8
 	for (--startc, --startr; startr >= 0 && startc >= 0; startc--, startr--) {
@@ -206,7 +206,7 @@ STF_extended(MATRIX_TYPE &A, const T & mod) const
 	// Version: bigint 1.9
 	//
 
-	register lidia_size_t index = 0, i = 0, j = 0, z;
+	lidia_size_t index = 0, i = 0, j = 0, z;
 	lidia_size_t startr = A.rows;
 	lidia_size_t startc = A.columns;
 
@@ -223,7 +223,7 @@ STF_extended(MATRIX_TYPE &A, const T & mod) const
 	bool SW = true;
 
 	// Step 1 - 4
-	register int exchange = 1;
+	int exchange = 1;
 
 	// Step 5 - 8
 	for (--startc, --startr; startr >= 0 && startc >= 0; startc--, startr--) {
@@ -303,7 +303,7 @@ rank(MATRIX_TYPE &A, const T &mod) const
 	debug_handler_l("bigint_matrix",
 			"rank(MATRIX_TYPE &A, const T &)", LDBL_MATRIX);
 
-	register lidia_size_t i, j, No = 0;
+	lidia_size_t i, j, No = 0;
 
 	// Step 1, 2
 	STF(A, mod);
@@ -345,7 +345,7 @@ lininr(MATRIX_TYPE &A, const T &mod) const
 	debug_handler("bigint_matrix",
 		      "lininr(MATRIX_TYPE &A, const T &)");
 
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	lidia_size_t *l = new lidia_size_t[A.columns];
 	for (i = 0; i < A.columns; l[i] = 0, i++);
 
@@ -390,7 +390,7 @@ lininc(MATRIX_TYPE &A, const T &mod) const
 	// Version: 1.9
 	//
 
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	lidia_size_t *l = new lidia_size_t[A.columns + 1];
 	memory_handler(l, "bigint_matrix", "lininc_intern :: "
 		       "Error in memory allocation (l)");
@@ -440,7 +440,7 @@ adj(MATRIX_TYPE &A, const T &mod) const
 	debug_handler("bigint_matrix", "in inline - function "
 		      "adj(MATRIX_TYPE &, cont T &)");
 
-	register lidia_size_t i, j, z;
+	lidia_size_t i, j, z;
 	T TMP, TMP1, TMP2;
 	T *tmp, *tmp1, *Btmp, *Btmp1;
 	lidia_size_t exchange = 1;
@@ -558,7 +558,7 @@ det(MATRIX_TYPE &A, const T &mod) const
 	debug_handler("bigint_matrix",
 		      "det(MATRIX_TYPE &, T)");
 
-	register lidia_size_t i, j, z;
+	lidia_size_t i, j, z;
 	T TMP, TMP1, TMP2;
 	T *tmp, *tmp1;
 

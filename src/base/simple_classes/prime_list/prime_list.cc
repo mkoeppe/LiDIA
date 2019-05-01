@@ -46,15 +46,15 @@ namespace LiDIA {
 //
 
   static PRIME_LIST_COUNTER
-  invert(register PRIME_LIST_COUNTER a,
-	 register PRIME_LIST_COUNTER b)
+  invert(PRIME_LIST_COUNTER a,
+	 PRIME_LIST_COUNTER b)
   {
     //
     // Invert a mod b
     //
 
-    register PRIME_LIST_COUNTER r, q, x0 = 1, x1 = 0;
-    register bool sign = false;
+    PRIME_LIST_COUNTER r, q, x0 = 1, x1 = 0;
+    bool sign = false;
     PRIME_LIST_COUNTER sb = b;
 
     while (b != 0) {
@@ -75,17 +75,17 @@ namespace LiDIA {
 
 
   inline static void
-  create_bit_sieve_prime_mask (register PRIME_LIST_COUNTER prime,
-			       register PRIME_LIST_COUNTER base,
-			       register PRIME_LIST_BIT_SIEVE *bit_mask,
-			       register PRIME_LIST_BIT_SIEVE *prime_mask)
+  create_bit_sieve_prime_mask (PRIME_LIST_COUNTER prime,
+			       PRIME_LIST_COUNTER base,
+			       PRIME_LIST_BIT_SIEVE *bit_mask,
+			       PRIME_LIST_BIT_SIEVE *prime_mask)
   {
     //
     // Create prime-mask with every prime-th bit set to 1,
     // starting with base-th bit
     //
 
-    register PRIME_LIST_COUNTER index;
+    PRIME_LIST_COUNTER index;
 
     for (index = 0; index < prime; index++)
       prime_mask[index] = 0;
@@ -97,17 +97,17 @@ namespace LiDIA {
 
 
   inline static void
-  apply_bit_sieve_prime_mask (register PRIME_LIST_BIT_SIEVE *prime_mask,
-			      register PRIME_LIST_COUNTER prime,
-			      register PRIME_LIST_BIT_SIEVE *sieve,
-			      register PRIME_LIST_COUNTER base_index,
-			      register PRIME_LIST_COUNTER sieve_size)
+  apply_bit_sieve_prime_mask (PRIME_LIST_BIT_SIEVE *prime_mask,
+			      PRIME_LIST_COUNTER prime,
+			      PRIME_LIST_BIT_SIEVE *sieve,
+			      PRIME_LIST_COUNTER base_index,
+			      PRIME_LIST_COUNTER sieve_size)
   {
     //
     // Apply prime-mask to bit-sieve
     //
 
-    register PRIME_LIST_COUNTER index, index2;
+    PRIME_LIST_COUNTER index, index2;
 
     index2 = base_index % prime;
     for (index = 0; index < sieve_size; index++) {
@@ -358,11 +358,11 @@ namespace LiDIA {
     // equal to or greater than "prime"
     //
 
-    register prime_block *block;
+    prime_block *block;
     lidia_size_t block_index, first_block_index, last_block_index;
-    register PRIME_LIST_NUMBER tmp_prime;
+    PRIME_LIST_NUMBER tmp_prime;
     lidia_size_t index;
-    register lidia_size_t diff_index;
+    lidia_size_t diff_index;
 
     if ((prime< first_prime) || (prime > last_prime) || (number_of_primes == 0))
       return -1;
@@ -593,11 +593,11 @@ namespace LiDIA {
     //   ((upper_bound - lower_bound) + min(lower_bound, sqrt(upper_bound))) * sizeof(PRIME_LIST_SIEVE)
     //
 
-    register PRIME_LIST_SIEVE *base_sieve, *interval_sieve;
+    PRIME_LIST_SIEVE *base_sieve, *interval_sieve;
     bool sieve_overlap;
-    register PRIME_LIST_COUNTER base_sieve_size, interval_sieve_size;
-    register PRIME_LIST_COUNTER upper_bound_sqrt;
-    register PRIME_LIST_COUNTER i, j;
+    PRIME_LIST_COUNTER base_sieve_size, interval_sieve_size;
+    PRIME_LIST_COUNTER upper_bound_sqrt;
+    PRIME_LIST_COUNTER i, j;
 
     interval_sieve_size = upper_bound - lower_bound + 1;
     upper_bound_sqrt = static_cast<PRIME_LIST_COUNTER>(std::sqrt(static_cast<PRIME_LIST_FLOAT_NUMBER>(upper_bound))) + 1;
@@ -674,12 +674,12 @@ namespace LiDIA {
     //
 
     PRIME_LIST_NUMBER lower_bound_k, upper_bound_k;
-    register PRIME_LIST_SIEVE *base_sieve1, *base_sieve2;
-    register PRIME_LIST_SIEVE *interval_sieve1, *interval_sieve2;
+    PRIME_LIST_SIEVE *base_sieve1, *base_sieve2;
+    PRIME_LIST_SIEVE *interval_sieve1, *interval_sieve2;
     bool sieve_overlap;
-    register PRIME_LIST_COUNTER base_sieve_size, interval_sieve_size;
-    register PRIME_LIST_COUNTER upper_bound_sqrt_k;
-    register PRIME_LIST_COUNTER i, k;
+    PRIME_LIST_COUNTER base_sieve_size, interval_sieve_size;
+    PRIME_LIST_COUNTER upper_bound_sqrt_k;
+    PRIME_LIST_COUNTER i, k;
     PRIME_LIST_COUNTER j, tmp_prime;
     PRIME_LIST_NUMBER n;
 
@@ -852,15 +852,15 @@ namespace LiDIA {
 
     PRIME_LIST_NUMBER lower_bound_index, upper_bound_index;
     PRIME_LIST_NUMBER interval_sieve_lower_bound, interval_sieve_upper_bound;
-    register PRIME_LIST_BIT_SIEVE *base_sieve, *interval_sieve;
+    PRIME_LIST_BIT_SIEVE *base_sieve, *interval_sieve;
     bool sieve_overlap;
-    register PRIME_LIST_COUNTER base_sieve_size, interval_sieve_size;
-    register PRIME_LIST_COUNTER base_sieve_bit_size, interval_sieve_bit_size;
-    register PRIME_LIST_COUNTER upper_bound_sqrt_index;
-    register PRIME_LIST_COUNTER index;
-    register int bit;
-    register PRIME_LIST_COUNTER i, j;
-    register PRIME_LIST_NUMBER n;
+    PRIME_LIST_COUNTER base_sieve_size, interval_sieve_size;
+    PRIME_LIST_COUNTER base_sieve_bit_size, interval_sieve_bit_size;
+    PRIME_LIST_COUNTER upper_bound_sqrt_index;
+    PRIME_LIST_COUNTER index;
+    int bit;
+    PRIME_LIST_COUNTER i, j;
+    PRIME_LIST_NUMBER n;
     PRIME_LIST_BIT_SIEVE tmp_mask;
     PRIME_LIST_BIT_SIEVE bit_mask[prime_list_bit_sieve_size];
     PRIME_LIST_BIT_SIEVE prime_mask[prime_list_bit_sieve_size];
@@ -1002,17 +1002,17 @@ namespace LiDIA {
     PRIME_LIST_NUMBER lower_bound_k, upper_bound_k;
     PRIME_LIST_NUMBER lower_bound_index, upper_bound_index;
     PRIME_LIST_NUMBER interval_sieve_lower_bound_k, interval_sieve_upper_bound_k;
-    register PRIME_LIST_BIT_SIEVE *base_sieve1, *base_sieve2;
-    register PRIME_LIST_BIT_SIEVE *interval_sieve1, *interval_sieve2;
+    PRIME_LIST_BIT_SIEVE *base_sieve1, *base_sieve2;
+    PRIME_LIST_BIT_SIEVE *interval_sieve1, *interval_sieve2;
     bool sieve_overlap;
-    register PRIME_LIST_COUNTER base_sieve_size, interval_sieve_size;
-    register PRIME_LIST_COUNTER base_sieve_bit_size, interval_sieve_bit_size;
-    register PRIME_LIST_COUNTER upper_bound_sqrt_index;
-    register PRIME_LIST_COUNTER index;
-    register int bit;
-    register PRIME_LIST_COUNTER i, k;
+    PRIME_LIST_COUNTER base_sieve_size, interval_sieve_size;
+    PRIME_LIST_COUNTER base_sieve_bit_size, interval_sieve_bit_size;
+    PRIME_LIST_COUNTER upper_bound_sqrt_index;
+    PRIME_LIST_COUNTER index;
+    int bit;
+    PRIME_LIST_COUNTER i, k;
     PRIME_LIST_COUNTER j, tmp_prime;
-    register PRIME_LIST_NUMBER n;
+    PRIME_LIST_NUMBER n;
     PRIME_LIST_BIT_SIEVE tmp_mask;
     PRIME_LIST_BIT_SIEVE bit_mask[prime_list_bit_sieve_size];
     PRIME_LIST_BIT_SIEVE prime_mask[prime_list_bit_sieve_size];
@@ -1257,15 +1257,15 @@ namespace LiDIA {
     const PRIME_LIST_COUNTER max_sieve_size = 1000000;
 
     PRIME_LIST_COUNTER upper_bound_sqrt;
-    register PRIME_LIST_SIEVE *sieve;
+    PRIME_LIST_SIEVE *sieve;
     PRIME_LIST_COUNTER sieve_size;
-    register PRIME_LIST_COUNTER current_sieve_size;
-    register PRIME_LIST_NUMBER sieve_lower_bound;
+    PRIME_LIST_COUNTER current_sieve_size;
+    PRIME_LIST_NUMBER sieve_lower_bound;
     PRIME_LIST_NUMBER lower_bound2;
     int interval;
-    register PRIME_LIST_COUNTER sieve_upper_bound_sqrt;
-    register PRIME_LIST_COUNTER i, j, k;
-    register PRIME_LIST_COUNTER *prime_factor_list;
+    PRIME_LIST_COUNTER sieve_upper_bound_sqrt;
+    PRIME_LIST_COUNTER i, j, k;
+    PRIME_LIST_COUNTER *prime_factor_list;
     PRIME_LIST_COUNTER prime_factor_list_size;
     PRIME_LIST_COUNTER prime_factor_count;
 
@@ -1682,9 +1682,9 @@ namespace LiDIA {
     //
 
     lidia_size_t block_index;
-    register prime_block *block;
-    register lidia_size_t new_diff_index, diff_index;
-    register PRIME_LIST_NUMBER prime;
+    prime_block *block;
+    lidia_size_t new_diff_index, diff_index;
+    PRIME_LIST_NUMBER prime;
 
     if ((index< 0) || (index >= number_of_primes)) return 0;
     if (index == current_index) return current_prime;

@@ -3356,13 +3356,13 @@ base_matrix< T >::change_representation (unsigned long art)
 				       "change_representation(unsigned long) :: "
 				       "Error in memory allocation (allocated)");
 
-			for (register lidia_size_t i = 0; i < this->rows; i++) {
+			for (lidia_size_t i = 0; i < this->rows; i++) {
 				// set this->allocated
 				this->allocated[i] = this->columns;
 
 				// set value_counter
-				register lidia_size_t size = this->columns;
-				for (register lidia_size_t j = 0; j < this->columns; j++)
+				lidia_size_t size = this->columns;
+				for (lidia_size_t j = 0; j < this->columns; j++)
 					if (this->value[i][j] == this->Zero)
 						size--;
 
@@ -3374,8 +3374,8 @@ base_matrix< T >::change_representation (unsigned long art)
 					       "change_representation(unsigned long) :: "
 					       "Error in memory allocation (this->index[i])");
 
-				register lidia_size_t p = 0;
-				for (register lidia_size_t k = 0; k < this->columns; k++)
+				lidia_size_t p = 0;
+				for (lidia_size_t k = 0; k < this->columns; k++)
 					if (this->value[i][k] != this->Zero) {
 						LiDIA::swap(this->value[i][p], this->value[i][k]);
 						this->index[i][p] = k;
@@ -3451,7 +3451,7 @@ base_matrix< T >::status_report ()
 		  << "\n\t sparse_columns = " << this->sparse_columns << std::endl;
 
 	if (this->bitfield.get_representation() == matrix_flags::sparse_representation)
-		for (register lidia_size_t i = 0; i < this->rows; i++) {
+		for (lidia_size_t i = 0; i < this->rows; i++) {
 			std::cout << "row " << i << ": allocated = " << this->allocated[i]
 				  << " value_counter = " << this->value_counter[i] << std::endl;
 		}

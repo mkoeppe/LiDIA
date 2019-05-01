@@ -34,7 +34,7 @@ void mnf_debug_info(const bigmod_matrix & TEMP, const bigmod_matrix & T,
                     const bigmod_matrix & IN, const bigmod_matrix & RES,
                     const bigmod_matrix &TRAFO, lidia_size_t res_j, const bigint & p)
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	bigint * tmp, * TEMPtmp, *Ttmp, factor;
 	std::cout << std::endl << TEMP << T << IN << RES << std::flush;
 	for (i = 0; i < IN.get_no_of_columns(); i++) {
@@ -201,7 +201,7 @@ bigmod_matrix::bigmod_matrix(const base_matrix< bigint > &M,
 	debug_handler("bigmod_matrix", "in constructor "
 		      "bigmod_matrix(const bigint_matrix &, const bigint &)");
 	if (!p.is_zero()) {
-		register lidia_size_t i, j;
+		lidia_size_t i, j;
 
 		bigint * tmp;
 
@@ -268,7 +268,7 @@ std::istream & operator >> (std::istream & in, bigmod_matrix &M)
 std::ostream & operator << (std::ostream & out, const bigmod_matrix & M)
 {
 	debug_handler("bigmod_matrix", "in operator << (std::ostream &, const bigmod_matrix &)");
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	bigint *Mtmp;
 	for (i = 0; i < M.rows; i++) {
 		Mtmp = M.value[i];
@@ -292,7 +292,7 @@ write_to_stream(std::ostream &out) const
 {
 	debug_handler("bigmod_matrix", "in member - function "
 		      "write_to_stream(std::ofstream &)");
-	register lidia_size_t i, j, TMP;
+	lidia_size_t i, j, TMP;
 	bigint *tmp;
 
 	out << rows << " " << columns << "\n" << std::flush;
@@ -351,9 +351,9 @@ void bigmod_matrix::reduce(const bigint & mod)
 	if (p.is_zero()) {
 		p = mod;
 		bigint * tmp1;
-		for (register lidia_size_t i = 0; i < rows; i++) {
+		for (lidia_size_t i = 0; i < rows; i++) {
 			tmp1 = value[i];
-			for (register lidia_size_t j = 0; j < columns; j++) {
+			for (lidia_size_t j = 0; j < columns; j++) {
 				LiDIA::remainder(tmp1[j], tmp1[j], mod);
 				if (tmp1[j].is_negative())
 					LiDIA::add(tmp1[j], tmp1[j], mod);
@@ -366,9 +366,9 @@ void bigmod_matrix::reduce(const bigint & mod)
 		if (!tmp) {
 			p = mod;
 			bigint * tmp1;
-			for (register lidia_size_t i = 0; i < rows; i++) {
+			for (lidia_size_t i = 0; i < rows; i++) {
 				tmp1 = value[i];
-				for (register lidia_size_t j = 0; j < columns; j++)
+				for (lidia_size_t j = 0; j < columns; j++)
 					LiDIA::remainder(tmp1[j], tmp1[j], mod);
 			}
 			image(*this);
@@ -389,7 +389,7 @@ void bigmod_matrix::lift(const bigint & mod)
 	LiDIA::remainder(tmp, mod, p);
 	if (!tmp) {
 		set_no_of_columns(rows + columns);
-		for (register lidia_size_t i = rows; i; i--)
+		for (lidia_size_t i = rows; i; i--)
 			value[rows - i][columns-i].assign(p);
 		p = mod;
 		image(*this);
@@ -411,7 +411,7 @@ split(bigmod_matrix &A, bigmod_matrix &B,
 {
 	debug_handler("bigmod_matrix", "in member - function "
 		      "split(bigmod_matrix &, bigmod_matrix &, bigmod_matrix &, bigmod_matrix &)");
-	register lidia_size_t i, j, diff, diff1;
+	lidia_size_t i, j, diff, diff1;
 	bigint *tmp, *tmp1;
 	if (A.rows > rows || A.columns > columns ||
 	    B.rows > rows || B.columns > columns ||
@@ -541,7 +541,7 @@ split_h(bigmod_matrix &A, bigmod_matrix &B) const
 	debug_handler("bigmod_matrix", "in member - function "
 		      "split_h(bigmod_matrix&, bigmod_matrix&)");
 
-	register lidia_size_t i, j, diff;
+	lidia_size_t i, j, diff;
 	bigint *tmp, *tmp1;
 	if (A.rows > rows || A.columns > columns ||
 	    B.rows > rows || B.columns > columns) {
@@ -611,7 +611,7 @@ split_v(bigmod_matrix &A, bigmod_matrix &B) const
 {
 	debug_handler("bigmod_matrix", "in member - function "
 		      "split_v(bigmod_matrix &, bigmod_matrix &)");
-	register lidia_size_t i, j, diff;
+	lidia_size_t i, j, diff;
 	bigint *tmp, *tmp1;
 	if (A.rows > rows || A.columns > columns ||
 	    B.rows > rows || B.columns > columns) {
@@ -682,7 +682,7 @@ compose(const bigmod_matrix &A, const bigmod_matrix &B, const bigmod_matrix &C, 
 	debug_handler("bigmod_matrix", "in member - function "
 		      "compose(const bigmod_matrix&, const bigmod_matrix&, "
 		      "const bigmod_matrix&, const bigmod_matrix&)");
-	register lidia_size_t i, j, diff, diff1;
+	lidia_size_t i, j, diff, diff1;
 	bigint *tmp, *tmp1;
 	if (A.rows > rows || A.columns > columns ||
 	    B.rows > rows || B.columns > columns ||
@@ -814,7 +814,7 @@ compose_h(const bigmod_matrix &A, const bigmod_matrix &B)
 {
 	debug_handler("bigmod_matrix", "in member - function "
 		      "compose_h(const bigmod_matrix &, const bigmod_matrix &)");
-	register lidia_size_t i, j, diff;
+	lidia_size_t i, j, diff;
 	bigint *tmp, *tmp1;
 	if (A.rows > rows || A.columns > columns ||
 	    B.rows > rows || B.columns > columns) {
@@ -885,7 +885,7 @@ compose_v(const bigmod_matrix &A, const bigmod_matrix &B)
 {
 	debug_handler("bigmod_matrix", "in member - function "
 		      "compose_v(const bigmod_matrix &, const bigmod_matrix &)");
-	register lidia_size_t i, j, diff;
+	lidia_size_t i, j, diff;
 	bigint *tmp, *tmp1;
 	if (A.rows > rows || A.columns > columns ||
 	    B.rows > rows || B.columns > columns) {
@@ -983,7 +983,7 @@ sto_column(const bigint *v, lidia_size_t l, lidia_size_t j, lidia_size_t from)
 {
 	debug_handler("Matrix", "in member - function "
 		      "sto_column(const bigint *, lidia_size_t, lidia_size_t)");
-	register lidia_size_t k;
+	lidia_size_t k;
 	if (j >= columns || rows < from + l || from < 0 || l < 0 || j < 0) {
 		lidia_error_handler("bigmod_matrix",
 				    "sto_column :: Parameter out of range !");
@@ -1010,7 +1010,7 @@ sto_column_vector(const base_vector< bigint > &v, lidia_size_t l,
 {
 	debug_handler("Matrix", "in member - function "
 		      "sto_column_vector(const base_vector< bigint > &, lidia_size_t, lidia_size_t, lidia_size_t)");
-	register lidia_size_t k;
+	lidia_size_t k;
 	if (j >= columns || rows < from + l || from < 0 || l < 0 || j < 0) {
 		lidia_error_handler("bigmod_matrix",
 				    "sto_column :: Parameter out of range !");
@@ -1036,7 +1036,7 @@ sto_row(const bigint *v, lidia_size_t l, lidia_size_t i, lidia_size_t from)
 {
 	debug_handler("bigmod_matrix", "in member - function "
 		      "sto_row(const bigint *, lidia_size_t, lidia_size_t)");
-	register lidia_size_t k;
+	lidia_size_t k;
 	if (i >= rows || from + l > columns || from < 0 || l < 0 || i < 0) {
 		lidia_error_handler("bigmod_matrix",
 				    "sto_row :: Parameter out of range !");
@@ -1064,7 +1064,7 @@ sto_row_vector(const base_vector< bigint > &v, lidia_size_t l,
 {
 	debug_handler("bigmod_matrix", "in member - function "
 		      "sto_row(const bigint *, lidia_size_t, lidia_size_t)");
-	register lidia_size_t k;
+	lidia_size_t k;
 	if (i >= rows || from + l > columns || from < 0 || l < 0 || i < 0) {
 		lidia_error_handler("bigmod_matrix",
 				    "sto_row :: Parameter out of range !");
@@ -1139,7 +1139,7 @@ add(bigmod_matrix &RES, const bigmod_matrix &M, const bigmod_matrix &N)
 	debug_handler("Matrix", "in function "
 		      "add(bigmod_matrix &, const bigmod_matrix &, const bigmod_matrix &)");
 
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	if (M.rows != N.rows || M.columns != N.columns) {
 		lidia_error_handler("bigmod_matrix", "add :: Error in matrix dimensions");
 		return;
@@ -1176,7 +1176,7 @@ add(bigmod_matrix &RES, const bigmod_matrix &M, const bigint &a)
 		RES.set_no_of_columns(M.columns);
 	RES.p = M.p;
 
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	bigint *REStmp, *Mtmp;
 	for (i = 0; i < RES.rows; i++) {
 		REStmp = RES.value[i];
@@ -1192,7 +1192,7 @@ void
 negate(bigmod_matrix & A, const bigmod_matrix & B)
 {
 	debug_handler("bigmod_matrix", "in function negate()");
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	if (A.rows != B.rows)
 		A.set_no_of_rows(B.rows);
 	if (A.columns != B.columns)
@@ -1216,7 +1216,7 @@ subtract(bigmod_matrix &RES, const bigmod_matrix &M, const bigmod_matrix &N)
 {
 	debug_handler("bigmod_matrix", "in function "
 		      "subtract(bigmod_matrix &, const bigmod_matrix &, const bigmod_matrix &)");
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	if (M.rows != N.rows || M.columns != N.columns) {
 		lidia_error_handler("bigmod_matrix", "subtract :: Error in matrix dimensions !");
 		return;
@@ -1254,7 +1254,7 @@ subtract(bigmod_matrix &RES, const bigmod_matrix &M, const bigint &a)
 		RES.set_no_of_columns(M.columns);
 	RES.p = M.p;
 
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	bigint *REStmp, *Mtmp;
 	for (i = 0; i < RES.rows; i++) {
 		REStmp = RES.value[i];
@@ -1282,7 +1282,7 @@ multiply(bigmod_matrix &RES, const bigmod_matrix &A, const bigmod_matrix &B)
 	}
 	RES.p = A.p;
 
-	register lidia_size_t j, i, z;
+	lidia_size_t j, i, z;
 	bigint tmp, *Atmp, *REStmp, tmp1;
 
 	if (A.value != RES.value && B.value != RES.value) {
@@ -1342,7 +1342,7 @@ multiply(bigmod_matrix & RES, const bigmod_matrix &A, const bigint & k)
 	if (RES.columns != A.columns)
 		RES.set_no_of_columns(A.columns);
 
-	register lidia_size_t j, i;
+	lidia_size_t j, i;
 	bigint *REStmp, *Atmp;
 	for (j = 0; j < A.rows; j++) {
 		REStmp = RES.value[j];
@@ -1359,7 +1359,7 @@ multiply(bigint *c, const bigmod_matrix &A, const bigint *v)
 {
 	debug_handler("bigmod_matrix", "in function "
 		      "multiply(bigint *, const bigmod_matrix &, const bigint *)");
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	bigint tmp, tmp1, *tmp2;
 	for (i = 0; i < A.rows; i++) {
 		tmp.assign_zero();
@@ -1383,7 +1383,7 @@ bool divide(bigmod_matrix &C, const bigmod_matrix &A, const bigint &n)
 	if (C.columns != A.columns)
 		C.set_no_of_columns(A.columns);
 
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	bigint tmp, *tmp1, *tmp2;
 	LiDIA::div_rem(C.p, tmp, A.p, n);
 	if (!tmp.is_zero()) return false;
@@ -1559,7 +1559,7 @@ void bigmod_matrix::
 assign(const bigmod_matrix &M)
 {
 	debug_handler("bigmod_matrix", "in member - function assign(const bigmod_matrix &)");
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	if (rows != M.rows)
 		set_no_of_rows(M.rows);
 	if (columns != M.columns)
@@ -1592,7 +1592,7 @@ assign(const base_matrix< bigint > &M, const bigint &mod)
 	debug_handler("bigmod_matrix", "in member - function "
 		      "assign(const base_matrix< bigint > &, const bigint &)");
 
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	if (rows != M.get_no_of_rows())
 		set_no_of_rows(M.get_no_of_rows());
 	if (columns != M.get_no_of_columns())
@@ -1650,7 +1650,7 @@ equal(const bigmod_matrix &N) const
 {
 	debug_handler("bigmod_matrix", "in member - function "
 		      "equal(const bigmod_matrix &)");
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	bigint *tmp, *Ntmp;
 	if (rows != N.rows)
 		return false;
@@ -1726,7 +1726,7 @@ randomize(const bigint & S)
 
 	debug_handler("bigmod_matrix", "in member - function "
 		      "randomize(const bigint &)");
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	bigint *tmp;
 	p.assign(S);
 	bigint::seed(S);
@@ -1748,7 +1748,7 @@ diag(const bigint & a, const bigint & b)
 {
 	debug_handler("bigmod_matrix", "in member - function "
 		      "diag(const bigint &, const bigint &)");
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	bigint *tmp;
 	bigint a1, b1;
 	if (!p) {
@@ -1794,7 +1794,7 @@ trans() const
 {
 	debug_handler("bigmod_matrix", "in member - function "
 		      "trans()");
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	bigint *tmp;
 	bigmod_matrix AT(columns, rows, p);
 	for (i = 0; i < rows; i++) {
@@ -1826,9 +1826,9 @@ regexpansion(const lidia_size_t *v)
 {
 	debug_handler("bigmod_matrix", "in member - function "
 		      "regexpansion(const lidia_size_t *)");
-	register lidia_size_t k = v[0];
+	lidia_size_t k = v[0];
 	if (columns > k) {
-		register lidia_size_t i = 0, j = 0;
+		lidia_size_t i = 0, j = 0;
 		lidia_size_t diff = columns-rows;
 		bigmod_matrix A(*this);
 		set_no_of_rows(columns);
@@ -1868,7 +1868,7 @@ lininr(bigint & factor) const
 {
 	debug_handler("bigmod_matrix", "in member - function "
 		      "lininr()");
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	lidia_size_t *l = new lidia_size_t[columns+1];
 
 	bigmod_matrix B(*this);
@@ -1926,7 +1926,7 @@ inv(const bigmod_matrix& A, bigint & factor)
 		lidia_error_handler("bigmod_matrix", "adj :: non square matrix");
 		return;
 	}
-	register lidia_size_t i, j, z;
+	lidia_size_t i, j, z;
 
 	// Step 1,2
 	if (columns != A.rows)
@@ -2125,7 +2125,7 @@ charpoly(bigint & factor) const
 {
 	debug_handler("bigmod_matrix", "in member - function "
 		      "charpoly(bigint &)");
-	register lidia_size_t i, j, r;
+	lidia_size_t i, j, r;
 	bigint tmp;
 	bigint sign;
 	bigmod_matrix B(*this);
@@ -2451,7 +2451,7 @@ kernel(const bigmod_matrix & A, bigint & factor)
 
 
 	// Step 2
-	register lidia_size_t a = 0;
+	lidia_size_t a = 0;
 	while (a < COPY.columns && COPY.is_column_zero(a))
 		a++;
 	if (a == 0) {
@@ -2465,7 +2465,7 @@ kernel(const bigmod_matrix & A, bigint & factor)
 	set_no_of_columns(a);
 	p = COPY.p;
 	bigint *KERNtmp, *TRANStmp;
-	register lidia_size_t i, z;
+	lidia_size_t i, z;
 	for (i = 0; i < COPY.columns; i++) {
 		KERNtmp = value[i];
 		TRANStmp = TRANS.value[i];
@@ -2525,14 +2525,14 @@ image(const bigmod_matrix &A, bigint & factor)
 		return;
 	}
 
-	register lidia_size_t a = 0;
+	lidia_size_t a = 0;
 	// Step 2
 	while (a < columns && is_column_zero(a))
 		a++;
 
 	// Step 3
 	bigint *BILDtmp, *tmp;
-	register lidia_size_t i, z;
+	lidia_size_t i, z;
 	for (i = 0; i < rows; i++) {
 		BILDtmp = value[i];
 		tmp = value[i];
@@ -2572,7 +2572,7 @@ solve(const bigmod_matrix &B, const bigint *b, bigint & factor)
 		factor.assign_one();
 		return;
 	}
-	register lidia_size_t i, k, l1 = 0;
+	lidia_size_t i, k, l1 = 0;
 	bigint tmprem;
 
 	// Step 1
@@ -2658,7 +2658,7 @@ solve(const bigmod_matrix &B, const base_vector< bigint > &b, bigint & factor)
 		assign(tmp);
 		return;
 	}
-	register lidia_size_t i, k, l1 = 0;
+	lidia_size_t i, k, l1 = 0;
 	bigint tmprem;
 
 	// Step 1
@@ -2750,7 +2750,7 @@ void bigmod_matrix::kernel(const bigmod_matrix & A)
 		assign(tmp);
 		return;
 	}
-	register lidia_size_t z = 0, i;
+	lidia_size_t z = 0, i;
 	bigmod_matrix COPY(A);
 
 	p.assign(A.p);
@@ -2760,9 +2760,9 @@ void bigmod_matrix::kernel(const bigmod_matrix & A)
 		set_no_of_rows(A.columns);
 	diag(1, 0);
 
-	register lidia_size_t j, act_row, index;
-	register lidia_size_t res_j = A.columns - 1;
-	register char SW;
+	lidia_size_t j, act_row, index;
+	lidia_size_t res_j = A.columns - 1;
+	char SW;
 	bigint factor, q, tmp1;
 	bigint *tmp, *tmp2, *TEMPtmp;
 
@@ -2965,10 +2965,10 @@ void bigmod_matrix::image(const bigmod_matrix & A)
 //  std::cout <<"Computing image of "<<(*this)<<std::endl;
 	// Step 1
 	bigmod_matrix RES(rows, columns, p);
-	register lidia_size_t i, j, act_row, act_column = columns-1;
-	register lidia_size_t res_j = act_column;
-	register lidia_size_t index;
-	register char SW, SAVE = 1;
+	lidia_size_t i, j, act_row, act_column = columns-1;
+	lidia_size_t res_j = act_column;
+	lidia_size_t index;
+	char SW, SAVE = 1;
 	bigint factor, q, tmp1;
 	bigint *tmp, *tmp2;
 
@@ -3102,7 +3102,7 @@ void bigmod_matrix::image(const bigmod_matrix & A)
 	}
 //   std::cout <<"temporary image is "<<RES<<std::endl;
 	// Count zero columns.
-	register lidia_size_t a = 0;
+	lidia_size_t a = 0;
 	while (a < RES.columns && RES.is_column_zero(a))
 		a++;
 
@@ -3151,10 +3151,10 @@ void bigmod_matrix::unique_image(const bigmod_matrix & A)
 
 	// Step 1
 	bigmod_matrix RES(rows, rows, p);
-	register lidia_size_t i, j, act_row, act_column = columns - 1;
-	register lidia_size_t res_j = rows;
-	register lidia_size_t index;
-	register char SW;
+	lidia_size_t i, j, act_row, act_column = columns - 1;
+	lidia_size_t res_j = rows;
+	lidia_size_t index;
+	char SW;
 	bigint factor, q, tmp1;
 	bigint *tmp, *tmp2;
 

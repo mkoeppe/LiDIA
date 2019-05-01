@@ -66,7 +66,7 @@ namespace LiDIA {
 	debug_handler_l(DMESSAGE, "in function "
 			"chinrest(bigint &, const bigint *, const bigint *)", DVALUE);
 
-	register lidia_size_t i;
+	lidia_size_t i;
 	bigint M, mod;
 	bigint TMP, TMP0, TMP1, TMP2;
 
@@ -121,7 +121,7 @@ namespace LiDIA {
 	debug_handler_l(DMESSAGE, "in function "
 			"chinrest(bigint &, const bigint *, const bigint *)", DVALUE);
 
-	register lidia_size_t i;
+	lidia_size_t i;
 	bigint M, mod;
 	bigint TMP, TMP0, TMP1, TMP2;
 

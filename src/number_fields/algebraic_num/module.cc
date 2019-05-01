@@ -200,7 +200,7 @@ void module::normalize()
 	if (den.is_negative())
 		den.negate();
 	bigint d = gcd(den, base.get_modulus());
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	for (i = 0; !(d.is_one()) && i < degree(); i++)
 		for (j = 0; !(d.is_one()) && j < base.get_no_of_columns(); j++)
 			d = gcd (base.member(i, j), d);
@@ -240,7 +240,7 @@ void module::invert()
 	bigmod_matrix Map(n*m, m, N);
 	bigint * tmp = new bigint[m], rem;
 
-	register lidia_size_t i;
+	lidia_size_t i;
 
 	base_vector< bigint > tmp_vec(a.degree(), a.degree());
 	for (i = 0; i < m; tmp[i++].assign_zero()) {
@@ -248,7 +248,7 @@ void module::invert()
 		// compute the images of the basis of O
 		a = alg_number(tmp, 1, O);
 		//a=e_i
-		for (register lidia_size_t j = 0; j < n; j++) {
+		for (lidia_size_t j = 0; j < n; j++) {
                         // compute the images of the basis of M
                         // under the MULT-with-a-homomorphism
 			base.get_column_vector(tmp_vec, j);
@@ -496,8 +496,8 @@ void multiply2(module &c, const module & a, const module & b)
 	bigmod_matrix tmp1;
 	tmp1.special_multiply(a.base, b.base, (a.O)->table);
 	tmp1.image(tmp1);
-	register lidia_size_t i = 0;
-	for (register lidia_size_t j = 0; j<tmp1.get_no_of_columns(); j++)
+	lidia_size_t i = 0;
+	for (lidia_size_t j = 0; j<tmp1.get_no_of_columns(); j++)
 		if (!tmp1.is_column_zero(j)) i++;
 	if (i==0){
 		c.base.set_no_of_columns(1);
@@ -555,7 +555,7 @@ void multiply(module & c, const module & a, const module & b)
 
 	bigmod_matrix tmp1(a.degree(), column_no, d);
 
-	register lidia_size_t i;
+	lidia_size_t i;
 
 	debug_handler_c("module", "multiply(...)", 1,
 			std::cout << a << " and " << b;
@@ -565,7 +565,7 @@ void multiply(module & c, const module & a, const module & b)
 	for (i = 0; i < a.base.get_no_of_columns(); i++) {
 		a.base.get_column_vector(tmp_vec, i);
 		alg_number n1(tmp_vec, 1, a.which_base());
-		for (register lidia_size_t j = 0; j < b.base.get_no_of_columns(); j++) {
+		for (lidia_size_t j = 0; j < b.base.get_no_of_columns(); j++) {
 			b.base.get_column_vector(tmp_vec, j);
 			alg_number n2(tmp_vec, 1, b.which_base());
 			debug_handler_c("module", "multiply::multiply elements", 0,
@@ -582,7 +582,7 @@ void multiply(module & c, const module & a, const module & b)
 		for (i = 0; i < b.base.get_no_of_columns(); i++) {
 			b.base.get_column_vector(tmp_vec, i);
 			alg_number n1(tmp_vec, 1, b.which_base());
-			for (register lidia_size_t j = 0; j < a.base.get_no_of_rows();
+			for (lidia_size_t j = 0; j < a.base.get_no_of_rows();
 			     tmp2[j++].assign_zero()) {
 				tmp2[j].assign(d);
 				alg_number n2(tmp2, 1, a.which_base());
@@ -600,7 +600,7 @@ void multiply(module & c, const module & a, const module & b)
 		for (i = 0; i < a.base.get_no_of_columns(); i++) {
 			a.base.get_column_vector(tmp_vec, i);
 			alg_number n1(tmp_vec, 1, a.which_base());
-			for (register lidia_size_t j = 0; j < b.base.get_no_of_rows();
+			for (lidia_size_t j = 0; j < b.base.get_no_of_rows();
 			     tmp2[j++].assign_zero()) {
 				tmp2[j].assign(d);
 				alg_number n2(tmp2, 1, b.which_base());
@@ -748,14 +748,14 @@ void divide(module & c, const module & a, const module & bb)
 
 	bigint_matrix Map(a.degree() * n, m * (n+1));
 
-	register lidia_size_t i;
+	lidia_size_t i;
 
 	base_vector< bigint > tmp_vec(a.degree(), a.degree());
 	for (i = 0; i < m; i++) {
 		// compute the images of the basis of A
 		tmp.get_column_vector(tmp_vec, i);
 		x = alg_number(tmp_vec, 1, a.O);
-		for (register lidia_size_t j = 0; j < n; j++) {
+		for (lidia_size_t j = 0; j < n; j++) {
 			// compute the images of the basis of B
 			// under the MULT-with-x-homomorphism
 			b.base.get_column_vector(tmp_vec, j);
@@ -778,9 +778,9 @@ void divide(module & c, const module & a, const module & bb)
 	bigint_matrix NtimesA;
 	multiply(NtimesA, *(static_cast<bigint_matrix *>(&tmp)), N);
 
-	register lidia_size_t j = m;
+	lidia_size_t j = m;
 	for (i = 0; i < n * m; i++, j++)
-		for (register lidia_size_t k = 0; k < a.degree(); k++)
+		for (lidia_size_t k = 0; k < a.degree(); k++)
 			Map.sto(k + (i/n) * n, j, NtimesA.member(k, i % m));
 
 	// Computing the kernel of this matrix and selecting the right rows
@@ -1068,9 +1068,9 @@ order module::ring_of_multipliers(const bigint &p) const
 	// now we have matrices for each (b -> ab).
 
 	debug_handler("module", "in member - function ring_of_multipliers(const bigint &, bigint &)");
-	register lidia_size_t i, j, k;
-	register lidia_size_t n = base.get_no_of_columns();
-	register lidia_size_t m = degree();
+	lidia_size_t i, j, k;
+	lidia_size_t n = base.get_no_of_columns();
+	lidia_size_t m = degree();
 	alg_number a, b, y;
 
 	bigint_matrix init(m, n*m);
@@ -1251,14 +1251,14 @@ void module::randomize(const bigint & b)
 	base.set_no_of_columns(degree());
 	base.set_modulus(0);
 	bigint tmp;
-	for (register lidia_size_t i = 0; i < degree(); i++) {
+	for (lidia_size_t i = 0; i < degree(); i++) {
 		tmp.assign(LiDIA::randomize(b));
 		base.sto(i, i, tmp);
 		if (!tmp.is_zero())
-			for (register lidia_size_t j = i + 1; j < degree(); j++)
+			for (lidia_size_t j = i + 1; j < degree(); j++)
 				base.sto(i, j, LiDIA::randomize(tmp));
 		else
-			for (register lidia_size_t j = i + 1; j < degree(); j++)
+			for (lidia_size_t j = i + 1; j < degree(); j++)
 				base.sto(i, j, LiDIA::randomize(b));
 	}
 	add(den, LiDIA::randomize(b), 1);

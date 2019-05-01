@@ -47,9 +47,9 @@ unsigned int gf2n::exp1 = 0, gf2n::exp2 = 0, gf2n::exp3 = 0; // set in gf2n_init
 
 void tri_partial_reduce1(gf2n_word *f)
 {
-	register unsigned int i, k, l, w;
-	register unsigned int anzBI = gf2n::anzBI, degree = gf2n::degree;
-	register gf2n_word h;
+	unsigned int i, k, l, w;
+	unsigned int anzBI = gf2n::anzBI, degree = gf2n::degree;
+	gf2n_word h;
 
 	i = 2*anzBI - 1;
 
@@ -89,9 +89,9 @@ void tri_partial_reduce1(gf2n_word *f)
 
 void pent_partial_reduce1(gf2n_word *f)
 {
-	register unsigned int i, k, l, w;
-	register unsigned int anzBI = gf2n::anzBI, degree = gf2n::degree;
-	register gf2n_word h;
+	unsigned int i, k, l, w;
+	unsigned int anzBI = gf2n::anzBI, degree = gf2n::degree;
+	gf2n_word h;
 
 	i = 2*anzBI - 1;
 
@@ -151,10 +151,10 @@ void pent_partial_reduce1(gf2n_word *f)
 
 void general_partial_reduce1(gf2n_word *f)
 {
-	register unsigned int i, j, k, l, w, s;
-	register unsigned int anzBI = gf2n::anzBI, degree = gf2n::degree;
-	register unsigned int anz_expo = gf2n::anz_exponents;
-	register gf2n_word h;
+	unsigned int i, j, k, l, w, s;
+	unsigned int anzBI = gf2n::anzBI, degree = gf2n::degree;
+	unsigned int anz_expo = gf2n::anz_exponents;
+	gf2n_word h;
 
 	i = 2*anzBI - 1;
 
@@ -215,8 +215,8 @@ void (*partial_reduce1[]) (gf2n_word*) =
 
 void tri_partial_reduce2(gf2n_word *f)
 {
-	register unsigned int l, w, deg, anz;
-	register gf2n_word h;
+	unsigned int l, w, deg, anz;
+	gf2n_word h;
 
 	anz = gf2n::anzBI-1;
 	deg = gf2n::degree % (CHAR_BIT*sizeof(gf2n_word));
@@ -248,8 +248,8 @@ void tri_partial_reduce2(gf2n_word *f)
 
 void pent_partial_reduce2(gf2n_word *f)
 {
-	register unsigned int l, w, anz, deg;
-	register gf2n_word h;
+	unsigned int l, w, anz, deg;
+	gf2n_word h;
 
 	anz = gf2n::anzBI-1;
 	deg = gf2n::degree % (CHAR_BIT*sizeof(gf2n_word));
@@ -305,8 +305,8 @@ void pent_partial_reduce2(gf2n_word *f)
 
 void general_partial_reduce2(gf2n_word *f)
 {
-	register unsigned int j, s, l, w, anz, deg;
-	register gf2n_word h;
+	unsigned int j, s, l, w, anz, deg;
+	gf2n_word h;
 
 	anz = gf2n::anzBI-1;
 	deg = gf2n::degree % (CHAR_BIT*sizeof(gf2n_word));

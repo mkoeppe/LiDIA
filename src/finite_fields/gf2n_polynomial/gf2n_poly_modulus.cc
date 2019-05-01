@@ -453,7 +453,7 @@ void power(gf2n_polynomial & c, const gf2n_polynomial & aa, const bigint & bb,
 void compose(gf2n_polynomial & res, const gf2n_polynomial & f,
              const gf2n_polynomial & x, const gf2n_polynomial *table)
 {
-	register int i, fd = f.degree();
+	int i, fd = f.degree();
 	gf2n_polynomial r(0), help;
 	gf2n h2;
 
@@ -485,7 +485,7 @@ void compose(gf2n_polynomial & res, const gf2n_polynomial & f,
 void compose(gf2n_polynomial & res, const gf2n_polynomial & f,
              const gf2n_polynomial & x, gf2n_poly_modulus & F)
 {
-	register int i, fd = f.degree();
+	int i, fd = f.degree();
 	gf2n_polynomial r(0);
 	gf2n h2;
 

@@ -69,7 +69,7 @@ base_matrix_algorithms< T, ARG, ARG1 >::constructor (MR< T > &A,
 {
 	modul.constructor(A, v.get_size(), 1);
 
-	for (register lidia_size_t i = 0; i < A.rows; i++)
+	for (lidia_size_t i = 0; i < A.rows; i++)
 		modul.sto(A, i, 0, v[i]);
 }
 
@@ -82,8 +82,8 @@ base_matrix_algorithms< T, ARG, ARG1 >::constructor (MR< T > &A,
 {
 	modul.constructor(A, M.rows, M.columns);
 
-	for (register lidia_size_t i = 0; i < A.rows; i++)
-		for (register lidia_size_t j = 0; j < A.columns; j++)
+	for (lidia_size_t i = 0; i < A.rows; i++)
+		for (lidia_size_t j = 0; j < A.columns; j++)
 			modul.sto(A, i, j, modul1.member(M, i, j));
 }
 
@@ -102,7 +102,7 @@ base_matrix_algorithms< T, ARG, ARG1 >::swap_columns (MR< T > &A,
 	T TMP1, TMP2;
 
 
-	for (register lidia_size_t k = A.rows - 1; k >= 0; k--) {
+	for (lidia_size_t k = A.rows - 1; k >= 0; k--) {
 		TMP1 = modul.member(A, k, j);
 		TMP2 = modul.member(A, k, i);
 		modul.sto(A, k, j, TMP2);
@@ -120,7 +120,7 @@ base_matrix_algorithms< T, ARG, ARG1 >::swap_rows (MR< T > &A,
 {
 	T TMP;
 
-	for (register lidia_size_t k = A.columns - 1; k >= 0; k--) {
+	for (lidia_size_t k = A.columns - 1; k >= 0; k--) {
 		TMP = modul.member(A, j, k);
 		modul.sto(A, j, k, modul.member(A, i, k));
 		modul.sto(A, i, k, TMP);
@@ -191,7 +191,7 @@ inline void
 base_matrix_algorithms< T, ARG, ARG1 >::assign (MR< T > &A,
 						const MR< T > &M) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	for (i = 0; i < A.rows; i++)
 		for (j = 0; j < A.columns; j++)
 			modul.sto(A, i, j, modul1.member(M, i, j));
@@ -211,8 +211,8 @@ base_matrix_algorithms< T, ARG, ARG1 >::diag (MR< T > &A,
 					      const T &a,
 					      const T &b) const
 {
-	for (register lidia_size_t i = 0; i < A.rows; i++) {
-		for (register lidia_size_t j = 0; j < A.columns; j++)
+	for (lidia_size_t i = 0; i < A.rows; i++) {
+		for (lidia_size_t j = 0; j < A.columns; j++)
 			modul.sto(A, i, j, ((i == j) ? a : b));
 	}
 }
@@ -228,7 +228,7 @@ void
 base_matrix_algorithms< T, ARG, ARG1 >::trans (MR< T > &R,
 					       const MR< T > &A) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	if (A.value != R.value) {
 		if (R.columns != A.rows)
@@ -243,7 +243,7 @@ base_matrix_algorithms< T, ARG, ARG1 >::trans (MR< T > &R,
 	}
 	else {
 		T TMP;
-		register lidia_size_t oldrows = R.rows, oldcolumns = R.columns;
+		lidia_size_t oldrows = R.rows, oldcolumns = R.columns;
 		if (R.rows != R.columns)
 			if (R.columns > R.rows) {
 				modul.set_no_of_rows(R, oldcolumns);

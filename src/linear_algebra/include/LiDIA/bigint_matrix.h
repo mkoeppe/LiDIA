@@ -156,8 +156,8 @@ public:
 	operator bigfloat_matrix()
 	{
 		bigfloat_matrix B(rows, columns, bitfield);
-		for (register lidia_size_t i = 0; i < rows; i++)
-			for (register lidia_size_t j = 0; j < columns; j++)
+		for (lidia_size_t i = 0; i < rows; i++)
+			for (lidia_size_t j = 0; j < columns; j++)
 				B.sto(i, j, bigfloat(value[i][j]));
 		return B;
 	}

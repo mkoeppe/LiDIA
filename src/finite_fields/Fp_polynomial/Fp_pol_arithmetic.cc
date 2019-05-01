@@ -330,7 +330,7 @@ void negate(Fp_polynomial &a, const Fp_polynomial &b)
 	lidia_size_t i;
 	const bigint &p = b.modulus();
 #ifdef USE_SINGLE_PREC
-	register udigit pp = p.least_significant_digit();
+	udigit pp = p.least_significant_digit();
 
 	if (p.compare(pp) == 0 && pp < max_udigit_modulus()) {
 		for (i = 0; i < b.c_length; i++)
@@ -378,7 +378,7 @@ void add(Fp_polynomial &c,
 	cp = c.coeff;
 	const bigint & p = a.modulus();
 #ifdef USE_SINGLE_PREC
-	register udigit pp = p.least_significant_digit();
+	udigit pp = p.least_significant_digit();
 
 	if (p.compare(pp) == 0 && pp < max_udigit_modulus()) {
 		for (i = min_deg_ab + 1; i; i--, ap++, bp++, cp++)
@@ -455,7 +455,7 @@ void subtract(Fp_polynomial &c,
 	cp = c.coeff;
 	const bigint & p = a.modulus();
 #ifdef USE_SINGLE_PREC
-	register udigit pp = p.least_significant_digit();
+	udigit pp = p.least_significant_digit();
 	bool sgl_prec = (p.compare(pp) == 0 && pp < max_udigit_modulus());
 
 	if (sgl_prec) {

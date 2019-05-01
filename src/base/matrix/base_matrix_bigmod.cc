@@ -6842,7 +6842,7 @@ change_representation(unsigned long art)
 					bigint_value.allocated[i] = bigint_value.columns;
 
 					// set value_counter
-					register lidia_size_t size = bigint_value.columns;
+					lidia_size_t size = bigint_value.columns;
 					for (j = 0; j < bigint_value.columns; j++)
 						if (bigint_value.value[i][j] == bigint_value.Zero)
 							size--;
@@ -6856,7 +6856,7 @@ change_representation(unsigned long art)
 						       "change_representation(unsigned long) :: "
 						       "Error in memory allocation (index[i])");
 
-					register lidia_size_t p = 0;
+					lidia_size_t p = 0;
 					for (k = 0; k < bigint_value.columns; k++)
 						if (bigint_value.value[i][k] != bigint_value.Zero) {
 							LiDIA::swap(bigint_value.value[i][p],
@@ -6945,7 +6945,7 @@ change_representation(unsigned long art)
 					long_value.allocated[i] = long_value.columns;
 
 					// set value_counter
-					register lidia_size_t size = long_value.columns;
+					lidia_size_t size = long_value.columns;
 					for (j = 0; j < long_value.columns; j++)
 						if (long_value.value[i][j] == long_value.Zero)
 							size--;
@@ -6959,7 +6959,7 @@ change_representation(unsigned long art)
 						       "change_representation(unsigned long) :: "
 						       "Error in memory allocation (index[i])");
 
-					register lidia_size_t p = 0;
+					lidia_size_t p = 0;
 					for (k = 0; k < long_value.columns; k++)
 						if (long_value.value[i][k] != long_value.Zero) {
 							LiDIA::swap(long_value.value[i][p],

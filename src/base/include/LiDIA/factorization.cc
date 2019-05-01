@@ -597,7 +597,7 @@ factorization< T >::operator == (const factorization< T > & b) const
 		return false;
 
 	// compare components
-	register lidia_size_t i;
+	lidia_size_t i;
 	for (i = 0; i < len; i++)
 		if (ptr_a->component[i] != ptr_b->component[i])
 			return false;

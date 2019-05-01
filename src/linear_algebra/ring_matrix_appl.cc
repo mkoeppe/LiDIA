@@ -58,7 +58,7 @@ int main_LiDIA (int argc, char* argv[])
 	std::ifstream in(IN_NAME);
 	std::ofstream dz(OUT_NAME);
 
-	register int i, j;
+	int i, j;
 
 	// pointer
 	TYPE *pointer_1 = NULL;

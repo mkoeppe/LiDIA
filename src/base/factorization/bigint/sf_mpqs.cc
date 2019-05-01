@@ -1049,8 +1049,8 @@ namespace LiDIA {
       int cand[5] = {1, 3, 5, 7, 11};
   
       bigint kN;
-      register unsigned long plauf;
-      register int p, j, i, k = 1, nmod4;
+      unsigned long plauf;
+      int p, j, i, k = 1, nmod4;
       double wert, bestwert = 1, plus;
   
       nmod4 = static_cast < int >(N.least_significant_digit()) & 0x3;
@@ -1424,7 +1424,7 @@ namespace LiDIA {
 // char after blank  --> much faster than sprintf
 
     inline char *insert_at(char *p, unsigned long n) {
-      register int c, i, j, e;
+      int c, i, j, e;
     
       i = 0;
       do {

@@ -2729,7 +2729,7 @@ power(quadratic_ideal & C, const quadratic_ideal & A, const long i)
 		      "quadratic_ideal, long)");
 
 	quadratic_ideal B;
-	register long j;
+	long j;
 
 	B.assign(A);
 	j = i;

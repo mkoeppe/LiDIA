@@ -214,7 +214,7 @@ void divide(polynomial< bigint > & c,
 	c.set_degree(deg_a);
 	bigint r, *cp = c.coeff;
 
-	for (register lidia_size_t i = deg_a + 1; i; i--, ap++, cp++) {
+	for (lidia_size_t i = deg_a + 1; i; i--, ap++, cp++) {
 		div_rem ((*cp), r, (*ap), b);
 		if (!(r.is_zero()))
 			lidia_error_handler("polynomial< bigint >",
@@ -338,8 +338,8 @@ void remainder(polynomial< bigint > & c,
 	const bigint *ap;
 	bigint *cp;
 	bigint r;
-	register lidia_size_t deg_a = a.degree();
-	register lidia_size_t i;
+	lidia_size_t deg_a = a.degree();
+	lidia_size_t i;
 
 	c.set_degree(deg_a);
 

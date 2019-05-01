@@ -319,10 +319,10 @@ base_vector< T >::read (std::istream & in)
         debug_handler_l(DM_BV, "in member - function "
                         "read(std::istream &)", DV_BV + 1);
 
-        register lidia_size_t n = 0;
+        lidia_size_t n = 0;
         lidia_size_t sz = 4;
 
-        register lidia_size_t i;
+        lidia_size_t i;
 
         if (in.flags() & std::ios::binary) {
                 // binary-mode for stream 'in'
@@ -386,7 +386,7 @@ base_vector< T >::write (std::ostream & out) const
         debug_handler_l (DM_BV, "in member - function "
                          "write(std::ostream &)", DV_BV + 1);
 
-        register lidia_size_t i;
+        lidia_size_t i;
 
         if (out.flags() & std::ios::binary) {
                 // binary-mode for stream 'out'
@@ -579,7 +579,7 @@ base_vector< T >::set_data (const T *d, lidia_size_t l)
         set_capacity(l);
         this->length = l;
 
-        register lidia_size_t i;
+        lidia_size_t i;
         for (i = 0; i < l; i++)
                 this->value[i] = d[i];
 }
@@ -597,7 +597,7 @@ base_vector< T >::get_data () const
         memory_handler(d, DM_BV, "get_data :: "
                        "memory exhausted");
 
-        register lidia_size_t i;
+        lidia_size_t i;
         for (i = 0; i < this->length; i++)
                 d[i] = this->value[i];
         return d;
@@ -631,14 +631,14 @@ base_vector< T >::assign (lidia_size_t at, const base_vector< T > & v, lidia_siz
         debug_handler_l(DM_BV, "in member - function "
                         "assign(lidia_size_t, base_vector, lidia_size_t, lidia_size_t)", DV_BV + 3);
 
-        register lidia_size_t i, j;
+        lidia_size_t i, j;
 
         if (at< 0 || from < 0 || from >= v.length || to< 0 || to >= v.length || to < from)
                 lidia_error_handler(DM_BV, "assign :: "
                                     "invalid indices");
 
-        register lidia_size_t n = to - from + 1; // this value is positive
-        register lidia_size_t new_len = (this->length < at + n) ? (at + n) : this->length;
+        lidia_size_t n = to - from + 1; // this value is positive
+        lidia_size_t new_len = (this->length < at + n) ? (at + n) : this->length;
 
         if (this != &v) {
                 // v aliases current instance
@@ -705,7 +705,7 @@ base_vector< T >::reverse ()
         debug_handler_l(DM_BV, "in member - function "
                         "reverse()", DV_BV + 7);
 
-        register lidia_size_t i, j;
+        lidia_size_t i, j;
 
         for (i = 0, j = this->length - 1; i < j; i++, j--)
                 LiDIA::swap(this->value[i], this->value[j]);
@@ -721,7 +721,7 @@ base_vector< T >::reverse (const base_vector< T > & b)
         debug_handler_l(DM_BV, "in member - function "
                         "reverse(const base_vector< T > &)", DV_BV + 7);
 
-        register lidia_size_t i, j;
+        lidia_size_t i, j;
 
         if (this == &b)
                 for (i = 0, j = this->length - 1; i < j; i++, j--)
@@ -781,7 +781,7 @@ base_vector< T >::concat (const base_vector< T > &b, const base_vector< T > &c)
         debug_handler_l(DM_BV, "in member - function "
                         "concat(base_vector< T > &, const base_vector< T > &)", DV_BV + 3);
 
-        register lidia_size_t i, j, l, oldlength;
+        lidia_size_t i, j, l, oldlength;
 
         if (this != &b && this != &c) {
                 l = b.length + c.length;
@@ -841,8 +841,8 @@ base_vector< T >::shift_left (lidia_size_t pos, lidia_size_t num)
         debug_handler_l(DM_BV, "in member - function "
                         "shift_left(lidia_size_t, lidia_size_t)", DV_BV + 3);
 
-        register lidia_size_t i;
-        register lidia_size_t old_len = this->length;
+        lidia_size_t i;
+        lidia_size_t old_len = this->length;
 
         if (pos < num)
                 precondition_error_handler (pos, "pos", "pos >= num",
@@ -865,8 +865,8 @@ base_vector< T >::shift_right (lidia_size_t pos, lidia_size_t num)
         debug_handler_l(DM_BV, "in member - function "
                         "shift_right(lidia_size_t, lidia_size_t)", DV_BV + 3);
 
-        register lidia_size_t i;
-        register lidia_size_t old_len = this->length;
+        lidia_size_t i;
+        lidia_size_t old_len = this->length;
 
         if (pos < 0)
                 precondition_error_handler (pos, "pos", "pos >= 0",
@@ -893,7 +893,7 @@ base_vector< T >::remove_from (lidia_size_t pos, lidia_size_t l)
         debug_handler_l(DM_BV, "in member - function "
                         "remove_from(lidia_size_t, lidia_size_t)", DV_BV + 9);
 
-        register lidia_size_t i;
+        lidia_size_t i;
 
         if (l <= 0 || pos< 0 || pos + l > this->length)
                 precondition_error_handler (l, "l", "0 < l",
@@ -920,7 +920,7 @@ base_vector< T >::insert_at (const T & x, lidia_size_t pos)
         debug_handler_l(DM_BV, "in member - function "
                         "insert_at (const T &, lidia_size_t)", DV_BV + 9);
 
-        register lidia_size_t i, l = this->length;
+        lidia_size_t i, l = this->length;
 
         if (pos < 0)
                 precondition_error_handler(pos, "pos", "pos >= 0",

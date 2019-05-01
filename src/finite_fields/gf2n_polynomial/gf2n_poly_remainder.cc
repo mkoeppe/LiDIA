@@ -259,7 +259,7 @@ void floor (gf2n_polynomial & g, const gf2n_polynomial & f,
 	    unsigned int d)
 
 {
-	register int i, fd = f.deg;
+	int i, fd = f.deg;
 	gf2n *ap, *bp;
 
 	if (d == 0 || f.is_zero()) {

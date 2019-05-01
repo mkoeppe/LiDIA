@@ -142,7 +142,7 @@ sort(int (*cmp)(const T & a, const T & b), lidia_size_t l, lidia_size_t r)
 
 	r = (r == -1) ? this->length - 1 : r;
 
-	register lidia_size_t gap, i, j, len;
+	lidia_size_t gap, i, j, len;
 
 	if (this->length == 0 && l == 0 && r == -1)  // empty vector and default - cut
 		return;
@@ -246,7 +246,7 @@ sort_down(lidia_size_t l, lidia_size_t r)
 	debug_handler_l(DM_SV, "in member - function "
 			"sort_down(lidia_size_t, lidia_size_t)", DV_SV + 2);
 
-	register lidia_size_t gap, i, j;
+	lidia_size_t gap, i, j;
 	T *ptr = & this->value[l];
 	r = r - l + 1; // length of selected cut
 
@@ -293,7 +293,7 @@ bin_search(const T & x, lidia_size_t & pos, int (*cmp)(const T & a, const T & b)
 			"bin_search(const T &, lidia_size_t, int (*cmp)(const T &, const T &), "
 			"lidia_size_t, lidia_size_t)", DV_SV + 2);
 
-	register int c;
+	int c;
 
 	if (r == -1) r = this->length-1;
 
@@ -340,7 +340,7 @@ bin_search(const T & x, lidia_size_t & pos, unsigned long sort_direction, lidia_
 	debug_handler_l(DM_SV, "in member - function "
 			"bin_search(const T &, lidia_size_t, unsigned long, lidia_size_t, lidia_size_t)", DV_SV + 2);
 
-	register bool rc = false;
+	bool rc = false;
 
 	if (sort_direction == vector_flags::sort_vector_def) sort_direction = this->sort_dir;
 	if (r == -1) r = this->length - 1;
@@ -493,8 +493,8 @@ insert(const T & x, unsigned long sort_direction, lidia_size_t l, lidia_size_t r
 	debug_handler_l(DM_SV, "in member - function "
 			"insert(const T &, unsigned long, lidia_size_t, lidia_size_t)", DV_SV + 3);
 
-	register lidia_size_t i;
-	register bool found;
+	lidia_size_t i;
+	bool found;
 	lidia_size_t pos;
 
 	r = (r == -1) ? this->length - 1 : r;
@@ -535,8 +535,8 @@ remove(const T & x, int (*cmp)(const T & a, const T & b), lidia_size_t l, lidia_
 	debug_handler_l(DM_SV, "in member - function "
 			"remove (T, cmp, lidia_size_t, lidia_size_t)", DV_SV + 4);
 
-	register lidia_size_t i;
-	register bool found;
+	lidia_size_t i;
+	bool found;
 	lidia_size_t pos;
 
 	r = (r == -1) ? this->length - 1 : r;
@@ -571,8 +571,8 @@ remove(const T &x, unsigned long sort_direction, lidia_size_t l, lidia_size_t r)
 	debug_handler_l(DM_SV, "in member - function "
 			"remove(const T &, unsigned long, lidia_size_t, lidia_size_t)", DV_SV + 4);
 
-	register lidia_size_t i;
-	register bool found;
+	lidia_size_t i;
+	bool found;
 	lidia_size_t pos;
 
 	r = (r == -1) ? this->length - 1 : r;
@@ -610,7 +610,7 @@ lex_compare(sort_vector< T > &w) const
 	debug_handler_l(DM_SV, "in member - function "
 			"lex_compare(sort_vector< T > &)", DV_SV + 5);
 
-	register lidia_size_t i, minl = (this->length < w.length) ? this->length : w.length;
+	lidia_size_t i, minl = (this->length < w.length) ? this->length : w.length;
 
 	for (i = 0; i< minl && comparator < T >::equal(this->value[i], w.value[i]); i++);
 	if (i < minl)
@@ -640,7 +640,7 @@ delete_copies()
 	debug_handler_l(DM_SV, "in member - function "
 			"delete_copies()", DV_SV + 6);
 
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	int ident;
 
 	for (i = 0, j = 0; i < this->length; j++) {

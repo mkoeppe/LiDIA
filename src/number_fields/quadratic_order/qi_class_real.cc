@@ -1328,7 +1328,7 @@ power_real (qi_class_real & C, const qi_class_real & A, const long i)
 	debug_handler("qi_class_real", "power_real(long)");
 
 	qi_class_real B;
-	register long j;
+	long j;
 
 	B.assign(A);
 	j = i;

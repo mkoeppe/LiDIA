@@ -250,7 +250,7 @@ quadratic_order::qo_get_fb(int & size_FB)
 	qi_class PID;
 	bigfloat temp;
 	int bach, upper;
-	register int P, n = 0;
+	int P, n = 0;
 
 	// bound = 0.7 log^2(Delta)
 	log(temp, bigfloat(abs(Delta)));
@@ -313,7 +313,7 @@ quadratic_order::generate_free_relations(lidia_size_t & curr_A,
 {
 	debug_handler("quadratic_order", "generate_free_relations");
 
-	register lidia_size_t i, j, size_FB;
+	lidia_size_t i, j, size_FB;
 	int p;
 
 	size_FB = fact_base.size();
@@ -352,7 +352,7 @@ quadratic_order::qo_hnf_and_det(matrix< bigint > & A1,
 {
 	debug_handler("quadratic_order", "qo_hnf_and_det");
 
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	lidia_size_t A1cols;
 	int strat = 0, *bad_cols = NULL;
 	long lowregbound;
@@ -1029,7 +1029,7 @@ quadratic_order::qo_init_powers(int & k0, qi_class ***powers,
 {
 	debug_handler("quadratic_order", "qo_init_powers");
 
-	register lidia_size_t i, j, curr;
+	lidia_size_t i, j, curr;
 	bigfloat lDelta;
 	bigint maxP;
 	qi_class C, B;
@@ -1104,7 +1104,7 @@ quadratic_order::factor_over_FB(qi_class & AA,
 {
 	debug_handler("quadratic_order", "factor_over_FB");
 
-	register lidia_size_t i;
+	lidia_size_t i;
 	bigint a, b, temp;
 	long p, p2, rem, B2p, Bpr2p;
 	lidia_size_t ex;
@@ -1180,7 +1180,7 @@ quadratic_order::qo_relations_randexp(int size_FB, int n, qi_class **powers,
 {
 	debug_handler("quadratic_order", "qo_relations_randexp");
 
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	lidia_size_t Bound = 30, Acols, A1cols, newrels, ei;
 	qi_class B, BO;
 	quadratic_number_standard alpha, beta;
@@ -1421,7 +1421,7 @@ quadratic_order::cg_randexp()
 {
 	debug_handler("quadratic_order", "cg_randexp");
 
-	register lidia_size_t i, j, k, n, c, ii;
+	lidia_size_t i, j, k, n, c, ii;
 	lidia_size_t curr_A, curr_A1;
 	int size_FB, k0;
 	qi_class **powers;
@@ -1797,7 +1797,7 @@ quadratic_order::qo_relations_mpqs(int size_FB,
 {
 	debug_handler("quadratic_order", "qo_relations_mpqs");
 
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	lidia_size_t Acols, A1cols, newrels, new_lp_hits, temp;
 	quadratic_number_standard alpha;
 	math_vector< lidia_size_t > v(size_FB, size_FB);
@@ -2099,7 +2099,7 @@ quadratic_order::cg_mpqs(bool self_init, bool large_primes)
 {
 	debug_handler("quadratic_order", "cg_mpqs");
 
-	register lidia_size_t i, j, k, n, c, ii;
+	lidia_size_t i, j, k, n, c, ii;
 	lidia_size_t curr_A, curr_A1;
 	int size_FB;
 	sort_vector< lidia_size_t > S;
@@ -2455,7 +2455,7 @@ quadratic_order::represent_over_FB(const qi_class & AA,
 	debug_handler("quadratic_order", "represent_over_FB(qi_class, "
 		      "quadratic_number_standard");
 
-	register lidia_size_t i;
+	lidia_size_t i;
 	lidia_size_t Bound = 30, ei;
 	qi_class B, C;
 	random_generator rg;
@@ -2593,7 +2593,7 @@ quadratic_order::represent_over_FB_sieve(const qi_class & AA,
 {
 	debug_handler("quadratic_order", "represent_over_FB_sieve()");
 
-	register lidia_size_t i, count;
+	lidia_size_t i, count;
 	qi_class B;
 	int size_FB;
 
@@ -2685,7 +2685,7 @@ quadratic_order::represent_over_FB_sieve(const qi_class & AA)
 {
 	debug_handler("quadratic_order", "represent_over_FB(sieve)");
 
-	register lidia_size_t i;
+	lidia_size_t i;
 	qi_class B;
 	int size_FB;
 
@@ -2884,7 +2884,7 @@ quadratic_order::class_group_siqs(int new_size_FB, int new_M, lidia_size_t c, bo
 {
 	debug_handler("quadratic_order", "class_group_siqs(int)");
 
-	register lidia_size_t i, j, k, n, ii;
+	lidia_size_t i, j, k, n, ii;
 	lidia_size_t curr_A, curr_A1;
 	int size_FB;
 	sort_vector< lidia_size_t > S;

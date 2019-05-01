@@ -44,7 +44,7 @@ std::ostream & operator << (std::ostream & out_strm, const gf2n & a)
 		// convert gf2n element into bigint
 
 		// this hack was only introduced to test whether the 64bit patches
-		// work (to test them on a machine with 32 bit register length).
+		// work (to test them on a machine with 32 bit length).
 		// no harm will be done if you remove it.
 		// -rpw
 #if GF2N_WORDSIZE == 64 && SIZEOF_LONG != 8

@@ -53,12 +53,12 @@ STF_intern(bigint ** value, lidia_size_t r, lidia_size_t c, const bigint & mod)
 	debug_handler_l("bigint_matrix", "in inline - function "
 			"STF_intern(bigint **, lidia_size_t, lidia_size_t, const bigint &)", LDBL_MATRIX);
 
-	register lidia_size_t i, j, z, j0 = c - 1;
+	lidia_size_t i, j, z, j0 = c - 1;
 	bigint TMP, TMP1, TMP2;
 	bigint *tmp;
 
 	// Step 1 - 4
-	register int exchange = 1;
+	int exchange = 1;
 
 	// Step 5 - 8
 	for (i = r - 1; i >= 0; i--) {
@@ -117,12 +117,12 @@ STF_intern(long ** value, lidia_size_t r, lidia_size_t c, long mod)
 	debug_handler_l("bigint_matrix", "in member - function "
 			"STF_intern(long **, lidia_size_t, lidia_size_t, long)", LDBL_MATRIX);
 
-	register lidia_size_t i, j, z, j0 = c - 1;
+	lidia_size_t i, j, z, j0 = c - 1;
 	long TMP, TMP1, TMP2;
 	long *tmp;
 
 	// Step 1 - 4
-	register int exchange = 1;
+	int exchange = 1;
 
 	// Step 5 - 8
 	for (i = r - 1; i >= 0; i--) {
@@ -188,7 +188,7 @@ rank_intern(bigint ** Avalue, lidia_size_t r, lidia_size_t c, const bigint & Gmo
 	debug_handler_l("bigint_matrix", "in inline - function "
 			"rank_intern(bigint **, lidia_size_t, lidia_size_t, const bigint &)", LDBL_MATRIX);
 
-	register lidia_size_t i, j, No = 0;
+	lidia_size_t i, j, No = 0;
 	const bigint *Atmp;
 
 	if (Gmod.bit_length() > bigint::bits_per_digit()) {
@@ -285,7 +285,7 @@ lininr_intern(bigint ** Avalue, lidia_size_t r, lidia_size_t c, const bigint & G
 	debug_handler("bigint_matrix", "in inline - function "
 		      "lininr_intern(bigint **, lidia_size_t, lidia_size_t, const bigint &)");
 
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	const bigint *Atmp;
 
 	long *l = new long[c + 1];
@@ -390,7 +390,7 @@ lininc_intern(bigint ** Avalue, lidia_size_t r, lidia_size_t c, const bigint & G
 	debug_handler("bigint_matrix", "in inline - function "
 		      "lininc_intern(bigint **, lidia_size_t, lidia_size_t, const bigint &)");
 
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	lidia_size_t *l = new lidia_size_t[r + 1];
 	memory_handler(l, "bigint_matrix", "lininc_intern :: "
 		       "Error in memory allocation (l)");
@@ -490,7 +490,7 @@ adj_intern(bigint ** value, lidia_size_t r, const bigint & mod)
 	debug_handler("bigint_matrix", "in inline - function "
 		      "adj_intern(bigint **, lidia_size_t, const bigint &)");
 
-	register lidia_size_t i, j, z;
+	lidia_size_t i, j, z;
 	bigint TMP, TMP1, TMP2;
 	bigint *tmp, *tmp1, *Btmp, *Btmp1;
 	lidia_size_t exchange = 1;
@@ -601,7 +601,7 @@ adj_intern(long **value, lidia_size_t r, long mod)
 	debug_handler("bigint_matrix", "in inline - function "
 		      "adj_intern(long **, lidia_size_t, long)");
 
-	register lidia_size_t i, j, z;
+	lidia_size_t i, j, z;
 	long TMP, TMP1, TMP2;
 	long *tmp, *tmp1, *Btmp, *Btmp1;
 	lidia_size_t exchange = 1;
@@ -719,7 +719,7 @@ det_intern(bigint & ret, bigint ** value, lidia_size_t r, const bigint & mod)
 	debug_handler("bigint_matrix", "in inline - function "
 		      "det_intern(bigint &, bigint **, lidia_size_t, const bigint &)");
 
-	register lidia_size_t i, j, z;
+	lidia_size_t i, j, z;
 	bigint TMP, TMP1, TMP2;
 	bigint *tmp, *tmp1;
 
@@ -780,7 +780,7 @@ det_intern(long **value, lidia_size_t r, long mod)
 	debug_handler("bigint_matrix", "in inline - function "
 		      "det_intern(long **, lidia_size_t, long)");
 
-	register lidia_size_t i, j, z;
+	lidia_size_t i, j, z;
 	long TMP, TMP1, TMP2;
 	long *tmp, *tmp1;
 
@@ -847,7 +847,7 @@ HBF_intern(bigint ** value, lidia_size_t r, const bigint & mod)
 		      "HBF_intern(bigint **, lidia_size_t, const bigint &)");
 
 	// Step 1, 2
-	register lidia_size_t i, j, z;
+	lidia_size_t i, j, z;
 	bigint TMP, TMP1, TMP2;
 	bigint *tmp;
 
@@ -974,7 +974,7 @@ charpoly_intern(bigint ** value, lidia_size_t r, const bigint & mod)
 	debug_handler("bigint_matrix", "in inline - function "
 		      "charpoly_intern(bigint **, lidia_size_t, const bigint &)");
 
-	register lidia_size_t i, j, z;
+	lidia_size_t i, j, z;
 	bigint TMP;
 	lidia_size_t sign;
 

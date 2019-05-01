@@ -147,7 +147,7 @@ trans_matrix::touch_files()
 {
 	// touch all temporary files in order to give current date stamps
 	if (files) {
-		register lidia_size_t i;
+		lidia_size_t i;
 		char command[100];
 
 		for (i = 0; i < size; ++i) {

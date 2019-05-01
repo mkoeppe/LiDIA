@@ -606,22 +606,22 @@ sparse_base_matrix< T >::get_data () const
 
 	debug_handler_l(DMESSAGE, "get_value()", DVALUE + 2);
 
-	register T **copy = NULL;
+	T **copy = NULL;
 	if (this->rows != 0) {
 		copy = new T *[this->rows];
 		memory_handler(copy, DM_BM, "get_value :: "
 			       "Error in memory allocation (copy)");
 	}
 
-	register T *tmp, *tmp1;
-	for (register lidia_size_t i = 0; i < this->rows; i++) {
+	T *tmp, *tmp1;
+	for (lidia_size_t i = 0; i < this->rows; i++) {
 		tmp1 = this->value[i];
 		tmp = new T[this->columns];
 		memory_handler(tmp, DM_BM, "get_value :: "
 			       "Error in memory allocation (tmp)");
 
-		register lidia_size_t l = 0;
-		for (register lidia_size_t j = 0; l < this->value_counter[i] && j < this->columns; j++) {
+		lidia_size_t l = 0;
+		for (lidia_size_t j = 0; l < this->value_counter[i] && j < this->columns; j++) {
 			if (j == this->index[i][l]) {
 				tmp[j] = tmp1[l];
 				l++;
@@ -667,8 +667,8 @@ sparse_base_matrix< T >::set_data (const T **v, lidia_size_t r, lidia_size_t c)
 	if (c != this->columns)
 		this->S_base_modul.set_no_of_columns(*this, c);
 
-	for (register lidia_size_t len1 = this->rows - 1; len1 >= 0; len1--)
-		for (register lidia_size_t len = this->columns - 1; len >= 0; len--)
+	for (lidia_size_t len1 = this->rows - 1; len1 >= 0; len1--)
+		for (lidia_size_t len = this->columns - 1; len >= 0; len--)
 			this->S_base_modul.sto(*this, len1, len, v[len1][len]);
 }
 
@@ -1648,7 +1648,7 @@ sparse_base_matrix< T >::swap (sparse_base_matrix< T > &B)
 	LiDIA::swap(this->sparse_columns, B.sparse_columns);
 
 	// swap allocated
-	register lidia_size_t *tmp2 = this->allocated;
+	lidia_size_t *tmp2 = this->allocated;
 	this->allocated = B.allocated;
 	B.allocated = tmp2;
 
@@ -1658,12 +1658,12 @@ sparse_base_matrix< T >::swap (sparse_base_matrix< T > &B)
 	B.value_counter = tmp2;
 
 	// swap values
-	register T **tmp = this->value;
+	T **tmp = this->value;
 	this->value = B.value;
 	B.value = tmp;
 
 	// swap values
-	register lidia_size_t **tmp1 = this->index;
+	lidia_size_t **tmp1 = this->index;
 	this->index = B.index;
 	B.index = tmp1;
 
@@ -2263,7 +2263,7 @@ sparse_base_matrix< T >::status_report ()
 		  << "\n\t sparse_rows = " << this->sparse_rows
 		  << "\n\t sparse_columns = " << this->sparse_columns << std::endl;
 
-	for (register lidia_size_t i = 0; i < this->rows; i++) {
+	for (lidia_size_t i = 0; i < this->rows; i++) {
 		std::cout << "row " << i << ": allocated = " << this->allocated[i]
 			  << " value_counter = " << this->value_counter[i] << std::endl;
 	}

@@ -240,7 +240,7 @@ public:
 
 	T * get_column(lidia_size_t i) const
 	{
-		register T *RES = new T[this->rows];
+		T *RES = new T[this->rows];
 		memory_handler(RES, DMESSAGE, "get_column(lidia_size_t) :: "
 			       "Error in memory allocation (RES)");
 		this->get_column(RES, i);
@@ -276,7 +276,7 @@ public:
 
 	T *get_row(lidia_size_t i) const
 	{
-		register T *RES = new T[this->columns];
+		T *RES = new T[this->columns];
 		memory_handler(RES, DMESSAGE, "get_row(lidia_size_t) :: "
 			       "Error in memory allocation (RES)");
 		this->get_row(RES, i);

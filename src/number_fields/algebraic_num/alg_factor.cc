@@ -186,7 +186,7 @@ static order_mod_p operator +(const order_mod_p & a, const order_mod_p & b)
 	lidia_debug_handler_l("alg_factor.c", "operator + order_mod_p", 1);
 
 	order_mod_p c(dimension);
-	register lidia_size_t i;
+	lidia_size_t i;
 	if (a.size() == b.size()) {
 		for (i = 0; i < b.size(); i++) {
 			add(c[i], a[i], b[i]);
@@ -209,7 +209,7 @@ static order_mod_p operator -(const order_mod_p & a, const order_mod_p & b)
 	lidia_debug_handler_l("alg_factor.c", "operator - oder_mod_p", 1);
 
 	order_mod_p c(dimension);
-	register lidia_size_t i;
+	lidia_size_t i;
 	if (a.size() == b.size()) {
 		for (i = 0; i < b.size(); i++) {
 			subtract(c[i], a[i], b[i]);

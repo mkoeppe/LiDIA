@@ -2259,7 +2259,7 @@ power (quadratic_form & f, const quadratic_form & g, const long i)
 	debug_handler("quadratic_form", "power(long)");
 
 	quadratic_form h;
-	register long j;
+	long j;
 
 	h.assign(g);
 	j = i;
@@ -2325,7 +2325,7 @@ power_reduce (quadratic_form & f, const quadratic_form & g, const long i)
 	debug_handler("quadratic_form", "power_reduce(long)");
 
 	quadratic_form h;
-	register long j;
+	long j;
 
 	h.assign(g);
 	j = i;
@@ -2401,7 +2401,7 @@ nupower (quadratic_form & f, const quadratic_form & g, const long i)
 	debug_handler("quadratic_form", "nupower(long)");
 
 	quadratic_form h;
-	register long j;
+	long j;
 
 	if (!g.is_pos_definite() && !g.is_neg_definite()) {
 		lidia_error_handler("quadratic_form", "nupower() - form must be positive "

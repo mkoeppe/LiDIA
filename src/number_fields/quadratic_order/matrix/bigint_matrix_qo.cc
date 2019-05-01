@@ -96,10 +96,10 @@ adj(file_adjoint & RES, const bigint &H, const bigint & DET)
 		std::cout << "Adjoint with files not implemented for sparse matrices!" << std::endl;
 
 	else {
-		register lidia_size_t i, z1, z2;
+		lidia_size_t i, z1, z2;
 
 		matrix< bigint > B(rows, columns);
-		register bigint *Atmp;
+		bigint *Atmp;
 		long *tmp1;
 
 		dense_fp_matrix_kernel< bigint, MR< bigint > > bigint_modul;
@@ -110,7 +110,7 @@ adj(file_adjoint & RES, const bigint &H, const bigint & DET)
 			dense_fp_matrix_kernel< bigint, MR< bigint > > > Dm_bigint_modul;
 
 
-		register bigint *PRIM = get_primes(bigint(2*H), abs(DET), true);
+		bigint *PRIM = get_primes(bigint(2*H), abs(DET), true);
 		long n;
 		PRIM[0].longify(n);
 
@@ -187,10 +187,10 @@ adj(file_adjoint & RES, const bigint &H, const bigint & DET, int num_mod)
 		std::cout << "Adjoint with files not implemented for sparse matrices!" << std::endl;
 
 	else {
-		register lidia_size_t i, z1, z2;
+		lidia_size_t i, z1, z2;
 
 		matrix< bigint > B(rows, columns);
-		register bigint *Atmp;
+		bigint *Atmp;
 		long *tmp1;
 
 		dense_fp_matrix_kernel< bigint, MR< bigint > > bigint_modul;
@@ -201,7 +201,7 @@ adj(file_adjoint & RES, const bigint &H, const bigint & DET, int num_mod)
 			dense_fp_matrix_kernel< bigint, MR< bigint > > > Dm_bigint_modul;
 
 
-		register bigint *PRIM = get_primes(bigint(2*H), abs(DET), true);
+		bigint *PRIM = get_primes(bigint(2*H), abs(DET), true);
 		long n;
 		PRIM[0].longify(n);
 
@@ -274,7 +274,7 @@ matrix< bigint >::size_red_jacobs()
 	*this = L;
 
 #if 0
-	register lidia_size_t i, j, k;
+	lidia_size_t i, j, k;
 	bigint q, u, temp;
 	math_vector< bigint > D, v1, v2;
 	base_vector< int > f;
@@ -398,7 +398,7 @@ matrix< bigint >::size_red_jacobs(trans_matrix & TR)
 	TR.store_matrix(tran);
 
 #if 0
-	register lidia_size_t i, j, k;
+	lidia_size_t i, j, k;
 	bigint q, u, temp;
 	math_vector< bigint > D, v1, v2;
 	base_vector< int > f;
@@ -522,7 +522,7 @@ pre_reduction(matrix< long > & A,
               lidia_size_t actual_column,
               base_vector< lidia_size_t > & row_vec)
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	lidia_size_t row, col;
 	bool single, ones;
 
@@ -583,7 +583,7 @@ pre_reduction(matrix< long > & A,
               lidia_size_t actual_column,
               base_vector< lidia_size_t > & row_vec)
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	lidia_size_t row, col;
 	bool single, ones;
 	matrix< bigint > tran;
@@ -653,7 +653,7 @@ void
 matrix< bigint >::post_reduction(base_vector< lidia_size_t > & row_vec,
 				  lidia_size_t *RET)
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	bool found;
 
 	if (RET) {
@@ -694,7 +694,7 @@ matrix< bigint >::hnf_jacobs0(trans_matrix & TR, bigint & H, int num_same)
 	// Variables
 	//
 
-	register lidia_size_t i, j, k;
+	lidia_size_t i, j, k;
 	int num_mod;
 	bigint DET;
 	lidia_size_t *RET = NULL;
@@ -854,7 +854,7 @@ matrix< bigint >::hnf_jacobs1(trans_matrix & TR, bigint & H, int num_same,
 	// Variables
 	//
 
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	int num_mod;
 	bigint DET2, G;
 	lidia_size_t *RET = NULL;
@@ -1052,7 +1052,7 @@ hnf_cg2(const matrix< long > &B, int no, bool & do_mod)
 	lidia_size_t actual_row = B.rows;
 	lidia_size_t columns_orig = actual_column = B.columns;
 	lidia_size_t *RET = NULL;
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	int BOUND_1;
 	bigint BOUND_2, DET, H;
@@ -1353,7 +1353,7 @@ hnf_cg2(const matrix< long > &B, trans_matrix &TR, int no, bigint & DET,
 	lidia_size_t actual_row = B.rows;
 	lidia_size_t columns_orig = actual_column = B.columns;
 	lidia_size_t *RET = NULL;
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	int BOUND_1;
 	bigint BOUND_2, H;
@@ -1757,7 +1757,7 @@ hnf_cg2(const matrix< long > &B, int no)
 	lidia_size_t actual_column = B.columns;
 	lidia_size_t columns_orig = actual_column = B.columns;
 	lidia_size_t *RET = NULL;
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	int BOUND_1;
 	bigint BOUND_2, H, DET;
@@ -1990,7 +1990,7 @@ hnf_cg2(const matrix< long > &B, trans_matrix &TR, int no, bigint & DET,
 	lidia_size_t actual_row, actual_column;
 	lidia_size_t columns_orig = actual_column = B.columns;
 	lidia_size_t *RET = NULL;
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	int BOUND_1;
 	bigint BOUND_2, H;
@@ -2346,7 +2346,7 @@ hnf_cg3(const matrix< bigint > &B)
 	lidia_size_t rows_orig = actual_row = B.rows;
 	lidia_size_t columns_orig = actual_column = B.columns;
 	lidia_size_t *RET = NULL;
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	bigint BOUND2;
 	matrix< bigint > A;
@@ -2423,7 +2423,7 @@ hnf_cg3_mod(const matrix< bigint > &B, bool & do_mod)
 	lidia_size_t columns_orig = actual_column = B.columns;
 	lidia_size_t *RET = NULL;
 	bigint DET;
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	bigint BOUND2;
 	matrix< bigint > A;
@@ -2579,7 +2579,7 @@ hnf_cg3(const matrix< bigint > &B, trans_matrix & TR)
 	lidia_size_t rows_orig = actual_row = B.rows;
 	lidia_size_t columns_orig = actual_column = B.columns;
 	lidia_size_t *RET = NULL;
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	bigint BOUND2;
 	matrix< bigint > A;
@@ -2695,7 +2695,7 @@ hnf_cg3_mod(const matrix< bigint > &B, trans_matrix &TR, int strat,
 	lidia_size_t columns_orig = actual_column = B.columns;
 	lidia_size_t *RET = NULL;
 	bigint DET;
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 
 	bigint BOUND2;
 	matrix< bigint > A;
@@ -2852,7 +2852,7 @@ solve_hnf(math_vector< bigint > & b, math_vector< bigint > & x)
 {
 	debug_handler("bigint_matrix", "my_solve");
 
-	register lidia_size_t n, i, j;
+	lidia_size_t n, i, j;
 	bigint temp, temp2, q, r;
 	bool is_sol;
 

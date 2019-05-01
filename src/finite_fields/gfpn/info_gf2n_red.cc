@@ -44,8 +44,8 @@ namespace LiDIA {
 
 void info_gf2n::tri_partial_reduce1(udigit *f) const
 {
-	register unsigned int i, k, l, w;
-	register udigit h;
+	unsigned int i, k, l, w;
+	udigit h;
 
 	i = 2*anzBI - 1;
 
@@ -85,8 +85,8 @@ void info_gf2n::tri_partial_reduce1(udigit *f) const
 
 void info_gf2n::pent_partial_reduce1(udigit *f) const
 {
-	register unsigned int i, k, l, w;
-	register udigit h;
+	unsigned int i, k, l, w;
+	udigit h;
 
 	i = 2*anzBI - 1;
 
@@ -146,8 +146,8 @@ void info_gf2n::pent_partial_reduce1(udigit *f) const
 
 void info_gf2n::general_partial_reduce1(udigit *f) const
 {
-	register unsigned int i, j, k, l, w, s;
-	register udigit h;
+	unsigned int i, j, k, l, w, s;
+	udigit h;
 
 	i = 2*anzBI - 1;
 
@@ -200,8 +200,8 @@ void info_gf2n::general_partial_reduce1(udigit *f) const
 
 void info_gf2n::tri_partial_reduce2(udigit *f) const
 {
-	register unsigned int l, w, deg, anz;
-	register udigit h;
+	unsigned int l, w, deg, anz;
+	udigit h;
 
 	anz = anzBI-1;
 	deg = degree % (BITS_PER_LONG);
@@ -231,8 +231,8 @@ void info_gf2n::tri_partial_reduce2(udigit *f) const
 
 void info_gf2n::pent_partial_reduce2(udigit *f) const
 {
-	register unsigned int l, w, anz, deg;
-	register udigit h;
+	unsigned int l, w, anz, deg;
+	udigit h;
 
 	anz = anzBI-1;
 	deg = degree % (BITS_PER_LONG);
@@ -282,8 +282,8 @@ void info_gf2n::pent_partial_reduce2(udigit *f) const
 
 void info_gf2n::general_partial_reduce2(udigit *f) const
 {
-	register unsigned int j, s, l, w, anz, deg;
-	register udigit h;
+	unsigned int j, s, l, w, anz, deg;
+	udigit h;
 
 	anz = anzBI-1;
 	deg = degree % (BITS_PER_LONG);

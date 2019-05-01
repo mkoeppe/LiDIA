@@ -66,7 +66,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::divide (MATRIX_TYPE &RES,
 						    const MATRIX_TYPE &A,
 						    const bigint &k) const
 {
-	register lidia_size_t j, i;
+	lidia_size_t j, i;
 	bigint *REStmp, *Atmp;
 
 	for (j = 0; j < A.rows; j++) {
@@ -85,7 +85,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::compwise_divide (MATRIX_TYPE &RES,
 							     const MATRIX_TYPE &A,
 							     const MATRIX_TYPE &B) const
 {
-	register lidia_size_t j, i;
+	lidia_size_t j, i;
 	bigint *REStmp, *Atmp, *Btmp;
 
 	for (j = 0; j < RES.rows; j++) {
@@ -133,8 +133,8 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::max (const MATRIX_TYPE &RES,
 {
 	MAX.assign(RES.value[0][0]);
 
-	register lidia_size_t i, j;
-	register bigint *tmp;
+	lidia_size_t i, j;
+	bigint *tmp;
 
 	for (i = 0; i < RES.rows; i++) {
 		tmp = RES.value[i];
@@ -153,8 +153,8 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::max_abs (const MATRIX_TYPE &RES,
 {
 	MAX.assign(abs(RES.value[0][0]));
 
-	register lidia_size_t i, j;
-	register bigint *tmp;
+	lidia_size_t i, j;
+	bigint *tmp;
 
 	for (i = 0; i < RES.rows; i++) {
 		tmp = RES.value[i];
@@ -177,8 +177,8 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::max_pos (const MATRIX_TYPE &RES,
 	x = 0;
 	y = 0;
 
-	register lidia_size_t i, j;
-	register bigint *tmp;
+	lidia_size_t i, j;
+	bigint *tmp;
 
 	for (i = 0; i < RES.rows; i++) {
 		tmp = RES.value[i];
@@ -204,8 +204,8 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::max_abs_pos (const MATRIX_TYPE &RES,
 	x = 0;
 	y = 0;
 
-	register lidia_size_t i, j;
-	register bigint *tmp;
+	lidia_size_t i, j;
+	bigint *tmp;
 
 	for (i = 0; i < RES.rows; i++) {
 		tmp = RES.value[i];
@@ -227,8 +227,8 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::min (const MATRIX_TYPE &RES,
 {
 	MIN.assign(RES.value[0][0]);
 
-	register lidia_size_t i, j;
-	register bigint *tmp;
+	lidia_size_t i, j;
+	bigint *tmp;
 
 	for (i = 0; i < RES.rows; i++) {
 		tmp = RES.value[i];
@@ -247,8 +247,8 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::min_abs (const MATRIX_TYPE &RES,
 {
 	MIN.assign(abs(RES.value[0][0]));
 
-	register lidia_size_t i, j;
-	register bigint *tmp;
+	lidia_size_t i, j;
+	bigint *tmp;
 
 	for (i = 0; i < RES.rows; i++) {
 		tmp = RES.value[i];
@@ -271,8 +271,8 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::min_pos (const MATRIX_TYPE &RES,
 	x = 0;
 	y = 0;
 
-	register lidia_size_t i, j;
-	register bigint *tmp;
+	lidia_size_t i, j;
+	bigint *tmp;
 
 	for (i = 0; i < RES.rows; i++) {
 		tmp = RES.value[i];
@@ -298,8 +298,8 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::min_abs_pos (const MATRIX_TYPE &RES,
 	x = 0;
 	y = 0;
 
-	register lidia_size_t i, j;
-	register bigint *tmp;
+	lidia_size_t i, j;
+	bigint *tmp;
 
 	for (i = 0; i < RES.rows; i++) {
 		tmp = RES.value[i];
@@ -319,19 +319,19 @@ void
 sparse_bigint_matrix_kernel< MATRIX_TYPE >::hadamard (const MATRIX_TYPE &RES,
 						      bigint & H) const
 {
-	register lidia_size_t min = (RES.columns < RES.rows) ? RES.columns : RES.rows;
-	register lidia_size_t i, j;
+	lidia_size_t min = (RES.columns < RES.rows) ? RES.columns : RES.rows;
+	lidia_size_t i, j;
 
 	// Computation of row and column norms
-	register bigint *Wrows = new bigint[RES.rows];
+	bigint *Wrows = new bigint[RES.rows];
 	memory_handler(Wrows, DMESSAGE, "hadamard :: "
 		       "Error in memory allocation (Wrows)");
 
-	register bigint *Wcolumns = new bigint[RES.columns];
+	bigint *Wcolumns = new bigint[RES.columns];
 	memory_handler(Wcolumns, DMESSAGE, "hadamard :: "
 		       "Error in memory allocation (Wcolumns)");
 
-	register bigint *tmp;
+	bigint *tmp;
 	bigint TMP;
 
 	for (i = 0; i < RES.rows; i++) {
@@ -380,7 +380,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::hadamard (const MATRIX_TYPE &RES,
 	delete[] Wrows;
 
 	// Hadamard
-	register lidia_size_t B = ((COLUMNS < ROWS) ? COLUMNS.bit_length() : ROWS.bit_length()) - 1;
+	lidia_size_t B = ((COLUMNS < ROWS) ? COLUMNS.bit_length() : ROWS.bit_length()) - 1;
 	bigint E = (bigint(B) / bigint(2)) + bigint(2);
 	power(H, bigint(2), E);
 	dec(H);
@@ -393,19 +393,19 @@ void
 sparse_bigint_matrix_kernel< MATRIX_TYPE >::binary_hadamard (const MATRIX_TYPE &RES,
 							     lidia_size_t &H) const
 {
-	register lidia_size_t min = (RES.columns < RES.rows) ? RES.columns : RES.rows;
-	register lidia_size_t i, j;
+	lidia_size_t min = (RES.columns < RES.rows) ? RES.columns : RES.rows;
+	lidia_size_t i, j;
 
 	// Computation of row and column norms
-	register bigint *Wrows = new bigint[RES.rows];
+	bigint *Wrows = new bigint[RES.rows];
 	memory_handler(Wrows, DMESSAGE, "hadamard :: "
 		       "Error in memory allocation (Wrows)");
 
-	register bigint *Wcolumns = new bigint[RES.columns];
+	bigint *Wcolumns = new bigint[RES.columns];
 	memory_handler(Wcolumns, DMESSAGE, "hadamard :: "
 		       "Error in memory allocation (Wcolumns)");
 
-	register bigint *tmp;
+	bigint *tmp;
 	bigint TMP;
 
 	for (i = 0; i < RES.rows; i++) {
@@ -452,7 +452,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::binary_hadamard (const MATRIX_TYPE &
 	delete[] Wrows;
 
 	// Hadamard
-	register lidia_size_t B = ((COLUMNS < ROWS) ? COLUMNS.bit_length() : ROWS.bit_length()) - 1;
+	lidia_size_t B = ((COLUMNS < ROWS) ? COLUMNS.bit_length() : ROWS.bit_length()) - 1;
 	H = B / 2 + 2;
 }
 
@@ -468,9 +468,9 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::row_norm (const MATRIX_TYPE &M,
 	RES.assign_zero();
 
 	bigint TMP;
-	register bigint *tmp = M.value[pos];
+	bigint *tmp = M.value[pos];
 
-	register lidia_size_t i;
+	lidia_size_t i;
 
 	if (art != 0)
 		for (i = 0; i < M.value_counter[pos]; i++) {
@@ -498,7 +498,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::column_norm (const MATRIX_TYPE &M,
 
 	bigint TMP;
 
-	register lidia_size_t i;
+	lidia_size_t i;
 	if (art != 0)
 		for (i = 0; i < M.rows; i++) {
 			power(TMP, M(i, pos), art);
@@ -521,8 +521,8 @@ template< class MATRIX_TYPE >
 inline void
 sparse_bigint_matrix_kernel< MATRIX_TYPE >::randomize (MATRIX_TYPE &RES, const bigint & S) const
 {
-	register lidia_size_t i, j;
-	register bigint *tmp;
+	lidia_size_t i, j;
+	bigint *tmp;
 
 	bigint::seed(S);
 
@@ -541,7 +541,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::randomize (MATRIX_TYPE &RES,
 						       const bigint & S,
 						       const long d) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	long TMP;
 	random_generator gen;
 
@@ -571,7 +571,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::randomize_with_det (MATRIX_TYPE &RES
 	MATRIX_TYPE T(RES.rows, RES.columns), T1(RES.rows, RES.columns);
 	bigint::seed(S);
 
-	register bigint *tmp = NULL, *tmp1;
+	bigint *tmp = NULL, *tmp1;
 	for (i = 0; i < RES.rows; i++) {
 		tmp = T.value[i];
 		tmp1 = T1.value[i];
@@ -600,9 +600,9 @@ inline void
 sparse_bigint_matrix_kernel< MATRIX_TYPE >::regexpansion (MATRIX_TYPE &RES,
 							  const lidia_size_t * v) const
 {
-	register lidia_size_t k = v[0];
+	lidia_size_t k = v[0];
 	if (RES.columns > k) {
-		register lidia_size_t i = 0, j = 0;
+		lidia_size_t i = 0, j = 0;
 		lidia_size_t diff = RES.columns - RES.rows;
 		MATRIX_TYPE A(RES);
 		RES.set_no_of_rows(RES.columns);
@@ -651,7 +651,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::hnfmod_dkt (MATRIX_TYPE &RES, const 
 			"hnfmod_dkt(const bigint &)", DVALUE + 8);
 
 	// bigint part
-	register long i, j, z, diff = RES.columns - RES.rows;
+	long i, j, z, diff = RES.columns - RES.rows;
 
 	bigint RES0, RES1, RES2, RES3; // 0 = lggT, 1 = rggt, 2 = ggt
 	bigint x, y;
@@ -818,7 +818,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::hnfmod_mueller (MATRIX_TYPE &RES,
 	debug_handler_l(DMESSAGE, "in member - function "
 			"hnfmod_mueller(MATRIX_TYPE &, const bigint &)", DVALUE + 8);
 
-	register long i, j;
+	long i, j;
 	bigint TMP, *TRANStmp;
 
 	// Step 1
@@ -937,7 +937,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::hnf_storjohann (MATRIX_TYPE &RES) co
 	bigint RES3, RES2, RES1, RES0, x, y;
 	bigint TMP1, TMP2, TMP3;
 
-	register lidia_size_t startr, startc, i, j, l;
+	lidia_size_t startr, startc, i, j, l;
 	lidia_size_t index;
 
 	//
@@ -1067,7 +1067,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::hnf_storjohann (MATRIX_TYPE &RES,
 	bigint RES3, RES2, RES1, RES0, x, y;
 	bigint TMP1, TMP2, TMP3;
 
-	register lidia_size_t startr, startc, i, j, l;
+	lidia_size_t startr, startc, i, j, l;
 	lidia_size_t index;
 
 	MATRIX_TYPE Q1(RES.columns, RES.columns);
@@ -1219,7 +1219,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::kernel1 (MATRIX_TYPE &RES,
 			"kernel1(const MATRIX_TYPE &)", DVALUE + 8);
 
 	bigint *ZBAtmp, *Atmp;
-	register long i, j;
+	long i, j;
 	lidia_size_t c = A.columns;
 
 	// Step 1
@@ -1269,7 +1269,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::kernel2 (MATRIX_TYPE &RES,
 	debug_handler_l(DMESSAGE, "in member - function "
 			"kernel2(const MATRIX_TYPE &)", DVALUE + 8);
 
-	register lidia_size_t i;
+	lidia_size_t i;
 	MATRIX_TYPE B = A;
 	//hnf_havas_cont(B, RES);
 
@@ -1305,7 +1305,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::reginvimage1 (MATRIX_TYPE &RES,
 	debug_handler_l(DMESSAGE, "in member - function "
 			"reginvimage1(const MATRIX_TYPE &, const MATRIX_TYPE &", DVALUE + 8);
 
-	register long i, j;
+	long i, j;
 	bigint TMP, TMP1;
 
 	// Step 1
@@ -1365,7 +1365,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::reginvimage2 (MATRIX_TYPE &RES,
 	debug_handler_l(DMESSAGE, "in member - function "
 			"reginvimage2(const MATRIX_TYPE &, const MATRIX_TYPE &", DVALUE + 8);
 
-	register lidia_size_t i, j, len, oldlen;
+	lidia_size_t i, j, len, oldlen;
 	bigint TMP, TMP1;
 
 	// Step 1
@@ -1427,7 +1427,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::image1 (MATRIX_TYPE &RES,
 			"image1(const MATRIX_TYPE &)", DVALUE + 8);
 
 	bigint *ZBAtmp, *Atmp;
-	register long i, j;
+	long i, j;
 
 	// Step 1
 	bigint H;
@@ -1477,7 +1477,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::image2 (MATRIX_TYPE &RES,
 	debug_handler_l(DMESSAGE, "in member - function "
 			"image2(const MATRIX_TYPE &)", DVALUE + 8);
 
-	register lidia_size_t i;
+	lidia_size_t i;
 	RES.assign(A);
 	// hnf_havas_cont(RES);
 
@@ -1517,7 +1517,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::invimage (MATRIX_TYPE &RES,
 				    "invimage(const MATRIX_TYPE & B, const bigint * b)",
 				    DMESSAGE, EMESSAGE[1]);
 
-	register long i;
+	long i;
 	bigint *tmp;
 
 	// Step 1
@@ -1569,7 +1569,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::invimage (MATRIX_TYPE &RES,
 	debug_handler_l(DMESSAGE, "in member - function "
 			"invimage(const MATRIX_TYPE &, const math_vector< bigint > &)", DVALUE + 8);
 
-	register long i;
+	long i;
 	// Step 1
 	MATRIX_TYPE A = B;
 	A.set_no_of_columns(B.columns + 1);
@@ -1631,10 +1631,10 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::snf_hartley (MATRIX_TYPE &RES) const
 	debug_handler_l(DMESSAGE, "in member - function "
 			"snf_hartley()", DVALUE + 8);
 
-	register lidia_size_t startr, startc, TEILBARKEIT;
+	lidia_size_t startr, startc, TEILBARKEIT;
 	bigint TMP1, TMP2;
 	bigint *tmp;
-	register lidia_size_t xpivot, ypivot, i, j, z;
+	lidia_size_t xpivot, ypivot, i, j, z;
 
 	for (startc = 0, startr = 0; startr < RES.rows && startc < RES.columns; startr++, startc++) {
 
@@ -1740,10 +1740,10 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::snf_hartley (MATRIX_TYPE &RES,
 	debug_handler_l(DMESSAGE, "in member - function "
 			"snf_hartley(MATRIX_TYPE &, MATRIX_TYPE &)", DVALUE + 8);
 
-	register lidia_size_t startr, startc, TEILBARKEIT;
+	lidia_size_t startr, startc, TEILBARKEIT;
 	bigint TMP1, TMP2;
 	lidia_size_t xpivot, ypivot;
-	register lidia_size_t i, j, z;
+	lidia_size_t i, j, z;
 
 	for (startc = 0, startr = 0; startr < RES.rows && startc < RES.columns; startr++, startc++) {
 
@@ -1872,7 +1872,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::snf_simple (MATRIX_TYPE &RES) const
 	MATRIX_TYPE TR2(RES.columns, RES.columns);
 
 	bigint *REM;
-	register lidia_size_t startr, startc, pivot, i, j, z, TEILBARKEIT;
+	lidia_size_t startr, startc, pivot, i, j, z, TEILBARKEIT;
 
 	for (startc = 0, startr = 0; startr < RES.rows && startc < RES.columns; startr++, startc++) {
 
@@ -1965,7 +1965,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::snf_simple (MATRIX_TYPE &RES,
 	MATRIX_TYPE TR1 = T1;
 	MATRIX_TYPE TR2 = T2;
 	bigint *REM;
-	register lidia_size_t startr, startc, pivot, i, j, z, TEILBARKEIT;
+	lidia_size_t startr, startc, pivot, i, j, z, TEILBARKEIT;
 
 	for (startc = 0, startr = 0; startr < RES.rows && startc < RES.columns; startr++, startc++) {
 
@@ -2063,11 +2063,11 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::snf_havas (MATRIX_TYPE &RES) const
 			"snf_havas()", DVALUE + 8);
 
 //  std::cout << "snf_havas() " << std::endl;
-	register lidia_size_t i, j, z, index;
+	lidia_size_t i, j, z, index;
 	bigint PIVOT;
 	bigint *tmp = NULL;
 
-	register lidia_size_t startr, startc, xpivot, ypivot, SW, TEILBARKEIT;
+	lidia_size_t startr, startc, xpivot, ypivot, SW, TEILBARKEIT;
 	bigint TMP1, TMP2;
 
 	for (startc = 0, startr = 0; startr < RES.rows && startc < RES.columns; startr++, startc++) {
@@ -2181,11 +2181,11 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::snf_havas (MATRIX_TYPE &RES,
 			"snf_havas(MATRIX_TYPE &, MATRIX_TYPE &)", DVALUE + 8);
 
 //  std::cout << "snf_havas2() " << std::endl;
-	register lidia_size_t i, j, z, index;
+	lidia_size_t i, j, z, index;
 	bigint PIVOT;
 	bigint *tmp = NULL;
 
-	register lidia_size_t startr, startc, xpivot, ypivot, SW, TEILBARKEIT;
+	lidia_size_t startr, startc, xpivot, ypivot, SW, TEILBARKEIT;
 	bigint TMP1, TMP2;
 
 	for (startc = 0, startr = 0; startr < RES.rows && startc < RES.columns; startr++, startc++) {
@@ -2312,11 +2312,11 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::snf_mult (MATRIX_TYPE &RES, long art
 {
 	debug_handler_l(DMESSAGE, "in member - function "
 			"snf_mult(MATRIX_TYPE &, MATRIX_TYPE &)", DVALUE + 8);
-	register lidia_size_t i, j, z, index, SW;
+	lidia_size_t i, j, z, index, SW;
 	bigint TMP1, TMP2;
 	bigint *tmp = NULL;
 
-	register lidia_size_t startr, startc, xpivot, ypivot, TEILBARKEIT;
+	lidia_size_t startr, startc, xpivot, ypivot, TEILBARKEIT;
 	bigint ROW, COLUMN, PIVOT, NORM;
 
 	for (startc = 0, startr = 0; startr < RES.rows && startc < RES.columns; startr++, startc++) {
@@ -2449,11 +2449,11 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::snf_mult (MATRIX_TYPE &RES,
 	debug_handler_l(DMESSAGE, "in member - function "
 			"snf_mult(MATRIX_TYPE &, MATRIX_TYPE &)", DVALUE + 8);
 
-	register lidia_size_t i, j, z, index, SW;
+	lidia_size_t i, j, z, index, SW;
 	bigint TMP1, TMP2;
 	bigint *tmp = NULL;
 
-	register lidia_size_t startr, startc, xpivot, ypivot, TEILBARKEIT;
+	lidia_size_t startr, startc, xpivot, ypivot, TEILBARKEIT;
 	bigint ROW, COLUMN, PIVOT, NORM;
 
 	for (startc = 0, startr = 0; startr < RES.rows && startc < RES.columns; startr++, startc++) {
@@ -2600,11 +2600,11 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::snf_add (MATRIX_TYPE &RES, long art)
 	debug_handler_l(DMESSAGE, "in member - function "
 			"snf_add(long)", DVALUE + 8);
 
-	register lidia_size_t i, j, z, index, SW;
+	lidia_size_t i, j, z, index, SW;
 	bigint TMP1, TMP2;
 	bigint *tmp = NULL;
 
-	register lidia_size_t startr, startc, xpivot, ypivot, TEILBARKEIT;
+	lidia_size_t startr, startc, xpivot, ypivot, TEILBARKEIT;
 	bigint ROW, COLUMN, PIVOT, NORM;
 
 	for (startc = 0, startr = 0; startr < RES.rows && startc < RES.columns; startr++, startc++) {
@@ -2737,11 +2737,11 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::snf_add (MATRIX_TYPE &RES,
 	debug_handler_l(DMESSAGE, "in member - function "
 			"snf_add(MATRIX_TYPE &, MATRIX_TYPE &, long)", DVALUE + 8);
 
-	register lidia_size_t i, j, z, index, SW;
+	lidia_size_t i, j, z, index, SW;
 	bigint TMP1, TMP2;
 	bigint *tmp = NULL;
 
-	register lidia_size_t startr, startc, xpivot, ypivot, TEILBARKEIT;
+	lidia_size_t startr, startc, xpivot, ypivot, TEILBARKEIT;
 	bigint ROW, COLUMN, PIVOT, NORM;
 
 	for (startc = 0, startr = 0; startr < RES.rows && startc < RES.columns; startr++, startc++) {
@@ -2888,11 +2888,11 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::snf_new (MATRIX_TYPE &RES, long art)
 	debug_handler_l(DMESSAGE, "in member - function "
 			"snf_new(long)", DVALUE + 8);
 
-	register lidia_size_t i, j, z, index, SW;
+	lidia_size_t i, j, z, index, SW;
 	bigint TMP1, TMP2;
 	bigint *tmp = NULL;
 
-	register lidia_size_t startr, startc, xpivot, ypivot, TEILBARKEIT;
+	lidia_size_t startr, startc, xpivot, ypivot, TEILBARKEIT;
 	bigint ROW, COLUMN, PIVOT, NORM;
 
 	bigint *RO = new bigint[RES.rows];
@@ -3030,11 +3030,11 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::snf_new (MATRIX_TYPE &RES,
 {
 	debug_handler_l(DMESSAGE, "in member - function "
 			"snf_new(MATRIX_TYPE &, MATRIX_TYPE &, long)", DVALUE + 8);
-	register lidia_size_t i, j, z, index, SW;
+	lidia_size_t i, j, z, index, SW;
 	bigint TMP1, TMP2;
 	bigint *tmp = NULL;
 
-	register lidia_size_t startr, startc, xpivot, ypivot, TEILBARKEIT;
+	lidia_size_t startr, startc, xpivot, ypivot, TEILBARKEIT;
 	bigint ROW, COLUMN, PIVOT, NORM;
 
 	bigint *RO = new bigint[RES.rows];
@@ -3190,7 +3190,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::snfmod_dkt (MATRIX_TYPE &RES,
 	debug_handler_l(DMESSAGE, "in member - function "
 			"snfmod_dkt(const bigint &)", DVALUE + 8);
 
-	register lidia_size_t diagindex, j, z, l;
+	lidia_size_t diagindex, j, z, l;
 
 	bigint RES0, RES1, RES2, RES3; // 0 = lggT, 1 = rggt, 2 = ggt
 	bigint x, y;
@@ -3293,7 +3293,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::snfmod_cohen (MATRIX_TYPE &RES,
 	debug_handler_l(DMESSAGE, "in member - function "
 			"snfmod_cohen(const bigint &)", DVALUE + 8);
 
-	register lidia_size_t diagindex, j, z, l;
+	lidia_size_t diagindex, j, z, l;
 
 	bigint RES0, RES1, RES2, RES3; // 0 = lggT, 1 = rggt, 2 = ggt
 	bigint x, y;
@@ -3393,7 +3393,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::gauss (MATRIX_TYPE &RES) const
 
 	MATRIX_TYPE TR(RES.columns, RES.columns);
 	bigint *REM = NULL;
-	register lidia_size_t startr = 0, startc = 0, i;
+	lidia_size_t startr = 0, startc = 0, i;
 
 	for (startc = RES.columns - 1, startr = RES.rows - 1; startr >= 0 && startc >= 0; startr--, startc--) {
 
@@ -3581,7 +3581,7 @@ sparse_bigint_matrix_kernel< MATRIX_TYPE >::mgcd2 (MATRIX_TYPE &RES,
 	debug_handler("multiple_gcd", "in member - function "
 		      "mgcd2(const bigint *, lidia_size_t)");
 
-	register lidia_size_t i, j, index, bound, SW;
+	lidia_size_t i, j, index, bound, SW;
 	bigint MIN, TMP, q, r, *Ttmp1, *Ttmp2 = NULL;
 
 	if (RES.columns != n)

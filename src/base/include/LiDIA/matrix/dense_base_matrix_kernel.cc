@@ -73,7 +73,7 @@ constructor(MR< T > &A, lidia_size_t r, lidia_size_t c) const
 			       "Error in memory allocation (A.value)");
 	}
 
-	for (register lidia_size_t i = 0; i < r; i++) {
+	for (lidia_size_t i = 0; i < r; i++) {
 		A.value[i] = new T[c];
 		memory_handler(A.value[i], DMESSAGE, "constructor(MR< T > &, "
 			       "lidia_size_t, lidia_size_t) :: "
@@ -105,9 +105,9 @@ constructor(MR< T > &B, lidia_size_t r, lidia_size_t c, const T **A) const
 			       "Error in memory allocation (B.value)");
 	}
 
-	register T *Btmp;
-	register const T *Atmp;
-	for (register lidia_size_t i = 0; i < r; i++) {
+	T *Btmp;
+	const T *Atmp;
+	for (lidia_size_t i = 0; i < r; i++) {
 		Atmp = A[i];
 
 		Btmp = new T[c];
@@ -115,7 +115,7 @@ constructor(MR< T > &B, lidia_size_t r, lidia_size_t c, const T **A) const
 			       "lidia_size_t, lidia_size_t, const T **) :: "
 			       "Error in memory allocation (Btmp)");
 
-		for (register lidia_size_t j = 0; j < c; j++)
+		for (lidia_size_t j = 0; j < c; j++)
 			Btmp[j] = Atmp[j];
 		B.value[i] = Btmp;
 	}
@@ -147,8 +147,8 @@ constructor(MR< T > &A, const MR< T > &M) const
 			       "Error in memory allocation (A.value)");
 	}
 
-	register T *Atmp, *Mtmp;
-	for (register lidia_size_t i = 0; i < A.rows; i++) {
+	T *Atmp, *Mtmp;
+	for (lidia_size_t i = 0; i < A.rows; i++) {
 		Atmp = new T[A.columns];
 		Mtmp = M.value[i];
 		memory_handler(Atmp, DMESSAGE,
@@ -156,7 +156,7 @@ constructor(MR< T > &A, const MR< T > &M) const
 			       "const MR< T > &) :: "
 			       "Error in memory allocation (Atmp)");
 
-		for (register lidia_size_t j = 0; j < A.columns; j++)
+		for (lidia_size_t j = 0; j < A.columns; j++)
 			Atmp[j] = Mtmp[j];
 		A.value[i] = Atmp;
 	}
@@ -214,7 +214,7 @@ inline void dense_base_matrix_kernel< T >::
 sto_column(MR< T > &A, const T *v, lidia_size_t l,
 	   lidia_size_t j, lidia_size_t from) const
 {
-	for (register lidia_size_t k = from; k < from + l && k < A.rows; k++)
+	for (lidia_size_t k = from; k < from + l && k < A.rows; k++)
 		A.value[k][j] = v[k - from];
 }
 
@@ -224,7 +224,7 @@ template< class T >
 inline void dense_base_matrix_kernel< T >::
 get_column(const MR< T > &A, T *RES, lidia_size_t i) const
 {
-	for (register lidia_size_t j = A.rows - 1; j >= 0; j--)
+	for (lidia_size_t j = A.rows - 1; j >= 0; j--)
 		RES[j] = A.value[j][i];
 }
 
@@ -239,8 +239,8 @@ inline void dense_base_matrix_kernel< T >::
 sto_row(MR< T > &A, const T *v, lidia_size_t l,
 	lidia_size_t i, lidia_size_t from) const
 {
-	register T *Atmp = A.value[i];
-	for (register lidia_size_t k = from; k < l + from && k < A.columns; k++)
+	T *Atmp = A.value[i];
+	for (lidia_size_t k = from; k < l + from && k < A.columns; k++)
 		Atmp[k] = v[k-from];
 }
 
@@ -250,8 +250,8 @@ template< class T >
 inline void dense_base_matrix_kernel< T >::
 get_row(const MR< T > &A, T *RES, lidia_size_t i) const
 {
-	register T *Atmp = A.value[i];
-	for (register lidia_size_t k = 0; k < A.columns; k++)
+	T *Atmp = A.value[i];
+	for (lidia_size_t k = 0; k < A.columns; k++)
 		RES[k] = Atmp[k];
 }
 
@@ -271,7 +271,7 @@ insert_columns(MR< T > &A, lidia_size_t *ind, const T **news) const
 		       "lidia_size_t *, const T **) :: "
 		       "Error in memory allocation (new_value)");
 
-	register lidia_size_t i; // MM, for HP UX 10.20, CC
+	lidia_size_t i; // MM, for HP UX 10.20, CC
 	for (i = 0; i < A.rows; i++) {
 		new_value[i] = new T[A.columns];
 		memory_handler(new_value[i], DMESSAGE, "insert_columns(MR< T > &, "
@@ -282,13 +282,13 @@ insert_columns(MR< T > &A, lidia_size_t *ind, const T **news) const
 	lidia_size_t l1 = 0, l2 = 0, l3 = 1;
 	for (i = 0; i < A.columns; i++) {
 		if (i == ind[l3]) {
-			for (register lidia_size_t j = 0; j < A.rows; j++)
+			for (lidia_size_t j = 0; j < A.rows; j++)
 				new_value[j][i] = news[j][l2];
 			l2++;
 			l3++;
 		}
 		else {
-			for (register lidia_size_t j = 0; j < A.rows; j++)
+			for (lidia_size_t j = 0; j < A.rows; j++)
 				new_value[j][i] = A.value[j][l1];
 			l1++;
 		}
@@ -343,13 +343,13 @@ insert_rows(MR< T > &A, lidia_size_t *ind, const T **news) const
 		       "Error in memory allocation (new_value)");
 
 	lidia_size_t l1 = 0, l2 = 1, l3 = 0;
-	for (register lidia_size_t i = 0; i <= A.rows; i++) {
+	for (lidia_size_t i = 0; i <= A.rows; i++) {
 		if (i == ind[l2]) {
 			new_value[i] = new T[A.columns];
 			memory_handler(new_value[i], DMESSAGE, "insert_rows(MR< T > &, "
 				       "lidia_size_t *, const T **) :: "
 				       "Error in memory allocation (new_value[i])");
-			for (register lidia_size_t j = 0; j < A.columns; j++)
+			for (lidia_size_t j = 0; j < A.columns; j++)
 				new_value[i][j] = news[l3][j];
 			l2++;
 			l3++;
@@ -386,7 +386,7 @@ remove_rows(MR< T > &A, lidia_size_t *rem) const
 
 	T **new_value = new T*[A.rows];
 
-	register lidia_size_t i, l = 0, l1 = 1;
+	lidia_size_t i, l = 0, l1 = 1;
 	for (i = 0; i <= len; i++)
 		if (rem[l1] != i) {
 			new_value[l] = A.value[i];
@@ -411,7 +411,7 @@ swap_columns(MR< T > &A, lidia_size_t i, lidia_size_t j) const
 {
 	T *tmp;
 
-	for (register lidia_size_t k = A.rows - 1; k >= 0; k--) {
+	for (lidia_size_t k = A.rows - 1; k >= 0; k--) {
 		tmp = A.value[k];
 		LiDIA::swap(tmp[i], tmp[j]);
 	}
@@ -438,8 +438,8 @@ template< class T >
 inline void dense_base_matrix_kernel< T >::
 assign(MR< T > &A, const MR< T > &M) const
 {
-	for (register lidia_size_t len1 = A.rows - 1; len1 >= 0; len1--)
-		for (register lidia_size_t len = A.columns - 1; len >= 0; len--)
+	for (lidia_size_t len1 = A.rows - 1; len1 >= 0; len1--)
+		for (lidia_size_t len = A.columns - 1; len >= 0; len--)
 			A.value[len1][len] = M.value[len1][len];
 }
 
@@ -455,9 +455,9 @@ diag(MR< T > &A, const T &a, const T &b) const
 {
 	T *tmp;
 
-	for (register lidia_size_t i = 0; i < A.rows; i++) {
+	for (lidia_size_t i = 0; i < A.rows; i++) {
 		tmp = A.value[i];
-		for (register lidia_size_t j = 0; j < A.columns; j++)
+		for (lidia_size_t j = 0; j < A.columns; j++)
 			tmp[j] = (i == j) ? a : b;
 	}
 }
@@ -472,7 +472,7 @@ template< class T >
 void dense_base_matrix_kernel< T >::
 trans(MR< T > &R, const MR< T > &A) const
 {
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	T *Atmp;
 
 	if (A.value != R.value) {
@@ -488,7 +488,7 @@ trans(MR< T > &R, const MR< T > &A) const
 		}
 	}
 	else {
-		register lidia_size_t oldrows = R.rows, oldcolumns = R.columns;
+		lidia_size_t oldrows = R.rows, oldcolumns = R.columns;
 		if (R.rows != R.columns)
 			if (R.columns > R.rows) {
 				set_no_of_rows(R, oldcolumns);
@@ -522,8 +522,8 @@ template< class T >
 void dense_base_matrix_kernel< T >::
 write_to_beauty(const MR< T > &A, std::ostream &out) const
 {
-	register lidia_size_t i, j;
-	register T *tmp;
+	lidia_size_t i, j;
+	T *tmp;
 	for (i = 0; i < A.rows; i++) {
 		tmp = A.value[i];
 		out << std::endl << "(";
@@ -540,7 +540,7 @@ template< class T >
 void dense_base_matrix_kernel< T >::
 write_to_stream(const MR< T > &A, std::ostream &out) const
 {
-	register lidia_size_t i, j, col = A.columns - 1;
+	lidia_size_t i, j, col = A.columns - 1;
 	T *tmp;
 
 	out << A.rows << " " << A.columns << std::endl;
@@ -601,7 +601,7 @@ void dense_base_matrix_kernel< T >::
 write_to_mathematica(const MR< T > &A, std::ostream &out) const
 {
 
-	register lidia_size_t i, j, l = A.columns - 1, k = A.rows - 1;
+	lidia_size_t i, j, l = A.columns - 1, k = A.rows - 1;
 	T *tmp;
 
 	out << "{";
@@ -661,8 +661,8 @@ read_from_mathematica(MR< T > &A, std::istream &dz) const
 	if (A.columns != local_columns)
 		set_no_of_columns(A, local_columns);
 
-	for (register lidia_size_t i = 0; i < A.rows; i++) {
-		for (register lidia_size_t j = 0; j < A.columns; j++) {
+	for (lidia_size_t i = 0; i < A.rows; i++) {
+		for (lidia_size_t j = 0; j < A.columns; j++) {
 			A.value[i][j] = buffer[len];
 			len++;
 		}
@@ -679,7 +679,7 @@ template< class T >
 void dense_base_matrix_kernel< T >::
 write_to_maple(const MR< T > &A, std::ostream &out) const
 {
-	register lidia_size_t i, j, l = A.columns - 1, k = A.rows - 1;
+	lidia_size_t i, j, l = A.columns - 1, k = A.rows - 1;
 	T *tmp;
 
 	out << "array(1 .. " << A.rows << ", 1 .. " << A.columns << ", [";
@@ -710,7 +710,7 @@ read_from_maple(MR< T > &A, std::istream &dz) const
 				    "read_from_maple(std::istream &dz)",
 				    DMESSAGE, EMESSAGE[5]);
 
-	register lidia_size_t i, j;
+	lidia_size_t i, j;
 	lidia_size_t startr, startc, endr, endc, x, y;
 	T TMP;
 
@@ -753,7 +753,7 @@ template< class T >
 void dense_base_matrix_kernel< T >::
 write_to_gp(const MR< T > &A, std::ostream &out) const
 {
-	register lidia_size_t i, j, l = A.columns - 1, k = A.rows - 1;
+	lidia_size_t i, j, l = A.columns - 1, k = A.rows - 1;
 	T *tmp;
 
 	out << "[";
@@ -809,8 +809,8 @@ read_from_gp(MR< T > &A, std::istream &dz) const
 	if (A.columns != local_columns)
 		set_no_of_columns(A, local_columns);
 
-	for (register lidia_size_t i = 0; i < A.rows; i++) {
-		for (register lidia_size_t j = 0; j < A.columns; j++) {
+	for (lidia_size_t i = 0; i < A.rows; i++) {
+		for (lidia_size_t j = 0; j < A.columns; j++) {
 			A.value[i][j] = buffer[len];
 			len++;
 		}
@@ -827,7 +827,7 @@ template< class T >
 void dense_base_matrix_kernel< T >::
 write_to_kash(const MR< T > &A, std::ostream &out) const
 {
-	register lidia_size_t i, j, l = A.columns - 1, k = A.rows - 1;
+	lidia_size_t i, j, l = A.columns - 1, k = A.rows - 1;
 	T *tmp;
 
 	out << "LIDIA: = Mat(Z, [";
@@ -890,8 +890,8 @@ read_from_kash(MR< T > &A, std::istream &dz) const
 	if (A.columns != local_columns)
 		set_no_of_columns(A, local_columns);
 
-	for (register lidia_size_t i = 0; i < A.rows; i++) {
-		for (register lidia_size_t j = 0; j < A.columns; j++) {
+	for (lidia_size_t i = 0; i < A.rows; i++) {
+		for (lidia_size_t j = 0; j < A.columns; j++) {
 			A.value[i][j] = buffer[len];
 			len++;
 		}
@@ -996,7 +996,7 @@ set_no_of_columns(MR< T > &A, lidia_size_t c) const
 		return;
 
 	if (c == 0) {
-		for (register lidia_size_t i = 0; i < A.rows; i++)
+		for (lidia_size_t i = 0; i < A.rows; i++)
 			delete[] A.value[i];
 		delete[] A.value;
 		A.value = NULL;
@@ -1008,7 +1008,7 @@ set_no_of_columns(MR< T > &A, lidia_size_t c) const
 	T *tmp, *tmp1;
 
 	if (c < A.columns) {
-		for (register lidia_size_t i = 0; i < A.rows; i++) {
+		for (lidia_size_t i = 0; i < A.rows; i++) {
 			tmp1 = A.value[i];
 			tmp = new T[c];
 			memory_handler(tmp, DMESSAGE, "set_no_of_columns :: "
@@ -1019,12 +1019,12 @@ set_no_of_columns(MR< T > &A, lidia_size_t c) const
 		}
 	}
 	else {
-		for (register lidia_size_t i = 0; i < A.rows; i++) {
+		for (lidia_size_t i = 0; i < A.rows; i++) {
 			tmp1 = A.value[i];
 			tmp = new T[c];
 			memory_handler(tmp, DMESSAGE, "set_no_of_columns :: "
 				       "Error in memory allocation (tmp)");
-			for (register lidia_size_t j = 0; j < A.columns; j++)
+			for (lidia_size_t j = 0; j < A.columns; j++)
 				tmp[j] = tmp1[j];
 			A.value[i] = tmp;
 			delete[] tmp1;
@@ -1039,7 +1039,7 @@ template< class T >
 inline void dense_base_matrix_kernel< T >::
 kill(MR< T > &A) const
 {
-	for (register lidia_size_t i = 0; i < A.rows; i++)
+	for (lidia_size_t i = 0; i < A.rows; i++)
 		delete[] A.value[i];
 	delete[] A.value;
 	A.value = NULL;
@@ -1057,7 +1057,7 @@ template< class T >
 inline bool dense_base_matrix_kernel< T >::
 is_column_zero(const MR< T > &RES, lidia_size_t c) const
 {
-	register lidia_size_t i;
+	lidia_size_t i;
 
 	for (i = 0; i < RES.rows; i++) {
 		if (RES.value[i][c] != RES.Zero)
@@ -1072,8 +1072,8 @@ template< class T >
 inline bool dense_base_matrix_kernel< T >::
 is_row_zero(const MR< T > &RES, lidia_size_t r) const
 {
-	register lidia_size_t i;
-	register T *tmp = RES.value[r];
+	lidia_size_t i;
+	T *tmp = RES.value[r];
 
 	for (i = 0; i < RES.columns; i++) {
 		if (tmp[i] != RES.Zero)
@@ -1088,8 +1088,8 @@ template< class T >
 inline bool dense_base_matrix_kernel< T >::
 is_matrix_zero(const MR< T > &RES) const
 {
-	register lidia_size_t i, j;
-	register T *tmp;
+	lidia_size_t i, j;
+	T *tmp;
 
 	for (i = 0; i < RES.rows; i++) {
 		tmp = RES.value[i];
@@ -1129,13 +1129,13 @@ change_orientation(MR< T > &A, unsigned long mode) const
 			       "change_orientation(MR< T > &, unsigned long) ::"
 			       "Error in memory allocation (A.value)");
 
-		for (register lidia_size_t i = 0; i < index1; i++) {
+		for (lidia_size_t i = 0; i < index1; i++) {
 			A.value[i] = new T[A.value_counter[i]];
 			memory_handler(A.value[i], DMESSAGE,
 				       "change_orientation(MR< T > &, unsigned long) ::"
 				       "Error in memory allocation (A.value[i])");
 
-			for (register lidia_size_t j = 0; j < index2; j++) {
+			for (lidia_size_t j = 0; j < index2; j++) {
 				A.value[i][j] = oldvalue[j][i];
 			}
 			delete[] oldvalue[i];

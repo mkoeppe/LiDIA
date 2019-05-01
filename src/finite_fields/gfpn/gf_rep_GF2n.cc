@@ -51,7 +51,7 @@ void galois_field_rep::construct_GF2n(gf_element& a) const
 
 	a.rep = new udigit[I2.anzBI];
 	memory_handler(a.rep, "gf_element", "construct_GF2n: out of memory");
-	register unsigned int i;
+	unsigned int i;
 	for (i = 0; i < I2.anzBI; i++)
 		(static_cast<udigit*>(a.rep))[i] = static_cast<udigit>(0);
 }
@@ -75,7 +75,7 @@ void galois_field_rep::copy_GF2n(gf_element& a, const gf_element& b) const
 		a.rep = new udigit[I2.anzBI];
 		memory_handler(a.rep, "gf_element", "construct_GF2n: out of memory");
 	}
-	register unsigned int i;
+	unsigned int i;
 	for (i = 0; i < I2.anzBI; i++)
 		(static_cast<udigit*>(a.rep))[i] = (static_cast<udigit*>(b.rep))[i];
 }
@@ -87,7 +87,7 @@ void galois_field_rep::as0_GF2n(gf_element& a) const
 	ASSERT_FIELDS_MATCH(a, "as0_GF2n");
 	ASSERT_NOT_NULLPTR(a, "as0_GF2n");
 
-	register unsigned int i;
+	unsigned int i;
 	for (i = 0; i < I2.anzBI; i++)
 		(static_cast<udigit*>(a.rep))[i] = static_cast<udigit>(0);
 }
@@ -99,7 +99,7 @@ void galois_field_rep::as1_GF2n(gf_element& a) const
 	ASSERT_FIELDS_MATCH(a, "as1_GF2n");
 	ASSERT_NOT_NULLPTR(a, "as1_GF2n");
 
-	register unsigned int i;
+	unsigned int i;
 	udigit *ap = static_cast<udigit*>(a.rep);
 	for (i = 0; i < I2.anzBI; i++)
 		ap[i] = static_cast<udigit>(0);
@@ -122,7 +122,7 @@ bool galois_field_rep::iseq_GF2n(const gf_element& a, const gf_element& b) const
 	if (!I2.is_reduced(bp))
 		I2.partial_reduce2(bp);
 
-	register int i = I2.anzBI-1;
+	int i = I2.anzBI-1;
 	while (i >= 0 && (ap[i] == bp[i]))
 		i--;
 
@@ -142,7 +142,7 @@ bool galois_field_rep::is0_GF2n(const gf_element& a) const
 	if (!I2.is_reduced(ap))
 		I2.partial_reduce2(ap);
 
-	register int i = I2.anzBI-1;
+	int i = I2.anzBI-1;
 	while ((i >= 0) && (ap[i] == static_cast<udigit>(0)))
 		i--;
 
@@ -161,7 +161,7 @@ bool galois_field_rep::is1_GF2n(const gf_element& a) const
 	if (!I2.is_reduced(ap))
 		I2.partial_reduce2(ap);
 
-	register int i = I2.anzBI-1;
+	int i = I2.anzBI-1;
 	while (i >= 0 && ap[i] == static_cast<udigit>(0))
 		i--;
 
@@ -190,8 +190,8 @@ void galois_field_rep::add_GF2n(gf_element& c, const gf_element& a,
 	if (c.rep == 0 || a.rep == 0 || b.rep == 0)
 		lidia_error_handler("galois_field_rep", "add_GF2n: null pointer");
 
-	register unsigned int i;
-	register udigit *cp = static_cast<udigit*>(c.rep),
+	unsigned int i;
+	udigit *cp = static_cast<udigit*>(c.rep),
 		*ap = static_cast<udigit*>(a.rep),
 		*bp = static_cast<udigit*>(b.rep);
 
@@ -210,8 +210,8 @@ void galois_field_rep::sub_GF2n(gf_element& c, const gf_element& a,
 		lidia_error_handler("galois_field_rep", "sub_GF2n: null pointer");
 
 	// identical to addition
-	register unsigned int i;
-	register udigit *cp = static_cast<udigit*>(c.rep),
+	unsigned int i;
+	udigit *cp = static_cast<udigit*>(c.rep),
 		*ap = static_cast<udigit*>(a.rep),
 		*bp = static_cast<udigit*>(b.rep);
 
@@ -234,7 +234,7 @@ void galois_field_rep::mul_GF2n(gf_element& c, const gf_element& a,
 //		return;
 //	}
 
-	register unsigned int i;
+	unsigned int i;
 	for (i = 0; i < 2*I2.anzBI; i++)
 		I2.B[i] = static_cast<udigit>(0);
 
@@ -253,7 +253,7 @@ void galois_field_rep::inv_GF2n(gf_element& a) const
 	ASSERT_NOT_NULLPTR(a, "inv_GF2n");
 
 	udigit *ap = static_cast<udigit*>(a.rep);
-	register unsigned int i;
+	unsigned int i;
 	for (i = 0; i < I2.anzBI; i++)
 		I2.B[i] = ap[i];
 
@@ -269,7 +269,7 @@ void galois_field_rep::sqr_GF2n(gf_element& c, const gf_element& a) const
 	if (a.rep == 0 || c.rep == 0)
 		lidia_error_handler("galois_field_rep", "sqr_GF2n: null pointer");
 
-	register unsigned int i;
+	unsigned int i;
 	udigit *ap = static_cast<udigit*>(a.rep);
 
 	I2.square(I2.B, ap);
@@ -289,7 +289,7 @@ void galois_field_rep::rand_GF2n(gf_element& a) const
 
 	static random_generator rg;
 	long r;
-	register unsigned int i;
+	unsigned int i;
 	udigit *ap = static_cast<udigit*>(a.rep);
 
 	for (i = 0; i < I2.anzBI; i++)

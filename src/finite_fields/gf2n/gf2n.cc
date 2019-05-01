@@ -53,7 +53,7 @@ gf2n_word *gf2n::B, *gf2n::C, *gf2n::F, *gf2n::G;
 
 gf2n::gf2n ()
 {
-	register unsigned int i;
+	unsigned int i;
 
 	element = new gf2n_word[gf2n::anzBI];
 	if (element == NULL) {
@@ -69,7 +69,7 @@ gf2n::gf2n ()
 
 gf2n::gf2n (const gf2n & a)
 {
-	register unsigned int i;
+	unsigned int i;
 	element = new gf2n_word[gf2n::anzBI];
 	if (element == NULL) {
 		lidia_error_handler ("gf2n", "gf2n(const gf2n &)::not enough memory \n");
@@ -84,7 +84,7 @@ gf2n::gf2n (const gf2n & a)
 
 gf2n::gf2n (unsigned long ui)
 {
-	register unsigned int i;
+	unsigned int i;
 
 	if (degree < (8*sizeof(gf2n_word)))
 		if ((static_cast<gf2n_word>(1) << degree) <= static_cast<gf2n_word>(ui)) {
@@ -109,7 +109,7 @@ gf2n::gf2n (unsigned long ui)
 
 gf2n::gf2n (const bigint & bi)
 {
-	register unsigned int i;
+	unsigned int i;
 	bigint h;
 
 	shift_left(h, bigint(1), degree);
@@ -153,7 +153,7 @@ gf2n::~gf2n ()
 void
 gf2n::re_initialize()
 {
-	register unsigned int i;
+	unsigned int i;
 
 	delete[] element;
 	element = new gf2n_word[gf2n::anzBI];
@@ -177,7 +177,7 @@ gf2n::re_initialize()
 
 gf2n & gf2n::operator = (const gf2n & a)
 {
-	for (register unsigned int i = 0; i < gf2n::anzBI; i++)
+	for (unsigned int i = 0; i < gf2n::anzBI; i++)
 		element[i] = a.element[i];
 	return (*this);
 }
@@ -194,7 +194,7 @@ gf2n & gf2n::operator = (unsigned long ui)
 
 
 	element[0] = static_cast<gf2n_word>(ui);
-	for (register unsigned int i = 1; i < gf2n::anzBI; i++)
+	for (unsigned int i = 1; i < gf2n::anzBI; i++)
 		element[i] = static_cast<gf2n_word>(0);
 
 	return (*this);
@@ -204,7 +204,7 @@ gf2n & gf2n::operator = (unsigned long ui)
 
 gf2n & gf2n::operator = (const bigint & bi)
 {
-	register unsigned int i = 0;
+	unsigned int i = 0;
 	bigint h;
 
 	shift_left(h, bigint(1), degree);
@@ -230,7 +230,7 @@ gf2n & gf2n::operator = (const bigint & bi)
 
 void gf2n::assign_zero()
 {
-	for (register unsigned int i = 0; i < gf2n::anzBI; i++)
+	for (unsigned int i = 0; i < gf2n::anzBI; i++)
 		gf2n::element[i] = static_cast<gf2n_word>(0);
 }
 
@@ -238,7 +238,7 @@ void gf2n::assign_zero()
 
 void gf2n::assign_one()
 {
-	for (register unsigned int i = 1; i < gf2n::anzBI; i++)
+	for (unsigned int i = 1; i < gf2n::anzBI; i++)
 		gf2n::element[i] = static_cast<gf2n_word>(0);
 
 	gf2n::element[0] = static_cast<gf2n_word>(1);
@@ -248,7 +248,7 @@ void gf2n::assign_one()
 
 void gf2n::assign(const gf2n &a)
 {
-	for (register unsigned int i = 0; i < gf2n::anzBI; i++)
+	for (unsigned int i = 0; i < gf2n::anzBI; i++)
 		gf2n::element[i] = a.element[i];
 }
 
@@ -270,7 +270,7 @@ void swap(gf2n & a, gf2n & b)
 
 bool operator == (const gf2n & a, const gf2n & b)
 {
-	register int i = gf2n::anzBI - 1;
+	int i = gf2n::anzBI - 1;
 
 	if (a.is_reduced() == false)
 		partial_reduce2[gf2n::invsel](a.element);
@@ -467,7 +467,7 @@ void sqrt (gf2n & c, const gf2n & a)
 {
 	c.assign(a);
 
-	for (register unsigned int i = 1; i < gf2n::degree; i++)
+	for (unsigned int i = 1; i < gf2n::degree; i++)
 		square (c, c);
 }
 
@@ -490,7 +490,7 @@ void gf2n::randomize(unsigned int d)
 {
 	static random_generator rg;
 	long r;
-	register unsigned int i;
+	unsigned int i;
 
 	for (i = 0; i < anzBI; i++) {
 		rg >> r;

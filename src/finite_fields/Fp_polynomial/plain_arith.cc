@@ -139,7 +139,7 @@ void plain_mul(Fp_polynomial &c, const Fp_polynomial &a, const Fp_polynomial &b)
 
 	const bigint& p = a.modulus();
 #ifdef USE_SINGLE_PREC
-	register udigit pp = p.least_significant_digit();
+	udigit pp = p.least_significant_digit();
 
 	if (p.compare(pp) == 0 && pp < max_udigit_modulus())
 		polmul_sgl(cp, ap, deg_a, bp, deg_b, pp);
@@ -277,7 +277,7 @@ void plain_sqr(Fp_polynomial &x, const Fp_polynomial &a)
 
 	const bigint& p = a.modulus();
 #ifdef USE_SINGLE_PREC
-	register udigit pp = p.least_significant_digit();
+	udigit pp = p.least_significant_digit();
 
 	if (p.compare(pp) == 0 && pp < max_udigit_modulus())
 		polsqr_sgl(xp, ap, deg_a, pp);
@@ -503,7 +503,7 @@ void plain_div_rem(Fp_polynomial& q, Fp_polynomial& r, const Fp_polynomial& a, c
 	// now start doing the real work...
 	const bigint& p = a.modulus();
 #ifdef USE_SINGLE_PREC
-	register udigit pp = p.least_significant_digit();
+	udigit pp = p.least_significant_digit();
 	bool sgl_prec = (p.compare(pp) == 0 && pp < max_udigit_modulus());
 	if (sgl_prec)
 		poldivrem_sgl(qp, rp, ap, da, bp, db, pp);
@@ -544,7 +544,7 @@ void plain_div(Fp_polynomial &q, const Fp_polynomial &a, const Fp_polynomial &b)
 	lidia_size_t deg_q = deg_a - deg_b;
 	const bigint &p = a.modulus();
 #ifdef USE_SINGLE_PREC
-	register udigit pp = p.least_significant_digit();
+	udigit pp = p.least_significant_digit();
 	bool sgl_prec = (p.compare(pp) == 0 && pp < max_udigit_modulus());
 	if (sgl_prec) {
 		Fp_polynomial r;
