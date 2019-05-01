@@ -574,10 +574,14 @@ int main_LiDIA(int argc, char** argv)
 }
 
 
-
+#ifdef LIDIA_NAMESPACE
+namespace LiDIA {
+#endif
 // must instantiate lidia_vector:
 template class lidia_vector< elem_type >;
-
+#ifdef LIDIA_NAMESPACE
+}
+#endif
 
 int main(int argc, char** argv) {
 
