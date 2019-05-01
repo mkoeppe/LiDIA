@@ -10,3 +10,12 @@ Makefile.in
 /depcomp
 /missing
 /ltmain.sh
+TAGS
+*_appl
+*_appl2
+*_appl3
+test_*.log
+test_*.trs
+test-suite.log
+/test-driver
+examples/ec_order/test_meq_prime
