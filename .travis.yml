@@ -15,7 +15,7 @@ matrix:
       osx_image: xcode10.2
       before_script:
        - brew update
-       - brew cask install basictex
+       - brew cask install basictex || export LATEX=true
        - brew install texinfo
        - export PATH="/Library/TeX/texbin:$PATH"
     ## With homebrew gcc
@@ -23,7 +23,7 @@ matrix:
       compiler: clang
       before_install:
        - brew update
-       - brew cask install basictex
+       - brew cask install basictex || export LATEX=true
        - brew install texinfo
        - export PATH="/Library/TeX/texbin:$PATH"
        - brew install llvm || brew outdated llvm || brew upgrade llvm
@@ -35,7 +35,7 @@ matrix:
       osx_image: xcode9.4
       before_script:
        - brew update
-       - brew cask install basictex
+       - brew cask install basictex || export LATEX=true
        - brew install texinfo
        - export PATH="/Library/TeX/texbin:$PATH"
     ## Test on Mac OS X 10.12
@@ -43,7 +43,7 @@ matrix:
       osx_image: xcode9.2
       before_script:
        - brew update
-       - brew cask install basictex
+       - brew cask install basictex || export LATEX=true
        - brew install texinfo
        - export PATH="/Library/TeX/texbin:$PATH"
     ## Test on Mac OS X 10.11
@@ -51,7 +51,7 @@ matrix:
       osx_image: xcode8
       before_script:
        - brew update
-       - brew cask install basictex
+       - brew cask install basictex || export LATEX=true
        - brew install texinfo
        - export PATH="/Library/TeX/texbin:$PATH"
     ## Test on 32 bit
@@ -64,7 +64,7 @@ matrix:
       compiler: clang
       before_install:
        - brew update
-       - brew cask install basictex
+       - brew cask install basictex || export LATEX=true
        - brew install texinfo
        - export PATH="/Library/TeX/texbin:$PATH"
        - brew install llvm || brew outdated llvm || brew upgrade llvm
@@ -77,7 +77,7 @@ matrix:
       compiler: clang
       before_install:
        - brew update
-       - brew cask install basictex
+       - brew cask install basictex || export LATEX=true
        - brew install texinfo
        - export PATH="/Library/TeX/texbin:$PATH"
        - brew install llvm || brew outdated llvm || brew upgrade llvm
