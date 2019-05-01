@@ -331,7 +331,7 @@ void meq_prime
 	else {
 	    oss << LIDIA_ECO_DB;
 	}
-	oss << MEQ_PREFIX << l;
+	oss << "/" << MEQ_PREFIX << l;
 	std::string name_database = extractString(oss);
 
 	if (type == 2) {

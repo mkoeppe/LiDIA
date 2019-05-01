@@ -330,6 +330,7 @@ namespace LiDIA
     else {
 	oss << LIDIA_ECO2_DB;
     }
+    oss << "/";
     oss << MEQ2_PREFIX << l;
     std::string name = extractString(oss);
 
