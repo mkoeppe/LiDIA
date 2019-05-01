@@ -333,6 +333,7 @@ void meq_prime
 	}
 	oss << "/" << MEQ_PREFIX << l;
 	std::string name_database = extractString(oss);
+	std::cout << name_database << std::endl;
 
 	if (type == 2) {
 	    name_database += "_II";

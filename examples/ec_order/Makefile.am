@@ -102,6 +102,15 @@ EXTRA_DIST = \
 	${LIDIA_ECO_SRCDIR}/eco_gfp/wep_rat_function/wep_rat_function_timing.cc
 
 
+## TESTS
+check_PROGRAMS = test_meq_prime
+AM_DEFAULT_SOURCE_EXT = .cc
+TESTS = test_meq_prime
+AM_TESTS_ENVIRONMENT = LIDIA_ECO=$(LIDIA_PKGDATADIR)/MOD_EQ LIDIA_ECO2=$(LIDIA_PKGDATADIR)/MOD_EQ_2
+
+installcheck-local: test_meq_prime$(EXEEXT)
+	./test_meq_prime$(EXEEXT) > /dev/null || echo "installcheck: test_meq_prime failed"
+
 ##	-------------
 ##	SPECIAL RULES
 ##	-------------

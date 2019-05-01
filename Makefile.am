@@ -74,8 +74,8 @@ installdirs-subdirs:
 .PHONY installcheck-recursive: installcheck-subdirs
 installcheck-subdirs:
 	cd library  && $(MAKE) $(AM_MAKEFLAGS) installcheck
-##	cd examples && $(MAKE) $(AM_MAKEFLAGS) installcheck
-##	cd doc      && $(MAKE) $(AM_MAKEFLAGS) installcheck
+	cd examples && $(MAKE) $(AM_MAKEFLAGS) installcheck
+	cd doc      && $(MAKE) $(AM_MAKEFLAGS) installcheck
 
 .PHONY uninstall-recursive: uninstall-subdirs
 uninstall-subdirs:
