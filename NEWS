@@ -1,3 +1,8 @@
+Changes in release 2.3.0+latte-patches-2019-05-02:
+
+ * Fix configuration script so that user-provided CXXFLAGS etc. are
+   respected while discovering libraries.
+
 Changes in release 2.3.0+latte-patches-2019-05-01:
 
  * Fix compile errors with clang version 6.0.1.
