@@ -208,7 +208,7 @@ int main ()
 	return 0;
 }
 EOF
-		if AC_TRY_COMMAND(${CXX} -o conftest ${CPPFLAGS} ${EXTRA_INCLUDES} conftest.C ${LIBS} -lgmp) > /dev/null 2>&1; then
+		if AC_TRY_COMMAND(${CXX} -o conftest ${CPPFLAGS} ${CXXFLAGS} ${EXTRA_INCLUDES} conftest.C ${LDFLAGS} ${LIBS} -lgmp) > /dev/null 2>&1; then
 			lidia_cv_gmp="yes"
 		else
 			lidia_cv_gmp="no"
@@ -240,7 +240,7 @@ int main ()
 	return 0;
 }
 EOF
-		if AC_TRY_COMMAND(${CXX} -o conftest ${CPPFLAGS} ${EXTRA_INCLUDES} conftest.C ${LIBS} ${LDFLAGS} -lcln) > /dev/null 2>&1; then
+		if AC_TRY_COMMAND(${CXX} -o conftest ${CPPFLAGS} ${CXXFLAGS} ${EXTRA_INCLUDES} conftest.C ${LDFLAGS} ${LIBS} ${LDFLAGS} -lcln) > /dev/null 2>&1; then
 			lidia_cv_cln="yes"
 		else
 			lidia_cv_cln="no"
@@ -278,7 +278,7 @@ int main ()
 	return 0;
 }
 EOF
-		if AC_TRY_COMMAND(${CXX} -o conftest ${CPPFLAGS} ${EXTRA_INCLUDES} conftest.C ${LIBS} -lI) > /dev/null 2>&1; then
+		if AC_TRY_COMMAND(${CXX} -o conftest ${CPPFLAGS} ${CXXFLAGS} ${EXTRA_INCLUDES} conftest.C ${LIBS} ${LDFLAGS} -lI) > /dev/null 2>&1; then
 			lidia_cv_libI="yes"
 		else
 			lidia_cv_libI="no"
@@ -309,7 +309,7 @@ int main ()
 	return 0;
 }
 EOF
-		if AC_TRY_COMMAND(${CXX} -o conftest ${CPPFLAGS} ${EXTRA_INCLUDES} conftest.C ${LIBS} -lpiologie) > /dev/null 2>&1; then
+		if AC_TRY_COMMAND(${CXX} -o conftest ${CPPFLAGS} ${CXXFLAGS} ${EXTRA_INCLUDES} conftest.C ${LIBS} ${LDFLAGS} -lpiologie) > /dev/null 2>&1; then
 			lidia_cv_piologie="yes"
 		else
 			lidia_cv_piologie="no"
@@ -336,7 +336,7 @@ void frob(bool flag)
 	}
 }
 EOF
-		if AC_TRY_COMMAND(${CXX} -c conftest.C) > /dev/null 2>&1; then
+		if AC_TRY_COMMAND(${CXX} ${CPPFLAGS} ${CXXFLAGS} -c conftest.C) > /dev/null 2>&1; then
 			lidia_cv_iso_bool="yes"
 		else
 			lidia_cv_iso_cast="no"
@@ -366,7 +366,7 @@ static long g(long i, long j)
 	return s(i) + s(j);
 }
 EOF
-		if AC_TRY_COMMAND(${CXX} -c conftest.C) > /dev/null 2>&1; then
+		if AC_TRY_COMMAND(${CXX} ${CPPFLAGS} ${CXXFLAGS} -c conftest.C) > /dev/null 2>&1; then
 			lidia_cv_iso_inline="yes"
 		else
 			lidia_cv_iso_inline="no"
@@ -406,7 +406,7 @@ long f(const A& a)
 	return a.m();
 }
 EOF
-		if AC_TRY_COMMAND(${CXX} -c conftest.C) > /dev/null 2>&1; then
+		if AC_TRY_COMMAND(${CXX} ${CPPFLAGS} ${CXXFLAGS} -c conftest.C) > /dev/null 2>&1; then
 			lidia_cv_iso_mutable="yes"
 		else
 			lidia_cv_iso_mutable="no"
@@ -437,7 +437,7 @@ void f(const A* a, B* b)
 	g(const_cast<A*>(a));
 }
 EOF
-		if AC_TRY_COMMAND(${CXX} -c conftest.C) > /dev/null 2>&1; then
+		if AC_TRY_COMMAND(${CXX} ${CPPFLAGS} ${CXXFLAGS} -c conftest.C) > /dev/null 2>&1; then
 			lidia_cv_iso_cast="yes"
 		else
 			lidia_cv_iso_cast="no"
@@ -468,7 +468,7 @@ void f()
 	A a(0);
 }
 EOF
-		if AC_TRY_COMMAND(${CXX} -c conftest.C) > /dev/null 2>&1; then
+		if AC_TRY_COMMAND(${CXX} ${CPPFLAGS} ${CXXFLAGS} -c conftest.C) > /dev/null 2>&1; then
 			lidia_cv_iso_explicit="yes"
 		else
 			lidia_cv_iso_explicit="no"
@@ -491,7 +491,7 @@ AC_DEFUN([LIDIA_CHECK_CXX_ISO_TEMPLATE_SPEC],
 template <class T> class c { T t; };
 template <> class c<int> { int x; };
 EOF
-		if AC_TRY_COMMAND(${CXX} -c conftest.C) > /dev/null 2>&1; then
+		if AC_TRY_COMMAND(${CXX} ${CPPFLAGS} ${CXXFLAGS} -c conftest.C) > /dev/null 2>&1; then
 			lidia_cv_explicit_templates="yes"
 		else
 			lidia_cv_explicit_templates="no"
@@ -516,7 +516,7 @@ template <class T> class X { T t; };
 
 template class X<int>;
 EOF
-		if AC_TRY_COMMAND(${CXX} -c conftest.C) > /dev/null 2>&1; then
+		if AC_TRY_COMMAND(${CXX} ${CPPFLAGS} ${CXXFLAGS} -c conftest.C) > /dev/null 2>&1; then
 			lidia_cv_iso_templates="yes"
 		else
 			lidia_cv_iso_templates="no"
@@ -585,7 +585,7 @@ int main(int, char**)
 }
 EOF
 		lidia_cv_iso_namespaces="no"
-		if AC_TRY_COMMAND(${CXX} -o conftest conftest.C) > /dev/null 2>&1 ; then
+		if AC_TRY_COMMAND(${CXX} ${CPPFLAGS} ${CXXFLAGS} ${LDFLAGS} -o conftest conftest.C) > /dev/null 2>&1 ; then
 			if ./conftest ; then
 				lidia_cv_iso_namespaces="yes"
 			fi
@@ -616,7 +616,7 @@ int f (int i) { return twice(i); }
 
 int main () { return 0; }
 EOF
-		if AC_TRY_COMMAND(${CXX} -o conftest conftest1.C conftest2.C) > /dev/null 2>&1; then
+		if AC_TRY_COMMAND(${CXX} ${CPPFLAGS} ${CXXFLAGS} ${LDFLAGS} -o conftest conftest1.C conftest2.C) > /dev/null 2>&1; then
 			lidia_cv_iso_export="yes"
 		else
 			lidia_cv_iso_export="no"
@@ -690,7 +690,7 @@ AC_DEFUN([LIDIA_CHECK_FUNC_RANDOM],
 
 int main (int argc, char** argv) { srandom(random()); return 0; }
 EOF
-		if AC_TRY_COMMAND(${CXX} -o conftest conftest.C) > /dev/null 2>&1; then
+		if AC_TRY_COMMAND(${CXX} ${CPPFLAGS} ${CXXFLAGS} ${LDFLAGS} -o conftest conftest.C) > /dev/null 2>&1; then
 			lidia_cv_func_random="yes"
 		else
 			lidia_cv_func_random="no"
@@ -733,7 +733,7 @@ int main (void) {
 	return mkstemp(f);
 }]
 EOF
-		if AC_TRY_COMMAND(${CXX} -o conftest conftest.C) > /dev/null 2>&1; then
+		if AC_TRY_COMMAND(${CXX} ${CPPFLAGS} ${CXXFLAGS} ${LDFLAGS} -o conftest conftest.C) > /dev/null 2>&1; then
 			lidia_cv_func_mkstemp="yes"
 		else
 			lidia_cv_func_mkstemp="no"
@@ -786,7 +786,7 @@ int main (int, char**)
 	return ret;
 }
 EOF
-		if AC_TRY_COMMAND(${CXX} -o conftest conftest.C) > /dev/null 2>&1; then
+		if AC_TRY_COMMAND(${CXX} ${CPPFLAGS} ${CXXFLAGS} ${LDFLAGS} -o conftest conftest.C) > /dev/null 2>&1; then
 			if ./conftest ; then
 				lidia_cv_posix_signals="yes"
 			fi
@@ -819,7 +819,7 @@ int main (int, char**)
 	return 0;
 }
 EOF
-		if AC_TRY_COMMAND(${CXX} -o conftest conftest.C) > /dev/null 2>&1; then
+		if AC_TRY_COMMAND(${CXX} ${CPPFLAGS} ${CXXFLAGS} ${LDFLAGS} -o conftest conftest.C) > /dev/null 2>&1; then
 			if ./conftest ; then
 				lidia_cv_posix_times="yes"
 			fi
@@ -851,7 +851,7 @@ int main (int, char**)
 	return 0;
 }
 EOF
-		if AC_TRY_COMMAND(${CXX} -o conftest conftest.C) > /dev/null 2>&1; then
+		if AC_TRY_COMMAND(${CXX} ${CPPFLAGS} ${CXXFLAGS} ${LDFLAGS} -o conftest conftest.C) > /dev/null 2>&1; then
 			if ./conftest ; then
 				lidia_cv_posix_time="yes"
 			fi
