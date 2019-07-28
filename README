@@ -1,14 +1,20 @@
 
              LiDIA --- A library for computational number theory
 
-
-This is release 2.3.0 of the LiDIA library. The authoritative repository
-for LiDIA is
+LiDIA was developed from 1994 to 2004 at TU Darmstadt. It is not under active development. 
+The authoritative repository for LiDIA used to reside at
 
 	http://www.informatik.tu-darmstadt.de/TI/LiDIA/ftp/LiDIA/
 
-but note that other sites may mirror this site.  You can get the whole
-archive (LiDIA-2.3.0) or just packages (LiDIA-base-2.3.0,
+The present version, named 2.3.0+latte-patches-YYYY-MM-DD, 
+is based on the last official release, 2.3.0, of the LiDIA library.
+It has minimal patches for using LiDIA within the LattE integrale project
+with newer compilers and other infrastructure.
+It is maintained at https://github.com/mkoeppe/LiDIA
+
+
+LiDIA's build system has a mechanism to create two types of distribution archives:
+the whole archive (LiDIA-2.3.0) or just packages (LiDIA-base-2.3.0,
 LiDIA-FF-2.3.0, LiDIA-LA-2.3.0, LiDIA-LT-2.3.0, LiDIA-NF-2.3.0,
 LiDIA-EC-2.3.0, LiDIA-ECO-2.3.0, and LiDIA-GEC-2.3.0).  All packages
 are provided in tar.gz format.  Everything unpacks into the directory
@@ -91,7 +97,12 @@ instantiating some of LiDIA's template classes.
 
 INSTALLATION (Unix-like systems, using configure)
 
-If you use `configure' to configure LiDIA, see the file INSTALL for
+If you used `git clone` to obtain the source code of LiDIA,
+you will first have to generate the build scripts using:
+
+    ./bootstrap
+
+Then proceed using `./configure' to configure LiDIA, see the file INSTALL for
 compilation and generic installation instructions.
 
 LiDIA-specific configure options:
