@@ -1469,8 +1469,6 @@ gf_element::solve_quadratic (const gf_element& a1, const gf_element& a0)
 		if (!delta.is_square())
 			return false;
 
-		assign(sqrt(delta));
-
 		assign((-a1 + sqrt(delta))/2);
 		return true;
 	}
