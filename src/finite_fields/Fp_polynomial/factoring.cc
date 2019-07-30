@@ -122,7 +122,7 @@ base_vector< bigint > find_roots(const Fp_polynomial& f, int flag)
 		Fp_poly_modulus F(g);
 
 		// this is the costly step we want to avoid if flag != 0
-		power_x(x_to_the_p, g.modulus(), g);
+		power_x(x_to_the_p, g.modulus(), F);
 
 		gcd(g, g, x_to_the_p - x); // split off linear factors
 
