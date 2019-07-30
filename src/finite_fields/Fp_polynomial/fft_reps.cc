@@ -189,11 +189,13 @@ void fft_data::release()
 		    node != fft_data::head)		//and node != head
 		{
 			fft_data::item * ptr = fft_data::head;
-			while (ptr->next != node)
+			while (ptr->next != node) {
+				if (ptr->next == 0) {
+					lidia_error_handler("fft_data",
+								"~fft_data::internal error");
+					return;
+				}
 				ptr = ptr->next;
-			if (ptr->next == 0) {
-				lidia_error_handler("fft_data", "~fft_data::internal error");
-				return;
 			}
 
 			ptr->next = node->next; //remove node from list
@@ -281,8 +283,9 @@ void fft_data::init(const bigint& p, lidia_size_t l)
 
 		if (fft_data::head != 0)
 			if (fft_data::head->ref_counter <= 0) {
+				fft_data::item *temp = fft_data::head->next;
 				delete fft_data::head; //we can delete the old one
-				fft_data::head = 0; //since we'll create a new head
+				fft_data::head = temp; //since we'll create a new head
 			}
 		ptr->next = fft_data::head; //and insert *ptr as the first
 		fft_data::head = ptr; //element of the list
