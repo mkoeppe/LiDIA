@@ -295,7 +295,7 @@ output may always alias the input:
 Let $a$ be of type \code{psr}.
 
 \begin{fcode}{void}{$a$.multiply_by_xn}{lidia_size_t $n$}
-  $a \assign \sum_{i=f(a)}^{l(a)} a_i \cdot X^i+n$ \\
+  $a \assign \sum_{i=f(a)}^{l(a)} a_i \cdot X^{i+n}$ \\
   $f(a) \assign f(a) + n$ \\
   $l(a) \assign l(a) + n$
 \end{fcode}
