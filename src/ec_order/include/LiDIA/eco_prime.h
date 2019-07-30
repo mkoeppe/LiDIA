@@ -185,9 +185,9 @@ private:
 
 	bool test_x_coordinate_uniquely()
 	{
-		return ((test_x_coordinate() && (l % 4 == 3)) || 
-                    (ev_strategy == EV_FUNNY_BABYSTEP_GIANTSTEP 
-                     && l >= lower_bound_for_FBG));
+		return (l % 4 == 3) && (test_x_coordinate() ||
+					(ev_strategy == EV_FUNNY_BABYSTEP_GIANTSTEP &&
+					l >= lower_bound_for_FBG));
 	}
 
 	bool test_y_coordinate()
